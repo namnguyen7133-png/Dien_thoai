@@ -1,0 +1,20 @@
+name: Bao Thuc Don Xe Moi Tuan
+
+on:
+  schedule:
+    # Chạy lúc 01:00, 05:00, 09:00 UTC (tương ứng 08:00, 12:00, 16:00 VN)
+    - cron: '0 1,5,9 * * 1' 
+  workflow_dispatch: # Cho phép bấm chạy tay để test
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Trigger Notification
+        run: |
+          # Dùng curl để "truy cập" vào file HTML (đã host trên GitHub Pages) 
+          # Hoặc chạy script python để parse file trực tiếp
+          curl -s https://${{ github.repository_owner }}.github.io/Dien_thoai/github_data/031-thuc-on-xe-may.html

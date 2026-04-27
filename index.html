@@ -2,77 +2,58 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ thống Quản trị - NGUYỄN MINH NAM</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 20px; }
-        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
-        h2 { color: #1a73e8; font-size: 1.2rem; border-bottom: 2px solid #e8f0fe; padding-bottom: 10px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; color: #444; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; background: #fafafa; }
-        .btn { width: 100%; padding: 12px; background: #1a73e8; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn:hover { background: #1557b0; }
-        #result { margin-top: 20px; padding: 15px; border-radius: 8px; background: #fffde7; border-left: 5px solid #fbc02d; display: none; }
-        .danger-num { color: #d32f2f; font-size: 24px; font-weight: bold; }
-    </style>
+    <title>Hệ Thống Điều Hành - NGUYÊN MINH NAM</title>
 </head>
-<body onload="setupDefault()">
-
-<div class="card">
-    <h2>DỰ BÁO CHỈ SỐ CÁ NHÂN</h2>
-    
-    <div class="form-group">
-        <label>1. Chọn người:</label>
-        <select id="userSelect" onchange="applyUser()">
-            <option value="NGUYEN MINH NAM|1971-03-03">NGUYEN MINH NAM (03/03/1971)</option>
-            <option value="VO|1975-01-01">Vợ (1975)</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label>2. Ngày tháng năm sinh:</label>
-        <input type="text" id="dob" readonly>
-    </div>
-
-    <div class="form-group">
-        <label>3. Ngày muốn xem:</label>
-        <input type="date" id="viewDate">
-    </div>
-
-    <button class="btn" onclick="calculate()">TÍNH TOÁN & HIỂN THỊ</button>
-
-    <div id="result">
-        <strong>Kết quả cho: <span id="resName"></span></strong>
-        <p>Số đặc biệt nguy hiểm: <span class="danger-num" id="resNum"></span></p>
-        <small id="resNote">Cảnh báo: Chú ý khung giờ xung khắc.</small>
-    </div>
-</div>
+<body>
+    <div id="output">Đang kiểm tra chỉ số...</div>
 
 <script>
-    function setupDefault() {
-        // Tự động nhảy ngày hiện tại
-        document.getElementById('viewDate').value = new Date().toISOString().split('T')[0];
-        applyUser();
+    // Cấu hình danh sách số đặc biệt nguy hiểm của anh
+    const SO_NGUY_HIEM = ["307", "14", "41", "27", "72", "627", "168", "303"];
+    const TOKEN = "o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2"; // Kiểm tra kỹ Token này
+    const BIRTH = "19710303";
+
+    async function checkMultiDays() {
+        let reports = [];
+        let foundDanger = false;
+
+        // Quét từ hôm qua (-1) đến 3 ngày tới (+3)
+        for (let i = -1; i <= 3; i++) {
+            let d = new Date();
+            d.setDate(d.getDate() + i);
+            let dString = d.toLocaleDateString('vi-VN');
+            let seed = d.toISOString().split('T')[0].replaceAll('-', '') + BIRTH;
+            
+            // Logic tính số đặc biệt (3 số cuối)
+            let num = ((parseInt(seed.slice(-5)) * 7) % 900 + 100).toString();
+            
+            // Logic tính Giờ : Phút (dựa trên con số đó)
+            let hh = (parseInt(num) % 24).toString().padStart(2, '0');
+            let mm = (parseInt(num) % 60).toString().padStart(2, '0');
+
+            let status = SO_NGUY_HIEM.includes(num) ? "⚠️ NGUY HIỂM" : "Bình thường";
+            if (SO_NGUY_HIEM.includes(num)) foundDanger = true;
+
+            reports.push(`${dString} | Số: ${num} | Giờ: ${hh}:${mm} -> ${status}`);
+        }
+
+        const finalMsg = reports.join('\n');
+        document.getElementById('output').innerText = finalMsg;
+
+        // Gửi Pushbullet
+        await fetch('https://api.pushbullet.com/v2/pushes', {
+            method: 'POST',
+            headers: { 'Access-Token': TOKEN, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                type: 'note',
+                title: 'BÁO CÁO CHỈ SỐ: NGUYÊN MINH NAM',
+                body: finalMsg
+            })
+        });
     }
 
-    function applyUser() {
-        const data = document.getElementById('userSelect').value.split('|');
-        document.getElementById('dob').value = data[1];
-    }
-
-    function calculate() {
-        const name = document.getElementById('userSelect').options[document.getElementById('userSelect').selectedIndex].text.split(' (')[0];
-        const dateVal = document.getElementById('viewDate').value;
-        
-        // Thuật toán: Lấy 3 số cuối của (Ngày xem viết liền + Năm sinh)
-        const seed = dateVal.replaceAll('-', '') + document.getElementById('dob').value.replaceAll('-', '');
-        const finalNum = parseInt(seed.slice(-3)) || 123;
-
-        document.getElementById('resName').innerText = name;
-        document.getElementById('resNum').innerText = finalNum;
-        document.getElementById('result').style.display = 'block';
-    }
+    // Tự động chạy ngay khi load trang
+    window.onload = checkMultiDays;
 </script>
 </body>
 </html>

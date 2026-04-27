@@ -1,210 +1,125 @@
 <!doctype html>
 <html lang="vi">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Thực đơn 2 ngày — Người đi xe (Motorbike / Harley / Sport 1000 / EV / Bicycle)</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Thực đơn 2 ngày — Xe máy (Xoay vòng 5 tuần)</title>
 <style>
   :root{--bg:#0f172a;--card:#0b1220;--glass:rgba(255,255,255,0.04);--accent:#ff7a59;--muted:#9aa4b2;--accent-2:#60a5fa}
-  *{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
-  html,body{height:100%;margin:0;background:linear-gradient(180deg,#071126 0%,#071a2b 60%);color:#e6eef8}
+  *{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;color:#e6eef8}
+  html,body{margin:0;background:linear-gradient(180deg,#071126 0%,#071a2b 60%);min-height:100vh}
   .wrap{max-width:1200px;margin:18px auto;padding:18px;display:grid;grid-template-columns:1fr 360px;gap:18px}
-  header{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  h1{font-size:18px;margin:0}
-  p.lead{margin:0;color:var(--muted);font-size:13px}
-  .main{background:var(--card);border-radius:14px;padding:14px;box-shadow:0 8px 30px rgba(2,6,23,0.6);overflow:auto;max-height:78vh}
-  .side{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:12px;padding:14px;height:78vh;overflow:auto}
-  .tabs{display:flex;gap:8px;margin-bottom:12px}
-  .tab{background:var(--glass);padding:8px 10px;border-radius:10px;cursor:pointer;font-weight:600;color:var(--muted);border:1px solid rgba(255,255,255,0.03)}
-  .tab.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#071126}
-  .vehicle-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-  .card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
-  .card h3{margin:0 0 6px;font-size:15px}
-  .meta{font-size:13px;color:var(--muted);margin-bottom:8px}
+  .main,.side{background:var(--card);border-radius:14px;padding:16px;box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+  .card{background:var(--glass);padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);margin-bottom:12px}
   .meal{background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;margin-bottom:8px}
-  .meal h4{margin:0;font-size:14px}
-  .cal{font-weight:700;color:var(--accent-2)}
-  .yin-yang{font-size:13px;color:var(--muted);margin-top:6px}
-  table{width:100%;border-collapse:collapse;font-size:13px}
-  td,th{padding:6px 4px;border-bottom:1px dashed rgba(255,255,255,0.03)}
-  .shopping{list-style:none;padding:0;margin:0}
-  .shopping li{padding:6px 0;border-bottom:1px dashed rgba(255,255,255,0.03);display:flex;justify-content:space-between}
   .price{color:var(--accent);font-weight:700}
-  .small{font-size:12px;color:var(--muted)}
-  .controls{display:flex;gap:8px;align-items:center}
-  .btn{background:var(--accent);color:#071126;padding:8px 10px;border-radius:8px;border:none;cursor:pointer;font-weight:700}
-  .ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);padding:8px 10px;border-radius:8px}
-  footer{margin-top:12px;color:var(--muted);font-size:13px;text-align:center}
-  @media (max-width:1060px){.wrap{grid-template-columns:1fr;}.side{height:auto;max-height:56vh}.main{max-height:56vh}}
-  /* ensure no horizontal overflow */
-  *{word-break:break-word}
-  html,body{overflow-x:hidden}
+  .cal{color:var(--accent-2);font-weight:700}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  td{padding:6px;border-bottom:1px dashed rgba(255,255,255,0.03)}
+  .hidden{display:none}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <div style="grid-column:1/2">
-      <header>
-        <div>
-          <h1>Thực đơn 2 ngày — Dành cho người đi xe (5 loại)</h1>
-          <p class="lead">Bữa: 08:00 • 12:00 • 16:00 — Bao gồm kcal, tính âm/dương, chi phí & danh sách đi chợ 2 ngày.</p>
-        </div>
-        <div class="controls">
-          <button class="btn" onclick="window.print()">In / Xuất PDF</button>
-          <button class="ghost" id="toggleCal" onclick="toggleCal()">Ẩn/Hiện kcal</button>
-        </div>
-      </header>
+<div class="wrap">
+  <main class="main">
+    <h1 id="current-week-title" style="font-size:20px;color:var(--accent)">Đang xác định tuần...</h1>
+    
+    <div id="content-area">
+      <section class="card vehicle-section" id="v-0">
+        <h3>Xe máy (Cơ bản)</h3>
+        <div class="meal"><h4>08:00 — Sáng <span class="cal">~700 kcal</span></h4><p>Phở gà / Bánh mì ốp la • Trà gừng</p></div>
+        <div class="meal"><h4>12:00 — Trưa <span class="cal">~900 kcal</span></h4><p>Cơm 1.5 chén • Thịt gà/heo 150g • Canh rau</p></div>
+        <div class="meal"><h4>16:00 — Chiều <span class="cal">~900 kcal</span></h4><p>Bún, rau sống • Sữa 200ml</p></div>
+      </section>
 
-      <main class="main">
-        <div class="tabs" role="tablist">
-          <div class="tab active" data-veh="all" onclick="selectTab(event)">Tất cả</div>
-          <div class="tab" data-veh="motor" onclick="selectTab(event)">Xe máy</div>
-          <div class="tab" data-veh="harley" onclick="selectTab(event)">Harley</div>
-          <div class="tab" data-veh="sport" onclick="selectTab(event)">Xe thể thao 1000cc</div>
-          <div class="tab" data-veh="ev" onclick="selectTab(event)">Xe máy điện</div>
-          <div class="tab" data-veh="bike" onclick="selectTab(event)">Xe đạp</div>
-        </div>
+      <section class="card vehicle-section" id="v-1">
+        <h3>Harley / Touring</h3>
+        <div class="meal"><h4>08:00 — Sáng <span class="cal">~900 kcal</span></h4><p>Bánh mì nguyên cám + trứng • Bơ, chuối</p></div>
+        <div class="meal"><h4>12:00 — Trưa <span class="cal">~1100 kcal</span></h4><p>Cơm + thịt bò/gà 200g • Salad • Khoai lang</p></div>
+        <div class="meal"><h4>16:00 — Chiều <span class="cal">~1000 kcal</span></h4><p>Mì xào + đạm • Sữa chua • Hạt</p></div>
+      </section>
 
-        <div class="vehicle-grid" id="grid">
+      <section class="card vehicle-section" id="v-2">
+        <h3>Xe thể thao 1000cc</h3>
+        <div class="meal"><h4>08:00 — Sáng <span class="cal">~800 kcal</span></h4><p>Cháo yến mạch + trứng • Trái cây</p></div>
+        <div class="meal"><h4>12:00 — Trưa <span class="cal">~1000 kcal</span></h4><p>Cơm + cá/thịt 180g • Rau xào</p></div>
+        <div class="meal"><h4>16:00 — Chiều <span class="cal">~1000 kcal</span></h4><p>Bún/mì • Nước điện giải • Chuối</p></div>
+      </section>
 
-          <!-- card template repeated for each vehicle -->
+      <section class="card vehicle-section" id="v-3">
+        <h3>Xe máy điện</h3>
+        <div class="meal"><h4>08:00 — Sáng <span class="cal">~650 kcal</span></h4><p>Bánh mì + phô mai • Trứng luộc • Trà</p></div>
+        <div class="meal"><h4>12:00 — Trưa <span class="cal">~900 kcal</span></h4><p>Cơm 1 chén + cá/gà 150g • Canh rau</p></div>
+        <div class="meal"><h4>16:00 — Chiều <span class="cal">~850 kcal</span></h4><p>Cháo nhẹ • Trái cây</p></div>
+      </section>
 
-          <section class="card" data-vehicle="motor">
-            <h3>Xe máy (cơ bản) — Nhu cầu ~2.600 kcal/ngày</h3>
-            <div class="meta">Phù hợp di chuyển hàng ngày, ít vận động nặng.</div>
-            <div class="meal"><h4>08:00 — Bữa sáng <span class="cal">~700 kcal</span></h4><div class="small">Phở gà / Bánh mì ốp la • Trà gừng</div></div>
-            <div class="meal"><h4>12:00 — Trưa <span class="cal">~900 kcal</span></h4><div class="small">Cơm 1.5 chén • Thịt gà/heo 150g • Canh rau</div></div>
-            <div class="meal"><h4>16:00 — Tối nhẹ <span class="cal">~900 kcal</span></h4><div class="small">Bún, rau sống • Sữa 200ml</div></div>
-            <div class="yin-yang">Âm/dương: Tinh bột + đạm (dương), rau/fruits (âm), gừng/tỏi (dương nhẹ).</div>
-          </section>
-
-          <section class="card" data-vehicle="harley">
-            <h3>Harley / Touring — Nhu cầu ~3.000 kcal/ngày</h3>
-            <div class="meta">Chuyến đi dài, cần năng lượng bền. Ưu tiên chất béo tốt + carb dự trữ.</div>
-            <div class="meal"><h4>08:00 — Bữa sáng <span class="cal">~900 kcal</span></h4><div class="small">Bánh mì nguyên cám + trứng • Bơ, chuối</div></div>
-            <div class="meal"><h4>12:00 — Trưa <span class="cal">~1.100 kcal</span></h4><div class="small">Cơm + thịt bò/ gà 200g • Salad • Khoai lang</div></div>
-            <div class="meal"><h4>16:00 — Tối nhẹ <span class="cal">~1.000 kcal</span></h4><div class="small">Mì xào + đạm • Sữa chua • Hạt</div></div>
-            <div class="yin-yang">Âm/dương: tăng dương (đạm, mỡ tốt) để bền sức; rau/hoa quả giữ cân bằng âm.</div>
-          </section>
-
-          <section class="card" data-vehicle="sport">
-            <h3>Xe thể thao 1000cc — Nhu cầu ~2.800 kcal/ngày</h3>
-            <div class="meta">Lái nhanh, căng cơ; cần phản xạ — ưu tiên protein + carb vừa đủ.</div>
-            <div class="meal"><h4>08:00 — Bữa sáng <span class="cal">~800 kcal</span></h4><div class="small">Cháo yến mạch + trứng • Trái cây</div></div>
-            <div class="meal"><h4>12:00 — Trưa <span class="cal">~1.000 kcal</span></h4><div class="small">Cơm + cá/ thịt 180g • Rau xào</div></div>
-            <div class="meal"><h4>16:00 — Tối nhẹ <span class="cal">~1.000 kcal</span></h4><div class="small">Bún/ mì • Nước điện giải • Chuối</div></div>
-            <div class="yin-yang">Âm/dương: giữ cân bằng — tránh quá nhiều đồ lạnh trước khi lái.</div>
-          </section>
-
-          <section class="card" data-vehicle="ev">
-            <h3>Xe máy điện — Nhu cầu ~2.400 kcal/ngày</h3>
-            <div class="meta">Ít tiêu hao năng lượng khi lái; hoạt động đi lại nhẹ.</div>
-            <div class="meal"><h4>08:00 — Bữa sáng <span class="cal">~650 kcal</span></h4><div class="small">Bánh mì + phô mai • Trứng luộc • Trà</div></div>
-            <div class="meal"><h4>12:00 — Trưa <span class="cal">~900 kcal</span></h4><div class="small">Cơm 1 chén + cá/ gà 120–150g • Canh rau</div></div>
-            <div class="meal"><h4>16:00 — Tối nhẹ <span class="cal">~850 kcal</span></h4><div class="small">Cháo nhẹ • Trái cây</div></div>
-            <div class="yin-yang">Âm/dương: ưu tiên rau, tránh đồ dầu mỡ nặng.</div>
-          </section>
-
-          <section class="card" data-vehicle="bike">
-            <h3>Xe đạp (đua/đi đường dài) — Nhu cầu ~3.200 kcal/ngày</h3>
-            <div class="meta">Tiêu hao cao, cần carb nhanh + protein phục hồi.</div>
-            <div class="meal"><h4>08:00 — Bữa sáng <span class="cal">~1.000 kcal</span></h4><div class="small">Bánh mì + bơ đậu phộng • Sinh tố chuối + yến mạch</div></div>
-            <div class="meal"><h4>12:00 — Trưa <span class="cal">~1.100 kcal</span></h4><div class="small">Cơm + cá/ gà 200g • Khoai lang • Salad</div></div>
-            <div class="meal"><h4>16:00 — Tối nhẹ <span class="cal">~1.100 kcal</span></h4><div class="small">Pasta / Mì năng lượng • Sữa chua • Hạt</div></div>
-            <div class="yin-yang">Âm/dương: phần lớn là dương (tăng năng lượng), xen kẽ rau quả để trung hòa.</div>
-          </section>
-
-        </div>
-
-        <footer class="small" style="margin-top:10px">Ghi chú: Các giá trị kcal là ước tính cho người trưởng thành, có thể thay đổi theo cân nặng/hoạt động.</footer>
-      </main>
+      <section class="card vehicle-section" id="v-4">
+        <h3>Xe đạp (Đua/Đường dài)</h3>
+        <div class="meal"><h4>08:00 — Sáng <span class="cal">~1000 kcal</span></h4><p>Bánh mì bơ đậu phộng • Sinh tố chuối yến mạch</p></div>
+        <div class="meal"><h4>12:00 — Trưa <span class="cal">~1100 kcal</span></h4><p>Cơm + cá/gà 200g • Khoai lang • Salad</p></div>
+        <div class="meal"><h4>16:00 — Chiều <span class="cal">~1100 kcal</span></h4><p>Pasta / Mì năng lượng • Sữa chua • Hạt</p></div>
+      </section>
     </div>
+  </main>
 
-    <aside class="side">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <strong>Danh sách đi chợ (tổng 2 ngày cho tất cả loại)</strong>
-        <span class="small">Giá tham khảo</span>
-      </div>
-
-      <ul class="shopping" id="shopping">
-        <li><span>Gạo 2kg</span><span class="price">50.000₫</span></li>
-        <li><span>Thịt gà 1.2kg</span><span class="price">130.000₫</span></li>
-        <li><span>Thịt bò 500g</span><span class="price">120.000₫</span></li>
-        <li><span>Cá 800g</span><span class="price">90.000₫</span></li>
-        <li><span>Tôm 300g</span><span class="price">45.000₫</span></li>
-        <li><span>Trứng 12 quả</span><span class="price">36.000₫</span></li>
-        <li><span>Bún / Phở / Mì 1 túi</span><span class="price">25.000₫</span></li>
-        <li><span>Rau củ (tổng) — rau muống, cải, cà chua, khoai</span><span class="price">75.000₫</span></li>
-        <li><span>Trái cây (chuối, táo) — 6 quả</span><span class="price">40.000₫</span></li>
-        <li><span>Sữa 2 lít</span><span class="price">80.000₫</span></li>
-        <li><span>Hạt, bơ, dầu ô liu</span><span class="price">60.000₫</span></li>
-        <li><span>Gia vị (gừng, tỏi, hành, chanh)</span><span class="price">20.000₫</span></li>
-      </ul>
-
-      <div style="margin-top:10px;font-weight:800">Tổng ước tính: <span class="price">~900.000₫</span></div>
-      <p class="small" style="margin-top:8px">Lưu ý: Đây là danh sách gộp cho 2 ngày và cho tất cả loại người đi xe. Nếu bạn muốn mỗi loại 1 bộ riêng, tôi sẽ tách và tính riêng chi phí.</p>
-
-      <div style="margin-top:12px">
-        <strong>Lịch mẫu 2 ngày (giờ: 05:30 — 21:30)</strong>
-        <table>
-          <tr><td>05:30</td><td>Thức dậy, uống nước</td></tr>
-          <tr><td>05:45</td><td>Tập nhẹ / giãn cơ (đặc biệt cho bike/harley)</td></tr>
-          <tr><td>08:00</td><td>Ăn sáng</td></tr>
-          <tr><td>12:00</td><td>Ăn trưa</td></tr>
-          <tr><td>16:00</td><td>Ăn nhẹ</td></tr>
-          <tr><td>17:00</td><td>Tập phục hồi hoặc nghỉ</td></tr>
-          <tr><td>21:30</td><td>Ngủ</td></tr>
-        </table>
-      </div>
-
-      <div style="margin-top:12px" class="small">Mẹo: Chuẩn bị phần ăn trước cho các chuyến đi dài (Harley, Sport) — mang theo snack giàu carb (chuối, bánh năng lượng) và nước/electrolyte.</div>
-
-    </aside>
-  </div>
+  <aside class="side">
+    <strong style="color:var(--accent)">Chi phí đi chợ 2 ngày</strong>
+    <p style="font-size:13px">Gạo 2kg: <span class="price">50000₫</span></p>
+    <p style="font-size:13px">Thịt gà/bò: <span class="price">250000₫</span></p>
+    <p style="font-size:13px">Trứng 12 quả: <span class="price">36000₫</span></p>
+    <p style="font-size:13px">Rau củ: <span class="price">75000₫</span></p>
+    <hr style="border:0;border-top:1px solid rgba(255,255,255,0.05)">
+    <p><strong>Tổng: <span class="price">~411000₫</span></strong></p>
+  </aside>
+</div>
 
 <script>
-  function selectTab(e){
-    const tabs = document.querySelectorAll('.tab');
-    tabs.forEach(t=>t.classList.remove('active'));
-    e.currentTarget.classList.add('active');
-    const key = e.currentTarget.getAttribute('data-veh');
-    const cards = document.querySelectorAll('[data-vehicle]');
-    cards.forEach(c=>{ c.style.display = (key==='all' || c.getAttribute('data-vehicle')===key) ? 'block' : 'none' });
+  // Logic tính tuần xoay vòng (0-4)
+  function getCycleIndex() {
+    const now = new Date();
+    const oneJan = new Date(now.getFullYear(), 0, 1);
+    const numberOfDays = Math.floor((now - oneJan) / (24 * 60 * 60 * 1000));
+    const weekNumber = Math.ceil((numberOfDays + oneJan.getDay() + 1) / 7);
+    return (weekNumber - 1) % 5; // Trả về 0, 1, 2, 3, hoặc 4
   }
-  function toggleCal(){
-    const els = document.querySelectorAll('.cal');
-    els.forEach(el=>el.style.display = (el.style.display==='none') ? '' : 'none');
-    const btn = document.getElementById('toggleCal');
-    btn.textContent = btn.textContent.includes('Ẩn') ? 'Hiện kcal' : 'Ẩn/Hiện kcal';
-  }
-</script>
 
-<script>
-window.onload = function() {
-    setTimeout(() => {
-        // Tự bấm nút tính toán
-        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
-        if(btn) btn.click();
+  const idx = getCycleIndex();
+  const sections = document.querySelectorAll('.vehicle-section');
+  
+  sections.forEach((s, i) => {
+    if (i !== idx) s.classList.add('hidden');
+    else {
+      const name = s.querySelector('h3').innerText;
+      document.getElementById('current-week-title').innerText = "Thực đơn Tuần này: " + name;
+    }
+  });
+
+  // Tự động gửi Pushbullet nếu là Thứ 2 và đúng giờ
+  window.onload = function() {
+    const now = new Date();
+    const day = now.getDay(); // 1 là Thứ 2
+    const hour = now.getHours();
+    
+    // Chỉ chạy nếu là Thứ 2
+    if (day === 1) {
+      const mealTimes = [8, 12, 16];
+      if (mealTimes.includes(hour)) {
+        const activeSection = sections[idx];
+        const mealContent = activeSection.querySelectorAll('.meal')[mealTimes.indexOf(hour)].innerText;
         
-        setTimeout(() => {
-            const text = document.body.innerText;
-            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
-            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
-
-            if (found.length > 0) {
-                fetch('https://api.pushbullet.com/v2/pushes', {
-                    method: 'POST',
-                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        type: 'note',
-                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
-                        body: 'Thấy số: ' + found.join(", ")
-                    })
-                });
-            }
-        }, 5000);
-    }, 2000);
-};
+        fetch('https://api.pushbullet.com/v2/pushes', {
+          method: 'POST',
+          headers: { 
+            'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 
+            'Content-Type': 'application/json' 
+          },
+          body: JSON.stringify({
+            type: 'note',
+            title: '🍴 THỰC ĐƠN XE: ' + activeSection.querySelector('h3').innerText,
+            body: 'Bữa này: ' + mealContent
+          })
+        });
+      }
+    }
+  };
 </script>
 </body>
 </html>

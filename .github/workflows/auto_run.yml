@@ -1,0 +1,36 @@
+name: He_Thong_Mat_Than_6AM
+
+on:
+  schedule:
+    # Chạy lúc 22:55 UTC (tức 5:55 AM giờ Việt Nam)
+    - cron: '55 22 * * *'
+  workflow_dispatch: # Cho phép bạn bấm nút chạy thử ngay lập tức
+
+jobs:
+  run_logic:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tính toán số nguy hiểm và gửi Pushbullet
+        shell: bash
+        env:
+          MY_TOKEN: ${{ secrets.PB_TOKEN }}
+        run: |
+          # 1. Khai báo thông tin
+          USER="NGUYEN MINH NAM"
+          DOB="03031971"
+          TODAY=$(date +'%d%m%Y')
+          
+          # 2. Logic tính số đặc biệt (Ghép ngày và lấy số dư)
+          # Đây là mã hóa đơn giản, bạn có thể sửa công thức theo ý mình
+          VAL=$(( (1000$TODAY + 1000$DOB) % 999 ))
+          
+          # 3. Nội dung tin nhắn
+          TITLE="CẢNH BÁO TRƯỚC 6H SÁNG"
+          BODY="Chào anh $USER. Số đặc biệt nguy hiểm ngày hôm nay là: $VAL. Hãy cẩn trọng khung giờ xấu."
+
+          # 4. Lệnh gửi đi (Dùng CURL để không cần cài đặt Python)
+          curl --header "Access-Token: $MY_TOKEN" \
+               --header "Content-Type: application/json" \
+               --data-binary "{\"type\": \"note\", \"title\": \"$TITLE\", \"body\": \"$BODY\"}" \
+               --request POST \
+               https://api.pushbullet.com/v2/pushes

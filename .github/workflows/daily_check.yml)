@@ -1,20 +1,18 @@
-name: He_Thong_Mat_Than_Tong_Hop
+name: He_Thong_Mat_Than_6AM
 
 on:
   schedule:
-    # Chạy lúc 22:50 UTC (tức 5:50 AM giờ Việt Nam) để báo trước 6h
+    # 22:50 UTC là 5:50 sáng giờ VN
     - cron: '50 22 * * *'
-  workflow_dispatch: # Để anh có thể bấm nút "Run workflow" kiểm tra ngay
+  workflow_dispatch:
 
 jobs:
-  check_status:
+  run_web_logic:
     runs-on: ubuntu-latest
     steps:
-      - name: Kich hoat trung tam dieu hanh
+      - name: Kich hoat trang web tu tinh toan
         run: |
-          # Lệnh này sẽ "mở" trang web của anh để mã JavaScript bên trong tự chạy
-          # Lưu ý: Anh phải bật GitHub Pages trong phần Settings thì lệnh này mới hiệu quả
-          curl -L https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html
-          
-      - name: Thong bao kich hoat thanh cong
-        run: echo "He thong da quet trang web luc $(date)"
+          # Dung curl de tai trang web, lam cho Javascript ben trong tu kich hoat
+          USER_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/index.html"
+          curl -L $USER_URL
+          echo "Da vao trang web: $USER_URL va kich hoat Pushbullet."

@@ -1,21 +1,21 @@
-name: Tu Dong Thuc Don Thuong Ngoan
+name: "Mắt Thần: Thực Đơn Thưởng Ngoạn 7 Ngày"
+
 on:
   schedule:
-    # 00:00, 04:00, 08:00 UTC tương ứng 07:00, 11:00, 15:00 giờ VN
-    # Số 2 cuối cùng đại diện cho Thứ 3 hàng tuần
-    - cron: '0 0,4,8 * * 2'
+    # Chạy hàng ngày vào lúc 00:00, 04:00, 08:00 UTC (tức 07:00, 11:00, 15:00 giờ VN)
+    - cron: '0 0,4,8 * * *'
   workflow_dispatch:
 
 jobs:
-  run_eye:
+  kich_hoat:
     runs-on: ubuntu-latest
     steps:
-      - name: Cai dat Playwright
+      - name: Setup Playwright
         run: |
           pip install playwright
           playwright install chromium
           
-      - name: Mo link kich hoat thuc don
+      - name: Mo Link Thuc Don
         run: |
           python -c "
           import time
@@ -29,7 +29,7 @@ jobs:
               page = browser.new_page()
               print(f'Dang mo: {url}')
               page.goto(url)
-              # Đợi 20 giây để mã JavaScript trong HTML tự gửi Pushbullet
+              # Đợi 20 giây để JavaScript trong HTML gửi tin nhắn Pushbullet
               time.sleep(20) 
               browser.close()
           "

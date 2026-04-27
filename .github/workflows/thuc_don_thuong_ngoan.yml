@@ -1,0 +1,35 @@
+name: Tu Dong Thuc Don Thuong Ngoan
+on:
+  schedule:
+    # 00:00, 04:00, 08:00 UTC tương ứng 07:00, 11:00, 15:00 giờ VN
+    # Số 2 cuối cùng đại diện cho Thứ 3 hàng tuần
+    - cron: '0 0,4,8 * * 2'
+  workflow_dispatch:
+
+jobs:
+  run_eye:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cai dat Playwright
+        run: |
+          pip install playwright
+          playwright install chromium
+          
+      - name: Mo link kich hoat thuc don
+        run: |
+          python -c "
+          import time
+          from playwright.sync_api import sync_playwright
+          
+          # Link tệp HTML trên GitHub Pages của bạn
+          url = 'https://namnguyen7133-png.github.io/Dien_thoai/032-thuc-on-nguoi-thuong-ngoan.html'
+          
+          with sync_playwright() as p:
+              browser = p.chromium.launch(headless=True)
+              page = browser.new_page()
+              print(f'Dang mo: {url}')
+              page.goto(url)
+              # Đợi 20 giây để mã JavaScript trong HTML tự gửi Pushbullet
+              time.sleep(20) 
+              browser.close()
+          "

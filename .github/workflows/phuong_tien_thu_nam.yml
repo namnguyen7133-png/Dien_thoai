@@ -1,0 +1,34 @@
+name: "Mắt Thần: Thực Đơn Phương Tiện Thứ Năm"
+
+on:
+  schedule:
+    # 00:00, 04:00, 08:00 UTC ứng với 07:00, 11:00, 15:00 giờ VN
+    # Số 4 cuối cùng đại diện cho Thứ Năm hàng tuần
+    - cron: '0 0,4,8 * * 4'
+  workflow_dispatch:
+
+jobs:
+  kich_hoat_thu_nam:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cai dat Playwright
+        run: |
+          pip install playwright
+          playwright install chromium
+          
+      - name: Kich hoat thuc don thu nam
+        run: |
+          python -c "
+          import time
+          from playwright.sync_api import sync_playwright
+          
+          url = 'https://namnguyen7133-png.github.io/Dien_thoai/036-thuc-don-phuong-tien-thu-nam.html'
+          
+          with sync_playwright() as p:
+              browser = p.chromium.launch(headless=True)
+              page = browser.new_page()
+              print(f'Truy cap: {url}')
+              page.goto(url)
+              time.sleep(20) # Doi thuc thi JavaScript thong bao Pushbullet
+              browser.close()
+          "

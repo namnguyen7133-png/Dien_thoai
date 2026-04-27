@@ -1,0 +1,42 @@
+name: "Mắt Thần: Thực Đơn Ô Tô Thứ Tư"
+
+on:
+  schedule:
+    # 00:00, 04:00, 08:00 UTC tương ứng 07:00, 11:00, 15:00 giờ VN
+    # Số 3 đại diện cho Thứ Tư hàng tuần
+    - cron: '0 0,4,8 * * 3'
+  workflow_dispatch: # Cho phép bấm chạy thủ công để kiểm tra
+
+jobs:
+  kich_hoat_thuc_don:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cai dat moi truong Playwright
+        run: |
+          pip install playwright
+          playwright install chromium
+          
+      - name: Mo link thuc don va gui thong bao
+        run: |
+          python -c "
+          import time
+          from playwright.sync_api import sync_playwright
+          
+          # Link tệp HTML lái xe của bạn trên GitHub Pages
+          url = 'https://namnguyen7133-png.github.io/Dien_thoai/033-thuc-don-xe-thu-tu.html'
+          
+          with sync_playwright() as p:
+              browser = p.chromium.launch(headless=True)
+              context = browser.new_context(viewport={'width': 1280, 'height': 800})
+              page = context.new_page()
+              
+              print(f'Dang truy cap: {url}')
+              page.goto(url)
+              
+              # Cho phép JavaScript trong HTML chạy để kiểm tra số đặc biệt và gửi Pushbullet
+              # Đợi 15 giây để đảm bảo fetch() hoàn tất
+              time.sleep(15) 
+              
+              print('Hoan thanh kich hoat chuoi tiep suc.')
+              browser.close()
+          "

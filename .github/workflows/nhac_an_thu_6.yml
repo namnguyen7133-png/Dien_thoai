@@ -1,0 +1,34 @@
+name: "Cronjob: Nhắc ăn & Báo động Thứ 6"
+
+on:
+  schedule:
+    # Giờ quốc tế (UTC) = Giờ Việt Nam (ICT) - 7 tiếng
+    # 01:00 UTC = 08:00 sáng VN
+    # 05:00 UTC = 12:00 trưa VN
+    # 09:00 UTC = 16:00 chiều VN
+    - cron: '0 1,5,9 * * 5'
+  
+  # Cho phép chạy thủ công để kiểm tra (nút Run workflow)
+  workflow_dispatch:
+
+jobs:
+  trigger_remind:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: "Kích hoạt hệ thống thực đơn Thứ 6"
+        run: |
+          echo "Hôm nay là Thứ 6 - Đang thực hiện gửi thông báo qua Pushbullet..."
+          echo "Giờ hệ thống (UTC): $(date)"
+          echo "Mục tiêu: Nhắc thực đơn và quét số đặc biệt."
+
+      - name: "Cập nhật log lần chạy"
+        run: |
+          date >> last_run_thứ_6.txt
+          git config --global user.name "Gemini-AI"
+          git config --global user.email "bot@github.com"
+          git add last_run_thứ_6.txt
+          git commit -m "Workflow: Cập nhật giờ chạy Thứ 6 [skip ci]" || echo "Không có thay đổi"
+          git push

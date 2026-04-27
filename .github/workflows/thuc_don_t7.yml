@@ -1,0 +1,33 @@
+name: Gui Thong Bao Thuc Don Thu 7
+on:
+  schedule:
+    # 00:00, 04:00, 08:00 UTC tương ứng 07:00, 11:00, 15:00 giờ VN
+    - cron: '0 0,4,8 * * 6' 
+  workflow_dispatch:
+
+jobs:
+  check_menu:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cai dat Playwright
+        run: |
+          pip install playwright
+          playwright install chromium
+          
+      - name: Kich hoat Mat than Thuc don
+        run: |
+          python -c "
+          import time
+          from playwright.sync_api import sync_playwright
+          
+          # THAY LINK DUOI DAY THANH LINK CUA BAN
+          url = 'https://namnguyen7133-png.github.io/Dien_thoai/029-thuc-on-cho-oi-truong.html'
+          
+          with sync_playwright() as p:
+              browser = p.chromium.launch(headless=True)
+              page = browser.new_page()
+              print(f'Dang mo thuc don: {url}')
+              page.goto(url)
+              time.sleep(15) 
+              browser.close()
+          "

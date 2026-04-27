@@ -1,36 +1,39 @@
-name: Quet Suc Khoe Tu Dong 6H Sang
+name: Quet Suc Khoe Tu Dong Xoay Vong
 on:
   schedule:
-    - cron: '0 23 * * *' # Chạy lúc 6:00 AM giờ Việt Nam
-  workflow_dispatch: # Nút bấm để bạn chạy thử ngay bây giờ
+    # Chạy mỗi 2 tiếng một lần (0h, 2h, 4h...)
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
 
 jobs:
-  run_check:
+  suc_khoe:
     runs-on: ubuntu-latest
     steps:
-      - name: Cai dat moi truong
+      - name: Cai dat Playwright
         run: |
           pip install playwright
           playwright install chromium
-          
-      - name: Mo 300 file HTML
+      - name: Quet 1 file duy nhat (xoay vong theo ngay)
         run: |
           python -c "
           import time
+          from datetime import datetime
           from playwright.sync_api import sync_playwright
           
-          # Tao danh sach 300 link tu GitHub Pages cua ban
-          urls = [f'https://namnguyen7133-png.github.io/Dien_thoai/file_{{i}}.html' for i in range(1, 301)]
+          # Lấy ngày thứ bao nhiêu trong năm (1-366)
+          day_of_year = datetime.now().timetuple().tm_yday
+          # Chọn 1 file từ 1-300 dựa trên ngày hiện tại
+          file_index = (day_of_year % 300) + 1
+          url = f'https://namnguyen7133-png.github.io/Dien_thoai/file_{file_index}.html'
           
           with sync_playwright() as p:
               browser = p.chromium.launch(headless=True)
               page = browser.new_page()
-              for url in urls:
-                  try:
-                      print(f'Dang kiem tra: {url}')
-                      page.goto(url)
-                      time.sleep(30) # Doi 30 giay de script trong HTML tu tinh va gui Pushbullet
-                  except:
-                      continue
+              print(f'Ngay thu {day_of_year}: Quet file_{file_index}.html')
+              try:
+                  page.goto(url)
+                  time.sleep(30)
+              except:
+                  print('Loi truy cap')
               browser.close()
           "

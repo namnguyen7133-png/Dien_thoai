@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Cung Hoàng Đạo 2025 - Xem Tử Vi & Món Ăn Yêu Thích</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Orbitron:wght@500&family=Roboto:wght@300;400;500&display=swap');
+
+  :root {
+    --bg1: #0f0c29;
+    --bg2: #302b63;
+    --bg3: #24243e;
+    --accent: #ff6bd6;
+    --glow: 0 0 30px rgba(255,107,214,0.8);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #fff;
+    padding: 20px;
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
+    padding: 40px 30px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    text-align: center;
+    font-size: 3.5rem;
+    margin: 30px 0;
+    background: linear-gradient(90deg, #ff6bd6, #4ecdc4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: var(--glow);
+  }
+
+  .today {
+    text-align: center;
+    font-size: 1.6rem;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 15px;
+  }
+
+  .input-area {
+    text-align: center;
+    margin: 40px 0;
+  }
+
+  input[type="date"] {
+    padding: 15px 20px;
+    font-size: 1.3rem;
+    border: none;
+    border-radius: 15px;
+    background: rgba(255,255,255,0.9);
+    color: #333;
+  }
+
+  button {
+    padding: 15px 40px;
+    font-size: 1.3rem;
+    background: linear-gradient(45deg, #ff6bd6, #f368e0);
+    border: none;
+    border-radius: 15px;
+    color: white;
+    margin-left: 15px;
+    cursor: pointer;
+    box-shadow: var(--glow);
+    transition: 0.4s;
+  }
+
+  button:hover { transform: scale(1.1); }
+
+  .card {
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 30px;
+    margin-top: 30px;
+    box-shadow: var(--glow);
+    animation: fadeIn 1s ease;
+  }
+
+  @keyframes fadeIn { from {opacity:0; transform:translateY(30px);} to {opacity:1; transform:none;} }
+
+  .zodiac-big {
+    font-size: 7rem;
+    text-align: center;
+    margin: 20px 0;
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  .box {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 15px;
+    backdrop-filter: blur(5px);
+  }
+
+  .good { color: #4ecdc4; }
+  .bad { color: #ff6b6b; }
+  .food { color: #ffd93d; font-weight: bold; }
+
+  footer {
+    text-align: center;
+    margin-top: 60px;
+    opacity: 0.8;
+    font-size: 0.9rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>CUNG HOÀNG ĐẠO 2025</h1>
+
+  <div class="today" id="today"></div>
+
+  <div class="input-area">
+    <input type="date" id="dateInput">
+    <button onclick="xemCung()">XEM CUNG HOÀNG ĐẠO</button>
+  </div>
+
+  <div class="card" id="result" style="display:none;">
+    <div class="zodiac-big" id="icon"></div>
+    <h2 style="text-align:center;" id="tenCung"></h2>
+
+    <div class="info-grid>
+      <div class="box">
+        <strong>Thời gian:</strong> <span id="thoiGian"></span>
+      </div>
+      <div class="box">
+        <strong>Nghề nghiệp phù hợp:</strong> <span class="good" id="ngheTot"></span>
+      </div>
+      <div class="box">
+        <strong>Nghề nên tránh:</strong> <span class="bad" id="ngheTranh"></span>
+      </div>
+      <div class="box">
+        <strong>Món ăn yêu thích:</strong> <span class="food" id="monAn"></span>
+      </div>
+    </div>
+  </div>
+
+  <footer>© 2025 Cung Hoàng Đạo Việt Nam • Thiết kế đẹp lung linh</footer>
+</div>
+
+<script>
+// Dữ liệu cung hoàng đạo 2025 (đúng theo bảng bạn đưa
+const zodiacData = [
+  { en: "Aries",       vi: "Bạch Dương",   icon: "♈", start: "2025-03-21", end: "2025-04-19", ngheTot: "Bộ đội, nhà thám hiểm, bác sĩ ngoại khoa, nhà phát minh, nhân viên cứu hộ, vận động viên, nhân viên marketing…", ngheTranh: "Công việc yêu cầu sự kiên nhẫn như thư ký hoặc quản lý dự án dài hạn.", monAn: "món ăn cay và nồng như mì cay Hàn Quốc cấp độ 7, lẩu cay Tứ Xuyên" },
+  { en: "Taurus",      vi: "Kim Ngưu",     icon: "♉", start: "2025-04-20", end: "2025-05-20", ngheTot: "Kế toán, nhà giáo, kỹ sư, luật sư, thiết kế, đầu bếp (1/3 đầu bếp nổi tiếng là Kim Ngưu)", ngheTranh: "Nghề cạnh tranh cao, phóng viên, nhiếp ảnh", monAn: "Sữa, tom yum goong, các món súp thơm ngon" },
+  { en: "Gemini",      vi: "Song Tử",      icon: "♊", start: "2025-05-21", end: "2025-06-20", ngheTot: "PR, diễn viên, giáo viên, môi giới chứng khoán, truyền thông, tổng đài viên…", ngheTranh: "Công việc ổn định cao, lặp đi lặp lại", monAn: "Sinh tố bơ, bánh mì kẹp thịt/pate/trứng" },
+  { en: "Cancer",      vi: "Cự Giải",      icon: "♋", start: "2025-06-21", end: "2025-07-22", ngheTot: "Y tá, bác sĩ, nhân sự, giáo viên, khách sạn – nhà hàng, làm vườn…", ngheTranh: "Công việc thiếu đồng cảm, giải trí, ca sĩ", monAn: "Canh rong biển, salad rong nho, cháo hải sản nhẹ bụng" },
+  { en: "Leo",         vi: "Sư Tử",        icon: "♌", start: "2025-07-23", end: "2025-08-22", ngheTot: "CEO, diễn viên, hướng dẫn viên du lịch, thiết kế thời trang, kiến trúc nội thất", ngheTranh: "Công việc không được công nhận, nghiên cứu khoa học", monAn: "Phở khai vị, bò bít tết + rượu vang đỏ" },
+  { en: "Virgo",       vi: "Xử Nữ",        icon: "♍", start: "2025-08-23", end: "2025-09-22", ngheTot: "Trợ lý, dược sĩ, biên tập, nhà khoa học, nhà phê bình", ngheTranh: "Nghề tự do thiếu tổ chức, lãnh đạo giám đốc", monAn: "Dâu tây + bánh kem, sushi tinh tế" },
+  { en: "Libra",       vi: "Thiên Bình",   icon: "♎", start: "2025-09-23", end: "2025-10-22", ngheTot: "Luật sư, ngoại giao, nghệ thuật, thiết kế nội thất, trang sức", ngheTranh: "Công việc độc lập, tính toán tiền bạc", monAn: "Cá hồi nướng bơ tỏi, salad cân bằng hoàn hảo" },
+  { en: "Scorpio",     vi: "Thiên Yết",    icon: "♏", start: "2025-10-23", end: "2025-11-21", ngheTot: "Thám tử, luật sư, nhà khoa học, bác sĩ", ngheTranh: "Phục vụ, bồi bàn, công việc nhỏ nhặt", monAn: "Mì trộn chua ngọt cay, cơm cà ri Ấn Độ đậm đà" },
+  { en: "Sagittarius", vi: "Nhân Mã",      icon: "♐", start: "2025-11-22", end: "2025-12-21", ngheTot: "Huấn luyện viên, hướng dẫn viên du lịch, diễn viên hài, PR", ngheTranh: "Việc gò bó ít di chuyển, lập trình viên", monAn: "Sashimi, mì Ý cua sốt phô mai trứng muối" },
+  { en: "Capricorn",   vi: "Ma Kết",       icon: "♑", start: "2025-12-22", end: "2026-01-19", ngheTot: "Chính trị gia, quản lý, freelancer, họa sĩ, nhạc sĩ, nhà văn", ngheTranh: "Luật sư, kinh doanh rủi ro cao", monAn: "Thịt kho tàu, xúc xích, que xiên cá viên" },
+  { en: "Aquarius",    vi: "Bảo Bình",     icon: "♒", start: "2026-01-20", end: "2026-02-18", ngheTot: "Nhà khoa học, phát minh, nhạc sĩ, quảng cáo sáng tạo", ngheTranh: "Môi giới cổ phiếu, kinh doanh bất động sản", monAn: "Kem lạnh, salad bơ sữa chua mát lạnh" },
+  { en: "Pisces",      vi: "Song Ngư",     icon: "♓", start: "2026-02-19", end: "2026-03-20", ngheTot: "Nghệ sĩ, âm nhạc, nhiếp ảnh, y tá, bác sĩ thú y, nhà tâm lý học", ngheTranh: "Nhà thám hiểm, nhân viên văn phòng hành chính", monAn: "Bánh trung thu đậu xanh, bánh Soufflé phồng xốp mềm" }
+];
+
+// Hiển thị ngày hiện tại
+function showToday() {
+  const now = new Date();
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  document.getElementById("today").innerHTML = 
+    `<strong>Hôm nay:</strong> ${now.toLocaleDateString('vi-VN', options)}<br>
+     <strong>Cung hiện tại: <strong>${getZodiac(now).vi}</strong> ${getZodiac(now).icon}`;
+}
+showToday();
+
+// Tìm cung theo ngày
+function getZodiac(date) {
+  const d = date.toISOString().split('T')[0]; // YYYY-MM-DD
+  for (let z of zodiacData) {
+    if (d >= z.start && d <= z.end) return z;
+  }
+  // Nếu ngày ngoài khoảng (ví dụ 20/3/2026 trở đi) thì quay lại Aries
+  return zodiacData[0];
+}
+
+// Khi bấm nút Xem
+function xemCung() {
+  const input = document.getElementById("dateInput").value;
+  if (!input) {
+    alert("Vui lòng chọn ngày sinh!");
+    return;
+  }
+
+  const date = new Date(input);
+  const zodiac = getZodiac(date);
+
+  document.getElementById("icon").textContent = zodiac.icon;
+  document.getElementById("tenCung").textContent = `${zodiac.vi} (${zodiac.en})`;
+  document.getElementById("thoiGian").textContent = 
+    `${new Date(zodiac.start).toLocaleDateString('vi-VN')} → ${new Date(zodiac.end).toLocaleDateString('vi-VN')}`;
+  document.getElementById("ngheTot").textContent = zodiac.ngheTot;
+  document.getElementById("ngheTranh").textContent = zodiac.ngheTranh;
+  document.getElementById("monAn").textContent = zodiac.monAn;
+
+  document.getElementById("result").style.display = "block";
+  document.getElementById("result").scrollIntoView({ behavior: "smooth" });
+}
+
+// Tự động điền ngày hôm nay vào input
+window.onload = () => {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById("dateInput").value = today;
+  xemCung(); // hiển thị luôn cung hôm nay
+};
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

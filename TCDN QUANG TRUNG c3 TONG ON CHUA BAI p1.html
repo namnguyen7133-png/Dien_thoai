@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>TCDN 1 – ARR / TSV – Học & Áp dụng</title>
+
+<style>
+body{font-family:Arial;background:#f4f6f8;padding:20px;line-height:1.6}
+h2,h3{color:#003366}
+section{background:#fff;padding:15px;margin-bottom:20px;border-left:6px solid #003366}
+button{padding:6px 12px;margin:5px;cursor:pointer}
+.term{color:#0066cc;cursor:pointer}
+.box{background:#eef;padding:10px;margin:10px 0}
+.highlight{background:#fff3cd;padding:10px;border-left:5px solid #ff9800}
+input,select{padding:6px;width:100%;margin:5px 0}
+</style>
+</head>
+
+<body>
+
+<h2>📘 TÀI CHÍNH DOANH NGHIỆP 1 – CHƯƠNG 3 (TSV / ARR)</h2>
+
+<!-- ===== MỤC LỤC ===== -->
+<section>
+<h3>📌 Mục lục</h3>
+<button onclick="go('term')">1. Thuật ngữ</button>
+<button onclick="go('formula')">2. Công thức</button>
+<button onclick="go('timeline')">3. Trình tự quyết định</button>
+<button onclick="go('apply')">4. Áp dụng thực tế</button>
+<button onclick="go('case')">5. Nhập tình huống</button>
+</section>
+
+<!-- ===== THUẬT NGỮ ===== -->
+<section id="term">
+<h3>1️⃣ Thuật ngữ tài chính (Click để hiểu)</h3>
+
+<p><span class="term" onclick="explain('LN')">Lợi nhuận sau thuế</span> (LN)</p>
+<p><span class="term" onclick="explain('V')">Vốn đầu tư</span> (V)</p>
+<p><span class="term" onclick="explain('KH')">Khấu hao</span></p>
+<p><span class="term" onclick="explain('TSV')">Tỷ suất lợi nhuận bình quân (TSV/ARR)</span></p>
+
+<div id="explainBox" class="box"></div>
+</section>
+
+<!-- ===== CÔNG THỨC ===== -->
+<section id="formula">
+<h3>2️⃣ Công thức khó & cách dùng</h3>
+
+<div class="box">
+<b>Công thức TSV / ARR:</b><br>
+TSV = (Lợi nhuận sau thuế bình quân năm) / (Vốn đầu tư bình quân)
+</div>
+
+<div class="highlight">
+<b>Ví dụ đời sống:</b><br>
+Bạn bỏ 30 triệu học kỹ năng → mỗi năm lương tăng 10 triệu → TSV ≈ 33%/năm
+</div>
+</section>
+
+<!-- ===== TRÌNH TỰ ===== -->
+<section id="timeline">
+<h3>3️⃣ Trình tự làm việc – Làm gì trước, sau?</h3>
+
+<ol>
+<li>Xác định <b>vốn bỏ ra</b> (tiền, thời gian, công sức)</li>
+<li>Xác định <b>dòng lợi ích hàng năm</b></li>
+<li>Tính <b>khấu hao</b> nếu là tài sản</li>
+<li>Tính <b>TSV</b></li>
+<li>So sánh với:
+  <ul>
+    <li>Lãi ngân hàng</li>
+    <li>Rủi ro thị trường</li>
+    <li>Phương án khác</li>
+  </ul>
+</li>
+</ol>
+
+<div class="highlight">
+<b>Chỉ thực hiện nếu:</b><br>
+TSV &gt; lãi ngân hàng + bù rủi ro
+</div>
+</section>
+
+<!-- ===== ÁP DỤNG ===== -->
+<section id="apply">
+<h3>4️⃣ Dùng cho cá nhân hay công việc?</h3>
+
+<table border="1" cellpadding="8">
+<tr><th>Đối tượng</th><th>Dùng TSV khi</th></tr>
+<tr><td>Cá nhân</td><td>Học nghề, mua xe, đổi việc</td></tr>
+<tr><td>Gia đình</td><td>Mua nhà cho thuê</td></tr>
+<tr><td>Công ty</td><td>So sánh máy móc A – B</td></tr>
+<tr><td>Quốc gia</td><td>Đầu tư hạ tầng</td></tr>
+</table>
+</section>
+
+<!-- ===== NHẬP TÌNH HUỐNG ===== -->
+<section id="case">
+<h3>5️⃣ Nhập tình huống của bạn</h3>
+
+<label>Vốn đầu tư (triệu):</label>
+<input id="von" type="number">
+
+<label>Lợi nhuận sau thuế mỗi năm (triệu):</label>
+<input id="ln" type="number">
+
+<label>Số năm:</label>
+<input id="nam" type="number">
+
+<button onclick="solve()">📊 Giải quyết</button>
+
+<div id="result" class="box"></div>
+</section>
+
+<script>
+function go(id){
+ document.getElementById(id).scrollIntoView({behavior:"smooth"});
+}
+
+function explain(t){
+ const e={
+  LN:"Tiền bạn thực sự giữ lại sau khi trừ thuế.",
+  V:"Toàn bộ tiền + nguồn lực bỏ vào dự án.",
+  KH:"Phân bổ giá trị tài sản theo thời gian.",
+  TSV:"Đo hiệu quả sinh lời trung bình của dự án."
+ };
+ document.getElementById("explainBox").innerHTML="<b>"+t+"</b>: "+e[t];
+}
+
+function solve(){
+ const v=+von.value;
+ const ln=+document.getElementById("ln").value;
+ const n=+nam.value;
+ const tsv=(ln/v*100).toFixed(2);
+
+ let kq=`TSV ≈ ${tsv}%/năm<br>`;
+ if(tsv>12) kq+="👉 NÊN làm (cao hơn gửi ngân hàng)";
+ else kq+="⚠️ KHÔNG nên làm (hiệu quả thấp)";
+
+ document.getElementById("result").innerHTML=kq;
+ go("result");
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

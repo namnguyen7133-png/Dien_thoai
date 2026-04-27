@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Robot Thực Đơn Năm</title>
+
+<style>
+body{
+  font-family:Arial, sans-serif;
+  background:#f5f6f8;
+  margin:0;
+  padding:25px;
+  font-size:22px;
+  line-height:1.6;
+}
+
+h2{
+  font-size:32px;
+  margin-bottom:10px;
+}
+
+#trangThai{
+  font-size:24px;
+  font-weight:bold;
+  margin:15px 0;
+}
+
+.menu{
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+  margin-top:15px;
+}
+
+.title{
+  font-size:26px;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🍱 Robot thực đơn năm</h2>
+<div id="trangThai">Đang kiểm tra lịch…</div>
+<div id="menu"></div>
+
+<script>
+
+// ===== DANH SÁCH FILE =====
+
+// ÂM LỊCH
+const amFiles=[
+"am-lich/tet1.html",
+"am-lich/tet2.html",
+"am-lich/tet3.html",
+"am-lich/tet4.html",
+"am-lich/tet5.html",
+"am-lich/tet6.html",
+"am-lich/tet7.html",
+"am-lich/tet8.html",
+"am-lich/tet9.html",
+"am-lich/tet10.html",
+"am-lich/tet11.html",
+"am-lich/tet12.html",
+"am-lich/ram-5.html",
+"am-lich/mong1-5.html"
+];
+
+// NGŨ HÀNH TRĨ 17 NGÀY
+const leFiles=[
+"le-duong/ngu-hanh-tri-17.html"
+];
+
+// ÂM LỊCH THƯỜNG
+const vietFiles=[
+"am-lich/viet-thuong.html"
+];
+
+// ÍT BỆNH
+const itFiles=[
+"038%20Ch%E1%BA%BF%20%C4%91%E1%BB%99%20%C4%83n%20%C3%ADt%20b%E1%BB%87nh%20t%E1%BA%ADt%20.html"
+];
+
+
+// ===== ĐỌC FILE =====
+async function doc(url){
+  try{
+    const r=await fetch(url+"?t="+Date.now());
+    if(!r.ok) return null;
+    return await r.text();
+  }catch(e){return null}
+}
+
+// ===== TRÍCH MÓN =====
+function layMon(html){
+  const lines=html.split("\n");
+  let bat=false;
+  let mon=[];
+
+  for(const l of lines){
+    const t=l.trim();
+    const k=t.toLowerCase();
+
+    if(k.includes("thực đơn") || k.includes("món") || k.includes("ngày")){
+      bat=true;
+      continue;
+    }
+
+    if(bat){
+      if(t=="" || k.includes("tiền")) break;
+      mon.push(t.replace("-","").trim());
+    }
+  }
+  return mon;
+}
+
+// ===== HIỂN THỊ =====
+function hien(mon,title){
+  document.getElementById("menu").innerHTML=
+    "<div class='menu'><div class='title'>"+title+"</div>"
+    + mon.join("<br>") +
+    "</div>";
+}
+
+// ===== KIỂM TRA =====
+async function checkGroup(files,title,status){
+  for(const f of files){
+    const html=await doc(f);
+    if(!html) continue;
+
+    const mon=layMon(html);
+    if(mon.length){
+      document.getElementById("trangThai").innerHTML=status;
+      hien(mon,title);
+      return true;
+    }
+  }
+  return false;
+}
+
+// ===== ROBOT =====
+async function robot(){
+
+  // 1 ÂM LỊCH
+  if(await checkGroup(amFiles,"Thực đơn âm lịch","✔ Âm lịch")) return;
+
+  // 2 NGŨ HÀNH TRĨ
+  if(await checkGroup(leFiles,"Ngũ hành bệnh trĩ","✔ Ngũ hành trĩ")) return;
+
+  // 3 ÂM LỊCH THƯỜNG
+  if(await checkGroup(vietFiles,"Món Việt âm lịch","✔ Âm lịch thường")) return;
+
+  // 4 ÍT BỆNH
+  if(await checkGroup(itFiles,"Ít bệnh tật","✔ Ít bệnh")) return;
+
+  document.getElementById("trangThai").innerHTML="Không có lịch";
+}
+
+// chạy
+robot();
+setInterval(robot,5000);
+
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

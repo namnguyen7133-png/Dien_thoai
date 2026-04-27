@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toán Cổ: Đếm Người Làm Nhà</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            background-image: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            margin-top: 0;
+            font-size: 2.2rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            font-style: italic;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+        
+        .video-link {
+            display: inline-block;
+            background-color: #ff6b6b;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link:hover {
+            background-color: #ff5252;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            border-bottom: 3px solid #e74c3c;
+            padding-bottom: 10px;
+            margin-top: 35px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h2:before {
+            content: "→";
+            margin-right: 10px;
+            color: #e74c3c;
+            font-size: 1.5rem;
+        }
+        
+        .poem-problem {
+            background-color: #fff8e1;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 5px solid #ffb300;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .poem-problem strong {
+            color: #d84315;
+        }
+        
+        .calculator {
+            background-color: #f1f8ff;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.1);
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 16px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex-grow: 1;
+            min-width: 180px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .calculate-btn {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .calculate-btn:hover {
+            background-color: #27ae60;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .reset-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .example-btn {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .example-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .solution-container {
+            display: none;
+            margin-top: 30px;
+            animation: fadeIn 0.8s;
+        }
+        
+        .solution-container.show {
+            display: block;
+        }
+        
+        .solution-tabs {
+            display: flex;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 15px 25px;
+            background-color: #f8f9fa;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            margin-right: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #7f8c8d;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .tab:hover:not(.active) {
+            background-color: #e9ecef;
+        }
+        
+        .solution-content {
+            background-color: white;
+            border-radius: 0 8px 8px 8px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .method {
+            display: none;
+        }
+        
+        .method.active {
+            display: block;
+        }
+        
+        .method h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        
+        .calculation-steps {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-line;
+            line-height: 1.8;
+            border-left: 4px solid #2ecc71;
+        }
+        
+        .result-box {
+            background-color: #e8f5e9;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            border: 2px solid #4caf50;
+            display: none;
+        }
+        
+        .result-box.show {
+            display: block;
+            animation: pulse 1s;
+        }
+        
+        .result-box h3 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        
+        .result-item {
+            display: inline-block;
+            margin: 15px 25px;
+            padding: 15px 25px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            min-width: 180px;
+        }
+        
+        .result-item .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e74c3c;
+            display: block;
+        }
+        
+        .result-item .label {
+            font-size: 1.1rem;
+            color: #555;
+            margin-top: 5px;
+        }
+        
+        .explanation {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .method-card {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 5px solid #9c27b0;
+        }
+        
+        .method-card h4 {
+            margin-top: 0;
+            color: #7b1fa2;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 25px;
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 0 0 15px 15px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .result-item {
+                display: block;
+                margin: 15px 0;
+                width: 100%;
+            }
+            
+            .solution-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+                padding: 12px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Toán Cổ: "Đếm Người Làm Nhà"</h1>
+            <div class="subtitle">Bài toán cổ được diễn đạt bằng thơ với 3 cách giải khác nhau</div>
+            <a href="https://youtu.be/isEoUmG7aaU" target="_blank" class="video-link">Xem Video Gốc Trên YouTube</a>
+        </header>
+        
+        <div class="content">
+            <div class="poem-problem">
+                <strong>Đề bài toán cổ:</strong><br>
+                "Ba người ăn chung một bát cơm<br>
+                Bốn người ăn chung một đĩa cà<br>
+                Trăm bát, nghìn người thật đà<br>
+                Tính đi tính lại vẫn là ba trăm lẻ một"<br><br>
+                
+                <strong>Tóm tắt:</strong><br>
+                • 3 người ăn chung 1 bát cơm<br>
+                • 4 người ăn chung 1 đĩa cà muối<br>
+                • Tổng số bát đĩa dọn ra là 301 cái<br>
+                • <strong>Hỏi:</strong> Có bao nhiêu người làm nhà, bao nhiêu bát cơm và bao nhiêu đĩa cà muối?
+            </div>
+            
+            <h2>Máy Tính Giải Toán</h2>
+            <p>Nhập tổng số bát đĩa để giải bài toán (hoặc dùng giá trị mặc định 301):</p>
+            
+            <div class="calculator">
+                <div class="input-group">
+                    <label for="totalDishes">Tổng số bát đĩa (bát cơm + đĩa cà):</label>
+                    <input type="number" id="totalDishes" placeholder="Nhập số bát đĩa (ví dụ: 301)" value="301" min="1">
+                </div>
+                
+                <div class="buttons">
+                    <button class="calculate-btn" onclick="solveProblem()">Giải Bài Toán</button>
+                    <button class="example-btn" onclick="useDefault()">Dùng Ví Dụ 301</button>
+                    <button class="reset-btn" onclick="resetCalculator()">Đặt Lại</button>
+                </div>
+                
+                <div class="solution-container" id="solutionContainer">
+                    <div class="solution-tabs">
+                        <button class="tab active" onclick="showMethod(1)">Phương Pháp 1</button>
+                        <button class="tab" onclick="showMethod(2)">Phương Pháp 2</button>
+                        <button class="tab" onclick="showMethod(3)">Phương Pháp 3</button>
+                    </div>
+                    
+                    <div class="solution-content">
+                        <div class="method active" id="method1">
+                            <h3>Cách 1: Giải bằng phương trình đại số</h3>
+                            <p>Đây là cách giải toán học chính thống, dùng phương trình để tìm nghiệm.</p>
+                            <div class="calculation-steps" id="steps1">
+                                <!-- Nội dung sẽ được điền bằng JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="method" id="method2">
+                            <h3>Cách 2: Giải dân gian bằng quy tắc tam suất</h3>
+                            <p>Phương pháp dân gian dùng tỉ lệ và quy tắc tam suất để tính toán.</p>
+                            <div class="calculation-steps" id="steps2">
+                                <!-- Nội dung sẽ được điền bằng JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="method" id="method3">
+                            <h3>Cách 3: Giải dân gian bằng chia nhóm</h3>
+                            <p>Phương pháp chia thành các nhóm có tỉ lệ cố định để tính toán.</p>
+                            <div class="calculation-steps" id="steps3">
+                                <!-- Nội dung sẽ được điền bằng JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-box" id="resultBox">
+                    <h3>Kết Quả Bài Toán</h3>
+                    <div class="result-item">
+                        <span class="value" id="peopleResult">0</span>
+                        <span class="label">Số Người</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="value" id="riceBowlsResult">0</span>
+                        <span class="label">Bát Cơm</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="value" id="picklePlatesResult">0</span>
+                        <span class="label">Đĩa Cà Muối</span>
+                    </div>
+                    <p style="margin-top: 20px; font-style: italic; color: #666;">Tổng số bát đĩa: <span id="totalResult">0</span> (kiểm tra: <span id="checkResult">0</span>)</p>
+                </div>
+            </div>
+            
+            <h2>Chi Tiết 3 Cách Giải</h2>
+            
+            <div class="method-card">
+                <h4>1. Cách giải bằng lập phương trình (01:46)</h4>
+                <p>Gọi số người là x, số bát cơm là b, số đĩa cà là c.</p>
+                <p>Ta có: b = x/3, c = x/4 và b + c = 301</p>
+                <p>Phương trình: x/3 + x/4 = 301</p>
+                <p>Quy đồng mẫu số chung là 12: (4x + 3x)/12 = 301</p>
+                <p>Giải ra: 7x = 301 × 12 = 3612 → x = 3612 ÷ 7 = 516</p>
+            </div>
+            
+            <div class="method-card">
+                <h4>2. Cách giải dân gian 1 - Quy tắc tam suất (05:45)</h4>
+                <p>Tìm bội số chung nhỏ nhất của 3 và 4 là 12.</p>
+                <p>Xét 1 nhóm 12 người: dùng 4 bát cơm (12÷3) và 3 đĩa cà (12÷4).</p>
+                <p>Tổng bát đĩa cho 12 người: 4 + 3 = 7</p>
+                <p>Áp dụng quy tắc tam suất: 12 người → 7 bát đĩa, vậy ? người → 301 bát đĩa</p>
+                <p>Số người = (12 × 301) ÷ 7 = 3612 ÷ 7 = 516</p>
+            </div>
+            
+            <div class="method-card">
+                <h4>3. Cách giải dân gian 2 - Chia theo nhóm (06:52)</h4>
+                <p>Cũng xét nhóm 12 người dùng 7 bát đĩa.</p>
+                <p>Số nhóm = 301 ÷ 7 = 43 nhóm</p>
+                <p>Số người = 43 × 12 = 516 người</p>
+                <p>Số bát cơm = 43 × 4 = 172 bát</p>
+                <p>Số đĩa cà = 43 × 3 = 129 đĩa</p>
+            </div>
+            
+            <div class="explanation">
+                <h3>Tại Sao Có 3 Cách Giải?</h3>
+                <p>Bài toán cổ này minh họa cho sự linh hoạt trong tư duy toán học:</p>
+                <ul>
+                    <li><strong>Cách 1</strong> là phương pháp đại số chính thống, dùng cho giải toán học thuật.</li>
+                    <li><strong>Cách 2 và 3</strong> là phương pháp dân gian, dùng tỉ lệ và nhóm để tính nhẩm nhanh mà không cần phương trình phức tạp.</li>
+                    <li>Cả 3 cách đều cho cùng một kết quả, chứng tỏ toán học có nhiều con đường để đi đến đáp án đúng.</li>
+                </ul>
+                <p>Video giúp người xem làm quen với cách tư duy toán học linh hoạt, từ học thuật đến thực tế dân gian.</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Bài toán cổ "Đếm người làm nhà" - 3 phương pháp giải khác nhau</p>
+            <p>Thực hiện dựa trên video "3 cách giải bài toán cổ Đếm người làm nhà"</p>
+            <p style="margin-top: 15px; font-size: 0.9rem;">© 2023 - Toán học dân gian Việt Nam</p>
+        </footer>
+    </div>
+
+    <script>
+        // Hiển thị phương pháp được chọn
+        function showMethod(methodNumber) {
+            // Ẩn tất cả các phương pháp
+            document.querySelectorAll('.method').forEach(method => {
+                method.classList.remove('active');
+            });
+            
+            // Hiển thị phương pháp được chọn
+            document.getElementById(`method${methodNumber}`).classList.add('active');
+            
+            // Cập nhật tab active
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab')[methodNumber - 1].classList.add('active');
+        }
+        
+        // Giải bài toán
+        function solveProblem() {
+            const totalDishes = parseInt(document.getElementById('totalDishes').value);
+            
+            if (!totalDishes || totalDishes < 1) {
+                alert('Vui lòng nhập số bát đĩa hợp lệ (số nguyên dương)!');
+                return;
+            }
+            
+            // Tính toán kết quả
+            const people = (totalDishes * 12) / 7;
+            const riceBowls = people / 3;
+            const picklePlates = people / 4;
+            
+            // Kiểm tra xem kết quả có phải số nguyên không
+            if (people % 1 !== 0 || riceBowls % 1 !== 0 || picklePlates % 1 !== 0) {
+                alert(`Với tổng số bát đĩa là ${totalDishes}, bài toán không có nghiệm nguyên.\nHãy thử với số bát đĩa chia hết cho 7.`);
+                return;
+            }
+            
+            // Cập nhật kết quả
+            document.getElementById('peopleResult').textContent = people;
+            document.getElementById('riceBowlsResult').textContent = riceBowls;
+            document.getElementById('picklePlatesResult').textContent = picklePlates;
+            document.getElementById('totalResult').textContent = totalDishes;
+            document.getElementById('checkResult').textContent = `${riceBowls} + ${picklePlates} = ${riceBowls + picklePlates}`;
+            
+            // Hiển thị kết quả và giải pháp
+            document.getElementById('solutionContainer').classList.add('show');
+            document.getElementById('resultBox').classList.add('show');
+            
+            // Tạo nội dung chi tiết cho từng phương pháp
+            generateMethodDetails(totalDishes, people, riceBowls, picklePlates);
+            
+            // Cuộn đến phần kết quả
+            document.getElementById('solutionContainer').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Tạo chi tiết cho các phương pháp giải
+        function generateMethodDetails(totalDishes, people, riceBowls, picklePlates) {
+            const groups = totalDishes / 7;
+            
+            // Phương pháp 1: Phương trình
+            const steps1 = `Gọi số người là x\nSố bát cơm là x/3\nSố đĩa cà là x/4\n\nPhương trình:\nx/3 + x/4 = ${totalDishes}\n\nQuy đồng mẫu số 12:\n(4x + 3x)/12 = ${totalDishes}\n7x/12 = ${totalDishes}\n\nNhân cả hai vế với 12:\n7x = ${totalDishes} × 12 = ${totalDishes * 12}\n\nChia cả hai vế cho 7:\nx = ${totalDishes * 12} ÷ 7 = ${people}\n\nTính số bát và đĩa:\nSố bát cơm = ${people} ÷ 3 = ${riceBowls}\nSố đĩa cà = ${people} ÷ 4 = ${picklePlates}`;
+            
+            document.getElementById('steps1').textContent = steps1;
+            
+            // Phương pháp 2: Tam suất
+            const steps2 = `Tìm bội chung nhỏ nhất của 3 và 4 là 12\n\nMột nhóm 12 người cần:\n- Bát cơm: 12 ÷ 3 = 4 bát\n- Đĩa cà: 12 ÷ 4 = 3 đĩa\n- Tổng: 4 + 3 = 7 bát đĩa\n\nÁp dụng quy tắc tam suất:\n12 người → 7 bát đĩa\n? người → ${totalDishes} bát đĩa\n\nSố người = (12 × ${totalDishes}) ÷ 7\nSố người = ${12 * totalDishes} ÷ 7 = ${people}\n\nSố bát cơm = ${people} ÷ 3 = ${riceBowls}\nSố đĩa cà = ${people} ÷ 4 = ${picklePlates}`;
+            
+            document.getElementById('steps2').textContent = steps2;
+            
+            // Phương pháp 3: Chia nhóm
+            const steps3 = `Một nhóm 12 người cần 7 bát đĩa\n\nSố nhóm = Tổng bát đĩa ÷ 7\nSố nhóm = ${totalDishes} ÷ 7 = ${groups} nhóm\n\nSố người = Số nhóm × 12\nSố người = ${groups} × 12 = ${people}\n\nSố bát cơm = Số nhóm × 4\nSố bát cơm = ${groups} × 4 = ${riceBowls}\n\nSố đĩa cà = Số nhóm × 3\nSố đĩa cà = ${groups} × 3 = ${picklePlates}`;
+            
+            document.getElementById('steps3').textContent = steps3;
+        }
+        
+        // Dùng ví dụ mặc định
+        function useDefault() {
+            document.getElementById('totalDishes').value = 301;
+            solveProblem();
+        }
+        
+        // Đặt lại máy tính
+        function resetCalculator() {
+            document.getElementById('totalDishes').value = '';
+            document.getElementById('solutionContainer').classList.remove('show');
+            document.getElementById('resultBox').classList.remove('show');
+        }
+        
+        // Tự động giải ví dụ mặc định khi trang tải xong
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Trang giải toán cổ 'Đếm người làm nhà' đã sẵn sàng!");
+            // Tự động giải ví dụ mặc định sau 1 giây
+            setTimeout(useDefault, 500);
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

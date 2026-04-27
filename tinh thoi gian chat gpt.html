@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<title>Mã hóa – Giải mã Ngày Giờ từ Hoán Vị Số</title>
+<style>
+  body{font-family:Arial;background:#f5f7fa;padding:20px}
+  h2{color:#2c3e50}
+  input,button,textarea{padding:8px;margin:5px 0;width:100%}
+  button{background:#3498db;color:#fff;border:none;cursor:pointer}
+  button:hover{background:#2980b9}
+  textarea{height:180px}
+  .box{background:#fff;padding:15px;border-radius:8px;margin-bottom:20px}
+  .note{font-size:13px;color:#555}
+</style>
+</head>
+<body>
+
+<h2>🔐 Thuật toán mã hóa & giải mã ngày giờ (chuẩn 01/01/1900)</h2>
+<p class="note">Phiên bản đã sửa lỗi BigInt → Number. Mọi phép tính giây lớn được giữ bằng <b>BigInt</b>, chỉ chuyển sang Number khi nằm trong giới hạn an toàn của Date.</p>
+
+<div class="box">
+<b>Ô 1 – Nhập ngày</b>
+<input id="dateInput" type="date" value="2025-12-16">
+
+<b>Ô 2 – Nhập giờ (0–23)</b>
+<input id="hourInput" type="number" value="19" min="0" max="23">
+
+<button onclick="calcBaseSeconds()">Tính số giây gốc T₀</button>
+<p><b>T₀ (giây):</b> <span id="baseSeconds"></span></p>
+</div>
+
+<div class="box">
+<b>Ô 3 – Nhập số (1–15 chữ số) để hoán vị</b>
+<input id="permInput" value="311211">
+
+<button onclick="generatePermutations()">Hoán vị & xếp tăng dần</button>
+<textarea id="permResult"></textarea>
+</div>
+
+<div class="box">
+<button onclick="mergeNumbers()">Ghép số theo quy tắc đặc biệt</button>
+<textarea id="mergeResult"></textarea>
+</div>
+
+<div class="box">
+<button onclick="decodeToDate()">Giải mã → Ngày giờ tương lai</button>
+<textarea id="dateResult"></textarea>
+</div>
+
+<script>
+// ================= BƯỚC 1: TÍNH SỐ GIÂY TỪ 01/01/1900 =================
+let T0 = 0n; // BigInt
+function calcBaseSeconds(){
+  const date = new Date(document.getElementById('dateInput').value);
+  const hour = parseInt(document.getElementById('hourInput').value);
+  date.setHours(hour,0,0,0);
+  const base = new Date('1900-01-01T00:00:00Z');
+  T0 = BigInt(Math.floor((date - base)/1000));
+  document.getElementById('baseSeconds').innerText = T0.toString();
+}
+
+// ================= BƯỚC 2: HOÁN VỊ & SẮP XẾP =================
+function generatePermutations(){
+  const input = document.getElementById('permInput').value.trim();
+  const results = new Set();
+
+  function permute(str, l){
+    if(l===str.length-1){ results.add(str); return; }
+    for(let i=l;i<str.length;i++){
+      const arr = str.split('');
+      [arr[l],arr[i]]=[arr[i],arr[l]];
+      permute(arr.join(''), l+1);
+    }
+  }
+  permute(input,0);
+
+  const sorted = Array.from(results).sort((a,b)=>BigInt(a) < BigInt(b) ? -1 : 1);
+  document.getElementById('permResult').value = sorted.join('\n');
+}
+
+// ================= BƯỚC 3: GHÉP SỐ ĐẶC BIỆT =================
+let mergedNumbers = [];
+function mergeNumbers(){
+  const perms = document.getElementById('permResult').value.split('\n').filter(x=>x);
+  mergedNumbers = [];
+
+  perms.forEach(p=>{
+    const len = p.length;
+    const indexFromUnit = len + 1; // theo mô tả của bạn
+    const digits = T0.toString().split('');
+    const pos = digits.length - indexFromUnit;
+
+    if(pos < 0) return; // an toàn
+
+    const newDigit = (parseInt(digits[pos]) + 1) % 10;
+    digits[pos] = newDigit.toString();
+
+    const prefix = digits.slice(0,4).join('');
+    mergedNumbers.push(prefix + p);
+  });
+
+  document.getElementById('mergeResult').value = mergedNumbers.join('\n');
+}
+
+// ================= BƯỚC 4: GIẢI MÃ → NGÀY GIỜ =================
+function decodeToDate(){
+  const base = new Date('1900-01-01T00:00:00Z');
+  const result = [];
+
+  mergedNumbers.forEach(n=>{
+    const totalSeconds = BigInt(n);            // BigInt tuyệt đối
+    const millis = totalSeconds * 1000n;       // vẫn là BigInt
+
+    // Date chỉ nhận Number, nhưng ở đây giá trị vẫn < giới hạn an toàn
+    const d = new Date(base.getTime() + Number(millis));
+
+    result.push(n + ' → ' + d.toLocaleString('vi-VN'));
+  });
+
+  document.getElementById('dateResult').value = result.join('\n');
+}
+
+// ================= TEST NỘI BỘ (không ảnh hưởng UI) =================
+// Ví dụ kiểm tra nhanh
+// 3975111123 → 19/12/2025 05:32:03
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

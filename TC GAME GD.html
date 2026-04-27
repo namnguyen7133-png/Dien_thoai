@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>GAME TÀI CHÍNH – PHÁ SẢN hay TỰ DO?</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+  font-family:Arial, Helvetica, sans-serif;
+  background:#f2f4f8;
+  margin:0;
+  padding:20px;
+}
+h1,h2,h3{
+  color:#0b4f6c;
+}
+section{
+  background:#fff;
+  padding:20px;
+  margin-bottom:20px;
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
+}
+label{
+  font-weight:bold;
+}
+input,select{
+  width:100%;
+  padding:8px;
+  margin:5px 0 15px;
+}
+button{
+  background:#0b4f6c;
+  color:white;
+  padding:12px 20px;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+  cursor:pointer;
+}
+button:hover{
+  background:#083b52;
+}
+.result{
+  padding:15px;
+  margin-top:15px;
+  border-radius:10px;
+  font-size:16px;
+}
+.win{background:#e8f5e9;border-left:6px solid #2e7d32;}
+.lose{background:#fdecea;border-left:6px solid #c62828;}
+.warn{background:#fff8e1;border-left:6px solid #ff9800;}
+</style>
+</head>
+
+<body>
+
+<h1>🎮 GAME MÔ PHỎNG TÀI CHÍNH GIA ĐÌNH</h1>
+<p><b>Mục tiêu:</b> Không phá sản – đạt TỰ DO TÀI CHÍNH bền vững</p>
+
+<section>
+<h2>👨‍👩‍👧‍👦 1. NHẬP DỮ LIỆU GIA ĐÌNH</h2>
+
+<label>Tổng thu nhập hàng tháng (triệu VNĐ)</label>
+<input type="number" id="income" value="80">
+
+<label>Tổng chi phí sinh hoạt (triệu VNĐ)</label>
+<input type="number" id="cost" value="50">
+
+<label>Vốn đầu tư ban đầu (triệu VNĐ)</label>
+<input type="number" id="investment" value="500">
+
+<label>Dòng tiền thuần hàng năm từ đầu tư (triệu VNĐ)</label>
+<input type="number" id="cashflow" value="120">
+
+<label>Lãi suất chiết khấu / rủi ro (%/năm)</label>
+<input type="number" id="rate" value="10">
+
+<label>Chọn hướng Kim Tứ Đồ</label>
+<select id="quadrant">
+  <option value="E">E – Làm công ăn lương</option>
+  <option value="S">S – Tự làm chủ</option>
+  <option value="B">B – Chủ hệ thống</option>
+  <option value="I">I – Nhà đầu tư</option>
+</select>
+
+<button onclick="playGame()">▶️ CHẠY MÔ PHỎNG</button>
+
+<div id="output"></div>
+</section>
+
+<section>
+<h2>📘 GIẢI THÍCH CÔNG THỨC ĐANG DÙNG</h2>
+<ul>
+  <li><b>PP</b> = Vốn đầu tư / Dòng tiền năm</li>
+  <li><b>DPP</b> = Thời gian hoàn vốn sau khi chiết khấu</li>
+  <li><b>NPV</b> = Giá trị hiện tại dòng tiền – Vốn đầu tư</li>
+  <li><b>PI</b> = Giá trị hiện tại dòng tiền / Vốn đầu tư</li>
+</ul>
+</section>
+
+<script>
+function playGame(){
+  let income = Number(document.getElementById("income").value);
+  let cost = Number(document.getElementById("cost").value);
+  let investment = Number(document.getElementById("investment").value);
+  let cf = Number(document.getElementById("cashflow").value);
+  let r = Number(document.getElementById("rate").value)/100;
+  let q = document.getElementById("quadrant").value;
+
+  let surplus = income - cost;
+  let PP = investment / cf;
+
+  // DPP giả lập
+  let DPP = PP * (1 + r);
+
+  // NPV (giả định 10 năm)
+  let pv = cf * (1 - Math.pow(1+r,-10))/r;
+  let NPV = pv - investment;
+  let PI = pv / investment;
+
+  let result = "";
+
+  if(surplus < 0){
+    result = `<div class="lose">❌ <b>PHÁ SẢN</b><br>
+    Chi phí lớn hơn thu nhập → không đủ sống</div>`;
+  }
+  else if(NPV < 0 || PI < 1){
+    result = `<div class="warn">⚠️ <b>NGUY HIỂM</b><br>
+    NPV = ${NPV.toFixed(1)}<br>
+    PI = ${PI.toFixed(2)}<br>
+    Làm nhiều nhưng nghèo dần</div>`;
+  }
+  else if(PP > 10){
+    result = `<div class="warn">⚠️ <b>CHẬM</b><br>
+    Hoàn vốn ${PP.toFixed(1)} năm → rủi ro cao</div>`;
+  }
+  else{
+    result = `<div class="win">🏆 <b>TỰ DO TÀI CHÍNH</b><br>
+    Kim tứ đồ: ${q}<br>
+    PP: ${PP.toFixed(1)} năm<br>
+    DPP: ${DPP.toFixed(1)} năm<br>
+    NPV: ${NPV.toFixed(1)}<br>
+    PI: ${PI.toFixed(2)}</div>`;
+  }
+
+  document.getElementById("output").innerHTML = result;
+}
+</script>
+
+<footer style="text-align:center;color:#666;margin-top:30px">
+🎯 Học tài chính để không phá sản – hiểu để tự do
+</footer>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

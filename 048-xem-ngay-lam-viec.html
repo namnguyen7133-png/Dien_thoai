@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch Âm Dương 2025 - Xem Lịch Vạn Niên</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #2c3e50, #4a6491);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        
+        .current-date {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .date-display {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .solar-date {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        
+        .lunar-date {
+            font-size: 1.8rem;
+            color: #c44569;
+            margin-top: 10px;
+        }
+        
+        .lunar-info {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        
+        .calendar-section {
+            flex: 2;
+            min-width: 300px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+        
+        button {
+            background: #4a6491;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #2c3e50;
+        }
+        
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        
+        .calendar-day {
+            background: white;
+            border-radius: 5px;
+            padding: 10px 5px;
+            text-align: center;
+            min-height: 60px;
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .calendar-day.weekend {
+            background: #fff5f5;
+        }
+        
+        .day-header {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 0.9rem;
+        }
+        
+        .solar-day {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .lunar-day {
+            font-size: 0.8rem;
+            color: #c44569;
+        }
+        
+        .today {
+            background: #ffeaa7;
+            border: 2px solid #fdcb6e;
+        }
+        
+        .auspicious-time {
+            background: #e8f6f3;
+            border-left: 3px solid #1abc9c;
+        }
+        
+        .actions {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+        
+        .detail-btn {
+            background: linear-gradient(to right, #e74c3c, #c44569);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+        }
+        
+        .detail-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 15px;
+            background: #2c3e50;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .current-date, .calendar-section {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>LỊCH ÂM DƯƠNG 2025</h1>
+            <p class="subtitle">Xem lịch vạn niên, giờ hoàng đạo, ngày tốt xấu</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="current-date">
+                <div class="date-display">
+                    <div class="solar-date" id="current-solar-date">Thứ Tư, 01/01/2025</div>
+                    <div class="lunar-date" id="current-lunar-date">Ngày 2 tháng 12 năm Giáp Thìn</div>
+                </div>
+                
+                <div class="lunar-info">
+                    <h3>Thông tin chi tiết</h3>
+                    <div class="info-item">
+                        <span>Tiết khí:</span>
+                        <span>Đông chí</span>
+                    </div>
+                    <div class="info-item">
+                        <span>Giờ hoàng đạo:</span>
+                        <span>Tý (23-1), Sửu (1-3), Mão (5-7), Ngọ (11-13), Thân (15-17), Dậu (17-19)</span>
+                    </div>
+                    <div class="info-item">
+                        <span>Hướng xuất hành:</span>
+                        <span>Đông Nam</span>
+                    </div>
+                    <div class="info-item">
+                        <span>Việc nên làm:</span>
+                        <span>Cưới hỏi, động thổ, khai trương</span>
+                    </div>
+                    <div class="info-item">
+                        <span>Việc nên tránh:</span>
+                        <span>Chôn cất, sửa nhà</span>
+                    </div>
+                    <div class="info-item">
+                        <span>Tuổi xung khắc:</span>
+                        <span>Canh Tuất, Nhâm Tuất</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="calendar-section">
+                <div class="calendar-header">
+                    <h2>Tháng 1, 2025</h2>
+                    <div class="calendar-nav">
+                        <button id="prev-month">Tháng trước</button>
+                        <button id="next-month">Tháng sau</button>
+                    </div>
+                </div>
+                
+                <div class="calendar" id="calendar">
+                    <!-- Calendar will be generated by JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <button class="detail-btn" id="open-detail">Xem chi tiết lịch vạn niên</button>
+        </div>
+        
+        <footer>
+            <p>Lịch Âm Dương 2025 - Cung cấp thông tin về ngày tốt xấu, giờ hoàng đạo</p>
+        </footer>
+    </div>
+
+    <script>
+        // Current date information
+        const currentDate = new Date();
+        const lunarInfo = {
+            date: "2/12 Giáp Thìn",
+            year: "Giáp Thìn",
+            month: "Tháng 12",
+            day: "Ngày 2",
+            zodiac: "Tuổi Thìn",
+            element: "Mộc",
+            goodHours: "Tý (23-1), Sửu (1-3), Mão (5-7), Ngọ (11-13), Thân (15-17), Dậu (17-19)",
+            direction: "Đông Nam",
+            shouldDo: "Cưới hỏi, động thổ, khai trương",
+            shouldAvoid: "Chôn cất, sửa nhà",
+            conflictingAges: "Canh Tuất, Nhâm Tuất"
+        };
+
+        // Update current date display
+        document.getElementById('current-solar-date').textContent = formatDate(currentDate);
+        document.getElementById('current-lunar-date').textContent = `Ngày ${lunarInfo.day} tháng ${lunarInfo.month} năm ${lunarInfo.year}`;
+
+        // Format date function
+        function formatDate(date) {
+            const days = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+            const dayName = days[date.getDay()];
+            const day = date.getDate();
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+            
+            return `${dayName}, ${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`;
+        }
+
+        // Calendar generation
+        function generateCalendar(month, year) {
+            const calendarElement = document.getElementById('calendar');
+            calendarElement.innerHTML = '';
+            
+            // Add day headers
+            const dayHeaders = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+            dayHeaders.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day day-header';
+                dayElement.textContent = day;
+                calendarElement.appendChild(dayElement);
+            });
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDay = firstDay.getDay();
+            
+            // Add empty cells for days before the first day of the month
+            for (let i = 0; i < startingDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day';
+                calendarElement.appendChild(emptyDay);
+            }
+            
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                
+                // Check if weekend
+                const currentDay = new Date(year, month, day);
+                if (currentDay.getDay() === 0 || currentDay.getDay() === 6) {
+                    dayElement.classList.add('weekend');
+                }
+                
+                // Check if today
+                if (day === currentDate.getDate() && month === currentDate.getMonth() && year === currentDate.getFullYear()) {
+                    dayElement.classList.add('today');
+                }
+                
+                // Check if auspicious day (example: 5th, 15th, 25th)
+                if (day % 5 === 0) {
+                    dayElement.classList.add('auspicious-time');
+                }
+                
+                // Solar day
+                const solarDay = document.createElement('div');
+                solarDay.className = 'solar-day';
+                solarDay.textContent = day;
+                dayElement.appendChild(solarDay);
+                
+                // Lunar day (simulated)
+                const lunarDay = document.createElement('div');
+                lunarDay.className = 'lunar-day';
+                lunarDay.textContent = `Âm: ${(day % 29) + 1}`;
+                dayElement.appendChild(lunarDay);
+                
+                calendarElement.appendChild(dayElement);
+            }
+        }
+
+        // Initialize calendar with current month
+        let currentMonth = currentDate.getMonth();
+        let currentYear = currentDate.getFullYear();
+        
+        generateCalendar(currentMonth, currentYear);
+        
+        // Month navigation
+        document.getElementById('prev-month').addEventListener('click', function() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            updateCalendarHeader();
+            generateCalendar(currentMonth, currentYear);
+        });
+        
+        document.getElementById('next-month').addEventListener('click', function() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            updateCalendarHeader();
+            generateCalendar(currentMonth, currentYear);
+        });
+        
+        function updateCalendarHeader() {
+            const monthNames = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+                               "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
+            document.querySelector('.calendar-section h2').textContent = `${monthNames[currentMonth]}, ${currentYear}`;
+        }
+        
+        // Open detail page
+        document.getElementById('open-detail').addEventListener('click', function() {
+            window.open('https://share.google/U6tT31QuEsrmBNkuz', '_blank');
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

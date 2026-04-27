@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tính Giá Bán Bánh Mỳ / Bánh Theo Ký</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f7f7f7;
+    padding: 20px;
+}
+.box {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+h2 {
+    text-align: center;
+    color: #d35400;
+}
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 10px;
+    background: #e67e22;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.result {
+    margin-top: 15px;
+    background: #f0f3f4;
+    padding: 10px;
+    border-radius: 5px;
+}
+.note {
+    font-size: 13px;
+    color: #555;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+<h2>🍞 TÍNH GIÁ BÁN BÁNH (GRAM / KG)</h2>
+
+<label>1️⃣ Khối lượng thành phẩm / mẻ (gram)</label>
+<input type="number" id="outputGram" placeholder="Ví dụ: 200">
+
+<label>2️⃣ Tổng tiền nguyên liệu + bao bì / mẻ (đ)</label>
+<input type="number" id="costBatch" placeholder="Ví dụ: 15000">
+
+<label>3️⃣ Khách mua bao nhiêu gram?</label>
+<input type="number" id="sellGram" placeholder="Ví dụ: 1000">
+
+<label>4️⃣ Nhân giá bán (x2 hoặc x3)</label>
+<input type="number" id="markup" placeholder="Ví dụ: 2 hoặc 3">
+
+<button onclick="calculate()">TÍNH GIÁ</button>
+
+<div class="result" id="result"></div>
+
+<p class="note">
+✔ Giá vốn = nguyên liệu + bao bì<br>
+✔ Chưa gồm điện, nước, công, mặt bằng<br>
+✔ Quy mô nhỏ thường bán giá vốn × 2 hoặc × 3
+</p>
+
+</div>
+
+<script>
+function calculate() {
+    let outputGram = parseFloat(document.getElementById("outputGram").value);
+    let costBatch = parseFloat(document.getElementById("costBatch").value);
+    let sellGram = parseFloat(document.getElementById("sellGram").value);
+    let markup = parseFloat(document.getElementById("markup").value);
+
+    if (isNaN(outputGram) || isNaN(costBatch) || isNaN(sellGram) || isNaN(markup)) {
+        alert("Vui lòng nhập đầy đủ dữ liệu!");
+        return;
+    }
+
+    let costPerGram = costBatch / outputGram;
+    let costSell = costPerGram * sellGram;
+    let sellPrice = costSell * markup;
+
+    document.getElementById("result").innerHTML = `
+        <b>📌 Giá vốn / gram:</b> ${costPerGram.toFixed(0)} đ<br>
+        <b>📌 Giá vốn ${sellGram}g:</b> ${costSell.toFixed(0)} đ<br><br>
+
+        <b>💰 Giá bán đề xuất:</b> ${sellPrice.toFixed(0)} đ<br>
+        <b>📦 Giá bán / kg:</b> ${(sellPrice * 1000 / sellGram).toFixed(0)} đ
+    `;
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

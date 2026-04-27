@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Phân tích ưu đãi Shopee Affiliate</title>
+<style>
+    body { font-family: Arial; padding: 20px; background: #f7f7f7; }
+    textarea { width: 100%; height: 300px; padding: 10px; }
+    button { padding: 10px 20px; margin: 10px 0; font-size: 16px; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #fff; }
+    th, td { border: 1px solid #ccc; padding: 8px; }
+    th { background: #e3e3e3; }
+</style>
+</head>
+
+<body>
+
+<h2>Nhập dữ liệu ưu đãi (dạng văn bản - không cần CSV)</h2>
+<p>Dán toàn bộ đoạn dữ liệu theo đúng dạng bạn gửi vào ô dưới:</p>
+
+<textarea id="rawInput" placeholder="Dán dữ liệu vào đây..."></textarea>
+
+<button onclick="parseData()">Phân tích dữ liệu</button>
+
+<h2>Kết quả phân tích</h2>
+<table id="resultTable">
+    <thead>
+        <tr>
+            <th>Tên ưu đãi</th>
+            <th>Thời gian ưu đãi</th>
+            <th>Tỉ lệ hoa hồng</th>
+            <th>Link ưu đãi</th>
+            <th>Tracking link</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+function parseData() {
+    const input = document.getElementById("rawInput").value.trim();
+    if (!input) { alert("Bạn chưa nhập dữ liệu!"); return; }
+
+    const rows = input.split(/\n(?=[^",]+\,"|[^,]+,")/); 
+    // Tách theo dòng mới nhưng giữ nhóm dữ liệu
+
+    const tbody = document.querySelector("#resultTable tbody");
+    tbody.innerHTML = "";
+
+    rows.forEach(row => {
+        // Tách theo dấu phẩy, nhưng KHÔNG tách bên trong "" chứa xuống dòng
+        let cols = row.match(/(".*?"|[^,]+)/g);
+
+        if (!cols || cols.length < 5) return;
+
+        cols = cols.map(c => c.replace(/^"|"$/g, "").trim());
+
+        const tr = document.createElement("tr");
+        cols.forEach(c => {
+            const td = document.createElement("td");
+            td.textContent = c;
+            tr.appendChild(td);
+        });
+
+        tbody.appendChild(tr);
+    });
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

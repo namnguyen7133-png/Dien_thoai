@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Thống kê chữ cái & độ 0–359</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 16px; }
+    button { margin: 4px; }
+    .hidden { display: none; }
+    #result { border: 1px dashed #999; padding: 8px; margin-top: 12px; min-height: 60px; }
+  </style>
+</head>
+<body>
+
+<h3>Tra cứu chữ cái theo Đầu – Giữa – Cuối</h3>
+
+<input id="inputWord" type="text" placeholder="Nhập từ (ví dụ: mười)" />
+<br/>
+<button onclick="searchPosition('start')">Đầu</button>
+<button onclick="searchPosition('middle')">Giữa</button>
+<button onclick="searchPosition('end')">Cuối</button>
+<button onclick="searchAllLetters()">Tìm tất cả chữ trong 1 từ</button>
+<button onclick="findNextDegree()">Tìm tiếp</button>
+
+<!-- Giấu hướng dẫn và phân tích -->
+<div class="hidden" id="guide"></div>
+<div class="hidden" id="analysis"></div>
+
+<h4>Nơi chứa kết quả</h4>
+<div id="result"></div>
+
+<script>
+// Bảng chữ cái tiếng Việt (đơn giản hóa)
+const vietnameseLetters = [
+  'a','ă','â','b','c','d','đ','e','ê','g','h','i','k','l','m','n','o','ô','ơ','p','q','r','s','t','u','ư','v','x','y'
+];
+
+// Gán độ 0–359 cho chữ cái
+const letterDegrees = {};
+vietnameseLetters.forEach((ch, idx) => {
+  letterDegrees[ch] = Math.floor(idx * (360 / vietnameseLetters.length));
+});
+
+// Từ điển ví dụ
+const dictionary = [
+  'một','mười','mưa','nồi','cơm','điện','muối','mía','mận','mít'
+];
+
+let usedDegrees = new Set();
+let foundWords = new Set();
+let currentDegree = 0;
+
+function normalize(str) {
+  return str.toLowerCase();
+}
+
+function extractLetters(word, pos) {
+  if (!word) return [];
+  const chars = [...word];
+
+  if (pos === 'start') return [chars[0]];
+  if (pos === 'end') return [chars[chars.length - 1]];
+  if (pos === 'middle') {
+    return chars.filter(c => 'aeiouăâêôơư'.includes(c));
+  }
+  return [];
+}
+
+function searchPosition(pos) {
+  const input = normalize(document.getElementById('inputWord').value);
+  const letters = extractLetters(input, pos);
+  findWordsByLetters(letters);
+}
+
+function searchAllLetters() {
+  const input = normalize(document.getElementById('inputWord').value);
+  const letters = [...new Set([...input])];
+  findWordsByLetters(letters);
+}
+
+function findWordsByLetters(letters) {
+  let output = [];
+
+  dictionary.forEach(word => {
+    letters.forEach(letter => {
+      const deg = letterDegrees[letter];
+      if (deg !== undefined && !usedDegrees.has(deg)) {
+        output.push(`Chữ: ${letter} – Độ: ${deg} – Từ: ${word}`);
+        usedDegrees.add(deg);
+        foundWords.add(word);
+      }
+    });
+  });
+
+  updateResult(output);
+}
+
+function findNextDegree() {
+  let deg;
+  do {
+    deg = currentDegree++;
+  } while (usedDegrees.has(deg) && currentDegree < 360);
+
+  usedDegrees.add(deg);
+
+  updateResult([
+    `Độ tiếp theo: ${deg}`,
+    `Tổng từ đã tìm: ${foundWords.size}`,
+    `Từ còn lại: ${dictionary.length - foundWords.size}`
+  ]);
+}
+
+function updateResult(lines) {
+  const div = document.getElementById('result');
+  div.innerHTML += lines.join('<br>') + '<br>';
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

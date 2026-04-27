@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tính Giá Bán Shopee Không Bị Lỗ</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f7;
+    padding: 20px;
+}
+.box {
+    max-width: 650px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+h2 {
+    text-align: center;
+    color: #e84393;
+}
+label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+}
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 12px;
+    background: #0984e3;
+    color: white;
+    border: none;
+    font-size: 16px;
+    border-radius: 6px;
+}
+.result {
+    margin-top: 15px;
+    background: #ecf0f1;
+    padding: 12px;
+    border-radius: 6px;
+}
+.good { color: green; font-weight: bold; }
+.warn { color: orange; font-weight: bold; }
+.bad { color: red; font-weight: bold; }
+.note {
+    font-size: 13px;
+    color: #555;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+<h2>🛒 TÍNH GIÁ BÁN SHOPEE KHÔNG BỊ LỖ</h2>
+
+<label>1️⃣ Giá vốn sản phẩm (đ)</label>
+<input type="number" id="cost" placeholder="Ví dụ: 50000">
+
+<label>2️⃣ Lợi nhuận mong muốn (%)</label>
+<input type="number" id="profitRate" value="10">
+
+<hr>
+
+<label>3️⃣ Phí dịch vụ Shopee (%)</label>
+<input type="number" id="serviceFee" value="6">
+
+<label>4️⃣ Phí thanh toán (%)</label>
+<input type="number" id="paymentFee" value="4">
+
+<label>5️⃣ Thuế + rủi ro (%)</label>
+<input type="number" id="taxRisk" value="3">
+
+<hr>
+
+<label>6️⃣ Bao bì / đóng gói (đ)</label>
+<input type="number" id="packing" value="2000">
+
+<label>7️⃣ Marketing / quảng cáo (đ)</label>
+<input type="number" id="marketing" value="0">
+
+<label>8️⃣ Nhân sự / chi phí khác (đ)</label>
+<input type="number" id="other" value="0">
+
+<button onclick="calculate()">TÍNH GIÁ BÁN</button>
+
+<div class="result" id="result"></div>
+
+<p class="note">
+✔ Tổng phí Shopee thường: 12% – 15%<br>
+⚠ Giá bán thấp hơn gợi ý → dễ lỗ<br>
+❌ Không tính phí = bán càng nhiều càng âm
+</p>
+</div>
+
+<script>
+function calculate() {
+    let cost = parseFloat(document.getElementById("cost").value);
+    let profitRate = parseFloat(document.getElementById("profitRate").value) / 100;
+
+    let serviceFee = parseFloat(document.getElementById("serviceFee").value) / 100;
+    let paymentFee = parseFloat(document.getElementById("paymentFee").value) / 100;
+    let taxRisk = parseFloat(document.getElementById("taxRisk").value) / 100;
+
+    let packing = parseFloat(document.getElementById("packing").value);
+    let marketing = parseFloat(document.getElementById("marketing").value);
+    let other = parseFloat(document.getElementById("other").value);
+
+    if ([cost, profitRate, serviceFee, paymentFee, taxRisk, packing, marketing, other].some(isNaN)) {
+        alert("Vui lòng nhập đầy đủ dữ liệu!");
+        return;
+    }
+
+    let wantReceive = cost * (1 + profitRate);
+    let fixedCost = packing + marketing + other;
+    let totalFeeRate = serviceFee + paymentFee + taxRisk;
+
+    let sellPrice = (wantReceive + fixedCost) / (1 - totalFeeRate);
+    let realProfit = sellPrice * (1 - totalFeeRate) - cost - fixedCost;
+
+    let status = "";
+    if (realProfit > cost * 0.1) status = "<span class='good'>✅ Lãi tốt</span>";
+    else if (realProfit > 0) status = "<span class='warn'>⚠ Lãi thấp</span>";
+    else status = "<span class='bad'>❌ BỊ LỖ</span>";
+
+    document.getElementById("result").innerHTML = `
+        <b>📌 Giá bán Shopee đề xuất:</b> ${sellPrice.toFixed(0)} đ<br>
+        <b>📌 Tổng phí Shopee (%):</b> ${(totalFeeRate*100).toFixed(1)}%<br>
+        <b>📌 Lãi thực nhận:</b> ${realProfit.toFixed(0)} đ<br><br>
+        ${status}
+    `;
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

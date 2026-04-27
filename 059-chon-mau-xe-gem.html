@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚗 Công Cụ Tra Cứu Màu Hợp & Giá Xe</title>
+    <style>
+        /* CSS cho Mobile-First Design */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f4f8; /* Nền nhẹ nhàng */
+            color: #333;
+            font-size: 18px; /* Chữ to dễ xem */
+        }
+        h1 {
+            color: #007bff; /* Màu tiêu đề nổi bật */
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 2em; /* To hơn nữa cho tiêu đề */
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+            font-size: 1.1em;
+        }
+        input[type="text"], input[type="number"], input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box; /* Đảm bảo padding không làm tràn ô */
+            font-size: 1.1em;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #28a745; /* Màu nút nổi bật */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #result-container {
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px dashed #ffc107; /* Viền nổi bật cho kết quả */
+            border-radius: 8px;
+            background-color: #fffbe6;
+        }
+        .color-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .color-box {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #333;
+            margin-right: 15px;
+            border-radius: 4px;
+        }
+        .color-score {
+            font-size: 1.2em;
+            color: #dc3545; /* Màu điểm nổi bật */
+            margin-left: auto;
+        }
+        p {
+            line-height: 1.5;
+        }
+
+        /* Đảm bảo không mất chữ, không chèn hàng */
+        .input-group, .color-item {
+            white-space: normal; /* Cho phép chữ xuống hàng */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🛠️ Tra Cứu Màu Hợp Xe Cộ Theo Phong Thủy</h1>
+
+        <div class="input-group">
+            <label for="owner-name">Tên Người Chủ Giấy Tờ (Ví dụ: NAM, TRUNG):</label>
+            <input type="text" id="owner-name" placeholder="Nhập tên người chủ">
+        </div>
+        
+        <div class="input-group">
+            <label for="dob">Ngày Tháng Năm Sinh (D/M/Y) (Ví dụ: 03/03/1971):</label>
+            <input type="text" id="dob" placeholder="Nhập Ngày/Tháng/Năm, VD: 3/3/1971">
+        </div>
+        <div class="input-group">
+            <label for="car-name">Tên Loại Xe (Ví dụ: SRC, SH):</label>
+            <input type="text" id="car-name" placeholder="Nhập tên loại xe">
+        </div>
+
+        <div class="input-group">
+            <label for="cylinder-capacity">Dung Tích Xi-lanh (cc) (Ví dụ: 110, 150):</label>
+            <input type="number" id="cylinder-capacity" placeholder="Nhập dung tích xi-lanh">
+        </div>
+
+        <div class="input-group">
+            <label for="battery-info">Dùng Ắc Quy & Mã Số (Ví dụ: YB9-B):</label>
+            <input type="text" id="battery-info" placeholder="Nhập thông tin ắc quy và mã số">
+        </div>
+
+        <button onclick="calculateColors()">🔍 Bắt Đầu Tra Cứu</button>
+
+        <div id="result-container">
+            <p>🌟 **KẾT QUẢ TRA CỨU:**</p>
+            <div id="price-analysis"></div> <div id="analysis-steps"></div>
+            <p style="margin-top: 15px;">🌈 **CÁC MÀU PHÙ HỢP NHẤT:**</p>
+            <div id="final-colors"></div>
+        </div>
+    </div>
+
+    <script>
+        // Bảng quy đổi ký tự (giữ nguyên từ mã gốc)
+        const CHAR_MAP = {
+            // ... (Bảng CHAR_MAP và CHAR_MAP_REVERSE giữ nguyên)
+            'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7, 'H': 8, 'I': 9, 'J': 10, 'K': 11, 'L': 12,
+            'M': 1, 'N': 2, 'O': 3, 'P': 4, 'R': 5, 'S': 6, 'T': 7, 'U': 8, 'V': 9, 'W': 10, 'X': 11, 'Y': 12,
+            'Á': 1, 'À': 1, 'Ả': 1, 'Ã': 1, 'Ạ': 1, 'Ă': 1, 'Ằ': 1, 'Ắ': 1, 'Ẳ': 1, 'Ẵ': 1, 'Ặ': 1, 'Â': 1, 'Ầ': 1, 'Ấ': 1, 'Ẩ': 1, 'Ẫ': 1, 'Ậ': 1, 'a': 1, 'á': 1, 'à': 1, 'ả': 1, 'ã': 1, 'ạ': 1, 'ă': 1, 'ằ': 1, 'ắ': 1, 'ẳ': 1, 'ẵ': 1, 'ặ': 1, 'â': 1, 'ầ': 1, 'ấ': 1, 'ẩ': 1, 'ẫ': 1, 'ậ': 1,
+            'E': 5, 'É': 5, 'È': 5, 'Ẻ': 5, 'Ẽ': 5, 'Ẹ': 5, 'Ê': 5, 'Ề': 5, 'Ế': 5, 'Ể': 5, 'Ễ': 5, 'Ệ': 5, 'e': 5, 'é': 5, 'è': 5, 'ẻ': 5, 'ẽ': 5, 'ẹ': 5, 'ê': 5, 'ề': 5, 'ế': 5, 'ể': 5, 'ễ': 5, 'ệ': 5,
+            'I': 9, 'Í': 9, 'Ì': 9, 'Ỉ': 9, 'Ĩ': 9, 'Ị': 9, 'i': 9, 'í': 9, 'ì': 9, 'ỉ': 9, 'ĩ': 9, 'ị': 9,
+            'O': 3, 'Ó': 3, 'Ò': 3, 'Ỏ': 3, 'Õ': 3, 'Ọ': 3, 'Ô': 3, 'Ồ': 3, 'Ố': 3, 'Ổ': 3, 'Ỗ': 3, 'Ộ': 3, 'Ơ': 3, 'Ờ': 3, 'Ớ': 3, 'Ở': 3, 'Ỡ': 3, 'Ợ': 3, 'o': 3, 'ó': 3, 'ò': 3, 'ỏ': 3, 'õ': 3, 'ọ': 3, 'ô': 3, 'ồ': 3, 'ố': 3, 'ổ': 3, 'ỗ': 3, 'ộ': 3, 'ơ': 3, 'ờ': 3, 'ớ': 3, 'ở': 3, 'ỡ': 3, 'ợ': 3,
+            'U': 8, 'Ú': 8, 'Ù': 8, 'Ủ': 8, 'Ũ': 8, 'Ụ': 8, 'Ư': 8, 'Ừ': 8, 'Ứ': 8, 'Ử': 8, 'Ữ': 8, 'Ự': 8, 'u': 8, 'ú': 8, 'ù': 8, 'ủ': 8, 'ũ': 8, 'ụ': 8, 'ư': 8, 'ừ': 8, 'ứ': 8, 'ử': 8, 'ữ': 8, 'ự': 8,
+            'Y': 12, 'Ý': 12, 'Ỳ': 12, 'Ỷ': 12, 'Ỹ': 12, 'Ỵ': 12, 'y': 12, 'ý': 12, 'ỳ': 12, 'ỷ': 12, 'ỹ': 12, 'ỵ': 12,
+            'b': 2, 'c': 3, 'd': 4, 'f': 6, 'g': 7, 'h': 8, 'j': 10, 'k': 11, 'l': 12, 'm': 1, 'n': 2, 'p': 4, 'r': 5, 's': 6, 't': 7, 'v': 9, 'w': 10, 'x': 11,
+        };
+
+        const CHAR_MAP_REVERSE = {
+            'A': 12, 'B': 11, 'C': 10, 'D': 9, 'E': 8, 'F': 7, 'G': 6, 'H': 5, 'I': 4, 'J': 3, 'K': 2, 'L': 1, 'M': 12, 'N': 11, 'O': 10, 'P': 9, 'R': 8, 'S': 7, 'T': 6, 'U': 5, 'V': 4, 'W': 3, 'X': 2, 'Y': 1,
+            'a': 12, 'b': 11, 'c': 10, 'd': 9, 'e': 8, 'f': 7, 'g': 6, 'h': 5, 'i': 4, 'j': 3, 'k': 2, 'l': 1, 'm': 12, 'n': 11, 'o': 10, 'p': 9, 'r': 8, 's': 7, 't': 6, 'u': 5, 'v': 4, 'w': 3, 'x': 2, 'y': 1,
+            'Á': 12, 'À': 12, 'Ả': 12, 'Ã': 12, 'Ạ': 12, 'Ă': 12, 'Ằ': 12, 'Ắ': 12, 'Ẳ': 12, 'Ẵ': 12, 'Ặ': 12, 'Â': 12, 'Ầ': 12, 'Ấ': 12, 'Ẩ': 12, 'Ẫ': 12, 'Ậ': 12, 'á': 12, 'à': 12, 'ả': 12, 'ã': 12, 'ạ': 12, 'ă': 12, 'ằ': 12, 'ắ': 12, 'ẳ': 12, 'ẵ': 12, 'ặ': 12, 'â': 12, 'ầ': 12, 'ấ': 12, 'ẩ': 12, 'ẫ': 12, 'ậ': 12,
+            'E': 8, 'É': 8, 'È': 8, 'Ẻ': 8, 'Ẽ': 8, 'Ẹ': 8, 'Ê': 8, 'Ề': 8, 'Ế': 8, 'Ể': 8, 'Ễ': 8, 'Ệ': 8, 'e': 8, 'é': 8, 'è': 8, 'ẻ': 8, 'ẽ': 8, 'ẹ': 8, 'ê': 8, 'ề': 8, 'ế': 8, 'ể': 8, 'ễ': 8, 'ệ': 8,
+            'I': 4, 'Í': 4, 'Ì': 4, 'Ỉ': 4, 'Ĩ': 4, 'Ị': 4, 'i': 4, 'í': 4, 'ì': 4, 'ỉ': 4, 'ĩ': 4, 'ị': 4,
+            'O': 10, 'Ó': 10, 'Ò': 10, 'Ỏ': 10, 'Õ': 10, 'Ọ': 10, 'Ô': 10, 'Ồ': 10, 'Ố': 10, 'Ổ': 10, 'Ỗ': 10, 'Ộ': 10, 'Ơ': 10, 'Ờ': 10, 'Ớ': 10, 'Ở': 10, 'Ỡ': 10, 'Ợ': 10, 'o': 10, 'ó': 10, 'ò': 10, 'ỏ': 10, 'õ': 10, 'ọ': 10, 'ô': 10, 'ồ': 10, 'ố': 10, 'ổ': 10, 'ỗ': 10, 'ộ': 10, 'ơ': 10, 'ờ': 10, 'ớ': 10, 'ở': 10, 'ỡ': 10, 'ợ': 10,
+            'U': 5, 'Ú': 5, 'Ù': 5, 'Ủ': 5, 'Ũ': 5, 'Ụ': 5, 'Ư': 5, 'Ừ': 5, 'Ứ': 5, 'Ử': 5, 'Ữ': 5, 'Ự': 5, 'u': 5, 'ú': 5, 'ù': 5, 'ủ': 5, 'ũ': 5, 'ụ': 5, 'ư': 5, 'ừ': 5, 'ứ': 5, 'ử': 5, 'ữ': 5, 'ự': 5,
+            'Y': 1, 'Ý': 1, 'Ỳ': 1, 'Ỷ': 1, 'Ỹ': 1, 'Ỵ': 1, 'y': 1, 'ý': 1, 'ỳ': 1, 'ỷ': 1, 'ỹ': 1, 'ỵ': 1,
+        };
+
+        const COLOR_HEX = {
+            'ĐỎ': '#DC3545', 'VÀNG': '#FFC107', 'LAM': '#007BFF', 'ĐEN': '#343A40', 'TRẮNG': '#F8F9FA',
+            'LỤC': '#28A745', 'CAM': '#FD7E14', 'HỒNG': '#E83E8C', 'GHI': '#6C757D', 'HB': '#6F42C1',
+            'TÍM': '#6610F2', 'KIM LOẠI': '#A9A9A9', 'XANH BIỂN': '#17A2B8', 'CHÀM': '#4B0082',
+        };
+        
+        const RAW_COLOR_MAPS = [
+            "1ĐỎ2VÀNG3KIM LOAI4XANH BIỂN5LÁ6DO7VANG8TRANG9LUC10LAM11DO12VANG13TRANG14LUC",
+            "1DEN2TRANG3HB4LAM5LUC6TIM7DO8CAM9VANG10DEN11TRANG12HB13LAM14LUC",
+            "1VANG2DO3HONG4GHI5TRANG6DEN7HB8LAM9VANG10DO11HONG12GHI13TRANG14DEN",
+            "1DO2VANG3CAM4LUC5LAM6CHAM7TIM8DO9VANG10CAM11LUC12LAM13CHAM14TIM",
+            "1DO2VANG3LAM4DO5VANG6LAM7DO8VANG9LAM10DO11VANG12LAM13DO14VANG",
+            "1LAM2DO3VANG4DEN5LAM6DO7VANG8DEN9LAM10DO11VANG12DEN13LAM14DO"
+        ];
+        
+        function getNameCode(name) {
+            let code = "";
+            let chars = name.toUpperCase().split('');
+            for (const char of chars) {
+                const value = CHAR_MAP[char];
+                if (value !== undefined) {
+                    code += value.toString();
+                }
+            }
+            return code;
+        }
+
+        function lookupColor(number, tableIndex) {
+            const rawMap = RAW_COLOR_MAPS[tableIndex].toUpperCase().replace(/\s/g, ''); // Xóa khoảng trắng
+            const pattern = new RegExp(number + '([A-ZÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴ]+?)(?=[0-9]|$)', 'g');
+            let matches = [...rawMap.matchAll(pattern)];
+            
+            return matches.map(match => {
+                let colorName = match[1].trim();
+                // Chuẩn hóa tên màu
+                colorName = colorName.replace('LÁ', 'LỤC').replace('DO', 'ĐỎ').replace('VANG', 'VÀNG').replace('TIM', 'TÍM');
+                colorName = colorName.replace('DEN', 'ĐEN').replace('TRANG', 'TRẮNG').replace('CHAM', 'CHÀM').replace('LOAI', 'LOẠI').replace('BIEN', 'BIỂN');
+                return colorName;
+            });
+        }
+        
+        /**
+         * Hàm MỚI: Tính toán Mức giá tốt từ Ngày/Tháng/Năm sinh
+         * Ví dụ: 3/3/1971 -> 33 -> 33,000,000
+         */
+        function calculateBestPrice(dobString) {
+            // Chuẩn hóa chuỗi nhập: loại bỏ khoảng trắng, thay / hoặc - bằng ''
+            const parts = dobString.split(/[\/-]/).map(p => p.trim()).filter(p => p !== '');
+            
+            if (parts.length < 2) return null;
+
+            const day = parseInt(parts[0]);
+            const month = parseInt(parts[1]);
+
+            if (isNaN(day) || isNaN(month) || day < 1 || month < 1 || month > 12) return null;
+
+            // Ghép Ngày và Tháng, loại bỏ số 0 ở đầu nếu có
+            const dmString = `${day}${month}`; 
+            
+            // Thêm 6 số 0 để có giá trị hàng triệu
+            const priceNum = parseInt(dmString) * 1000000;
+
+            if (isNaN(priceNum) || priceNum === 0) return null;
+
+            return priceNum;
+        }
+
+        // Định dạng số thành tiền tệ Việt Nam (VND)
+        function formatVND(number) {
+            if (number === null || isNaN(number)) return 'N/A';
+            return number.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+        }
+
+
+        function calculateColors() {
+            const ownerName = document.getElementById('owner-name').value.trim();
+            const capacity = document.getElementById('cylinder-capacity').value.trim();
+            const dob = document.getElementById('dob').value.trim(); // Lấy ngày sinh
+            
+            const priceAnalysisDiv = document.getElementById('price-analysis');
+            const resultDiv = document.getElementById('analysis-steps');
+            const finalColorsDiv = document.getElementById('final-colors');
+            
+            priceAnalysisDiv.innerHTML = '';
+            resultDiv.innerHTML = '';
+            finalColorsDiv.innerHTML = '';
+
+            if (!ownerName || !capacity || !dob) {
+                alert('⚠️ Vui lòng nhập Tên người chủ, Ngày sinh, và Dung tích Xi-lanh.');
+                return;
+            }
+
+            // --- 1. Xử lý Giá Tốt ---
+            const bestPrice = calculateBestPrice(dob);
+            if (bestPrice) {
+                const dobParts = dob.split(/[\/-]/).map(p => p.trim()).filter(p => p !== '');
+                const dmString = `${parseInt(dobParts[0])}${parseInt(dobParts[1])}`;
+                
+                priceAnalysisDiv.innerHTML = `
+                    <p>💰 **1. MỨC GIÁ TỐT CỦA XE:**</p>
+                    <ul>
+                        <li>Ngày/Tháng sinh: **${dob}** $\rightarrow$ Mã số **${dmString}**</li>
+                        <li>Mức giá tốt: **${formatVND(bestPrice)}** ($\approx$ ${dmString} Triệu đồng)</li>
+                    </ul>
+                `;
+            } else {
+                 priceAnalysisDiv.innerHTML = `<p>💰 **1. MỨC GIÁ TỐT CỦA XE:** Không tính được mức giá. Vui lòng kiểm tra định dạng Ngày/Tháng/Năm (VD: 3/3/1971).</p>`;
+            }
+
+            // --- 2. Xử lý Màu Sắc (Giữ nguyên logic cũ) ---
+            const nameCode = getNameCode(ownerName);
+            const capacityNum = parseInt(capacity);
+
+            if (!nameCode || isNaN(capacityNum) || capacityNum <= 0) {
+                 resultDiv.innerHTML = '<p style="color: red;">Dữ liệu nhập cho việc tính màu không hợp lệ (Tên chủ hoặc Dung tích xi-lanh).</p>';
+                return;
+            }
+
+            let analysisHtml = `
+                <p>🔢 **2. PHÂN TÍCH TÌM MÀU:**</p>
+                <ul>
+                    <li>Tên Người Chủ: **${ownerName.toUpperCase()}**</li>
+                    <li>Mã Chữ Cái (Xuôi): **${nameCode}**</li>
+                    <li>Dung Tích Xi-lanh: **${capacityNum}**</li>
+                </ul>
+            `;
+            
+            const nameNum = parseInt(nameCode);
+            const quotient = Math.floor(nameNum / capacityNum);
+            const remainder = nameNum % capacityNum;
+
+            analysisHtml += `
+                <p>➗ **Phép Tính Căn Bản:**</p>
+                <ul>
+                    <li>Phép chia: ${nameNum} : ${capacityNum} = **${quotient}** (Thương) dư **${remainder}** (Số dư)</li>
+                </ul>
+            `;
+
+            let selectedColors = [];
+            
+            // Tập hợp các số để tra cứu (bao gồm Thương, Dư, và các chữ số cấu thành)
+            const otherNumbers = [quotient, remainder, ...capacity.split('').map(Number), ...nameCode.split('').map(Number)];
+            const uniqueNumbers = [...new Set(otherNumbers)].filter(n => n >= 1 && n <= 14);
+
+            analysisHtml += `
+                <p>🎨 **3. Tra Cứu Màu Sắc Bổ Sung:**</p>
+                <ul>
+                    <li>Các số tra cứu: **${uniqueNumbers.join(', ')}**</li>
+                </ul>
+            `;
+            
+            // Tìm kiếm trong tất cả các bảng
+            uniqueNumbers.forEach(num => {
+                for (let i = 0; i < RAW_COLOR_MAPS.length; i++) {
+                    const colors = lookupColor(num, i);
+                    selectedColors.push(...colors);
+                }
+            });
+
+            // Đếm tần suất
+            let allColors = {};
+            selectedColors.forEach(color => {
+                const normalizedColor = color.toUpperCase().replace(/\s/g, '');
+                // Tìm Key trong COLOR_HEX để đếm
+                let colorKey = Object.keys(COLOR_HEX).find(key => key.toUpperCase().replace(/\s/g, '') === normalizedColor);
+
+                if (colorKey) {
+                    allColors[colorKey] = (allColors[colorKey] || 0) + 1;
+                }
+            });
+
+            // Sắp xếp kết quả theo tần suất giảm dần
+            const sortedColors = Object.entries(allColors)
+                .sort(([, countA], [, countB]) => countB - countA);
+
+            // Hiển thị kết quả tìm được
+            let finalColorsHtml = '<div>';
+            if (sortedColors.length > 0) {
+                sortedColors.forEach(([colorName, count]) => {
+                    const hexCode = COLOR_HEX[colorName] || '#000000';
+                    finalColorsHtml += `
+                        <div class="color-item">
+                            <div class="color-box" style="background-color: ${hexCode};"></div>
+                            <span>${colorName} (${hexCode})</span>
+                            <span class="color-score">(${count} lần)</span>
+                        </div>
+                    `;
+                });
+            } else {
+                finalColorsHtml = '<p style="color: #6c757d;">Không tìm thấy màu phù hợp nào theo quy tắc tra cứu.</p>';
+            }
+            finalColorsHtml += '</div>';
+
+            resultDiv.innerHTML = analysisHtml;
+            finalColorsDiv.innerHTML = finalColorsHtml;
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

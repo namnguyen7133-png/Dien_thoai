@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Toán Màu Sắc Theo Ngũ Hành</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-title {
+            font-size: 1.8rem;
+            color: #2575fc;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f2f5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: #6a11cb;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #444;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.3rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #6a11cb;
+            outline: none;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            font-size: 1.3rem;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .calculate-btn:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+        
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #6a11cb;
+        }
+        
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2575fc;
+            margin-bottom: 10px;
+        }
+        
+        .color-result {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .color-box {
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .color-name {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .color-hex {
+            font-size: 0.9rem;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 3px 8px;
+            border-radius: 5px;
+        }
+        
+        .color-stats {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #555;
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        
+        .calculation-steps {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .step {
+            margin-bottom: 8px;
+            padding-left: 10px;
+            border-left: 3px solid #6a11cb;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            
+            .color-box {
+                width: 100px;
+                height: 100px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .card-title {
+                font-size: 1.5rem;
+            }
+        }
+        
+        .color-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .color-table th, .color-table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        .color-table th {
+            background-color: #6a11cb;
+            color: white;
+        }
+        
+        .color-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .warning {
+            color: #e74c3c;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .date-input-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .date-input-group input {
+            text-align: center;
+        }
+        
+        .person-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-top: 10px;
+            padding: 10px;
+        }
+        
+        .person-option {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .person-option:hover {
+            background-color: #f0f2f5;
+        }
+        
+        .person-option:last-child {
+            border-bottom: none;
+        }
+        
+        .person-name {
+            font-weight: 600;
+            color: #2575fc;
+        }
+        
+        .person-dob {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-palette"></i> Tính Toán Màu Sắc Theo Ngũ Hành</h1>
+        <p class="description">Công cụ tính toán màu sắc phù hợp dựa trên ngày tháng, địa chỉ và tên người</p>
+    </header>
+    
+    <div class="container">
+        <!-- Thẻ 1 -->
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-1"></i> Thẻ 1: Tính toán từ ngày và địa chỉ</h2>
+            <div class="input-group">
+                <label for="date1">Ngày tháng năm:</label>
+                <div class="date-input-group">
+                    <input type="number" id="day1" placeholder="Ngày" min="1" max="31" value="11">
+                    <input type="number" id="month1" placeholder="Tháng" min="1" max="12" value="12">
+                    <input type="number" id="year1" placeholder="Năm" min="1900" max="2100" value="2025">
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="address1">Địa chỉ nơi đến (nhập số):</label>
+                <input type="number" id="address1" placeholder="Ví dụ: 1, 2, 3..." value="1">
+            </div>
+            
+            <button class="calculate-btn" onclick="calculateCard1()">
+                <i class="fas fa-calculator"></i> Tính toán màu sắc
+            </button>
+            
+            <div id="result1" class="result" style="display: none;">
+                <div class="result-title">Kết quả tính toán:</div>
+                <div class="calculation-steps" id="steps1"></div>
+                <div class="color-result" id="colors1"></div>
+                <div class="color-stats" id="stats1"></div>
+            </div>
+        </div>
+        
+        <!-- Thẻ 2 -->
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-2"></i> Thẻ 2: Tính toán từ ngày và tên người</h2>
+            <div class="input-group">
+                <label for="date2">Ngày tháng năm:</label>
+                <div class="date-input-group">
+                    <input type="number" id="day2" placeholder="Ngày" min="1" max="31" value="11">
+                    <input type="number" id="month2" placeholder="Tháng" min="1" max="12" value="12">
+                    <input type="number" id="year2" placeholder="Năm" min="1900" max="2100" value="2025">
+                </div>
+            </div>
+            
+            <div class="two-column">
+                <div class="input-group">
+                    <label for="person2a">Tên người đi:</label>
+                    <select id="person2a">
+                        <option value="">Chọn người từ danh sách</option>
+                    </select>
+                    <div class="person-list" id="personList2a"></div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="person2b">Tên người đến:</label>
+                    <select id="person2b">
+                        <option value="">Chọn người từ danh sách</option>
+                    </select>
+                    <div class="person-list" id="personList2b"></div>
+                </div>
+            </div>
+            
+            <button class="calculate-btn" onclick="calculateCard2()">
+                <i class="fas fa-calculator"></i> Tính toán màu sắc
+            </button>
+            
+            <div id="result2" class="result" style="display: none;">
+                <div class="result-title">Kết quả tính toán:</div>
+                <div class="calculation-steps" id="steps2"></div>
+                <div class="color-result" id="colors2"></div>
+                <div class="color-stats" id="stats2"></div>
+            </div>
+        </div>
+        
+        <!-- Thẻ 3 -->
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-3"></i> Thẻ 3: Tính toán từ ngày và giờ</h2>
+            <div class="input-group">
+                <label for="date3">Ngày tháng năm:</label>
+                <div class="date-input-group">
+                    <input type="number" id="day3" placeholder="Ngày" min="1" max="31" value="11">
+                    <input type="number" id="month3" placeholder="Tháng" min="1" max="12" value="12">
+                    <input type="number" id="year3" placeholder="Năm" min="1900" max="2100" value="2025">
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="hour3">Số giờ (1-28):</label>
+                <input type="number" id="hour3" placeholder="Nhập số giờ từ 1 đến 28" min="1" max="28" value="1">
+                <div class="warning">Lưu ý: Giờ từ 1 đến 28 tương ứng với 60 đến 1500 phút</div>
+            </div>
+            
+            <button class="calculate-btn" onclick="calculateCard3()">
+                <i class="fas fa-calculator"></i> Tính toán màu sắc
+            </button>
+            
+            <div id="result3" class="result" style="display: none;">
+                <div class="result-title">Kết quả tính toán:</div>
+                <div class="calculation-steps" id="steps3"></div>
+                <div class="color-result" id="colors3"></div>
+                <div class="color-stats" id="stats3"></div>
+            </div>
+        </div>
+        
+        <!-- Thẻ 4 -->
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-4"></i> Thẻ 4: Tính toán từ ngày và ngày sinh</h2>
+            <div class="input-group">
+                <label for="date4">Ngày tháng năm:</label>
+                <div class="date-input-group">
+                    <input type="number" id="day4" placeholder="Ngày" min="1" max="31" value="11">
+                    <input type="number" id="month4" placeholder="Tháng" min="1" max="12" value="12">
+                    <input type="number" id="year4" placeholder="Năm" min="1900" max="2100" value="2025">
+                </div>
+            </div>
+            
+            <div class="two-column">
+                <div class="input-group">
+                    <label for="person4a">Ngày sinh người đi:</label>
+                    <select id="person4a">
+                        <option value="">Chọn người từ danh sách</option>
+                    </select>
+                    <div class="person-list" id="personList4a"></div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="person4b">Ngày sinh người đến:</label>
+                    <select id="person4b">
+                        <option value="">Chọn người từ danh sách</option>
+                    </select>
+                    <div class="person-list" id="personList4b"></div>
+                </div>
+            </div>
+            
+            <button class="calculate-btn" onclick="calculateCard4()">
+                <i class="fas fa-calculator"></i> Tính toán màu sắc
+            </button>
+            
+            <div id="result4" class="result" style="display: none;">
+                <div class="result-title">Kết quả tính toán:</div>
+                <div class="calculation-steps" id="steps4"></div>
+                <div class="color-result" id="colors4"></div>
+                <div class="color-stats" id="stats4"></div>
+            </div>
+        </div>
+        
+        <!-- Thẻ 5 -->
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-5"></i> Thẻ 5: Chuẩn bị trang phục theo màu</h2>
+            <div class="input-group">
+                <label for="date5a">Ngày đi:</label>
+                <div class="date-input-group">
+                    <input type="number" id="day5a" placeholder="Ngày" min="1" max="31" value="11">
+                    <input type="number" id="month5a" placeholder="Tháng" min="1" max="12" value="12">
+                    <input type="number" id="year5a" placeholder="Năm" min="1900" max="2100" value="2025">
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="date5b">Ngày về:</label>
+                <div class="date-input-group">
+                    <input type="number" id="day5b" placeholder="Ngày" min="1" max="31" value="15">
+                    <input type="number" id="month5b" placeholder="Tháng" min="1" max="12" value="12">
+                    <input type="number" id="year5b" placeholder="Năm" min="1900" max="2100" value="2025">
+                </div>
+            </div>
+            
+            <div class="two-column">
+                <div class="input-group">
+                    <label for="number5a">Số lớn:</label>
+                    <input type="number" id="number5a" placeholder="Nhập số lớn" value="9">
+                </div>
+                
+                <div class="input-group">
+                    <label for="number5b">Số nhỏ:</label>
+                    <input type="number" id="number5b" placeholder="Nhập số nhỏ" value="3">
+                </div>
+            </div>
+            
+            <button class="calculate-btn" onclick="calculateCard5()">
+                <i class="fas fa-suitcase"></i> Tính toán trang phục
+            </button>
+            
+            <div id="result5" class="result" style="display: none;">
+                <div class="result-title">Kết quả tính toán trang phục:</div>
+                <div class="calculation-steps" id="steps5"></div>
+                <div class="color-result" id="colors5"></div>
+                <div class="color-stats" id="stats5"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bảng màu tham khảo -->
+    <div class="card">
+        <h2 class="card-title"><i class="fas fa-table"></i> Bảng tra màu sắc</h2>
+        <table class="color-table">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên màu</th>
+                    <th>Mã HEX</th>
+                    <th>STT</th>
+                    <th>Tên màu</th>
+                    <th>Mã HEX</th>
+                </tr>
+            </thead>
+            <tbody id="colorTableBody">
+                <!-- Sẽ được điền bằng JavaScript -->
+            </tbody>
+        </table>
+    </div>
+    
+    <footer>
+        <p>Công cụ tính toán màu sắc theo ngũ hành - Sử dụng cho mục đích tham khảo</p>
+        <p>© 2025 - Tất cả các thẻ hoạt động độc lập, không liên quan đến nhau</p>
+    </footer>
+
+    <script>
+        // Dữ liệu màu sắc
+        const colorData = [
+            {id: 1, name: "ĐỎ", hex: "#FF0000"},
+            {id: 2, name: "VÀNG", hex: "#FFFF00"},
+            {id: 3, name: "KIM LOẠI", hex: "#C0C0C0"},
+            {id: 4, name: "XANH BIỂN", hex: "#0000FF"},
+            {id: 5, name: "XANH LÁ", hex: "#00FF00"},
+            {id: 6, name: "Đỏ", hex: "#FF4500"},
+            {id: 7, name: "VÀNG", hex: "#FFD700"},
+            {id: 8, name: "CAM", hex: "#FFA500"},
+            {id: 9, name: "XANH BIỂN", hex: "#1E90FF"},
+            {id: 10, name: "XANH LÁ", hex: "#32CD32"},
+            {id: 11, name: "ĐỎ", hex: "#DC143C"},
+            {id: 12, name: "VÀNG", hex: "#F0E68C"},
+            {id: 13, name: "TRẮNG", hex: "#FFFFFF"},
+            {id: 14, name: "XANH BIỂN", hex: "#4169E1"},
+            {id: 1, name: "ĐEN", hex: "#000000"},
+            {id: 2, name: "TRẮNG", hex: "#F8F8FF"},
+            {id: 3, name: "DA TRỜI", hex: "#87CEEB"},
+            {id: 4, name: "XANH LÁ", hex: "#90EE90"},
+            {id: 5, name: "XANH BIỂN", hex: "#4682B4"},
+            {id: 6, name: "TÍM", hex: "#800080"},
+            {id: 7, name: "ĐỎ", hex: "#B22222"},
+            {id: 8, name: "CAM", hex: "#FF8C00"},
+            {id: 9, name: "VÀNG", hex: "#FFE4B5"},
+            {id: 10, name: "ĐEN", hex: "#2F4F4F"},
+            {id: 11, name: "TRẮNG", hex: "#FFFAFA"},
+            {id: 12, name: "XANH DA TRỜI", hex: "#B0E0E6"},
+            {id: 13, name: "XANH LÁ", hex: "#98FB98"},
+            {id: 14, name: "XANH BIỂN", hex: "#5F9EA0"},
+            {id: 1, name: "VÀNG", hex: "#FFFACD"},
+            {id: 2, name: "ĐỎ", hex: "#FF6347"},
+            {id: 3, name: "HỒNG", hex: "#FFC0CB"},
+            {id: 4, name: "GHI", hex: "#808080"},
+            {id: 5, name: "TRẮNG", hex: "#F5F5F5"},
+            {id: 6, name: "ĐEN", hex: "#696969"},
+            {id: 7, name: "XANH DA TRỜI", hex: "#ADD8E6"},
+            {id: 8, name: "XANH LÁ", hex: "#7CFC00"},
+            {id: 9, name: "VÀNG", hex: "#FAFAD2"},
+            {id: 10, name: "ĐỎ", hex: "#CD5C5C"},
+            {id: 11, name: "HỒNG", hex: "#DB7093"},
+            {id: 12, name: "GHI", hex: "#A9A9A9"},
+            {id: 13, name: "TRẮNG", hex: "#F0F8FF"},
+            {id: 14, name: "ĐEN", hex: "#191970"},
+            {id: 1, name: "ĐỎ", hex: "#8B0000"},
+            {id: 2, name: "VÀNG", hex: "#DAA520"},
+            {id: 3, name: "CAM", hex: "#FF7F50"},
+            {id: 4, name: "XANH BIỂN", hex: "#000080"},
+            {id: 5, name: "XANH LÁ", hex: "#006400"},
+            {id: 6, name: "XANH LÁ MẠ", hex: "#9ACD32"},
+            {id: 7, name: "TÍM", hex: "#9400D3"},
+            {id: 8, name: "ĐỎ", hex: "#FF1493"},
+            {id: 9, name: "VÀNG", hex: "#FFDAB9"},
+            {id: 10, name: "DA CAM", hex: "#FF7F24"},
+            {id: 11, name: "XANH BIỂN", hex: "#00CED1"},
+            {id: 12, name: "XANH LÁ", hex: "#2E8B57"},
+            {id: 13, name: "XANH LÁ MẠ", hex: "#7FFF00"},
+            {id: 14, name: "TÍM", hex: "#BA55D3"},
+            {id: 1, name: "ĐỎ", hex: "#FF0000"},
+            {id: 2, name: "VÀNG", hex: "#FFFF00"},
+            {id: 3, name: "XANH LÁ", hex: "#00FF00"},
+            {id: 4, name: "ĐỎ", hex: "#FF4500"},
+            {id: 5, name: "VÀNG", hex: "#FFD700"},
+            {id: 6, name: "XANH LÁ", hex: "#32CD32"},
+            {id: 7, name: "ĐỎ", hex: "#DC143C"},
+            {id: 8, name: "VÀNG", hex: "#F0E68C"},
+            {id: 9, name: "XANH LÁ", hex: "#90EE90"},
+            {id: 10, name: "ĐỎ", hex: "#B22222"},
+            {id: 11, name: "VÀNG", hex: "#FFE4B5"},
+            {id: 12, name: "XANH LÁ", hex: "#98FB98"},
+            {id: 13, name: "ĐỎ", hex: "#FF6347"},
+            {id: 14, name: "VÀNG", hex: "#FFFACD"},
+            {id: 1, name: "XANH LÁ", hex: "#7CFC00"},
+            {id: 2, name: "ĐỎ", hex: "#CD5C5C"},
+            {id: 3, name: "VÀNG", hex: "#FAFAD2"},
+            {id: 4, name: "ĐEN", hex: "#2F4F4F"},
+            {id: 5, name: "XANH LÁ", hex: "#006400"},
+            {id: 6, name: "ĐỎ", hex: "#8B0000"},
+            {id: 7, name: "VÀNG", hex: "#DAA520"},
+            {id: 8, name: "ĐEN", hex: "#000000"},
+            {id: 9, name: "LAM", hex: "#0000FF"},
+            {id: 10, name: "ĐỎ", hex: "#FF1493"},
+            {id: 11, name: "VÀNG", hex: "#FFDAB9"},
+            {id: 12, name: "ĐEN", hex: "#696969"},
+            {id: 13, name: "XANH LÁ", hex: "#2E8B57"},
+            {id: 14, name: "ĐỎ", hex: "#FF0000"}
+        ];
+        
+        // Dữ liệu người
+        const peopleData = [
+            {name: "NGUYENKHACNANG", dob: "04/06/1944"},
+            {name: "TOTHIHA", dob: "29/08/1948"},
+            {name: "NGUYENMINHNAM", dob: "03/03/1971"},
+            {name: "THANTHIKIMANH", dob: "23/09/1981"},
+            {name: "NGUYENTONGANAN", dob: "28/09/2014"},
+            {name: "NGUYENTOMINHCHAU", dob: "25/07/2016"},
+            {name: "NGUYENTOBICHNGOC", dob: "05/02/2020"},
+            {name: "NGUYENTHIMINHHANG", dob: "07/01/1974"},
+            {name: "NGOQUYCUONG", dob: "23/05/1973"},
+            {name: "NGOGIABACH", dob: "12/10/2000"},
+            {name: "NGOGIALINH", dob: "05/04/2005"},
+            {name: "NGUYENTHIMINHPHUONG", dob: "06/11/1978"},
+            {name: "HOANGANHDUNG", dob: "21/09/1978"},
+            {name: "HOANGHAIVINH", dob: "03/06/2010"},
+            {name: "HOANGTHIENBACHANH", dob: "14/11/2015"},
+            {name: "TÔ KIM HUỆ", dob: "9/8/1960"},
+            {name: "NGUYỄN TUẤN ANH", dob: "23/10/1983"},
+            {name: "NGUYỄN THẾ ANH", dob: "24/3/2001"},
+            {name: "NGÔ THỊ MAI", dob: "12/12/1948"},
+            {name: "TÔ VIỆT HƯNG", dob: "17/6/1996"},
+            {name: "TÔ THỊ HỒNG", dob: "10/10/1964"},
+            {name: "VŨ VĂN HIỆP", dob: "24/4/1974"},
+            {name: "NGUYỄN THỊ CHI", dob: "8/2/1946"},
+            {name: "NGUYỄN TẤN BẮC", dob: "30/11/1957"},
+            {name: "NGUYỄN THỊ TÂM", dob: "8/8/1954"}
+        ];
+        
+        // Bảng chữ cái
+        const alphabetMap = {
+            // Xuôi
+            'A': 1, 'À': 1, 'Á': 1, 'Ả': 1, 'Ã': 1, 'Ạ': 1, 'Ă': 1, 'Ằ': 1, 'Ắ': 1, 'Ẳ': 1, 'Ẵ': 1, 'Ặ': 1, 'Â': 1, 'Ầ': 1, 'Ấ': 1, 'Ẩ': 1, 'Ẫ': 1, 'Ậ': 1,
+            'B': 2,
+            'C': 3,
+            'D': 4,
+            'Đ': 5,
+            'E': 6, 'È': 6, 'É': 6, 'Ẻ': 6, 'Ẽ': 6, 'Ẹ': 6, 'Ê': 6, 'Ề': 6, 'Ế': 6, 'Ể': 6, 'Ễ': 6, 'Ệ': 6,
+            'G': 7,
+            'H': 8,
+            'I': 9, 'Ì': 9, 'Í': 9, 'Ỉ': 9, 'Ĩ': 9, 'Ị': 9,
+            'K': 10,
+            'L': 11,
+            'M': 12,
+            'N': 1,
+            'O': 2, 'Ò': 2, 'Ó': 2, 'Ỏ': 2, 'Õ': 2, 'Ọ': 2, 'Ô': 2, 'Ồ': 2, 'Ố': 2, 'Ổ': 2, 'Ỗ': 2, 'Ộ': 2, 'Ơ': 2, 'Ờ': 2, 'Ớ': 2, 'Ở': 2, 'Ỡ': 2, 'Ợ': 2,
+            'P': 3,
+            'Q': 4,
+            'R': 5,
+            'S': 6,
+            'T': 7,
+            'U': 8, 'Ù': 8, 'Ú': 8, 'Ủ': 8, 'Ũ': 8, 'Ụ': 8, 'Ư': 8, 'Ừ': 8, 'Ứ': 8, 'Ử': 8, 'Ữ': 8, 'Ự': 8,
+            'V': 9,
+            'X': 10,
+            'Y': 11, 'Ỳ': 11, 'Ý': 11, 'Ỷ': 11, 'Ỹ': 11, 'Ỵ': 11,
+            'a': 1, 'à': 1, 'á': 1, 'ả': 1, 'ã': 1, 'ạ': 1, 'ă': 1, 'ằ': 1, 'ắ': 1, 'ẳ': 1, 'ẵ': 1, 'ặ': 1, 'â': 1, 'ầ': 1, 'ấ': 1, 'ẩ': 1, 'ẫ': 1, 'ậ': 1,
+            'b': 2,
+            'c': 3,
+            'd': 4,
+            'đ': 5,
+            'e': 6, 'è': 6, 'é': 6, 'ẻ': 6, 'ẽ': 6, 'ẹ': 6, 'ê': 6, 'ề': 6, 'ế': 6, 'ể': 6, 'ễ': 6, 'ệ': 6,
+            'g': 7,
+            'h': 8,
+            'i': 9, 'ì': 9, 'í': 9, 'ỉ': 9, 'ĩ': 9, 'ị': 9,
+            'k': 10,
+            'l': 11,
+            'm': 12,
+            'n': 1,
+            'o': 2, 'ò': 2, 'ó': 2, 'ỏ': 2, 'õ': 2, 'ọ': 2, 'ô': 2, 'ồ': 2, 'ố': 2, 'ổ': 2, 'ỗ': 2, 'ộ': 2, 'ơ': 2, 'ờ': 2, 'ớ': 2, 'ở': 2, 'ỡ': 2, 'ợ': 2,
+            'p': 3,
+            'q': 4,
+            'r': 5,
+            's': 6,
+            't': 7,
+            'u': 8, 'ù': 8, 'ú': 8, 'ủ': 8, 'ũ': 8, 'ụ': 8, 'ư': 8, 'ừ': 8, 'ứ': 8, 'ử': 8, 'ữ': 8, 'ự': 8,
+            'v': 9,
+            'x': 10,
+            'y': 11, 'ỳ': 11, 'ý': 11, 'ỷ': 11, 'ỹ': 11, 'ỵ': 11,
+            // Ngược
+            'A': 12, 'À': 12, 'Á': 12, 'Ả': 12, 'Ã': 12, 'Ạ': 12, 'Ă': 12, 'Ằ': 12, 'Ắ': 12, 'Ẳ': 12, 'Ẵ': 12, 'Ặ': 12, 'Â': 12, 'Ầ': 12, 'Ấ': 12, 'Ẩ': 12, 'Ẫ': 12, 'Ậ': 12,
+            'B': 11,
+            'C': 10,
+            'D': 9,
+            'Đ': 8,
+            'E': 7, 'È': 7, 'É': 7, 'Ẻ': 7, 'Ẽ': 7, 'Ẹ': 7, 'Ê': 7, 'Ề': 7, 'Ế': 7, 'Ể': 7, 'Ễ': 7, 'Ệ': 7,
+            'G': 6,
+            'H': 5,
+            'I': 4, 'Ì': 4, 'Í': 4, 'Ỉ': 4, 'Ĩ': 4, 'Ị': 4,
+            'K': 3,
+            'L': 2,
+            'M': 1,
+            'N': 11,
+            'O': 10, 'Ò': 10, 'Ó': 10, 'Ỏ': 10, 'Õ': 10, 'Ọ': 10, 'Ô': 10, 'Ồ': 10, 'Ố': 10, 'Ổ': 10, 'Ỗ': 10, 'Ộ': 10, 'Ơ': 10, 'Ờ': 10, 'Ớ': 10, 'Ở': 10, 'Ỡ': 10, 'Ợ': 10,
+            'P': 9,
+            'Q': 8,
+            'R': 7,
+            'S': 6,
+            'T': 5,
+            'U': 4, 'Ù': 4, 'Ú': 4, 'Ủ': 4, 'Ũ': 4, 'Ụ': 4, 'Ư': 4, 'Ừ': 4, 'Ứ': 4, 'Ử': 4, 'Ữ': 4, 'Ự': 4,
+            'V': 3,
+            'X': 2,
+            'Y': 1, 'Ỳ': 1, 'Ý': 1, 'Ỷ': 1, 'Ỹ': 1, 'Ỵ': 1,
+            'a': 12, 'à': 12, 'á': 12, 'ả': 12, 'ã': 12, 'ạ': 12, 'ă': 12, 'ằ': 12, 'ắ': 12, 'ẳ': 12, 'ẵ': 12, 'ặ': 12, 'â': 12, 'ầ': 12, 'ấ': 12, 'ẩ': 12, 'ẫ': 12, 'ậ': 12,
+            'b': 11,
+            'c': 10,
+            'd': 9,
+            'đ': 8,
+            'e': 7, 'è': 7, 'é': 7, 'ẻ': 7, 'ẽ': 7, 'ẹ': 7, 'ê': 7, 'ề': 7, 'ế': 7, 'ể': 7, 'ễ': 7, 'ệ': 7,
+            'g': 6,
+            'h': 5,
+            'i': 4, 'ì': 4, 'í': 4, 'ỉ': 4, 'ĩ': 4, 'ị': 4,
+            'k': 3,
+            'l': 2,
+            'm': 1,
+            'n': 11,
+            'o': 10, 'ò': 10, 'ó': 10, 'ỏ': 10, 'õ': 10, 'ọ': 10, 'ô': 10, 'ồ': 10, 'ố': 10, 'ổ': 10, 'ỗ': 10, 'ộ': 10, 'ơ': 10, 'ờ': 10, 'ớ': 10, 'ở': 10, 'ỡ': 10, 'ợ': 10,
+            'p': 9,
+            'q': 8,
+            'r': 7,
+            's': 6,
+            't': 5,
+            'u': 4, 'ù': 4, 'ú': 4, 'ủ': 4, 'ũ': 4, 'ụ': 4, 'ư': 4, 'ừ': 4, 'ứ': 4, 'ử': 4, 'ữ': 4, 'ự': 4,
+            'v': 3,
+            'x': 2,
+            'y': 1, 'ỳ': 1, 'ý': 1, 'ỷ': 1, 'ỹ': 1, 'ỵ': 1
+        };
+        
+        // Bảng giờ
+        const hourTable = {
+            1: 60, 2: 120, 3: 180, 4: 240, 5: 300, 6: 360, 7: 420, 8: 480, 9: 540, 10: 600,
+            11: 660, 12: 720, 13: 780, 14: 840, 15: 900, 16: 960, 17: 1020, 18: 1080, 19: 1140, 20: 1200,
+            21: 1260, 22: 1320, 23: 1380, 24: 1440, 25: 1500, 26: 1560, 27: 1620, 28: 1680
+        };
+        
+        // Khởi tạo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tải dữ liệu người vào các select
+            loadPeopleData();
+            
+            // Tạo bảng màu
+            createColorTable();
+        });
+        
+        function loadPeopleData() {
+            const selectIds = ['person2a', 'person2b', 'person4a', 'person4b'];
+            const listIds = ['personList2a', 'personList2b', 'personList4a', 'personList4b'];
+            
+            selectIds.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                peopleData.forEach(person => {
+                    const option = document.createElement('option');
+                    option.value = person.name;
+                    option.textContent = `${person.name} (${person.dob})`;
+                    select.appendChild(option);
+                });
+            });
+            
+            listIds.forEach(listId => {
+                const list = document.getElementById(listId);
+                peopleData.forEach(person => {
+                    const div = document.createElement('div');
+                    div.className = 'person-option';
+                    div.innerHTML = `<div class="person-name">${person.name}</div><div class="person-dob">${person.dob}</div>`;
+                    div.addEventListener('click', function() {
+                        // Tìm select tương ứng
+                        const selectId = listId.replace('List', '');
+                        document.getElementById(selectId).value = person.name;
+                    });
+                    list.appendChild(div);
+                });
+            });
+        }
+        
+        function createColorTable() {
+            const tableBody = document.getElementById('colorTableBody');
+            let rows = '';
+            
+            for (let i = 0; i < colorData.length; i += 2) {
+                const color1 = colorData[i];
+                const color2 = colorData[i+1] || {};
+                
+                rows += `
+                    <tr>
+                        <td>${color1.id || ''}</td>
+                        <td>${color1.name || ''}</td>
+                        <td>${color1.hex || ''}</td>
+                        <td>${color2.id || ''}</td>
+                        <td>${color2.name || ''}</td>
+                        <td>${color2.hex || ''}</td>
+                    </tr>
+                `;
+            }
+            
+            tableBody.innerHTML = rows;
+        }
+        
+        // Hàm tính toán chung - 4 phép tính đầy đủ
+        function performCalculations(num1, num2) {
+            const results = [];
+            
+            // Đảm bảo cả hai số đều hợp lệ
+            if (isNaN(num1) || isNaN(num2)) {
+                return results;
+            }
+            
+            // Cộng
+            results.push(num1 + num2);
+            
+            // Trừ (lấy số lớn trừ số nhỏ)
+            results.push(Math.abs(num1 - num2));
+            
+            // Nhân
+            results.push(num1 * num2);
+            
+            // Chia (lấy số lớn chia số nhỏ, lấy số dư)
+            if (num1 !== 0 && num2 !== 0) {
+                const larger = Math.max(Math.abs(num1), Math.abs(num2));
+                const smaller = Math.min(Math.abs(num1), Math.abs(num2));
+                if (smaller !== 0) {
+                    results.push(larger % smaller); // Lấy số dư
+                } else {
+                    results.push(0);
+                }
+            } else {
+                results.push(0);
+            }
+            
+            return results;
+        }
+        
+        function getColorByNumber(num) {
+            // Chuyển số về khoảng 1-14
+            let colorIndex = Math.abs(num) % 14;
+            if (colorIndex === 0) colorIndex = 14;
+            
+            // Tìm màu có ID = colorIndex
+            const colors = colorData.filter(color => color.id === colorIndex);
+            if (colors.length > 0) {
+                // Trả về màu đầu tiên tìm thấy
+                return colors[0];
+            }
+            
+            // Nếu không tìm thấy, trả về màu mặc định
+            return {id: colorIndex, name: "MÀU " + colorIndex, hex: "#CCCCCC"};
+        }
+        
+        function calculateCard1() {
+            const day = parseInt(document.getElementById('day1').value) || 1;
+            const month = parseInt(document.getElementById('month1').value) || 1;
+            const year = parseInt(document.getElementById('year1').value) || 2025;
+            const address = parseInt(document.getElementById('address1').value) || 1;
+            
+            // Ghép ngày tháng năm
+            const dateNumber = parseInt(day.toString() + month.toString() + year.toString());
+            
+            // Thực hiện các phép tính
+            const calcResults = performCalculations(dateNumber, address);
+            
+            // Lấy tất cả màu từ các kết quả
+            const colors = [];
+            calcResults.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            // Đếm số lần xuất hiện của mỗi màu
+            const colorCount = {};
+            colors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                colorCount[key] = (colorCount[key] || 0) + 1;
+            });
+            
+            // Tìm màu xuất hiện nhiều nhất
+            let maxCount = 0;
+            let topColors = [];
+            
+            for (const [key, count] of Object.entries(colorCount)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    topColors = [key];
+                } else if (count === maxCount) {
+                    topColors.push(key);
+                }
+            }
+            
+            // Hiển thị kết quả
+            document.getElementById('result1').style.display = 'block';
+            
+            let stepsHtml = `<div class="step">Ngày nhập: ${day}/${month}/${year}</div>`;
+            stepsHtml += `<div class="step">Số ghép từ ngày: ${dateNumber}</div>`;
+            stepsHtml += `<div class="step">Địa chỉ: ${address}</div>`;
+            stepsHtml += `<div class="step">4 phép tính thực hiện:</div>`;
+            stepsHtml += `<div class="step">1. ${dateNumber} + ${address} = ${calcResults[0]}</div>`;
+            stepsHtml += `<div class="step">2. |${dateNumber} - ${address}| = ${calcResults[1]}</div>`;
+            stepsHtml += `<div class="step">3. ${dateNumber} × ${address} = ${calcResults[2]}</div>`;
+            stepsHtml += `<div class="step">4. ${Math.max(dateNumber, address)} ÷ ${Math.min(dateNumber, address)} dư ${calcResults[3]}</div>`;
+            
+            document.getElementById('steps1').innerHTML = stepsHtml;
+            
+            // Hiển thị tất cả màu tìm được
+            let colorsHtml = '';
+            const uniqueColors = [];
+            const seenColors = new Set();
+            
+            colors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                if (!seenColors.has(key)) {
+                    seenColors.add(key);
+                    uniqueColors.push(color);
+                }
+            });
+            
+            uniqueColors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                const count = colorCount[key];
+                const isTopColor = topColors.includes(key);
+                
+                colorsHtml += `
+                    <div class="color-box" style="background-color: ${color.hex}; border: ${isTopColor ? '3px solid #FF0000' : 'none'}">
+                        <div class="color-name">${color.name}</div>
+                        <div class="color-hex">${color.hex}</div>
+                        <div style="margin-top: 5px; font-size: 0.8rem;">Xuất hiện: ${count} lần</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('colors1').innerHTML = colorsHtml;
+            
+            // Hiển thị thống kê
+            let statsHtml = `Tổng cộng có <span class="highlight">${uniqueColors.length}</span> màu khác nhau được tìm thấy.<br>`;
+            statsHtml += `Màu xuất hiện nhiều nhất (${maxCount} lần): `;
+            
+            topColors.forEach((key, index) => {
+                const [name, hex] = key.split('-');
+                statsHtml += `<span class="highlight">${name}</span>`;
+                if (index < topColors.length - 1) {
+                    statsHtml += ', ';
+                }
+            });
+            
+            document.getElementById('stats1').innerHTML = statsHtml;
+        }
+        
+        function calculateCard2() {
+            const day = parseInt(document.getElementById('day2').value) || 1;
+            const month = parseInt(document.getElementById('month2').value) || 1;
+            const year = parseInt(document.getElementById('year2').value) || 2025;
+            const personA = document.getElementById('person2a').value;
+            const personB = document.getElementById('person2b').value;
+            
+            if (!personA || !personB) {
+                alert("Vui lòng chọn cả hai người!");
+                return;
+            }
+            
+            // Ghép ngày tháng năm
+            const dateNumber = parseInt(day.toString() + month.toString() + year.toString());
+            
+            // Tính giá trị chữ cái cho từng người (xuôi và ngược)
+            const personAValueForward = calculateNameValue(personA, 'forward');
+            const personAValueReverse = calculateNameValue(personA, 'reverse');
+            const personBValueForward = calculateNameValue(personB, 'forward');
+            const personBValueReverse = calculateNameValue(personB, 'reverse');
+            
+            // Thực hiện các phép tính
+            const colors = [];
+            
+            // Tính với giá trị xuôi
+            const calcResultsForward = performCalculations(dateNumber, personAValueForward);
+            calcResultsForward.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            const calcResultsForward2 = performCalculations(dateNumber, personBValueForward);
+            calcResultsForward2.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            // Tính với giá trị ngược
+            const calcResultsReverse = performCalculations(dateNumber, personAValueReverse);
+            calcResultsReverse.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            const calcResultsReverse2 = performCalculations(dateNumber, personBValueReverse);
+            calcResultsReverse2.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            // Tính giữa hai người
+            const calcBetweenForward = performCalculations(personAValueForward, personBValueForward);
+            calcBetweenForward.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            const calcBetweenReverse = performCalculations(personAValueReverse, personBValueReverse);
+            calcBetweenReverse.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            // Đếm số lần xuất hiện của mỗi màu
+            const colorCount = {};
+            colors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                colorCount[key] = (colorCount[key] || 0) + 1;
+            });
+            
+            // Tìm màu xuất hiện nhiều nhất
+            let maxCount = 0;
+            let topColors = [];
+            
+            for (const [key, count] of Object.entries(colorCount)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    topColors = [key];
+                } else if (count === maxCount) {
+                    topColors.push(key);
+                }
+            }
+            
+            // Hiển thị kết quả
+            document.getElementById('result2').style.display = 'block';
+            
+            let stepsHtml = `<div class="step">Ngày nhập: ${day}/${month}/${year}</div>`;
+            stepsHtml += `<div class="step">Số ghép từ ngày: ${dateNumber}</div>`;
+            stepsHtml += `<div class="step">Người đi: ${personA} (xuôi: ${personAValueForward}, ngược: ${personAValueReverse})</div>`;
+            stepsHtml += `<div class="step">Người đến: ${personB} (xuôi: ${personBValueForward}, ngược: ${personBValueReverse})</div>`;
+            stepsHtml += `<div class="step">Đã thực hiện tất cả các phép tính cộng, trừ, nhân, chia</div>`;
+            
+            document.getElementById('steps2').innerHTML = stepsHtml;
+            
+            // Hiển thị tất cả màu tìm được
+            let colorsHtml = '';
+            const uniqueColors = [];
+            const seenColors = new Set();
+            
+            colors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                if (!seenColors.has(key)) {
+                    seenColors.add(key);
+                    uniqueColors.push(color);
+                }
+            });
+            
+            uniqueColors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                const count = colorCount[key];
+                const isTopColor = topColors.includes(key);
+                
+                colorsHtml += `
+                    <div class="color-box" style="background-color: ${color.hex}; border: ${isTopColor ? '3px solid #FF0000' : 'none'}">
+                        <div class="color-name">${color.name}</div>
+                        <div class="color-hex">${color.hex}</div>
+                        <div style="margin-top: 5px; font-size: 0.8rem;">Xuất hiện: ${count} lần</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('colors2').innerHTML = colorsHtml;
+            
+            // Hiển thị thống kê
+            let statsHtml = `Tổng cộng có <span class="highlight">${uniqueColors.length}</span> màu khác nhau được tìm thấy.<br>`;
+            statsHtml += `Màu xuất hiện nhiều nhất (${maxCount} lần): `;
+            
+            topColors.forEach((key, index) => {
+                const [name, hex] = key.split('-');
+                statsHtml += `<span class="highlight">${name}</span>`;
+                if (index < topColors.length - 1) {
+                    statsHtml += ', ';
+                }
+            });
+            
+            document.getElementById('stats2').innerHTML = statsHtml;
+        }
+        
+        function calculateNameValue(name, direction) {
+            let total = 0;
+            
+            for (let char of name) {
+                if (alphabetMap[char] !== undefined) {
+                    total += alphabetMap[char];
+                }
+            }
+            
+            return total;
+        }
+        
+        function calculateCard3() {
+            const day = parseInt(document.getElementById('day3').value) || 1;
+            const month = parseInt(document.getElementById('month3').value) || 1;
+            const year = parseInt(document.getElementById('year3').value) || 2025;
+            const hour = parseInt(document.getElementById('hour3').value) || 1;
+            
+            if (hour < 1 || hour > 28) {
+                alert("Vui lòng nhập giờ từ 1 đến 28!");
+                return;
+            }
+            
+            // Ghép ngày tháng năm
+            const dateNumber = parseInt(day.toString() + month.toString() + year.toString());
+            
+            // Lấy giá trị giờ từ bảng
+            const hourValue = hourTable[hour];
+            
+            // Thực hiện 4 phép tính đầy đủ
+            const calcResults = performCalculations(dateNumber, hourValue);
+            
+            // Lấy tất cả màu từ các kết quả
+            const colors = [];
+            calcResults.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            // Đếm số lần xuất hiện của mỗi màu
+            const colorCount = {};
+            colors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                colorCount[key] = (colorCount[key] || 0) + 1;
+            });
+            
+            // Tìm màu xuất hiện nhiều nhất
+            let maxCount = 0;
+            let topColors = [];
+            
+            for (const [key, count] of Object.entries(colorCount)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    topColors = [key];
+                } else if (count === maxCount) {
+                    topColors.push(key);
+                }
+            }
+            
+            // Hiển thị kết quả
+            document.getElementById('result3').style.display = 'block';
+            
+            let stepsHtml = `<div class="step">Ngày nhập: ${day}/${month}/${year}</div>`;
+            stepsHtml += `<div class="step">Số ghép từ ngày: ${dateNumber}</div>`;
+            stepsHtml += `<div class="step">Giờ nhập: ${hour} (tương ứng ${hourValue} phút)</div>`;
+            stepsHtml += `<div class="step">4 phép tính thực hiện:</div>`;
+            stepsHtml += `<div class="step">1. ${dateNumber} + ${hourValue} = ${calcResults[0]}</div>`;
+            stepsHtml += `<div class="step">2. |${dateNumber} - ${hourValue}| = ${calcResults[1]}</div>`;
+            stepsHtml += `<div class="step">3. ${dateNumber} × ${hourValue} = ${calcResults[2]}</div>`;
+            stepsHtml += `<div class="step">4. ${Math.max(dateNumber, hourValue)} ÷ ${Math.min(dateNumber, hourValue)} dư ${calcResults[3]}</div>`;
+            
+            document.getElementById('steps3').innerHTML = stepsHtml;
+            
+            // Hiển thị tất cả màu tìm được
+            let colorsHtml = '';
+            const uniqueColors = [];
+            const seenColors = new Set();
+            
+            colors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                if (!seenColors.has(key)) {
+                    seenColors.add(key);
+                    uniqueColors.push(color);
+                }
+            });
+            
+            uniqueColors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                const count = colorCount[key];
+                const isTopColor = topColors.includes(key);
+                
+                colorsHtml += `
+                    <div class="color-box" style="background-color: ${color.hex}; border: ${isTopColor ? '3px solid #FF0000' : 'none'}">
+                        <div class="color-name">${color.name}</div>
+                        <div class="color-hex">${color.hex}</div>
+                        <div style="margin-top: 5px; font-size: 0.8rem;">Xuất hiện: ${count} lần</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('colors3').innerHTML = colorsHtml;
+            
+            // Hiển thị thống kê
+            let statsHtml = `Tổng cộng có <span class="highlight">${uniqueColors.length}</span> màu khác nhau được tìm thấy.<br>`;
+            statsHtml += `Màu xuất hiện nhiều nhất (${maxCount} lần): `;
+            
+            topColors.forEach((key, index) => {
+                const [name, hex] = key.split('-');
+                statsHtml += `<span class="highlight">${name}</span>`;
+                if (index < topColors.length - 1) {
+                    statsHtml += ', ';
+                }
+            });
+            
+            document.getElementById('stats3').innerHTML = statsHtml;
+        }
+        
+        function calculateCard4() {
+            const day = parseInt(document.getElementById('day4').value) || 1;
+            const month = parseInt(document.getElementById('month4').value) || 1;
+            const year = parseInt(document.getElementById('year4').value) || 2025;
+            const personA = document.getElementById('person4a').value;
+            const personB = document.getElementById('person4b').value;
+            
+            if (!personA || !personB) {
+                alert("Vui lòng chọn cả hai người!");
+                return;
+            }
+            
+            // Tìm ngày sinh của người được chọn
+            const personAData = peopleData.find(p => p.name === personA);
+            const personBData = peopleData.find(p => p.name === personB);
+            
+            if (!personAData || !personBData) {
+                alert("Không tìm thấy thông tin người!");
+                return;
+            }
+            
+            // Parse ngày sinh
+            const dobA = personAData.dob.split('/');
+            const dobB = personBData.dob.split('/');
+            
+            const dayA = parseInt(dobA[0]) || 1;
+            const monthA = parseInt(dobA[1]) || 1;
+            const yearA = parseInt(dobA[2]) || 1900;
+            
+            const dayB = parseInt(dobB[0]) || 1;
+            const monthB = parseInt(dobB[1]) || 1;
+            const yearB = parseInt(dobB[2]) || 1900;
+            
+            // Ghép ngày tháng năm
+            const dateNumber = parseInt(day.toString() + month.toString() + year.toString());
+            const dobNumberA = parseInt(dayA.toString() + monthA.toString() + yearA.toString());
+            const dobNumberB = parseInt(dayB.toString() + monthB.toString() + yearB.toString());
+            
+            // Thực hiện các phép tính
+            const colors = [];
+            
+            // Tính với ngày sinh người đi
+            const calcResultsA = performCalculations(dateNumber, dobNumberA);
+            calcResultsA.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            // Tính với ngày sinh người đến
+            const calcResultsB = performCalculations(dateNumber, dobNumberB);
+            calcResultsB.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            // Tính giữa hai ngày sinh
+            const calcBetween = performCalculations(dobNumberA, dobNumberB);
+            calcBetween.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            // Đếm số lần xuất hiện của mỗi màu
+            const colorCount = {};
+            colors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                colorCount[key] = (colorCount[key] || 0) + 1;
+            });
+            
+            // Tìm màu xuất hiện nhiều nhất
+            let maxCount = 0;
+            let topColors = [];
+            
+            for (const [key, count] of Object.entries(colorCount)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    topColors = [key];
+                } else if (count === maxCount) {
+                    topColors.push(key);
+                }
+            }
+            
+            // Hiển thị kết quả
+            document.getElementById('result4').style.display = 'block';
+            
+            let stepsHtml = `<div class="step">Ngày nhập: ${day}/${month}/${year}</div>`;
+            stepsHtml += `<div class="step">Số ghép từ ngày: ${dateNumber}</div>`;
+            stepsHtml += `<div class="step">Người đi: ${personA} (ngày sinh: ${personAData.dob}, số: ${dobNumberA})</div>`;
+            stepsHtml += `<div class="step">Người đến: ${personB} (ngày sinh: ${personBData.dob}, số: ${dobNumberB})</div>`;
+            stepsHtml += `<div class="step">Đã thực hiện tất cả các phép tính cộng, trừ, nhân, chia</div>`;
+            
+            document.getElementById('steps4').innerHTML = stepsHtml;
+            
+            // Hiển thị tất cả màu tìm được
+            let colorsHtml = '';
+            const uniqueColors = [];
+            const seenColors = new Set();
+            
+            colors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                if (!seenColors.has(key)) {
+                    seenColors.add(key);
+                    uniqueColors.push(color);
+                }
+            });
+            
+            uniqueColors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                const count = colorCount[key];
+                const isTopColor = topColors.includes(key);
+                
+                colorsHtml += `
+                    <div class="color-box" style="background-color: ${color.hex}; border: ${isTopColor ? '3px solid #FF0000' : 'none'}">
+                        <div class="color-name">${color.name}</div>
+                        <div class="color-hex">${color.hex}</div>
+                        <div style="margin-top: 5px; font-size: 0.8rem;">Xuất hiện: ${count} lần</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('colors4').innerHTML = colorsHtml;
+            
+            // Hiển thị thống kê
+            let statsHtml = `Tổng cộng có <span class="highlight">${uniqueColors.length}</span> màu khác nhau được tìm thấy.<br>`;
+            statsHtml += `Màu xuất hiện nhiều nhất (${maxCount} lần): `;
+            
+            topColors.forEach((key, index) => {
+                const [name, hex] = key.split('-');
+                statsHtml += `<span class="highlight">${name}</span>`;
+                if (index < topColors.length - 1) {
+                    statsHtml += ', ';
+                }
+            });
+            
+            document.getElementById('stats4').innerHTML = statsHtml;
+        }
+        
+        function calculateCard5() {
+            // Lấy ngày đi
+            const dayA = parseInt(document.getElementById('day5a').value) || 1;
+            const monthA = parseInt(document.getElementById('month5a').value) || 1;
+            const yearA = parseInt(document.getElementById('year5a').value) || 2025;
+            
+            // Lấy ngày về
+            const dayB = parseInt(document.getElementById('day5b').value) || 1;
+            const monthB = parseInt(document.getElementById('month5b').value) || 1;
+            const yearB = parseInt(document.getElementById('year5b').value) || 2025;
+            
+            // Lấy số lớn và số nhỏ
+            const largeNum = parseInt(document.getElementById('number5a').value) || 9;
+            const smallNum = parseInt(document.getElementById('number5b').value) || 3;
+            
+            // Tạo đối tượng ngày
+            const startDate = new Date(yearA, monthA - 1, dayA);
+            const endDate = new Date(yearB, monthB - 1, dayB);
+            
+            // Kiểm tra ngày hợp lệ
+            if (startDate > endDate) {
+                alert("Ngày đi phải trước ngày về!");
+                return;
+            }
+            
+            // Ngày mốc 1/1/1900
+            const baseDate = new Date(1900, 0, 1);
+            
+            // Tính số ngày
+            const timeDiff = endDate.getTime() - startDate.getTime();
+            const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+            
+            // Mảng lưu kết quả từng ngày
+            const dailyResults = [];
+            const colorCount = {};
+            
+            // Tính toán cho từng ngày
+            let currentDate = new Date(startDate);
+            for (let i = 0; i < dayDiff; i++) {
+                // Tính số ngày từ 1/1/1900 đến ngày hiện tại
+                const currentTimeDiff = currentDate.getTime() - baseDate.getTime();
+                const daysFromBase = Math.floor(currentTimeDiff / (1000 * 3600 * 24));
+                
+                // Chia lấy dư cho 9
+                let remainder9 = daysFromBase % 9;
+                if (remainder9 === 0) remainder9 = 9;
+                
+                // Thực hiện 4 phép tính với số lớn
+                const calcResultsLarge = performCalculations(remainder9, largeNum);
+                
+                // Thực hiện 4 phép tính với số nhỏ
+                const calcResultsSmall = performCalculations(remainder9, smallNum);
+                
+                // Kết hợp tất cả kết quả
+                const allResults = [...calcResultsLarge, ...calcResultsSmall];
+                
+                // Lấy màu cho mỗi kết quả
+                allResults.forEach(result => {
+                    const color = getColorByNumber(result);
+                    dailyResults.push({
+                        date: new Date(currentDate),
+                        color: color
+                    });
+                    
+                    // Đếm màu
+                    const key = color.name + "-" + color.hex;
+                    colorCount[key] = (colorCount[key] || 0) + 1;
+                });
+                
+                // Tăng ngày
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            
+            // Tìm màu xuất hiện nhiều nhất
+            let maxCount = 0;
+            let topColors = [];
+            
+            for (const [key, count] of Object.entries(colorCount)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    topColors = [key];
+                } else if (count === maxCount) {
+                    topColors.push(key);
+                }
+            }
+            
+            // Hiển thị kết quả
+            document.getElementById('result5').style.display = 'block';
+            
+            let stepsHtml = `<div class="step">Ngày đi: ${dayA}/${monthA}/${yearA}</div>`;
+            stepsHtml += `<div class="step">Ngày về: ${dayB}/${monthB}/${yearB}</div>`;
+            stepsHtml += `<div class="step">Số ngày đi: ${dayDiff} ngày</div>`;
+            stepsHtml += `<div class="step">Số lớn: ${largeNum}, Số nhỏ: ${smallNum}</div>`;
+            stepsHtml += `<div class="step">Đã tính toán 4 phép tính (cộng, trừ, nhân, chia) cho từng ngày</div>`;
+            stepsHtml += `<div class="step">Tổng cộng có ${dailyResults.length} kết quả màu được tạo ra</div>`;
+            
+            document.getElementById('steps5').innerHTML = stepsHtml;
+            
+            // Hiển thị các màu được chọn nhiều nhất
+            let colorsHtml = '';
+            
+            topColors.forEach(key => {
+                const [name, hex] = key.split('-');
+                colorsHtml += `
+                    <div class="color-box" style="background-color: ${hex};">
+                        <div class="color-name">${name}</div>
+                        <div class="color-hex">${hex}</div>
+                        <div style="margin-top: 5px; font-size: 0.8rem;">Xuất hiện: ${maxCount} lần</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('colors5').innerHTML = colorsHtml;
+            
+            // Hiển thị thống kê
+            let statsHtml = `Chuyến đi kéo dài <span class="highlight">${dayDiff}</span> ngày.<br>`;
+            statsHtml += `Nên chuẩn bị khoảng <span class="highlight">${Math.min(Math.max(3, dayDiff), 15)}</span> bộ trang phục.<br>`;
+            statsHtml += `Màu nên chọn (xuất hiện ${maxCount} lần): `;
+            
+            topColors.forEach((key, index) => {
+                const [name, hex] = key.split('-');
+                statsHtml += `<span class="highlight">${name}</span>`;
+                if (index < topColors.length - 1) {
+                    statsHtml += ', ';
+                }
+            });
+            
+            statsHtml += `<br>Gợi ý: Sử dụng luân phiên các màu này trong suốt chuyến đi.`;
+            
+            document.getElementById('stats5').innerHTML = statsHtml;
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

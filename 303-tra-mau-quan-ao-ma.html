@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Tuổi & Màu Sắc May Mắn</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+            color: white;
+            text-align: center;
+            padding: 25px 20px;
+            border-bottom: 5px solid #ffcc00;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+            font-size: 1.1rem;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #6a11cb;
+            box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+            color: white;
+        }
+        
+        .reset-btn {
+            background: #f0f0f0;
+            color: #555;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-section {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .result-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border-left: 8px solid #6a11cb;
+            margin-bottom: 25px;
+        }
+        
+        .result-title {
+            color: #6a11cb;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .color-result {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .color-item {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+        
+        .color-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .clothing-result {
+            background: #f9f9f9;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .clothing-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 8px;
+            border-left: 5px solid #2575fc;
+        }
+        
+        .color-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 15px;
+            border: 2px solid white;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .info-text {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            padding: 10px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 15px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .color-item {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Tính Tuổi & Màu Sắc May Mắn</h1>
+            <p class="subtitle">Nhập thông tin để tính tuổi và tìm màu sắc phù hợp với bạn</p>
+        </header>
+        
+        <div class="content">
+            <div class="input-group">
+                <label for="currentDate"><i class="far fa-calendar-alt"></i> Ngày hiện tại</label>
+                <input type="date" id="currentDate" value="">
+            </div>
+            
+            <div class="input-group">
+                <label for="birthDate"><i class="fas fa-birthday-cake"></i> Ngày sinh</label>
+                <input type="date" id="birthDate">
+            </div>
+            
+            <div class="input-group">
+                <label for="name"><i class="far fa-user"></i> Họ và tên</label>
+                <input type="text" id="name" placeholder="Nhập họ và tên của bạn">
+            </div>
+            
+            <div class="input-group">
+                <label for="personList"><i class="fas fa-list"></i> Danh sách người (chọn để tự động điền)</label>
+                <select id="personList">
+                    <option value="">-- Chọn người từ danh sách --</option>
+                    <option value="NGUYENKHACNANG,04/06/1944">1. NGUYENKHACNANG - 04/06/1944</option>
+                    <option value="TOTHIHA,29/08/1948">2. TOTHIHA - 29/08/1948</option>
+                    <option value="NGUYENMINHNAM,03/03/1971">3. NGUYENMINHNAM - 03/03/1971</option>
+                    <option value="THANTHIKIMANH,23/09/1981">4. THANTHIKIMANH - 23/09/1981</option>
+                    <option value="NGUYENTONGANAN,28/09/2014">5. NGУYENTONGANAN - 28/09/2014</option>
+                    <option value="NGUYENTOMINHCHAU,25/07/2016">6. NGUYENTOMINHCHAU - 25/07/2016</option>
+                    <option value="NGUYENTOBICHNGOC,05/02/2020">7. NGUYENTOBICHNGOC - 05/02/2020</option>
+                    <option value="NGUYENTHIMINHHANG,07/01/1974">8. NGUYENTHIMINHHANG - 07/01/1974</option>
+                    <option value="NGOQUYCUONG,23/05/1973">9. NGOQUYCUONG - 23/05/1973</option>
+                    <option value="NGOGIABACH,12/10/2000">10. NGOGIABACH - 12/10/2000</option>
+                    <option value="NGOGIALINH,05/04/2005">11. NGOGIALINH - 05/04/2005</option>
+                    <option value="NGUYENTHIMINHPHUONG,06/11/1978">12. NGUYENTHIMINHPHUONG - 06/11/1978</option>
+                    <option value="HOANGANHDUNG,21/09/1978">13. HOANGANHDUNG - 21/09/1978</option>
+                    <option value="HOANGHAIVINH,03/06/2010">14. HOANGHAIVINH - 03/06/2010</option>
+                    <option value="HOANGTHIENBACHANH,14/11/2015">15. HOANGTHIENBACHANH - 14/11/2015</option>
+                    <option value="TÔ KIM HUỆ,09/08/1960">16. TÔ KIM HUỆ - 9/8/1960</option>
+                    <option value="NGUYỄN TUẤN ANH,23/10/1983">17. NGUYỄN TUẤN ANH - 23/10/1983</option>
+                    <option value="NGUYỄN THẾ ANH,24/03/2001">18. NGUYỄN THẾ ANH - 24/3/2001</option>
+                    <option value="NGÔ THỊ MAI,12/12/1948">19. NGÔ THỊ MAI - 12/12/1948</option>
+                    <option value="TÔ VIỆT HƯNG,17/06/1996">20. TÔ VIỆT HƯNG - 17/6/1996</option>
+                    <option value="TÔ THỊ HỒNG,10/10/1964">21. TÔ THỊ HỒNG - 10/10/1964</option>
+                    <option value="VŨ VĂN HIỆP,24/04/1974">22. VŨ VĂN HIỆP - 24/4/1974</option>
+                    <option value="NGUYỄN THỊ CHI,08/02/1946">23. NGUYỄN THỊ CHI - 8/2/1946</option>
+                    <option value="NGUYỄN TẤN BẮC,30/11/1957">24. NGUYỄN TẤN BẮC - 30/11/1957</option>
+                    <option value="NGUYỄN THỊ TÂM,08/08/1954">25. NGUYỄN THỊ TÂM - 8/8/1954</option>
+                </select>
+            </div>
+            
+            <div class="button-group">
+                <button class="calculate-btn" id="calculateBtn">
+                    <i class="fas fa-magic"></i> Tính Toán & Tra Màu
+                </button>
+                <button class="reset-btn" id="resetBtn">
+                    <i class="fas fa-redo"></i> Nhập Lại
+                </button>
+            </div>
+            
+            <div class="result-section" id="resultSection">
+                <div class="result-card">
+                    <h2 class="result-title"><i class="fas fa-user-circle"></i> Thông tin cá nhân</h2>
+                    <p><strong>Họ tên:</strong> <span id="resultName"></span></p>
+                    <p><strong>Ngày sinh:</strong> <span id="resultBirthDate"></span></p>
+                    <p><strong>Tuổi:</strong> <span id="resultAge"></span> tuổi</p>
+                    <p><strong>Hai số cuối năm sinh:</strong> <span id="resultLastTwoDigits"></span></p>
+                    <p><strong>Mã tháng tương ứng:</strong> <span id="resultMonthCode"></span></p>
+                </div>
+                
+                <div class="result-card">
+                    <h2 class="result-title"><i class="fas fa-palette"></i> Màu sắc may mắn của bạn</h2>
+                    <div class="color-result" id="colorResult">
+                        <!-- Màu sắc sẽ được thêm vào đây bằng JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <h2 class="result-title"><i class="fas fa-tshirt"></i> Gợi ý trang phục phù hợp</h2>
+                    <div class="clothing-result" id="clothingResult">
+                        <!-- Gợi ý trang phục sẽ được thêm vào đây bằng JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Ứng dụng tính tuổi và tra màu sắc may mắn | Thiết kế cho màn hình điện thoại</p>
+    </div>
+
+    <script>
+        // Thiết lập ngày hiện tại mặc định
+        document.getElementById('currentDate').valueAsDate = new Date();
+        
+        // Bảng mã tháng
+        const monthCodes = {
+            12: 6, 11: 4, 10: 1, 9: 6, 8: 3, 7: 0,
+            6: 5, 5: 2, 4: 0, 3: 4, 2: 4, 1: 1
+        };
+        
+        // Bảng màu
+        const colorTable = [
+            {code: 1, number: 1, color: "ĐỎ", hex: "#FF0000"},
+            {code: 2, number: 2, color: "VÀNG", hex: "#FFD700"},
+            {code: 3, number: 3, color: "KIM LOẠI", hex: "#C0C0C0"},
+            {code: 4, number: 4, color: "XANH BIỂN", hex: "#1E90FF"},
+            {code: 5, number: 5, color: "XANH LÁ", hex: "#32CD32"},
+            {code: 1, number: 6, color: "ĐỎ", hex: "#FF0000"},
+            {code: 2, number: 7, color: "VÀNG", hex: "#FFD700"},
+            {code: 3, number: 8, color: "DA CAM", hex: "#FF8C00"},
+            {code: 4, number: 9, color: "XANH BIỂN", hex: "#1E90FF"},
+            {code: 5, number: 10, color: "XANH LÁ", hex: "#32CD32"},
+            {code: 6, number: 11, color: "CHẤM", hex: "#000000"},
+            {code: 7, number: 12, color: "TÍM", hex: "#8A2BE2"},
+            {code: 1, number: 13, color: "VÀNG", hex: "#FFD700"},
+            {code: 2, number: 14, color: "ĐỎ", hex: "#FF0000"},
+            {code: 3, number: 15, color: "HỒNG", hex: "#FFC0CB"},
+            {code: 4, number: 16, color: "GHI", hex: "#808080"},
+            {code: 5, number: 17, color: "TRẮNG", hex: "#FFFFFF"},
+            {code: 6, number: 18, color: "ĐEN", hex: "#000000"},
+            {code: 7, number: 19, color: "DA TRỜI", hex: "#87CEEB"},
+            {code: 8, number: 20, color: "XANH LÁ", hex: "#32CD32"},
+            {code: 1, number: 21, color: "ĐEN", hex: "#000000"},
+            {code: 2, number: 22, color: "TRẮNG", hex: "#FFFFFF"},
+            {code: 3, number: 23, color: "DA TRỜI", hex: "#87CEEB"},
+            {code: 4, number: 24, color: "XANH LÁ", hex: "#32CD32"},
+            {code: 5, number: 25, color: "XANH BIỂN", hex: "#1E90FF"},
+            {code: 6, number: 26, color: "TÍM", hex: "#8A2BE2"},
+            {code: 7, number: 27, color: "ĐỎ", hex: "#FF0000"},
+            {code: 8, number: 28, color: "DA CAM", hex: "#FF8C00"},
+            {code: 9, number: 29, color: "VÀNG", hex: "#FFD700"},
+            {code: 30, number: 30, color: "ĐỎ", hex: "#FF0000"},
+            {code: 31, number: 31, color: "VÀNG", hex: "#FFD700"},
+            {code: 0, number: 0, color: "HỒNG", hex: "#FFC0CB"}
+        ];
+        
+        // Bảng quần áo
+        const clothingTable = [
+            {color: "DA TRỜI", item: "ÁO SƠ MI DA TRỜI"},
+            {color: "VÀNG", item: "ÁO SƠ MI VÀNG ĐT 30 33"},
+            {color: "DA CAM", item: "ÁO SƠ MI DA CAM ĐT 30 33"},
+            {color: "TRẮNG", item: "ÁO SƠ MI TRẮNG 30 33"},
+            {color: "ĐỎ", item: "DÂY CHỮ Y"},
+            {color: "GHI", item: "ÁO SƠ MI KẺ ĐEN TO"},
+            {color: "ĐỎ", item: "ÁO SƠ MI KẺ TRẮNG ĐỎ 30 33"},
+            {color: "DA TRỜI", item: "ÁO SƠ MI KẺ XANH DA TRỜI"},
+            {color: "ĐỎ", item: "CÀ VẠT ĐỎ KẺ"},
+            {color: "XANH LÁ", item: "CÀ VẠT XANH LÁ 06 27"},
+            {color: "GHI", item: "CÀ VẠT GHI 06 27"},
+            {color: "HỒNG", item: "CÀ VẠT HỒNG"},
+            {color: "TÍM", item: "CÀ VẠT TÍM 06 27"},
+            {color: "VÀNG", item: "CÀ VẠT VÀNG"},
+            {color: "DA CAM", item: "CÀ VẠT DA CAM"},
+            {color: "XANH LÁ", item: "QUẦN DÀI BỘ ĐỘI 1"},
+            {color: "TRẮNG", item: ""},
+            {color: "ĐEN", item: "QUẦN DÀI ĐEN"},
+            {color: "VÀNG", item: "QUẦN DÀI VÀNG NHẠT"},
+            {color: "GHI", item: "QUẦN DÀI TRẮNG COMPLE"},
+            {color: "NGỌC", item: "QUẦN DÀI XANH NGỌC"},
+            {color: "XANH BIỂN", item: "QUẦN BÒ"},
+            {color: "DA CAM", item: "ÁO HỔ"},
+            {color: "TÍM", item: "ÁO NGỰA"},
+            {color: "TRẮNG", item: "ÁO CAPTAN"},
+            {color: "VÀNG", item: "ÁO CHÓ"},
+            {color: "XANH LÁ", item: "ÁO PHÔNG XANH LÁ KẺ CHẤM TRẮNG U2"},
+            {color: "TRẮNG", item: "ÁO PHÔNG TRẮNG SPORT"},
+            {color: "XANH BIỂN", item: "ÁO PHÔNG XANH BIỂN TRẮNG NIKE"},
+            {color: "GHI", item: "ÁO PHÔNG TRẮNG NGỰA BÔNG"},
+            {color: "ĐEN", item: "ÁO PHÔNG VÀNG SỐ 7"},
+            {color: "XANH BIỂN", item: "ÁO PHÔNG TRẮNG SPORT"},
+            {color: "TRẮNG", item: "ÁO SÁT NÁCH TRẮNG"},
+            {color: "ĐEN", item: "ÁO SÁT NÁCH ĐEN CŨ 33 37"},
+            {color: "HỒNG", item: "ÁO SÁT NÁCH HỒNG 33 37"},
+            {color: "XANH BIỂN", item: "ÁO SÁT NÁCH XANH BIỂN MỚI 33 37"},
+            {color: "GHI", item: "ÁO SÁT NÁCH GHI MỚI"},
+            {color: "ĐỎ", item: "ÁO KHOÁC VAI ĐỎ ĐEN"},
+            {color: "XANH BIỂN", item: "ÁO KHOÁC XANH BIỂN BẢO VỆ"},
+            {color: "ĐEN", item: "ÁO KHOÁC ĐEN THỂ THAO"},
+            {color: "GHI", item: "ÁO KHOÁC GHI ĐEN KHÓA HỒNG"},
+            {color: "XANH BIỂN", item: "ÁO KHOÁC THỂ THAO SEAGAME"},
+            {color: "DA TRỜI", item: "ÁO KHOÁC THỂ THAO SEAGAME"},
+            {color: "XANH BIỂN", item: "ÁO KHOÁC TRẮNG XANH BIỂN"},
+            {color: "TRẮNG", item: "ÁO KHOÁC TRẮNG XANH BIỂN"},
+            {color: "ĐEN", item: "ÁO KHOÁC ĐEN ĐỎ"},
+            {color: "TRẮNG", item: "ÁO GILE VẢI TRẮNG 20"},
+            {color: "VÀNG", item: "ÁO GILE VÀNG 24"},
+            {color: "GHI", item: "ÁO GILE GHI 26"},
+            {color: "XANH LÁ", item: "ÁO GILE BUDONG XANH LÁ"},
+            {color: "TRẮNG", item: "ÁO GILE LEN TRẮNG"},
+            {color: "ĐEN", item: "ÁO BU DÔNG ĐEN"},
+            {color: "TRẮNG", item: "ÁO BU DÔNG TRẮNG"},
+            {color: "XANH LÁ", item: "ÁO BU DÔNG XANH LÁ"},
+            {color: "XANH BIỂN", item: "ÁO BU DÔNG XANH BIỂN"},
+            {color: "VÀNG", item: "ÁO MĂNG TÔ VÀNG"},
+            {color: "TÍM", item: "ÁO BU DÔNG TÍM"},
+            {color: "GHI", item: "ÁO BU DÔNG GHI"},
+            {color: "GHI", item: "ÁO LEN GHI"},
+            {color: "ĐEN", item: "ÁO LEN ĐEN"},
+            {color: "TRẮNG", item: "ÁO LEN ĐEN TRẮNG"},
+            {color: "XANH LÁ", item: "ÁO LEN XANH LÁ"},
+            {color: "XANH LÁ", item: "ÁO LEN TRẮNG XANH LÁ ĐEN 1"},
+            {color: "ĐEN", item: "ÁO LEN TRẮNG XANH LÁ ĐEN 2"},
+            {color: "TRẮNG", item: "ÁO LEN TRẮNG XANH LÁ ĐEN 3"},
+            {color: "VÀNG", item: "ÁO SỢI KẺ NGANG VÀNG GHI"},
+            {color: "ĐEN", item: "ÁO SỢI Ô TRÁM ĐEN VÀNG"},
+            {color: "TRẮNG", item: "ÁO SỢI LÔNG VÀNG GHI"},
+            {color: "GHI", item: "ÁO SỢI LÔNG GHI TRẮNG"},
+            {color: "VÀNG", item: "ÁO SỢI Ô TRÁM ĐEN VÀNG"},
+            {color: "XANH LÁ", item: "ÁO SỢI LÔNG VÀNG GHI"},
+            {color: "TÍM", item: "ÁO SỢI LÔNG GHI TRẮNG"},
+            {color: "VÀNG", item: "CỞI TRẦN"},
+            {color: "ĐEN", item: "CỞI TRẦN"},
+            {color: "HỒNG", item: "CỞI TRẦN"},
+            {color: "XANH LÁ", item: "ÁO GIỮ NHIỆT XANH LÁ"},
+            {color: "VÀNG", item: ""},
+            {color: "ĐEN", item: "COMPLE TỐI"},
+            {color: "HỒNG", item: "COMPLE BÉ"},
+            {color: "XANH BIỂN", item: "COMPLE XANH BIỂN"},
+            {color: "GHI", item: "COMPLE GƯƠNG"},
+            {color: "TRẮNG", item: "COMPLE TRẮNG"},
+            {color: "COMPLE", item: ""},
+            {color: "NGỌC", item: "0"},
+            {color: "XANH LÁ", item: "ÁO VÉT KẺ CA RÔ"},
+            {color: "VÀNG", item: "QUẦN SHORT VÀNG 27 33"},
+            {color: "XANH LÁ", item: "QUẦN SHORT XANH LÁ 27 33"},
+            {color: "XANH BIỂN", item: "QUẦN SHORT BÒ 27 33"},
+            {color: "DA TRỜI", item: "QUẦN SHORT BÒ NHẠT"},
+            {color: "TRẮNG", item: "QUẦN SHORT TRẮNG 27 33"},
+            {color: "ĐEN", item: "QUẦN SHORT ĐEN 27 33"},
+            {color: "ĐEN", item: "QUẦN THỂ THAO ĐEN ĐỎ"},
+            {color: "ĐEN", item: "GIÀY MỚI"},
+            {color: "NÂU", item: "GIÀY MỚI HÈ"},
+            {color: "ĐEN", item: ""},
+            {color: "ĐEN", item: "GIÀY CÔNG SỞ ĐEN 21 33"},
+            {color: "VÀNG", item: ""},
+            {color: "ĐEN", item: ""},
+            {color: "XANH LÁ", item: "MŨ LƯỠI TRAI XANH LÁ TRẮNG 25 33"},
+            {color: "XANH LÁ", item: "MŨ LƯỠI TRAI ĐỎ 25 38"},
+            {color: "XANH BIỂN", item: "MŨ LƯỠI TRAI XANH BIỂN 25 33"},
+            {color: "GHI", item: "MŨ LƯỠI TRAI XÁM 25 33"},
+            {color: "ĐỎ", item: ""},
+            {color: "ĐỎ", item: ""},
+            {color: "ĐEN", item: ""},
+            {color: "TRẮNG", item: ""},
+            {color: "XANH BIỂN", item: ""},
+            {color: "DA TRỜI", item: "ÁO KHOÁC THỂ THAO SEAGAME"},
+            {color: "GHI", item: "QUẦN NGỦ GHI 1"},
+            {color: "GHI", item: "QUẦN NGỦ GHI 2"},
+            {color: "ĐỎ", item: "2 QUẦN DÀI"},
+            {color: "ĐEN", item: "ĐI XE MÁY – 2 ĐỒ"},
+            {color: "TRẮNG", item: "ĐI TẤT NGỦ"},
+            {color: "DA TRỜI", item: "ĐEO KHẨU TRANG"},
+            {color: "GHI", item: "BỘ TDTT GHI"},
+            {color: "DA TRỜI", item: "ĐEO KHẨU TRANG"},
+            {color: "XANH BIỂN", item: "BỘ THỂ THAO"},
+            {color: "ĐEN", item: "ĐI TẤT NGỦ"},
+            {color: "XANH BIỂN", item: "QUẦN DÀI BẢO VỆ"},
+            {color: "GHI", item: "QUẦN THUN GHI"},
+            {color: "ĐEN", item: "QUẦN THỂ THAO BÓNG ĐỎ ĐEN"}
+        ];
+        
+        // Giải thích màu sắc
+        const colorExplanations = {
+            "ĐỎ": "Màu đỏ tượng trưng cho năng lượng, đam mê và quyền lực. Trong phong thủy, màu đỏ mang lại may mắn, thịnh vượng.",
+            "VÀNG": "Màu vàng đại diện cho trí tuệ, sự sáng tạo và lạc quan. Màu này giúp tăng cường sự tự tin và tập trung.",
+            "KIM LOẠI": "Màu kim loại tượng trưng cho sự tinh tế, sang trọng và hiện đại. Thể hiện sự mạnh mẽ và bền vững.",
+            "XANH BIỂN": "Màu xanh biển mang lại cảm giác bình yên, tin tưởng và trung thành. Giúp giảm căng thẳng, tăng sự sáng suốt.",
+            "XANH LÁ": "Màu xanh lá tượng trưng cho sự phát triển, sức sống và hài hòa. Mang lại cảm giác tươi mới và cân bằng.",
+            "DA CAM": "Màu da cam thể hiện sự nhiệt tình, vui vẻ và sáng tạo. Kích thích giao tiếp và tương tác xã hội.",
+            "CHẤM": "Màu chấm (đen trắng) đại diện cho sự cân bằng, rõ ràng và quyết đoán. Thể hiện sự mạnh mẽ và quyết tâm.",
+            "TÍM": "Màu tím tượng trưng cho sự sáng tạo, tâm linh và sang trọng. Kích thích trí tưởng tượng và trực giác.",
+            "HỒNG": "Màu hồng đại diện cho tình yêu, sự dịu dàng và lãng mạn. Mang lại cảm giác bình yên và ấm áp.",
+            "GHI": "Màu ghi thể hiện sự ổn định, chín chắn và đáng tin cậy. Tạo cảm giác an toàn và vững chắc.",
+            "TRẮNG": "Màu trắng tượng trưng cho sự tinh khiết, đơn giản và hoàn hảo. Mang lại cảm giác thanh thản và mới mẻ.",
+            "ĐEN": "Màu đen đại diện cho sự bí ẩn, quyền lực và thanh lịch. Thể hiện sự mạnh mẽ và quyết đoán.",
+            "DA TRỜI": "Màu da trời mang lại cảm giác nhẹ nhàng, tự do và thoải mái. Giúp giảm căng thẳng và tạo không gian mở."
+        };
+        
+        // Xử lý khi chọn người từ danh sách
+        document.getElementById('personList').addEventListener('change', function() {
+            if (this.value) {
+                const [name, birthDate] = this.value.split(',');
+                document.getElementById('name').value = name;
+                
+                // Chuyển đổi định dạng ngày từ dd/mm/yyyy sang yyyy-mm-dd
+                const [day, month, year] = birthDate.split('/');
+                const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                document.getElementById('birthDate').value = formattedDate;
+            }
+        });
+        
+        // Xử lý khi nhấn nút tính toán
+        document.getElementById('calculateBtn').addEventListener('click', function() {
+            calculateAndDisplay();
+        });
+        
+        // Xử lý khi nhấn nút nhập lại
+        document.getElementById('resetBtn').addEventListener('click', function() {
+            resetForm();
+        });
+        
+        // Hàm tính toán và hiển thị kết quả
+        function calculateAndDisplay() {
+            const currentDate = new Date(document.getElementById('currentDate').value);
+            const birthDate = new Date(document.getElementById('birthDate').value);
+            const name = document.getElementById('name').value;
+            
+            // Kiểm tra dữ liệu nhập
+            if (!birthDate || !name) {
+                alert("Vui lòng nhập đầy đủ ngày sinh và tên!");
+                return;
+            }
+            
+            // Tính tuổi
+            let age = currentDate.getFullYear() - birthDate.getFullYear();
+            const monthDiff = currentDate.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            // Lấy hai số cuối năm sinh
+            const lastTwoDigits = birthDate.getFullYear() % 100;
+            
+            // Lấy mã tháng
+            const month = birthDate.getMonth() + 1; // Tháng bắt đầu từ 0
+            const monthCode = monthCodes[month] !== undefined ? monthCodes[month] : 0;
+            
+            // Hiển thị thông tin cơ bản
+            document.getElementById('resultName').textContent = name;
+            document.getElementById('resultBirthDate').textContent = formatDate(birthDate);
+            document.getElementById('resultAge').textContent = age;
+            document.getElementById('resultLastTwoDigits').textContent = lastTwoDigits.toString().padStart(2, '0');
+            document.getElementById('resultMonthCode').textContent = monthCode;
+            
+            // Tính toán màu sắc
+            const colors = calculateColors(lastTwoDigits, monthCode);
+            
+            // Hiển thị màu sắc
+            displayColors(colors);
+            
+            // Hiển thị gợi ý trang phục
+            displayClothing(colors);
+            
+            // Hiển thị kết quả
+            document.getElementById('resultSection').style.display = 'block';
+            
+            // Cuộn đến phần kết quả
+            document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Hàm tính toán màu sắc
+        function calculateColors(lastTwoDigits, monthCode) {
+            const colors = [];
+            const digit1 = Math.floor(lastTwoDigits / 10);
+            const digit2 = lastTwoDigits % 10;
+            
+            // Tìm màu cho từng số
+            const codesToFind = [digit1, digit2];
+            if (monthCode !== 0) codesToFind.push(monthCode);
+            
+            // Đảm bảo không trùng lặp màu
+            const addedColors = new Set();
+            
+            codesToFind.forEach(code => {
+                // Nếu code là 0, tìm tất cả các màu có số 0
+                if (code === 0) {
+                    colorTable.forEach(item => {
+                        if (item.number === 0 && !addedColors.has(item.color)) {
+                            colors.push(item);
+                            addedColors.add(item.color);
+                        }
+                    });
+                } else {
+                    // Tìm tất cả các màu có code trùng
+                    colorTable.forEach(item => {
+                        if (item.code === code && !addedColors.has(item.color)) {
+                            colors.push(item);
+                            addedColors.add(item.color);
+                        }
+                    });
+                }
+            });
+            
+            return colors;
+        }
+        
+        // Hàm hiển thị màu sắc
+        function displayColors(colors) {
+            const colorResult = document.getElementById('colorResult');
+            colorResult.innerHTML = '';
+            
+            if (colors.length === 0) {
+                colorResult.innerHTML = '<p>Không tìm thấy màu sắc phù hợp.</p>';
+                return;
+            }
+            
+            colors.forEach(colorItem => {
+                const colorDiv = document.createElement('div');
+                colorDiv.className = 'color-item';
+                colorDiv.style.backgroundColor = colorItem.hex;
+                colorDiv.style.border = colorItem.color === 'TRẮNG' || colorItem.color === 'KIM LOẠI' ? '2px solid #ddd' : 'none';
+                colorDiv.style.color = colorItem.color === 'TRẮNG' || colorItem.color === 'VÀNG' || colorItem.color === 'KIM LOẠI' ? '#333' : 'white';
+                
+                colorDiv.innerHTML = `
+                    <div style="font-size: 1.2rem; margin-bottom: 5px;">${colorItem.color}</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">${colorItem.hex}</div>
+                    <div style="font-size: 0.8rem; margin-top: 8px; background: rgba(255,255,255,0.2); padding: 5px; border-radius: 5px;">
+                        ${colorExplanations[colorItem.color] || 'Màu sắc mang lại năng lượng tích cực'}
+                    </div>
+                `;
+                
+                colorResult.appendChild(colorDiv);
+            });
+        }
+        
+        // Hàm hiển thị gợi ý trang phục
+        function displayClothing(colors) {
+            const clothingResult = document.getElementById('clothingResult');
+            clothingResult.innerHTML = '';
+            
+            if (colors.length === 0) return;
+            
+            // Lấy tất cả các màu
+            const colorNames = colors.map(c => c.color);
+            
+            // Tìm trang phục phù hợp
+            const matchedClothing = clothingTable.filter(item => {
+                return colorNames.includes(item.color) && item.item.trim() !== '';
+            });
+            
+            // Giới hạn số lượng hiển thị
+            const displayCount = Math.min(matchedClothing.length, 10);
+            
+            if (displayCount === 0) {
+                clothingResult.innerHTML = '<p>Không tìm thấy gợi ý trang phục phù hợp.</p>';
+                return;
+            }
+            
+            for (let i = 0; i < displayCount; i++) {
+                const item = matchedClothing[i];
+                const colorItem = colors.find(c => c.color === item.color);
+                
+                const clothingDiv = document.createElement('div');
+                clothingDiv.className = 'clothing-item';
+                
+                clothingDiv.innerHTML = `
+                    <div class="color-dot" style="background-color: ${colorItem?.hex || '#CCC'}"></div>
+                    <div>
+                        <div style="font-weight: 600; color: #444;">${item.item}</div>
+                        <div style="font-size: 0.9rem; color: #666;">Màu phù hợp: ${item.color}</div>
+                    </div>
+                `;
+                
+                clothingResult.appendChild(clothingDiv);
+            }
+            
+            if (matchedClothing.length > displayCount) {
+                const moreDiv = document.createElement('div');
+                moreDiv.style.textAlign = 'center';
+                moreDiv.style.marginTop = '10px';
+                moreDiv.style.color = '#666';
+                moreDiv.textContent = `... và ${matchedClothing.length - displayCount} gợi ý khác`;
+                clothingResult.appendChild(moreDiv);
+            }
+        }
+        
+        // Hàm định dạng ngày
+        function formatDate(date) {
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+        
+        // Hàm đặt lại form
+        function resetForm() {
+            document.getElementById('currentDate').valueAsDate = new Date();
+            document.getElementById('birthDate').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('personList').value = '';
+            document.getElementById('resultSection').style.display = 'none';
+        }
+        
+        // Thêm sự kiện Enter để tính toán
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                calculateAndDisplay();
+            }
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

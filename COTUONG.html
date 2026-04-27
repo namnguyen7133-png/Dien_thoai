@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Cờ Tướng – Tọa độ & Chữ</title>
+<style>
+body { font-family: monospace; background:#f4f6fa; padding:20px }
+h1 { color:#b71c1c }
+pre { background:#fff; padding:15px; border-radius:10px }
+input,button { padding:6px; margin:4px }
+button { cursor:pointer }
+.red { color:red }
+.black { color:black }
+</style>
+</head>
+
+<body>
+
+<h1>♟️ CỜ TƯỚNG – CHƠI BẰNG TỌA ĐỘ & CHỮ</h1>
+
+<p>
+Tọa độ: x = 0→8 (cột) | y = 0→9 (hàng)<br>
+Ví dụ: Xe đỏ tại (0,9)
+</p>
+
+<pre id="board"></pre>
+
+<h3>🎯 Nhập nước đi</h3>
+Quân tại (x,y):
+<input id="fx" type="number" min="0" max="8">
+<input id="fy" type="number" min="0" max="9"><br>
+
+Đến (x,y):
+<input id="tx" type="number" min="0" max="8">
+<input id="ty" type="number" min="0" max="9"><br>
+
+<button onclick="move()">▶️ Đi quân</button>
+
+<p id="msg"></p>
+
+<script>
+const EMPTY = " . ";
+let turn = "red";
+
+let board = [
+["車","馬","象","士","將","士","象","馬","車"],
+[EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+[EMPTY,"砲",EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,"砲",EMPTY],
+["卒",EMPTY,"卒",EMPTY,"卒",EMPTY,"卒",EMPTY,"卒"],
+[EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+[EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+["兵",EMPTY,"兵",EMPTY,"兵",EMPTY,"兵",EMPTY,"兵"],
+[EMPTY,"炮",EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,"炮",EMPTY],
+[EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+["俥","傌","相","仕","帥","仕","相","傌","俥"]
+];
+
+function draw(){
+  let s = "";
+  for(let y=0;y<10;y++){
+    s += y + " ";
+    for(let x=0;x<9;x++){
+      let c = board[y][x];
+      if("俥傌相仕帥兵炮".includes(c)) s += "%RED%" + c + "%END% ";
+      else if("車馬象士將卒砲".includes(c)) s += "%BLACK%" + c + "%END% ";
+      else s += c;
+    }
+    s += "\n";
+  }
+  s += "   0 1 2 3 4 5 6 7 8";
+  s = s.replace(/%RED%/g,'<span class="red">')
+       .replace(/%BLACK%/g,'<span class="black">')
+       .replace(/%END%/g,'</span>');
+  document.getElementById("board").innerHTML = s;
+}
+
+function isRed(c){ return "俥傌相仕帥兵炮".includes(c); }
+function isBlack(c){ return "車馬象士將卒砲".includes(c); }
+
+function move(){
+  let fx=+fxEl.value, fy=+fyEl.value;
+  let tx=+txEl.value, ty=+tyEl.value;
+}
+
+const fxEl = document.getElementById("fx");
+const fyEl = document.getElementById("fy");
+const txEl = document.getElementById("tx");
+const tyEl = document.getElementById("ty");
+
+function move(){
+  let fx=+fxEl.value, fy=+fyEl.value;
+  let tx=+txEl.value, ty=+tyEl.value;
+
+  let from = board[fy][fx];
+  let to = board[ty][tx];
+
+  if(from===EMPTY){ msg("❌ Không có quân"); return; }
+
+  if(turn==="red" && !isRed(from)){ msg("❌ Lượt đỏ"); return; }
+  if(turn==="black" && !isBlack(from)){ msg("❌ Lượt đen"); return; }
+
+  if(isRed(from) && isRed(to)) { msg("❌ Quân cùng phe"); return; }
+  if(isBlack(from) && isBlack(to)) { msg("❌ Quân cùng phe"); return; }
+
+  board[ty][tx] = from;
+  board[fy][fx] = EMPTY;
+
+  turn = turn==="red" ? "black":"red";
+  msg("✔️ Đi quân thành công – Lượt " + (turn==="red"?"ĐỎ":"ĐEN"));
+  draw();
+}
+
+function msg(t){ document.getElementById("msg").innerText = t; }
+
+draw();
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Bát Quái và Ngũ Hành</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        
+        .form-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-section {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .result-section {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+        
+        .result-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .result-item {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-title {
+            font-weight: 600;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+        
+        .result-value {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .military-rank {
+            color: #e74c3c;
+        }
+        
+        .bagua-element {
+            color: #27ae60;
+        }
+        
+        .gender-male {
+            color: #3498db;
+        }
+        
+        .gender-female {
+            color: #e84393;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        #calculateBtn {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        #calculateBtn:hover {
+            background-color: #27ae60;
+        }
+        
+        #resetBtn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        #resetBtn:hover {
+            background-color: #c0392b;
+        }
+        
+        .note {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #fffde7;
+            border-left: 4px solid #f1c40f;
+            font-size: 0.95em;
+        }
+        
+        .canchi-table {
+            margin-top: 30px;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .highlight {
+            background-color: #e8f4fc !important;
+            font-weight: 600;
+        }
+        
+        .data-source {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ỨNG DỤNG TÍNH BÁT QUÁI VÀ NGŨ HÀNH</h1>
+            <p class="subtitle">Tính cấp bậc (Tướng, Sĩ, Tượng, Xe, Pháo, Mã, Tốt) theo bát quái và áp dụng vào kinh doanh</p>
+        </header>
+        
+        <div class="form-section">
+            <div class="input-column">
+                <div class="input-group">
+                    <label for="currentDate">1. Ngày tháng năm hiện tại</label>
+                    <input type="date" id="currentDate" value="">
+                </div>
+                
+                <div class="input-group">
+                    <label for="fullName">2. Họ và tên</label>
+                    <input type="text" id="fullName" placeholder="Nhập họ và tên">
+                </div>
+                
+                <div class="input-group">
+                    <label for="gender">4. Giới tính</label>
+                    <select id="gender">
+                        <option value="">Chọn giới tính</option>
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="input-column">
+                <div class="input-group">
+                    <label for="birthDate">3. Ngày tháng năm sinh</label>
+                    <input type="date" id="birthDate">
+                </div>
+                
+                <div class="input-group">
+                    <label for="personList">5. Danh sách người (chọn để tự động điền)</label>
+                    <select id="personList" size="5">
+                        <!-- Danh sách sẽ được thêm bằng JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="yearMod60">Năm sinh mod 60 (tự động tính)</label>
+                    <input type="text" id="yearMod60" readonly>
+                </div>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <button id="calculateBtn">Tính Toán</button>
+            <button id="resetBtn">Nhập Lại</button>
+        </div>
+        
+        <div class="result-section" id="resultSection" style="display: none;">
+            <h2>KẾT QUẢ TÍNH TOÁN</h2>
+            
+            <div class="result-grid">
+                <div class="result-item">
+                    <div class="result-title">Họ và tên</div>
+                    <div class="result-value" id="resultName">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title">Giới tính</div>
+                    <div class="result-value">
+                        <span id="resultGender" class="gender-male">-</span>
+                    </div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title">Tuổi hiện tại</div>
+                    <div class="result-value" id="resultAge">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title">Cấp bậc Bát Quái</div>
+                    <div class="result-value military-rank" id="resultRank">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title">Can Chi</div>
+                    <div class="result-value" id="resultCanChi">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title">Mệnh Ngũ Hành</div>
+                    <div class="result-value bagua-element" id="resultElement">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title">Hướng Bát Quái</div>
+                    <div class="result-value" id="resultDirection">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title">Ứng dụng trong kinh doanh</div>
+                    <div class="result-value" id="resultBusiness">-</div>
+                </div>
+            </div>
+            
+            <div class="note">
+                <p><strong>Lưu ý:</strong> Kết quả tính toán dựa trên thuật toán Bát Quái và Ngũ Hành. Các cấp bậc (Tướng, Sĩ, Tượng, Xe, Pháo, Mã, Tốt) được xác định dựa trên năm sinh và giới tính, có thể áp dụng để phân tích xu hướng trong kinh doanh và đầu tư.</p>
+            </div>
+        </div>
+        
+        <div class="canchi-table">
+            <h3>Bảng Tra Cứu Can Chi và Ngũ Hành</h3>
+            <table id="canChiTable">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Can Chi</th>
+                        <th>Nghĩa</th>
+                        <th>Mệnh</th>
+                        <th>Ngũ Hành</th>
+                        <th>Mệnh Nữ</th>
+                        <th>Mệnh Nam</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Bảng sẽ được thêm bằng JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="data-source">
+            <p>Dữ liệu được tổng hợp từ bảng Can Chi và thuật Bát Quái truyền thống.</p>
+        </div>
+    </div>
+
+    <script>
+        // Dữ liệu danh sách người
+        const personList = [
+            { id: 1, name: "NGUYENKHACNANG", dob: "1944-06-04" },
+            { id: 2, name: "TOTHIHA", dob: "1948-08-29" },
+            { id: 3, name: "NGUYENMINHNAM", dob: "1971-03-03" },
+            { id: 4, name: "THANTHIKIMANH", dob: "1981-09-23" },
+            { id: 5, name: "NGUYENTONGANAN", dob: "2014-09-28" },
+            { id: 6, name: "NGUYENTOMINHCHAU", dob: "2016-07-25" },
+            { id: 7, name: "NGUYENTOBICHNGOC", dob: "2020-02-05" },
+            { id: 8, name: "NGUYENTHIMINHHANG", dob: "1974-01-07" },
+            { id: 9, name: "NGOQUYCUONG", dob: "1973-05-23" },
+            { id: 10, name: "NGOGIABACH", dob: "2000-10-12" },
+            { id: 11, name: "NGOGIALINH", dob: "2005-04-05" },
+            { id: 12, name: "NGUYENTHIMINHPHUONG", dob: "1978-11-06" },
+            { id: 13, name: "HOANGANHDUNG", dob: "1978-09-21" },
+            { id: 14, name: "HOANGHAIVINH", dob: "2010-06-03" },
+            { id: 15, name: "HOANGTHIENBACHANH", dob: "2015-11-14" },
+            { id: 16, name: "TÔ KIM HUỆ", dob: "1960-08-09" },
+            { id: 17, name: "NGUYỄN TUẤN ANH", dob: "1983-10-23" },
+            { id: 18, name: "NGUYỄN THẾ ANH", dob: "2001-03-24" },
+            { id: 19, name: "NGÔ THỊ MAI", dob: "1948-12-12" },
+            { id: 20, name: "TÔ VIỆT HƯNG", dob: "1996-06-17" },
+            { id: 21, name: "TÔ THỊ HỒNG", dob: "1964-10-10" },
+            { id: 22, name: "VŨ VĂN HIỆP", dob: "1974-04-24" },
+            { id: 23, name: "NGUYỄN THỊ CHI", dob: "1946-02-08" },
+            { id: 24, name: "NGUYỄN TẤN BẮC", dob: "1957-11-30" },
+            { id: 25, name: "NGUYỄN THỊ TÂM", dob: "1954-08-08" }
+        ];
+
+        // Dữ liệu bảng Can Chi (rút gọn cho dễ hiển thị)
+        const canChiData = [
+            { canChi: "Giáp Tý", nghia: "Ốc Thượng Chi Thử", menh: "Kim +", nguHanh: "Hải Trung Kim", menhNu: "Đoài Kim", menhNam: "Cấn Thổ" },
+            { canChi: "Ất Sửu", nghia: "Hải Nội Chi Ngưu", menh: "Kim -", nguHanh: "Hải Trung Kim", menhNu: "Càn Kim", menhNam: "Ly Hoả" },
+            { canChi: "Bính Dần", nghia: "Sơn Lâm Chi Hổ", menh: "Hỏa +", nguHanh: "Lư Trung Hỏa", menhNu: "Khôn Thổ", menhNam: "Khảm Thuỷ" },
+            { canChi: "Đinh Mão", nghia: "Vọng Nguyệt Chi Thố", menh: "Hỏa -", nguHanh: "Lư Trung Hỏa", menhNu: "Tốn Mộc", menhNam: "Khôn Thổ" },
+            { canChi: "Mậu Thìn", nghia: "Thanh Ôn Chi Long", menh: "Mộc +", nguHanh: "Đại Lâm Mộc", menhNu: "Chấn Mộc", menhNam: "Chấn Mộc" },
+            { canChi: "Kỷ Tỵ", nghia: "Phúc Khí Chi Xà", menh: "Mộc -", nguHanh: "Đại Lâm Mộc", menhNu: "Khôn Thổ", menhNam: "Tốn Mộc" },
+            { canChi: "Canh Ngọ", nghia: "Thất Lý Chi Mã", menh: "Thổ +", nguHanh: "Lộ Bàng Thổ", menhNu: "Khảm Thuỷ", menhNam: "Cấn Thổ" },
+            { canChi: "Tân Mùi", nghia: "Đắc Lộc Chi Dương", menh: "Thổ -", nguHanh: "Lộ Bàng Thổ", menhNu: "Ly Hoả", menhNam: "Càn Kim" }
+        ];
+
+        // Dữ liệu cấp bậc Bát Quái
+        const baguaRanks = ["Tướng", "Sĩ", "Tượng", "Xe", "Pháo", "Mã", "Tốt"];
+        
+        // Dữ liệu ứng dụng kinh doanh
+        const businessApplications = {
+            "Tướng": "Lãnh đạo, chiến lược, ra quyết định quan trọng",
+            "Sĩ": "Cố vấn, hoạch định, phân tích chiến lược",
+            "Tượng": "Bảo vệ, quản lý rủi ro, ổn định hệ thống",
+            "Xe": "Tiên phong, mở rộng thị trường, tấn công mạnh mẽ",
+            "Pháo": "Sáng tạo, đột phá, cách tân sản phẩm/dịch vụ",
+            "Mã": "Linh hoạt, đa dạng hóa, thích ứng nhanh",
+            "Tốt": "Kiên trì, tích lũy, phát triển từng bước vững chắc"
+        };
+
+        // Khởi tạo khi trang được tải
+        document.addEventListener('DOMContentLoaded', function() {
+            // Đặt ngày hiện tại
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('currentDate').value = formattedDate;
+            
+            // Điền danh sách người vào select
+            const personSelect = document.getElementById('personList');
+            personList.forEach(person => {
+                const option = document.createElement('option');
+                option.value = person.id;
+                option.textContent = `${person.id}. ${person.name} - ${formatDateDisplay(person.dob)}`;
+                personSelect.appendChild(option);
+            });
+            
+            // Điền dữ liệu vào bảng Can Chi
+            const tableBody = document.getElementById('canChiTable').getElementsByTagName('tbody')[0];
+            canChiData.forEach((item, index) => {
+                const row = tableBody.insertRow();
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.canChi}</td>
+                    <td>${item.nghia}</td>
+                    <td>${item.menh}</td>
+                    <td>${item.nguHanh}</td>
+                    <td>${item.menhNu}</td>
+                    <td>${item.menhNam}</td>
+                `;
+            });
+            
+            // Sự kiện khi chọn người từ danh sách
+            personSelect.addEventListener('change', function() {
+                const selectedId = parseInt(this.value);
+                if (selectedId) {
+                    const selectedPerson = personList.find(p => p.id === selectedId);
+                    if (selectedPerson) {
+                        document.getElementById('fullName').value = selectedPerson.name;
+                        document.getElementById('birthDate').value = selectedPerson.dob;
+                        
+                        // Tính toán năm mod 60
+                        const birthYear = new Date(selectedPerson.dob).getFullYear();
+                        const yearMod60 = birthYear % 60;
+                        document.getElementById('yearMod60').value = yearMod60;
+                    }
+                }
+            });
+            
+            // Sự kiện tính toán
+            document.getElementById('calculateBtn').addEventListener('click', calculate);
+            
+            // Sự kiện nhập lại
+            document.getElementById('resetBtn').addEventListener('click', resetForm);
+            
+            // Tự động tính toán khi thay đổi ngày sinh
+            document.getElementById('birthDate').addEventListener('change', function() {
+                if (this.value) {
+                    const birthYear = new Date(this.value).getFullYear();
+                    const yearMod60 = birthYear % 60;
+                    document.getElementById('yearMod60').value = yearMod60;
+                }
+            });
+        });
+        
+        // Hàm định dạng ngày tháng để hiển thị
+        function formatDateDisplay(dateString) {
+            const date = new Date(dateString);
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+        
+        // Hàm tính toán chính
+        function calculate() {
+            const fullName = document.getElementById('fullName').value;
+            const birthDate = document.getElementById('birthDate').value;
+            const gender = document.getElementById('gender').value;
+            const currentDate = document.getElementById('currentDate').value;
+            
+            // Kiểm tra dữ liệu đầu vào
+            if (!fullName || !birthDate || !gender || !currentDate) {
+                alert("Vui lòng điền đầy đủ thông tin trước khi tính toán!");
+                return;
+            }
+            
+            // Tính tuổi
+            const birth = new Date(birthDate);
+            const current = new Date(currentDate);
+            let age = current.getFullYear() - birth.getFullYear();
+            const monthDiff = current.getMonth() - birth.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && current.getDate() < birth.getDate())) {
+                age--;
+            }
+            
+            // Tính năm mod 60
+            const birthYear = birth.getFullYear();
+            const yearMod60 = birthYear % 60;
+            
+            // Xác định Can Chi dựa trên năm mod 60
+            const canChiIndex = yearMod60 % canChiData.length;
+            const canChi = canChiData[canChiIndex];
+            
+            // Xác định cấp bậc Bát Quái
+            const rankIndex = yearMod60 % baguaRanks.length;
+            const rank = baguaRanks[rankIndex];
+            
+            // Xác định mệnh theo giới tính
+            let element = "";
+            if (gender === "Nam") {
+                element = canChi.menhNam;
+            } else {
+                element = canChi.menhNu;
+            }
+            
+            // Xác định hướng Bát Quái
+            const directions = ["Bắc", "Đông Bắc", "Đông", "Đông Nam", "Nam", "Tây Nam", "Tây", "Tây Bắc"];
+            const directionIndex = yearMod60 % directions.length;
+            const direction = directions[directionIndex];
+            
+            // Xác định ứng dụng trong kinh doanh
+            const businessApp = businessApplications[rank];
+            
+            // Hiển thị kết quả
+            document.getElementById('resultName').textContent = fullName;
+            document.getElementById('resultGender').textContent = gender;
+            document.getElementById('resultGender').className = gender === "Nam" ? "gender-male" : "gender-female";
+            document.getElementById('resultAge').textContent = age + " tuổi";
+            document.getElementById('resultRank').textContent = rank;
+            document.getElementById('resultCanChi').textContent = canChi.canChi;
+            document.getElementById('resultElement').textContent = element;
+            document.getElementById('resultDirection').textContent = direction;
+            document.getElementById('resultBusiness').textContent = businessApp;
+            
+            // Làm nổi bật dòng trong bảng Can Chi
+            const tableRows = document.querySelectorAll('#canChiTable tbody tr');
+            tableRows.forEach(row => {
+                row.classList.remove('highlight');
+                if (row.cells[1].textContent === canChi.canChi) {
+                    row.classList.add('highlight');
+                }
+            });
+            
+            // Hiển thị phần kết quả
+            document.getElementById('resultSection').style.display = 'block';
+            
+            // Cuộn đến phần kết quả
+            document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Hàm nhập lại form
+        function resetForm() {
+            document.getElementById('fullName').value = "";
+            document.getElementById('birthDate').value = "";
+            document.getElementById('gender').value = "";
+            document.getElementById('personList').value = "";
+            document.getElementById('yearMod60').value = "";
+            
+            // Ẩn phần kết quả
+            document.getElementById('resultSection').style.display = 'none';
+            
+            // Bỏ highlight trong bảng
+            const tableRows = document.querySelectorAll('#canChiTable tbody tr');
+            tableRows.forEach(row => {
+                row.classList.remove('highlight');
+            });
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

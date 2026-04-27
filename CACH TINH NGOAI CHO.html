@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tính nhẩm hằng ngày – Kiểu đi chợ</title>
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f2f5f7;
+    padding:20px;
+}
+.box{
+    max-width:900px;
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+h2{text-align:center;color:#2c3e50}
+input,select,button{
+    width:100%;
+    padding:8px;
+    margin:6px 0;
+}
+button{
+    background:#e67e22;
+    color:#fff;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+button:hover{background:#cf711c}
+.result{
+    margin-top:15px;
+    background:#fff4e6;
+    padding:15px;
+    border-radius:5px;
+    line-height:1.7;
+}
+</style>
+</head>
+
+<body>
+<div class="box">
+<h2>🧮 TÍNH NHẨM HẰNG NGÀY – KIỂU NGOÀI CHỢ</h2>
+
+<label>Chọn mẹo tính</label>
+<select id="type">
+    <option value="addkeep">1️⃣ Cộng dồn & giữ số</option>
+    <option value="roundsum">2️⃣ Cộng gộp số tròn</option>
+    <option value="splitmul">3️⃣ Tách số tính tiền</option>
+    <option value="double">4️⃣ Nhân bằng gấp đôi (4–8–16)</option>
+</select>
+
+<label>Nhập dãy số (cách nhau bằng dấu phẩy)</label>
+<input id="nums" placeholder="Ví dụ: 17,8,12,5">
+
+<label>Giá / số nhân (nếu có)</label>
+<input id="price" placeholder="Ví dụ: 23500 hoặc để trống">
+
+<label>Hệ số nhân (4 / 8 / 16 – chỉ dùng cho mẹo 4)</label>
+<input id="mul" placeholder="Ví dụ: 8">
+
+<button onclick="calc()">Tính & Giải thích</button>
+
+<div id="out" class="result"></div>
+</div>
+
+<script>
+function calc(){
+    let type=document.getElementById("type").value;
+    let nums=document.getElementById("nums").value.split(",").map(x=>parseFloat(x));
+    let price=parseFloat(document.getElementById("price").value);
+    let mul=parseInt(document.getElementById("mul").value);
+    let o="";
+
+    if(nums.some(isNaN)){
+        out.innerHTML="⚠ Nhập đúng dãy số";
+        return;
+    }
+
+    // 1. Cộng dồn giữ số
+    if(type==="addkeep"){
+        let sum=0;
+        o+="<b>Cộng dồn & giữ số</b><br><br>";
+        nums.forEach(n=>{
+            let old=sum;
+            sum+=n;
+            o+=`${old} + ${n} = <b>${sum}</b> → nhấn: "${sum}, ${sum}, ${sum}"<br>`;
+        });
+        o+=`<br><b>Tổng cuối: ${sum}</b>`;
+    }
+
+    // 2. Gộp số tròn
+    if(type==="roundsum"){
+        let used=[...nums];
+        let sum=0;
+        o+="<b>Cộng gộp số tròn</b><br><br>";
+        used.sort((a,b)=>b-a);
+        while(used.length){
+            let a=used.shift();
+            let found=false;
+            for(let i=0;i<used.length;i++){
+                if((a+used[i])%10===0){
+                    o+=`Gộp ${a} + ${used[i]} = <b>${a+used[i]}</b><br>`;
+                    sum+=a+used[i];
+                    used.splice(i,1);
+                    found=true;
+                    break;
+                }
+            }
+            if(!found){
+                o+=`Cộng lẻ: ${a}<br>`;
+                sum+=a;
+            }
+        }
+        o+=`<br><b>Tổng: ${sum}</b>`;
+    }
+
+    // 3. Tách số tính tiền
+    if(type==="splitmul"){
+        if(isNaN(price)){
+            out.innerHTML="⚠ Nhập giá";
+            return;
+        }
+        let qty=nums[0];
+        let round=Math.round(qty);
+        let diff=round-qty;
+
+        o+=`<b>Tính tiền ${qty} × ${price}</b><br><br>`;
+        o+=`Tách số:<br>`;
+        o+=`${round} × ${price} = ${round*price}<br>`;
+        if(diff!==0){
+            o+=`Trừ lại ${diff} × ${price} = ${diff*price}<br>`;
+        }
+        o+=`<br><b>Thành tiền: ${qty*price}</b>`;
+    }
+
+    // 4. Nhân gấp đôi
+    if(type==="double"){
+        let n=nums[0];
+        if(![4,8,16].includes(mul)){
+            out.innerHTML="⚠ Chỉ hỗ trợ 4, 8, 16";
+            return;
+        }
+        o+=`<b>${n} × ${mul}</b><br><br>`;
+        let times=Math.log2(mul);
+        let cur=n;
+        for(let i=1;i<=times;i++){
+            cur*=2;
+            o+=`Gấp đôi lần ${i}: ${cur}<br>`;
+        }
+        o+=`<br><b>Kết quả: ${cur}</b>`;
+    }
+
+    out.innerHTML=o;
+}
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

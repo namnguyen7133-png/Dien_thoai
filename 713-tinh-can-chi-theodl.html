@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tính Can Chi Ngày Sinh</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f2f6ff;
+        margin: 0;
+        padding: 15px;
+    }
+
+    h1 {
+        text-align: center;
+        color: #2b4eff;
+        font-size: 26px;
+    }
+
+    .box {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        margin-top: 15px;
+    }
+
+    label {
+        font-size: 18px;
+        font-weight: bold;
+        display: block;
+        margin-top: 15px;
+    }
+
+    select, input {
+        width: 100%;
+        font-size: 20px;
+        padding: 12px;
+        margin-top: 8px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+    }
+
+    .result {
+        margin-top: 20px;
+        padding: 15px;
+        background: #eaf0ff;
+        border-radius: 12px;
+        font-size: 22px;
+        text-align: center;
+        font-weight: bold;
+        color: #1a2fff;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>📅 TÍNH CAN CHI NGÀY SINH</h1>
+
+<div class="box">
+    <label>Chọn người:</label>
+    <select id="person" onchange="fillDate()">
+        <option value="">-- Chọn --</option>
+        <option value="1944-06-04">1. NGUYENKHACNANG</option>
+        <option value="1948-08-29">2. TOTHIHA</option>
+        <option value="1971-03-03">3. NGUYENMINHNAM</option>
+        <option value="1981-09-23">4. THANTHIKIMANH</option>
+        <option value="2014-09-28">5. NGUYENTONGANAN</option>
+        <option value="2016-07-25">6. NGUYENTOMINHCHAU</option>
+        <option value="2020-02-05">7. NGUYENTOBICHNGOC</option>
+        <option value="1974-01-07">8. NGUYENTHIMINHHANG</option>
+        <option value="1973-05-23">9. NGOQUYCUONG</option>
+        <option value="2000-10-12">10. NGOGIABACH</option>
+        <option value="2005-04-05">11. NGOGIALINH</option>
+        <option value="1978-11-06">12. NGUYENTHIMINHPHUONG</option>
+        <option value="1978-09-21">13. HOANGANHDUNG</option>
+        <option value="2010-06-03">14. HOANGHAIVINH</option>
+        <option value="2015-11-14">15. HOANGTHIENBACHANH</option>
+        <option value="1960-08-09">16. TÔ KIM HUỆ</option>
+        <option value="1983-10-23">17. NGUYỄN TUẤN ANH</option>
+        <option value="2001-03-24">18. NGUYỄN THẾ ANH</option>
+        <option value="1948-12-12">19. NGÔ THỊ MAI</option>
+        <option value="1996-06-17">20. TÔ VIỆT HƯNG</option>
+        <option value="1964-10-10">21. TÔ THỊ HỒNG</option>
+        <option value="1974-04-24">22. VŨ VĂN HIỆP</option>
+        <option value="1946-02-08">23. NGUYỄN THỊ CHI</option>
+        <option value="1957-11-30">24. NGUYỄN TẤN BẮC</option>
+        <option value="1954-08-08">25. NGUYỄN THỊ TÂM</option>
+    </select>
+
+    <label>Ngày sinh:</label>
+    <input type="date" id="date" onchange="calcCanChi()">
+
+    <div class="result" id="result">
+        Can Chi sẽ hiển thị ở đây
+    </div>
+</div>
+
+<script>
+const can = ["Giáp","Ất","Bính","Đinh","Mậu","Kỷ","Canh","Tân","Nhâm","Quý"];
+const chi = ["Tý","Sửu","Dần","Mão","Thìn","Tỵ","Ngọ","Mùi","Thân","Dậu","Tuất","Hợi"];
+
+// Mốc: 01/01/2021 = Kỷ Dậu
+const baseDate = new Date("2021-01-01");
+const baseCan = 5; // Kỷ
+const baseChi = 9; // Dậu
+
+function fillDate() {
+    const val = document.getElementById("person").value;
+    if (val) {
+        document.getElementById("date").value = val;
+        calcCanChi();
+    }
+}
+
+function calcCanChi() {
+    const input = document.getElementById("date").value;
+    if (!input) return;
+
+    const d = new Date(input);
+    const diffDays = Math.floor((d - baseDate) / (1000 * 60 * 60 * 24));
+
+    const canIndex = (baseCan + diffDays) % 10;
+    const chiIndex = (baseChi + diffDays) % 12;
+
+    document.getElementById("result").innerHTML =
+        "👉 Ngày <br><span style='font-size:28px'>" +
+        can[(canIndex + 10) % 10] + " " +
+        chi[(chiIndex + 12) % 12] +
+        "</span>";
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

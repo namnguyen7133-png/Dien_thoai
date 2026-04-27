@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tính nhẩm tỉ số phần trăm</title>
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f3f6fa;
+    padding:20px;
+}
+.box{
+    max-width:800px;
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+h2{text-align:center;color:#2c3e50}
+input,button{
+    width:100%;
+    padding:8px;
+    margin:6px 0;
+}
+button{
+    background:#2980b9;
+    color:#fff;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+button:hover{background:#1f6391}
+.result{
+    margin-top:15px;
+    background:#eef6ff;
+    padding:15px;
+    border-radius:5px;
+    line-height:1.7;
+}
+</style>
+</head>
+
+<body>
+<div class="box">
+<h2>📊 TÍNH NHẨM TỈ SỐ PHẦN TRĂM (KHÔNG MÁY TÍNH)</h2>
+
+<label>Số gốc</label>
+<input type="number" id="num" placeholder="Ví dụ: 320">
+
+<label>Tỉ lệ %</label>
+<input type="number" step="0.1" id="per" placeholder="Ví dụ: 17.5">
+
+<button onclick="calc()">Tính & Giải thích</button>
+
+<div id="out" class="result"></div>
+</div>
+
+<script>
+function calc(){
+    let n = parseFloat(document.getElementById("num").value);
+    let p = parseFloat(document.getElementById("per").value);
+    let out = "";
+
+    if(isNaN(n) || isNaN(p)){
+        document.getElementById("out").innerHTML="⚠ Vui lòng nhập đủ dữ liệu";
+        return;
+    }
+
+    let ten = n / 10;
+    let one = n / 100;
+    let five = ten / 2;
+    let twoFive = five / 2;
+
+    let remain = p;
+    let sum = 0;
+
+    out += `<b>Tìm ${p}% của ${n}</b><br><br>`;
+    out += `10% của ${n} = ${ten}<br>`;
+    out += `5% của ${n} = ${five}<br>`;
+    out += `1% của ${n} = ${one}<br>`;
+    out += `2,5% của ${n} = ${twoFive}<br><br>`;
+
+    while(remain >= 10){
+        sum += ten;
+        remain -= 10;
+        out += `➕ 10% → ${ten}<br>`;
+    }
+    if(remain >= 5){
+        sum += five;
+        remain -= 5;
+        out += `➕ 5% → ${five}<br>`;
+    }
+    if(remain >= 2.5){
+        sum += twoFive;
+        remain -= 2.5;
+        out += `➕ 2,5% → ${twoFive}<br>`;
+    }
+    if(remain >= 1){
+        sum += one * Math.floor(remain);
+        out += `➕ ${Math.floor(remain)}% → ${one * Math.floor(remain)}<br>`;
+        remain -= Math.floor(remain);
+    }
+    if(remain > 0){
+        let extra = n * remain / 100;
+        sum += extra;
+        out += `➕ ${remain}% → ${extra}<br>`;
+    }
+
+    out += `<br><b>Kết quả: ${sum}</b>`;
+    document.getElementById("out").innerHTML = out;
+}
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

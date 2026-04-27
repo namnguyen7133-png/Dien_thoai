@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyển đổi Tiếng Việt sang Số Thứ Tự Tiếng Hàn & Tiếng Pháp</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 25px 30px;
+        }
+        
+        h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2a5298;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5eb;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+        
+        .language-selector {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .lang-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+        }
+        
+        .lang-option:hover {
+            background-color: #f0f4f8;
+        }
+        
+        .lang-option input {
+            margin: 0;
+        }
+        
+        .lang-flag {
+            font-size: 24px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 24px;
+            background-color: #2a5298;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        button:hover {
+            background-color: #1e3c72;
+            transform: translateY(-2px);
+        }
+        
+        button#clearBtn {
+            background-color: #6c757d;
+        }
+        
+        button#clearBtn:hover {
+            background-color: #545b62;
+        }
+        
+        button#exampleBtn {
+            background-color: #28a745;
+        }
+        
+        button#exampleBtn:hover {
+            background-color: #218838;
+        }
+        
+        .results-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .result-section {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border-top: 5px solid;
+        }
+        
+        .korean-result {
+            border-top-color: #0047a0;
+        }
+        
+        .french-result {
+            border-top-color: #0055a4;
+        }
+        
+        .result-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 0;
+            border-bottom: 2px solid #e1e5eb;
+            padding-bottom: 10px;
+        }
+        
+        .result-output {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e3c72;
+            min-height: 30px;
+            word-break: break-word;
+            padding: 10px 0;
+            line-height: 1.8;
+        }
+        
+        .tables-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .table-section {
+            overflow-x: auto;
+        }
+        
+        h3 {
+            color: #2a5298;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        th {
+            background-color: #2a5298;
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e1e5eb;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+            background-color: #e9ecef;
+        }
+        
+        .korean-table th {
+            background-color: #0047a0;
+        }
+        
+        .french-table th {
+            background-color: #0055a4;
+        }
+        
+        .explanation {
+            background-color: #e8f4fd;
+            border-left: 4px solid #2a5298;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .korean-char {
+            font-family: 'Malgun Gothic', 'Gulim', sans-serif;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        
+        .french-char {
+            font-family: 'Times New Roman', serif;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .hangul-example {
+            font-family: 'Malgun Gothic', 'Gulim', sans-serif;
+            font-size: 20px;
+            color: #0047a0;
+        }
+        
+        .comparison-table {
+            margin-top: 30px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .comparison-table h3 {
+            color: #2a5298;
+            margin-top: 0;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e5eb;
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .results-container, .tables-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Chuyển đổi Tiếng Việt sang Số Thứ Tự Tiếng Hàn & Tiếng Pháp</h1>
+            <p class="subtitle">Nhập văn bản tiếng Việt, chương trình sẽ dò tìm trong bảng chữ cái và hiển thị số thứ tự theo quy tắc đã cho</p>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <label for="vietnameseText">Nhập văn bản tiếng Việt:</label>
+                <textarea id="vietnameseText" rows="4" placeholder="Nhập văn bản tiếng Việt vào đây..."></textarea>
+                
+                <div class="language-selector">
+                    <div class="lang-option">
+                        <input type="radio" id="koreanRadio" name="language" value="korean" checked>
+                        <label for="koreanRadio">
+                            <span class="lang-flag">🇰🇷</span> Tiếng Hàn
+                        </label>
+                    </div>
+                    <div class="lang-option">
+                        <input type="radio" id="frenchRadio" name="language" value="french">
+                        <label for="frenchRadio">
+                            <span class="lang-flag">🇫🇷</span> Tiếng Pháp
+                        </label>
+                    </div>
+                    <div class="lang-option">
+                        <input type="radio" id="bothRadio" name="language" value="both">
+                        <label for="bothRadio">
+                            <span class="lang-flag">🌍</span> Cả hai
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button id="convertBtn">Chuyển đổi</button>
+                    <button id="exampleBtn">Ví dụ mẫu</button>
+                    <button id="clearBtn">Xóa nội dung</button>
+                </div>
+            </div>
+            
+            <div class="results-container">
+                <div class="result-section korean-result">
+                    <h3 class="result-title">
+                        <span class="lang-flag">🇰🇷</span> Kết quả tiếng Hàn:
+                    </h3>
+                    <div id="koreanResult" class="result-output">Chưa có kết quả</div>
+                </div>
+                
+                <div class="result-section french-result">
+                    <h3 class="result-title">
+                        <span class="lang-flag">🇫🇷</span> Kết quả tiếng Pháp:
+                    </h3>
+                    <div id="frenchResult" class="result-output">Chưa có kết quả</div>
+                </div>
+            </div>
+            
+            <div class="explanation">
+                <h3>Quy tắc chuyển đổi:</h3>
+                <p>Với mỗi ký tự tiếng Việt nhập vào, chương trình sẽ:</p>
+                <ol>
+                    <li>Tìm trong bảng chữ cái để xác định số thứ tự của chữ cái có âm tương tự</li>
+                    <li>Nếu số thứ tự lớn hơn 9, chia cho 9 và lấy phần dư</li>
+                    <li>Nếu kết quả là 0, lấy giá trị 9</li>
+                </ol>
+                <p><strong>Ví dụ tiếng Hàn:</strong> Chữ "a" (ㅏ) có số thứ tự là 1 → Kết quả: 1</p>
+                <p><strong>Ví dụ tiếng Hàn:</strong> Chữ "k" (ㄱ) có số thứ tự là 1 → Kết quả: 1</p>
+                <p><strong>Ví dụ tiếng Pháp:</strong> Chữ "a" có số thứ tự là 1 → Kết quả: 1</p>
+                <p><strong>Ví dụ tiếng Pháp:</strong> Chữ "k" có số thứ tự là 11 → 11 > 9 nên 11 % 9 = 2 → Kết quả: 2</p>
+            </div>
+            
+            <div class="tables-container">
+                <div class="table-section">
+                    <h3>
+                        <span class="lang-flag">🇰🇷</span> Bảng chữ cái tiếng Hàn (Hangul) và âm tiếng Việt tương tự
+                    </h3>
+                    <table class="korean-table">
+                        <thead>
+                            <tr>
+                                <th>Thứ tự</th>
+                                <th>Chữ cái Hàn Quốc</th>
+                                <th>Tên gọi</th>
+                                <th>Âm tiếng Việt tương tự</th>
+                            </tr>
+                        </thead>
+                        <tbody id="koreanTableBody">
+                            <!-- Bảng sẽ được tạo bằng JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-section">
+                    <h3>
+                        <span class="lang-flag">🇫🇷</span> Bảng chữ cái tiếng Pháp và âm tiếng Việt tương tự
+                    </h3>
+                    <table class="french-table">
+                        <thead>
+                            <tr>
+                                <th>Thứ tự</th>
+                                <th>Chữ cái tiếng Pháp</th>
+                                <th>Âm tiếng Việt tương tự</th>
+                            </tr>
+                        </thead>
+                        <tbody id="frenchTableBody">
+                            <!-- Bảng sẽ được tạo bằng JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="comparison-table">
+                <h3>So sánh đặc điểm bảng chữ cái</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ngôn ngữ</th>
+                            <th>Hệ chữ</th>
+                            <th>Số lượng</th>
+                            <th>Đặc điểm nổi bật</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Tiếng Hàn</strong></td>
+                            <td>Hangul</td>
+                            <td>40 ký tự (19 phụ âm, 21 nguyên âm)</td>
+                            <td>Chữ viết khoa học, ghép vần thành khối</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tiếng Pháp</strong></td>
+                            <td>Latinh</td>
+                            <td>26 chữ cái + dấu phụ</td>
+                            <td>Có dấu trọng âm, phát âm khác với viết</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tiếng Việt</strong></td>
+                            <td>Latinh (Quốc ngữ)</td>
+                            <td>29 chữ cái + dấu thanh</td>
+                            <td>6 thanh điệu, nhiều dấu phụ</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="note">
+                <h3>Lưu ý quan trọng:</h3>
+                <p>Tiếng Hàn sử dụng hệ thống chữ Hangul gồm các phụ âm và nguyên âm ghép lại thành khối. Tiếng Pháp có các ký tự đặc biệt với dấu như é, è, ê, ç.</p>
+                <p><strong>Ví dụ về ghép chữ Hàn:</strong> ㅎ (h) + ㅏ (a) + ㄴ (n) = 한 (han)</p>
+                <p>Các ký tự đặc biệt, dấu câu và khoảng trắng sẽ được bỏ qua trong quá trình chuyển đổi.</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Ứng dụng chuyển đổi Tiếng Việt sang Số Thứ Tự Tiếng Hàn & Tiếng Pháp</p>
+        </footer>
+    </div>
+
+    <script>
+        // Dữ liệu bảng chữ cái tiếng Hàn (Hangul)
+        const koreanAlphabet = [
+            // Phụ âm cơ bản
+            {order: 1, character: 'ㄱ', name: '기역 (giyeok)', vietnameseSound: 'k/g'},
+            {order: 2, character: 'ㄴ', name: '니은 (nieun)', vietnameseSound: 'n'},
+            {order: 3, character: 'ㄷ', name: '디귿 (digeut)', vietnameseSound: 't/đ'},
+            {order: 4, character: 'ㄹ', name: '리을 (rieul)', vietnameseSound: 'r/l'},
+            {order: 5, character: 'ㅁ', name: '미음 (mieum)', vietnameseSound: 'm'},
+            {order: 6, character: 'ㅂ', name: '비읍 (bieup)', vietnameseSound: 'p/b'},
+            {order: 7, character: 'ㅅ', name: '시옷 (siot)', vietnameseSound: 's/x'},
+            {order: 8, character: 'ㅇ', name: '이응 (ieung)', vietnameseSound: 'không âm/ng'},
+            {order: 9, character: 'ㅈ', name: '지읒 (jieut)', vietnameseSound: 'ch'},
+            {order: 10, character: 'ㅊ', name: '치읓 (chieut)', vietnameseSound: 'ch (bật hơi)'},
+            {order: 11, character: 'ㅋ', name: '키읔 (kieuk)', vietnameseSound: 'kh'},
+            {order: 12, character: 'ㅌ', name: '티읕 (tieut)', vietnameseSound: 'th'},
+            {order: 13, character: 'ㅍ', name: '피읖 (pieup)', vietnameseSound: 'ph'},
+            {order: 14, character: 'ㅎ', name: '히읗 (hieut)', vietnameseSound: 'h'},
+            // Nguyên âm cơ bản
+            {order: 15, character: 'ㅏ', name: '아 (a)', vietnameseSound: 'a'},
+            {order: 16, character: 'ㅑ', name: '야 (ya)', vietnameseSound: 'ya'},
+            {order: 17, character: 'ㅓ', name: '어 (eo)', vietnameseSound: 'ơ'},
+            {order: 18, character: 'ㅕ', name: '여 (yeo)', vietnameseSound: 'yơ'},
+            {order: 19, character: 'ㅗ', name: '오 (o)', vietnameseSound: 'ô'},
+            {order: 20, character: 'ㅛ', name: '요 (yo)', vietnameseSound: 'yô'},
+            {order: 21, character: 'ㅜ', name: '우 (u)', vietnameseSound: 'u'},
+            {order: 22, character: 'ㅠ', name: '유 (yu)', vietnameseSound: 'yu'},
+            {order: 23, character: 'ㅡ', name: '으 (eu)', vietnameseSound: 'ư'},
+            {order: 24, character: 'ㅣ', name: '이 (i)', vietnameseSound: 'i'},
+            // Nguyên âm kép
+            {order: 25, character: 'ㅐ', name: '애 (ae)', vietnameseSound: 'e'},
+            {order: 26, character: 'ㅒ', name: '얘 (yae)', vietnameseSound: 'ye'},
+            {order: 27, character: 'ㅔ', name: '에 (e)', vietnameseSound: 'ê'},
+            {order: 28, character: 'ㅖ', name: '예 (ye)', vietnameseSound: 'yê'},
+            {order: 29, character: 'ㅘ', name: '와 (wa)', vietnameseSound: 'oa'},
+            {order: 30, character: 'ㅙ', name: '왜 (wae)', vietnameseSound: 'oe'},
+            {order: 31, character: 'ㅚ', name: '외 (oe)', vietnameseSound: 'uê'},
+            {order: 32, character: 'ㅝ', name: '워 (wo)', vietnameseSound: 'uơ'},
+            {order: 33, character: 'ㅞ', name: '웨 (we)', vietnameseSound: 'uê'},
+            {order: 34, character: 'ㅟ', name: '위 (wi)', vietnameseSound: 'uy'},
+            {order: 35, character: 'ㅢ', name: '의 (ui)', vietnameseSound: 'ưi'}
+        ];
+
+        // Dữ liệu bảng chữ cái tiếng Pháp
+        const frenchAlphabet = [
+            {order: 1, letter: 'A a', vietnameseSound: 'a'},
+            {order: 2, letter: 'B b', vietnameseSound: 'b'},
+            {order: 3, letter: 'C c', vietnameseSound: 'k/s'},
+            {order: 4, letter: 'D d', vietnameseSound: 'đ'},
+            {order: 5, letter: 'E e', vietnameseSound: 'ơ'},
+            {order: 6, letter: 'F f', vietnameseSound: 'ph'},
+            {order: 7, letter: 'G g', vietnameseSound: 'g'},
+            {order: 8, letter: 'H h', vietnameseSound: 'h (câm)'},
+            {order: 9, letter: 'I i', vietnameseSound: 'i'},
+            {order: 10, letter: 'J j', vietnameseSound: 'gi'},
+            {order: 11, letter: 'K k', vietnameseSound: 'k'},
+            {order: 12, letter: 'L l', vietnameseSound: 'l'},
+            {order: 13, letter: 'M m', vietnameseSound: 'm'},
+            {order: 14, letter: 'N n', vietnameseSound: 'n'},
+            {order: 15, letter: 'O o', vietnameseSound: 'ô'},
+            {order: 16, letter: 'P p', vietnameseSound: 'p'},
+            {order: 17, letter: 'Q q', vietnameseSound: 'k'},
+            {order: 18, letter: 'R r', vietnameseSound: 'r (cuống họng)'},
+            {order: 19, letter: 'S s', vietnameseSound: 'x'},
+            {order: 20, letter: 'T t', vietnameseSound: 't'},
+            {order: 21, letter: 'U u', vietnameseSound: 'uy'},
+            {order: 22, letter: 'V v', vietnameseSound: 'v'},
+            {order: 23, letter: 'W w', vietnameseSound: 'v'},
+            {order: 24, letter: 'X x', vietnameseSound: 'ks'},
+            {order: 25, letter: 'Y y', vietnameseSound: 'i'},
+            {order: 26, letter: 'Z z', vietnameseSound: 'd'},
+            {order: 27, letter: 'É é', vietnameseSound: 'ê'},
+            {order: 28, letter: 'È è', vietnameseSound: 'e'},
+            {order: 29, letter: 'Ê ê', vietnameseSound: 'ê'},
+            {order: 30, letter: 'À à', vietnameseSound: 'a'},
+            {order: 31, letter: 'Â â', vietnameseSound: 'a'},
+            {order: 32, letter: 'Ç ç', vietnameseSound: 'x'},
+            {order: 33, letter: 'Î î', vietnameseSound: 'i'},
+            {order: 34, letter: 'Ï ï', vietnameseSound: 'i'},
+            {order: 35, letter: 'Ô ô', vietnameseSound: 'ô'},
+            {order: 36, letter: 'Ù ù', vietnameseSound: 'uy'},
+            {order: 37, letter: 'Œ œ', vietnameseSound: 'ơ'}
+        ];
+
+        // Tạo bảng chữ cái tiếng Hàn
+        function createKoreanTable() {
+            const tableBody = document.getElementById('koreanTableBody');
+            
+            koreanAlphabet.forEach(item => {
+                const row = document.createElement('tr');
+                
+                const orderCell = document.createElement('td');
+                orderCell.textContent = item.order;
+                
+                const charCell = document.createElement('td');
+                charCell.innerHTML = `<span class="korean-char">${item.character}</span>`;
+                
+                const nameCell = document.createElement('td');
+                nameCell.textContent = item.name;
+                
+                const soundCell = document.createElement('td');
+                soundCell.textContent = item.vietnameseSound;
+                
+                row.appendChild(orderCell);
+                row.appendChild(charCell);
+                row.appendChild(nameCell);
+                row.appendChild(soundCell);
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Tạo bảng chữ cái tiếng Pháp
+        function createFrenchTable() {
+            const tableBody = document.getElementById('frenchTableBody');
+            
+            frenchAlphabet.forEach(item => {
+                const row = document.createElement('tr');
+                
+                const orderCell = document.createElement('td');
+                orderCell.textContent = item.order;
+                
+                const letterCell = document.createElement('td');
+                letterCell.innerHTML = `<span class="french-char">${item.letter}</span>`;
+                
+                const soundCell = document.createElement('td');
+                soundCell.textContent = item.vietnameseSound;
+                
+                row.appendChild(orderCell);
+                row.appendChild(letterCell);
+                row.appendChild(soundCell);
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Tạo bản đồ ánh xạ từ âm tiếng Việt sang thứ tự tiếng Hàn
+        function createKoreanSoundToOrderMap() {
+            const map = {};
+            
+            koreanAlphabet.forEach(item => {
+                const sound = item.vietnameseSound.toLowerCase();
+                const char = item.character;
+                
+                // Ánh xạ từ chữ cái Hàn
+                map[char] = item.order;
+                
+                // Ánh xạ từ âm tiếng Việt
+                const soundParts = sound.split('/');
+                soundParts.forEach(part => {
+                    const cleanPart = part.trim();
+                    if (cleanPart && !map[cleanPart]) {
+                        map[cleanPart] = item.order;
+                    }
+                });
+                
+                // Ánh xạ đặc biệt
+                if (char === 'ㄱ') {
+                    map['k'] = item.order;
+                    map['g'] = item.order;
+                } else if (char === 'ㄷ') {
+                    map['t'] = item.order;
+                    map['đ'] = item.order;
+                } else if (char === 'ㄹ') {
+                    map['r'] = item.order;
+                    map['l'] = item.order;
+                } else if (char === 'ㅂ') {
+                    map['p'] = item.order;
+                    map['b'] = item.order;
+                } else if (char === 'ㅅ') {
+                    map['s'] = item.order;
+                    map['x'] = item.order;
+                } else if (char === 'ㅈ') {
+                    map['ch'] = item.order;
+                    map['tr'] = item.order;
+                } else if (char === 'ㅊ') {
+                    map['ch'] = item.order;
+                } else if (char === 'ㅋ') {
+                    map['kh'] = item.order;
+                } else if (char === 'ㅌ') {
+                    map['th'] = item.order;
+                } else if (char === 'ㅍ') {
+                    map['ph'] = item.order;
+                    map['f'] = item.order;
+                } else if (char === 'ㅎ') {
+                    map['h'] = item.order;
+                } else if (char === 'ㅏ') {
+                    map['a'] = item.order;
+                } else if (char === 'ㅑ') {
+                    map['ya'] = item.order;
+                } else if (char === 'ㅓ') {
+                    map['ơ'] = item.order;
+                    map['e'] = item.order;
+                } else if (char === 'ㅕ') {
+                    map['yơ'] = item.order;
+                } else if (char === 'ㅗ') {
+                    map['ô'] = item.order;
+                    map['o'] = item.order;
+                } else if (char === 'ㅛ') {
+                    map['yô'] = item.order;
+                } else if (char === 'ㅜ') {
+                    map['u'] = item.order;
+                } else if (char === 'ㅠ') {
+                    map['yu'] = item.order;
+                } else if (char === 'ㅡ') {
+                    map['ư'] = item.order;
+                } else if (char === 'ㅣ') {
+                    map['i'] = item.order;
+                    map['y'] = item.order;
+                } else if (char === 'ㅐ') {
+                    map['e'] = item.order;
+                } else if (char === 'ㅒ') {
+                    map['ye'] = item.order;
+                } else if (char === 'ㅔ') {
+                    map['ê'] = item.order;
+                } else if (char === 'ㅖ') {
+                    map['yê'] = item.order;
+                } else if (char === 'ㅘ') {
+                    map['oa'] = item.order;
+                    map['wa'] = item.order;
+                }
+            });
+            
+            // Bổ sung thêm các ánh xạ cơ bản
+            map['n'] = 2;
+            map['m'] = 5;
+            
+            return map;
+        }
+
+        // Tạo bản đồ ánh xạ từ âm tiếng Việt sang thứ tự tiếng Pháp
+        function createFrenchSoundToOrderMap() {
+            const map = {};
+            
+            frenchAlphabet.forEach(item => {
+                const letter = item.letter.toLowerCase().split(' ')[0];
+                const sound = item.vietnameseSound.toLowerCase();
+                
+                // Ánh xạ trực tiếp từ chữ cái
+                map[letter] = item.order;
+                
+                // Ánh xạ từ âm tiếng Việt
+                const soundParts = sound.split(' ');
+                soundParts.forEach(part => {
+                    const cleanPart = part.replace(/[()]/g, '').trim();
+                    if (cleanPart && !map[cleanPart]) {
+                        map[cleanPart] = item.order;
+                    }
+                });
+                
+                // Ánh xạ đặc biệt
+                if (letter === 'c') {
+                    map['k'] = item.order;
+                    map['s'] = item.order;
+                } else if (letter === 'e') {
+                    map['ơ'] = item.order;
+                } else if (letter === 'g') {
+                    map['g'] = item.order;
+                    map['gi'] = item.order; // g đôi khi đọc như gi
+                } else if (letter === 'j') {
+                    map['gi'] = item.order;
+                } else if (letter === 'q') {
+                    map['k'] = item.order;
+                } else if (letter === 's') {
+                    map['x'] = item.order;
+                } else if (letter === 'u') {
+                    map['uy'] = item.order;
+                } else if (letter === 'v') {
+                    map['v'] = item.order;
+                } else if (letter === 'w') {
+                    map['v'] = item.order;
+                } else if (letter === 'x') {
+                    map['ks'] = item.order;
+                } else if (letter === 'y') {
+                    map['i'] = item.order;
+                } else if (letter === 'z') {
+                    map['d'] = item.order;
+                } else if (letter === 'é') {
+                    map['ê'] = item.order;
+                } else if (letter === 'è') {
+                    map['e'] = item.order;
+                } else if (letter === 'ê') {
+                    map['ê'] = item.order;
+                } else if (letter === 'à') {
+                    map['a'] = item.order;
+                } else if (letter === 'â') {
+                    map['a'] = item.order;
+                } else if (letter === 'ç') {
+                    map['x'] = item.order;
+                } else if (letter === 'î') {
+                    map['i'] = item.order;
+                } else if (letter === 'ï') {
+                    map['i'] = item.order;
+                } else if (letter === 'ô') {
+                    map['ô'] = item.order;
+                } else if (letter === 'ù') {
+                    map['uy'] = item.order;
+                } else if (letter === 'œ') {
+                    map['ơ'] = item.order;
+                }
+            });
+            
+            // Bổ sung thêm các ánh xạ cơ bản
+            map['a'] = 1;
+            map['b'] = 2;
+            map['đ'] = 4;
+            map['ph'] = 6;
+            map['f'] = 6;
+            map['h'] = 8;
+            map['i'] = 9;
+            map['k'] = 11;
+            map['l'] = 12;
+            map['m'] = 13;
+            map['n'] = 14;
+            map['ô'] = 15;
+            map['o'] = 15;
+            map['p'] = 16;
+            map['r'] = 18;
+            map['t'] = 20;
+            
+            return map;
+        }
+
+        // Áp dụng quy tắc xử lý số
+        function processOrder(order) {
+            let processedOrder = order;
+            if (processedOrder > 9) {
+                processedOrder = processedOrder % 9;
+                if (processedOrder === 0) {
+                    processedOrder = 9;
+                }
+            }
+            return processedOrder;
+        }
+
+        // Hàm xử lý chuyển đổi
+        function convertText() {
+            const inputText = document.getElementById('vietnameseText').value.toLowerCase();
+            const selectedLanguage = document.querySelector('input[name="language"]:checked').value;
+            
+            if (!inputText.trim()) {
+                document.getElementById('koreanResult').textContent = "Vui lòng nhập văn bản tiếng Việt";
+                document.getElementById('frenchResult').textContent = "Vui lòng nhập văn bản tiếng Việt";
+                return;
+            }
+            
+            const koreanMap = createKoreanSoundToOrderMap();
+            const frenchMap = createFrenchSoundToOrderMap();
+            
+            let koreanResult = "";
+            let frenchResult = "";
+            
+            for (let i = 0; i < inputText.length; i++) {
+                const char = inputText[i];
+                
+                // Bỏ qua khoảng trắng và dấu câu
+                if (char === ' ' || /[.,!?;:'"()\[\]{}]/.test(char)) {
+                    koreanResult += " ";
+                    frenchResult += " ";
+                    continue;
+                }
+                
+                // Bỏ qua dấu tiếng Việt (chỉ lấy chữ cái không dấu)
+                const baseChar = char.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                
+                // Xử lý cho tiếng Hàn
+                let koreanOrder = koreanMap[baseChar];
+                
+                // Thử tìm với 2 ký tự cho các âm ghép
+                if (!koreanOrder && i < inputText.length - 1) {
+                    const twoChars = baseChar + inputText[i + 1].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    koreanOrder = koreanMap[twoChars];
+                }
+                
+                // Xử lý cho tiếng Pháp
+                let frenchOrder = frenchMap[baseChar];
+                
+                // Thử tìm với 2 ký tự cho các âm ghép
+                if (!frenchOrder && i < inputText.length - 1) {
+                    const twoChars = baseChar + inputText[i + 1].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    frenchOrder = frenchMap[twoChars];
+                }
+                
+                // Xử lý kết quả tiếng Hàn
+                if (koreanOrder) {
+                    koreanResult += processOrder(koreanOrder) + " ";
+                } else {
+                    koreanResult += "? ";
+                }
+                
+                // Xử lý kết quả tiếng Pháp
+                if (frenchOrder) {
+                    frenchResult += processOrder(frenchOrder) + " ";
+                } else {
+                    frenchResult += "? ";
+                }
+            }
+            
+            // Hiển thị kết quả theo lựa chọn
+            if (selectedLanguage === 'korean' || selectedLanguage === 'both') {
+                document.getElementById('koreanResult').textContent = koreanResult.trim() || "Không tìm thấy ký tự tương ứng";
+            } else {
+                document.getElementById('koreanResult').textContent = "Vui lòng chọn Tiếng Hàn hoặc Cả hai";
+            }
+            
+            if (selectedLanguage === 'french' || selectedLanguage === 'both') {
+                document.getElementById('frenchResult').textContent = frenchResult.trim() || "Không tìm thấy ký tự tương ứng";
+            } else {
+                document.getElementById('frenchResult').textContent = "Vui lòng chọn Tiếng Pháp hoặc Cả hai";
+            }
+        }
+
+        // Hàm xóa nội dung
+        function clearContent() {
+            document.getElementById('vietnameseText').value = '';
+            document.getElementById('koreanResult').textContent = 'Chưa có kết quả';
+            document.getElementById('frenchResult').textContent = 'Chưa có kết quả';
+        }
+
+        // Hàm hiển thị ví dụ mẫu
+        function showExample() {
+            const examples = [
+                "xin chào",
+                "cảm ơn",
+                "tôi yêu bạn",
+                "hàn quốc",
+                "paris pháp"
+            ];
+            
+            const randomExample = examples[Math.floor(Math.random() * examples.length)];
+            document.getElementById('vietnameseText').value = randomExample;
+            convertText();
+        }
+
+        // Khởi tạo khi trang được tải
+        document.addEventListener('DOMContentLoaded', function() {
+            createKoreanTable();
+            createFrenchTable();
+            
+            // Gán sự kiện cho các nút
+            document.getElementById('convertBtn').addEventListener('click', convertText);
+            document.getElementById('exampleBtn').addEventListener('click', showExample);
+            document.getElementById('clearBtn').addEventListener('click', clearContent);
+            
+            // Cho phép nhấn Enter để chuyển đổi (nhưng không submit form)
+            document.getElementById('vietnameseText').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    convertText();
+                    e.preventDefault();
+                }
+            });
+            
+            // Hiển thị ví dụ ban đầu
+            document.getElementById('vietnameseText').value = "xin chào việt nam";
+            
+            // Chuyển đổi ngay khi trang tải
+            convertText();
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

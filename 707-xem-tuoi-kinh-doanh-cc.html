@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân Tích Mệnh Lý & Định Hướng Kinh Doanh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            font-size: 16px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border-left: 5px solid var(--secondary-color);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+        
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        
+        .date-info {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-top: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .date-info span {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        
+        .time-item {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .input-section, .result-section, .canchi-calculator {
+            background-color: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .canchi-calculator {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .input-tabs {
+            display: flex;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 25px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: #7f8c8d;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            color: var(--secondary-color);
+            border-bottom: 3px solid var(--secondary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .input-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .input-field {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+            font-size: 1.1rem;
+        }
+        
+        input, select, button {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+        }
+        
+        .btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-calculate {
+            background-color: var(--success-color);
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn-calculate:hover {
+            background-color: #27ae60;
+        }
+        
+        .btn-secondary {
+            background-color: var(--warning-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e67e22;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .person-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            padding: 10px;
+            margin-top: 15px;
+        }
+        
+        .person-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 1.05rem;
+        }
+        
+        .person-item:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .person-item.selected {
+            background-color: #e3f2fd;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .result-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            background-color: #f8f9fa;
+        }
+        
+        .person-name {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .person-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .detail-item {
+            background-color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .group-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+        
+        .group-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .group-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+            border-top: 5px solid;
+        }
+        
+        .group-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .group-leader {
+            background-color: #fff8e1;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            margin: 10px 0;
+            font-weight: bold;
+            color: #ff8f00;
+        }
+        
+        .business-suggestion {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-top: 15px;
+            font-style: italic;
+        }
+        
+        .members-list {
+            list-style-type: none;
+            margin-top: 10px;
+        }
+        
+        .members-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        
+        .color-wood { border-top-color: #4CAF50; }
+        .color-fire { border-top-color: #f44336; }
+        .color-earth { border-top-color: #795548; }
+        .color-metal { border-top-color: #607D8B; }
+        .color-water { border-top-color: #2196F3; }
+        
+        .element-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: white;
+            margin-right: 5px;
+        }
+        
+        .badge-wood { background-color: #4CAF50; }
+        .badge-fire { background-color: #f44336; }
+        .badge-earth { background-color: #795548; }
+        .badge-metal { background-color: #607D8B; }
+        .badge-water { background-color: #2196F3; }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.95rem;
+        }
+        
+        .instructions {
+            background-color: #fffde7;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+            border-left: 4px solid #ffd600;
+        }
+        
+        .result-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .result-detail {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        
+        .detail-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-top: 5px;
+        }
+        
+        .highlight {
+            background: #fffde7 !important;
+            border-left: 4px solid #ffeb3b;
+        }
+        
+        .canchi-result {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+        
+        @media (max-width: 768px) {
+            .input-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .input-tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-chart-line"></i> Phân Tích Mệnh Lý & Định Hướng Kinh Doanh</h1>
+            <div class="subtitle">Dựa trên Can Chi - Ngũ Hành - Mệnh theo năm sinh</div>
+            <div class="date-info">
+                <div class="time-item">Ngày chuẩn: <span>18/12/2025</span></div>
+                <div class="time-item">10 giờ <span>Quý Tỵ</span></div>
+                <div class="time-item">29 Ngày <span>Tân Dậu</span></div>
+                <div class="time-item">10 Tháng <span>Đinh Hợi</span></div>
+                <div class="time-item">2025 Năm <span>Ất Tỵ</span></div>
+            </div>
+        </header>
+        
+        <div class="instructions">
+            <p><i class="fas fa-info-circle"></i> <strong>Hướng dẫn sử dụng:</strong> Nhập tên và ngày sinh (hoặc chọn từ danh sách có sẵn) để tra cứu thông tin mệnh lý. Sử dụng công cụ tính Can Chi để tính toán chi tiết. Sau đó nhấn "Phân Tích & Phân Nhóm" để xem kết quả phân nhóm kinh doanh.</p>
+        </div>
+        
+        <div class="canchi-calculator">
+            <h2 class="section-title"><i class="fas fa-calculator"></i> Công Cụ Tính Can Chi</h2>
+            
+            <div class="input-tabs">
+                <button class="tab active" data-tab="canchi">Nhập Can Chi</button>
+                <button class="tab" data-tab="solar">Nhập Dương Lịch</button>
+            </div>
+            
+            <div id="canchi-tab" class="tab-content active">
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="hour"><i class="far fa-clock"></i> Giờ (Can Chi):</label>
+                        <select id="hour">
+                            <option value="">Chọn giờ</option>
+                            <!-- Giờ sẽ được thêm bằng JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div class="input-field">
+                        <label for="day"><i class="far fa-calendar-alt"></i> Ngày (Can Chi):</label>
+                        <select id="day">
+                            <option value="">Chọn ngày</option>
+                            <!-- Ngày sẽ được thêm bằng JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div class="input-field">
+                        <label for="month"><i class="fas fa-calendar"></i> Tháng (Can Chi):</label>
+                        <select id="month">
+                            <option value="">Chọn tháng</option>
+                            <!-- Tháng sẽ được thêm bằng JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div class="input-field">
+                        <label for="year"><i class="fas fa-calendar-check"></i> Năm (Can Chi):</label>
+                        <select id="year">
+                            <option value="">Chọn năm</option>
+                            <!-- Năm sẽ được thêm bằng JavaScript -->
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn" id="calculateForward">
+                        <i class="fas fa-forward"></i> Tính Xuôi
+                    </button>
+                    <button class="btn btn-secondary" id="calculateBackward">
+                        <i class="fas fa-backward"></i> Tính Ngược
+                    </button>
+                    <button class="btn" id="resetCanChi">
+                        <i class="fas fa-redo"></i> Đặt Lại
+                    </button>
+                    <button class="btn btn-secondary" id="calculateToSolar">
+                        <i class="fas fa-sun"></i> Tính Dương Lịch
+                    </button>
+                </div>
+            </div>
+            
+            <div id="solar-tab" class="tab-content">
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="solarHour"><i class="far fa-clock"></i> Giờ (0-23):</label>
+                        <input type="number" id="solarHour" min="0" max="23" value="10">
+                    </div>
+                    
+                    <div class="input-field">
+                        <label for="solarDay"><i class="far fa-calendar-alt"></i> Ngày:</label>
+                        <input type="number" id="solarDay" min="1" max="31" value="18">
+                    </div>
+                    
+                    <div class="input-field">
+                        <label for="solarMonth"><i class="fas fa-calendar"></i> Tháng:</label>
+                        <input type="number" id="solarMonth" min="1" max="12" value="12">
+                    </div>
+                    
+                    <div class="input-field">
+                        <label for="solarYear"><i class="fas fa-calendar-check"></i> Năm:</label>
+                        <input type="number" id="solarYear" min="1900" max="2100" value="2025">
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn" id="calculateFromSolar">
+                        <i class="fas fa-moon"></i> Tính Can Chi
+                    </button>
+                    <button class="btn" id="applyToPerson">
+                        <i class="fas fa-user-plus"></i> Áp dụng vào Người
+                    </button>
+                </div>
+            </div>
+            
+            <div id="canchiResult" class="canchi-result" style="display: none;">
+                <h3><i class="fas fa-chart-pie"></i> Kết Quả Tính Can Chi</h3>
+                <div id="canchiResultContent"></div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <h2 class="section-title"><i class="fas fa-user-edit"></i> Nhập thông tin cá nhân</h2>
+                
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="nameInput"><i class="fas fa-user"></i> Họ và tên:</label>
+                        <input type="text" id="nameInput" placeholder="Nhập họ và tên đầy đủ">
+                    </div>
+                    
+                    <div class="input-field">
+                        <label for="birthdayInput"><i class="fas fa-birthday-cake"></i> Ngày sinh (dd/mm/yyyy):</label>
+                        <input type="text" id="birthdayInput" placeholder="VD: 04/06/1944">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-field">
+                        <label><i class="fas fa-list-ul"></i> Hoặc chọn từ danh sách có sẵn:</label>
+                        <div class="person-list" id="personList">
+                            <!-- Danh sách người sẽ được thêm bằng JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn" id="addPersonBtn">
+                        <i class="fas fa-plus"></i> Thêm người vào danh sách
+                    </button>
+                    <button class="btn btn-secondary" id="clearListBtn">
+                        <i class="fas fa-trash"></i> Xóa danh sách
+                    </button>
+                </div>
+                
+                <button class="btn btn-calculate" id="calculateBtn">
+                    <i class="fas fa-calculator"></i> Phân Tích & Phân Nhóm
+                </button>
+            </div>
+            
+            <div class="result-section">
+                <h2 class="section-title"><i class="fas fa-chart-pie"></i> Kết quả phân tích</h2>
+                <div id="individualResults">
+                    <p class="no-results">Chưa có dữ liệu. Vui lòng nhập thông tin và nhấn "Phân Tích & Phân Nhóm".</p>
+                </div>
+                
+                <div class="group-section" id="groupSection" style="display: none;">
+                    <h2 class="section-title"><i class="fas fa-users"></i> Phân nhóm kinh doanh</h2>
+                    <div id="groupResults"></div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Ứng dụng phân tích mệnh lý theo Can Chi - Ngũ Hành | Thiết kế dành cho người cận thị độ 2</p>
+            <p>Dữ liệu tham khảo từ bảng tra cứu Can Chi truyền thống</p>
+        </footer>
+    </div>
+
+    <script>
+        // ==============================
+        // DỮ LIỆU CƠ BẢN
+        // ==============================
+        
+        // Dữ liệu 25 người mẫu
+        const samplePeople = [
+            { id: 1, name: "NGUYENKHACNANG", birthday: "04/06/1944" },
+            { id: 2, name: "TOTHIHA", birthday: "29/08/1948" },
+            { id: 3, name: "NGUYENMINHNAM", birthday: "03/03/1971" },
+            { id: 4, name: "THANTHIKIMANH", birthday: "23/09/1981" },
+            { id: 5, name: "NGUYENTONGANAN", birthday: "28/09/2014" },
+            { id: 6, name: "NGUYENTOMINHCHAU", birthday: "25/07/2016" },
+            { id: 7, name: "NGUYENTOBICHNGOC", birthday: "05/02/2020" },
+            { id: 8, name: "NGUYENTHIMINHHANG", birthday: "07/01/1974" },
+            { id: 9, name: "NGOQUYCUONG", birthday: "23/05/1973" },
+            { id: 10, name: "NGOGIABACH", birthday: "12/10/2000" },
+            { id: 11, name: "NGOGIALINH", birthday: "05/04/2005" },
+            { id: 12, name: "NGUYENTHIMINHPHUONG", birthday: "06/11/1978" },
+            { id: 13, name: "HOANGANHDUNG", birthday: "21/09/1978" },
+            { id: 14, name: "HOANGHAIVINH", birthday: "03/06/2010" },
+            { id: 15, name: "HOANGTHIENBACHANH", birthday: "14/11/2015" },
+            { id: 16, name: "TÔ KIM HUỆ", birthday: "09/08/1960" },
+            { id: 17, name: "NGUYỄN TUẤN ANH", birthday: "23/10/1983" },
+            { id: 18, name: "NGUYỄN THẾ ANH", birthday: "24/03/2001" },
+            { id: 19, name: "NGÔ THỊ MAI", birthday: "12/12/1948" },
+            { id: 20, name: "TÔ VIỆT HƯNG", birthday: "17/06/1996" },
+            { id: 21, name: "TÔ THỊ HỒNG", birthday: "10/10/1964" },
+            { id: 22, name: "VŨ VĂN HIỆP", birthday: "24/04/1974" },
+            { id: 23, name: "NGUYỄN THỊ CHI", birthday: "08/02/1946" },
+            { id: 24, name: "NGUYỄN TẤN BẮC", birthday: "30/11/1957" },
+            { id: 25, name: "NGUYỄN THỊ TÂM", birthday: "08/08/1954" }
+        ];
+
+        // Bảng tra cứu Can Chi (60 Hoa Giáp)
+        const canChiData = [
+            {id: 1, canChi: "Giáp Tý", yNghia: "Ốc Thượng Chi Thử (Chuột ở nóc nhà)", amDuong: "Kim +", menh: "Hải Trung Kim (Vàng trong biển)", que1: "Đoài Kim", que2: "Cấn Thổ", element: "Kim"},
+            {id: 2, canChi: "Ất Sửu", yNghia: "Hải Nội Chi Ngưu (Trâu trong biển)", amDuong: "Kim -", menh: "Hải Trung Kim (Vàng trong biển)", que1: "Càn Kim", que2: "Ly Hoả", element: "Kim"},
+            {id: 3, canChi: "Bính Dần", yNghia: "Sơn Lâm Chi Hổ (Hổ trong rừng)", amDuong: "Hỏa +", menh: "Lư Trung Hỏa (Lửa trong lò)", que1: "Khôn Thổ", que2: "Khảm Thuỷ", element: "Hoả"},
+            {id: 4, canChi: "Đinh Mão", yNghia: "Vọng Nguyệt Chi Thố (Thỏ ngắm trăng)", amDuong: "Hỏa -", menh: "Lư Trung Hỏa (Lửa trong lò)", que1: "Tốn Mộc", que2: "Khôn Thổ", element: "Hoả"},
+            {id: 5, canChi: "Mậu Thìn", yNghia: "Thanh Ôn Chi Long (Rồng ôn hoà)", amDuong: "Mộc +", menh: "Đại Lâm Mộc (Gỗ rừng già)", que1: "Chấn Mộc", que2: "Chấn Mộc", element: "Mộc"},
+            {id: 6, canChi: "Kỷ Tỵ", yNghia: "Phúc Khí Chi Xà (Rắn có phúc)", amDuong: "Mộc -", menh: "Đại Lâm Mộc (Gỗ rừng già)", que1: "Khôn Thổ", que2: "Tốn Mộc", element: "Mộc"},
+            {id: 7, canChi: "Canh Ngọ", yNghia: "Thất Lý Chi Mã (Ngựa trong nhà)", amDuong: "Thổ +", menh: "Lộ Bàng Thổ (Đất đường đi)", que1: "Đoài Kim", que2: "Cấn Thổ", element: "Thổ"},
+            {id: 8, canChi: "Tân Mùi", yNghia: "Đắc Lộc Chi Dương (Dê có lộc)", amDuong: "Thổ -", menh: "Lộ Bàng Thổ (Đất đường đi)", que1: "Càn Kim", que2: "Ly Hoả", element: "Thổ"},
+            {id: 9, canChi: "Nhâm Thân", yNghia: "Thanh Tú Chi Hầu (Khỉ thanh tú)", amDuong: "Kim +", menh: "Kiếm Phong Kim (Vàng mũi kiếm)", que1: "Khôn Thổ", que2: "Khảm Thuỷ", element: "Kim"},
+            {id: 10, canChi: "Quý Dậu", yNghia: "Lâu Túc Kê (Gà nhà gác)", amDuong: "Kim -", menh: "Kiếm Phong Kim (Vàng mũi kiếm)", que1: "Tốn Mộc", que2: "Khôn Thổ", element: "Kim"},
+            {id: 11, canChi: "Giáp Tuất", yNghia: "Thủ Thân Chi Cẩu (Chó giữ mình)", amDuong: "Hỏa +", menh: "Sơn Đầu Hỏa (Lửa trên núi)", que1: "Chấn Mộc", que2: "Chấn Mộc", element: "Hoả"},
+            {id: 12, canChi: "Ất Hợi", yNghia: "Quá Vãng Chi Trư (Lợn hay đi)", amDuong: "Hỏa -", menh: "Sơn Đầu Hỏa (Lửa trên núi)", que1: "Khôn Thổ", que2: "Tốn Mộc", element: "Hoả"},
+            {id: 13, canChi: "Bính Tý", yNghia: "Điền Nội Chi Thử (Chuột trong ruộng)", amDuong: "Thủy +", menh: "Giản Hạ Thủy (Nước khe suối)", que1: "Khảm Thuỷ", que2: "Khôn Thổ", element: "Thuỷ"},
+            {id: 14, canChi: "Đinh Sửu", yNghia: "Hồ Nội Chi Ngưu (Trâu trong hồ nước)", amDuong: "Thủy -", menh: "Giản Hạ Thủy (Nước khe suối)", que1: "Ly Hoả", que2: "Càn Kim", element: "Thuỷ"},
+            {id: 15, canChi: "Mậu Dần", yNghia: "Quá Sơn Chi Hổ (Hổ qua rừng)", amDuong: "Thổ +", menh: "Thành Đầu Thổ (Đất trên thành)", que1: "Cấn Thổ", que2: "Đoài Kim", element: "Thổ"},
+            {id: 16, canChi: "Kỷ Mão", yNghia: "Sơn Lâm Chi Thố (Thỏ ở rừng)", amDuong: "Thổ -", menh: "Thành Đầu Thổ (Đất trên thành)", que1: "Đoài Kim", que2: "Cấn Thổ", element: "Thổ"},
+            {id: 17, canChi: "Canh Thìn", yNghia: "Thứ Tính Chi Long (Rồng khoan dung)", amDuong: "Kim +", menh: "Bạch Lạp Kim (Vàng sáp ong)", que1: "Càn Kim", que2: "Ly Hoả", element: "Kim"},
+            {id: 18, canChi: "Tân Tỵ", yNghia: "Đông Tàng Chi Xà (Rắn ngủ đông)", amDuong: "Kim -", menh: "Bạch Lạp Kim (Vàng sáp ong)", que1: "Khôn Thổ", que2: "Khảm Thuỷ", element: "Kim"},
+            {id: 19, canChi: "Nhâm Ngọ", yNghia: "Quân Trung Chi Mã (Ngựa chiến)", amDuong: "Mộc +", menh: "Dương Liễu Mộc (Gỗ cây dương)", que1: "Tốn Mộc", que2: "Khôn Thổ", element: "Mộc"},
+            {id: 20, canChi: "Quý Mùi", yNghia: "Quần Nội Chi Dương (Dê trong đàn)", amDuong: "Mộc -", menh: "Dương Liễu Mộc (Gỗ cây dương)", que1: "Chấn Mộc", que2: "Chấn Mộc", element: "Mộc"},
+            {id: 21, canChi: "Giáp Thân", yNghia: "Quá Thụ Chi Hầu (Khỉ leo cây)", amDuong: "Thủy +", menh: "Tuyền Trung Thủy (Nước trong suối)", que1: "Khôn Thổ", que2: "Tốn Mộc", element: "Thuỷ"},
+            {id: 22, canChi: "Ất Dậu", yNghia: "Xướng Ngọ Chi Kê (Gà gáy trưa)", amDuong: "Thủy -", menh: "Tuyền Trung Thủy (Nước trong suối)", que1: "Khảm Thuỷ", que2: "Khôn Thổ", element: "Thuỷ"},
+            {id: 23, canChi: "Bính Tuất", yNghia: "Tự Miên Chi Cẩu (Chó đang ngủ)", amDuong: "Thổ +", menh: "Ốc Thượng Thổ (Đất nóc nhà)", que1: "Ly Hoả", que2: "Càn Kim", element: "Thổ"},
+            {id: 24, canChi: "Đinh Hợi", yNghia: "Quá Sơn Chi Trư (Lợn qua núi)", amDuong: "Thổ -", menh: "Ốc Thượng Thổ (Đất nóc nhà)", que1: "Cấn Thổ", que2: "Đoài Kim", element: "Thổ"},
+            {id: 25, canChi: "Mậu Tý", yNghia: "Thương Nội Chi Trư (Chuột trong kho)", amDuong: "Hỏa +", menh: "Thích Lịch Hỏa (Lửa sấm sét)", que1: "Đoài Kim", que2: "Cấn Thổ", element: "Hoả"},
+            {id: 26, canChi: "Kỷ Sửu", yNghia: "Lâm Nội Chi Ngưu (Trâu trong chuồng)", amDuong: "Hỏa -", menh: "Thích Lịch Hỏa (Lửa sấm sét)", que1: "Càn Kim", que2: "Ly Hoả", element: "Hoả"},
+            {id: 27, canChi: "Canh Dần", yNghia: "Xuất Sơn Chi Hổ (Hổ xuống núi)", amDuong: "Mộc +", menh: "Tùng Bách Mộc (Gỗ tùng bách)", que1: "Khôn Thổ", que2: "Khảm Thuỷ", element: "Mộc"},
+            {id: 28, canChi: "Tân Mão", yNghia: "Ẩn Huyệt Chi Thố (Thỏ trong hang)", amDuong: "Mộc -", menh: "Tùng Bách Mộc (Gỗ tùng bách)", que1: "Tốn Mộc", que2: "Khôn Thổ", element: "Mộc"},
+            {id: 29, canChi: "Nhâm Thìn", yNghia: "Hành Vũ Chi Long (Rồng phun mưa)", amDuong: "Thủy +", menh: "Trường Lưu Thủy (Nước chảy mạnh)", que1: "Chấn Mộc", que2: "Chấn Mộc", element: "Thuỷ"},
+            {id: 30, canChi: "Quý Tỵ", yNghia: "Thảo Trung Chi Xà (Rắn trong cỏ)", amDuong: "Thủy -", menh: "Trường Lưu Thủy (Nước chảy mạnh)", que1: "Khôn Thổ", que2: "Tốn Mộc", element: "Thuỷ"},
+            {id: 31, canChi: "Giáp Ngọ", yNghia: "Vân Trung Chi Mã (Ngựa trong mây)", amDuong: "Kim +", menh: "Sa Trung Kim (Vàng trong cát)", que1: "Khảm Thuỷ", que2: "Khôn Thổ", element: "Kim"},
+            {id: 32, canChi: "Ất Mùi", yNghia: "Kính Trọng Chi Dương (Dê được quý mến)", amDuong: "Kim -", menh: "Sa Trung Kim (Vàng trong cát)", que1: "Ly Hoả", que2: "Càn Kim", element: "Kim"},
+            {id: 33, canChi: "Bính Thân", yNghia: "Sơn Thượng Chi Hầu (Khỉ trên núi)", amDuong: "Hỏa +", menh: "Sơn Hạ Hỏa (Lửa trên núi)", que1: "Cấn Thổ", que2: "Đoài Kim", element: "Hoả"},
+            {id: 34, canChi: "Đinh Dậu", yNghia: "Độc Lập Chi Kê (Gà độc thân)", amDuong: "Hỏa -", menh: "Sơn Hạ Hỏa (Lửa trên núi)", que1: "Đoài Kim", que2: "Cấn Thổ", element: "Hoả"},
+            {id: 35, canChi: "Mậu Tuất", yNghia: "Tiến Sơn Chi Cẩu (Chó vào núi)", amDuong: "Mộc +", menh: "Bình Địa Mộc (Gỗ đồng bằng)", que1: "Càn Kim", que2: "Ly Hoả", element: "Mộc"},
+            {id: 36, canChi: "Kỷ Hợi", yNghia: "Đạo Viện Chi Trư (Lợn trong tu viện)", amDuong: "Mộc -", menh: "Bình Địa Mộc (Gỗ đồng bằng)", que1: "Khôn Thổ", que2: "Khảm Thuỷ", element: "Mộc"},
+            {id: 37, canChi: "Canh Tý", yNghia: "Lương Thượng Chi Thử (Chuột trên xà)", amDuong: "Thổ +", menh: "Bích Thượng Thổ (Đất tò vò)", que1: "Tốn Mộc", que2: "Khôn Thổ", element: "Thổ"},
+            {id: 38, canChi: "Tân Sửu", yNghia: "Lộ Đồ Chi Ngưu (Trâu trên đường)", amDuong: "Thổ -", menh: "Bích Thượng Thổ (Đất tò vò)", que1: "Chấn Mộc", que2: "Chấn Mộc", element: "Thổ"},
+            {id: 39, canChi: "Nhâm Dần", yNghia: "Quá Lâm Chi Hổ (Hổ qua rừng)", amDuong: "Kim +", menh: "Kim Bạch Kim (Vàng pha bạc)", que1: "Khôn Thổ", que2: "Tốn Mộc", element: "Kim"},
+            {id: 40, canChi: "Quý Mão", yNghia: "Quá Lâm Chi Thố (Thỏ qua rừng)", amDuong: "Kim -", menh: "Kim Bạch Kim (Vàng pha bạc)", que1: "Khảm Thuỷ", que2: "Khôn Thổ", element: "Kim"},
+            {id: 41, canChi: "Giáp Thìn", yNghia: "Phục Đầm Chi Lâm (Rồng ẩn ở đầm)", amDuong: "Hỏa +", menh: "Phú Đăng Hỏa (Lửa đèn to)", que1: "Ly Hoả", que2: "Càn Kim", element: "Hoả"},
+            {id: 42, canChi: "Ất Tỵ", yNghia: "Xuất Huyệt Chi Xà (Rắn rời hang)", amDuong: "Hỏa -", menh: "Phú Đăng Hỏa (Lửa đèn to)", que1: "Cấn Thổ", que2: "Đoài Kim", element: "Hoả"},
+            {id: 43, canChi: "Bính Ngọ", yNghia: "Hành Lộ Chi Mã (Ngựa chạy trên đường)", amDuong: "Thủy +", menh: "Thiên Hà Thủy (Nước trên trời)", que1: "Đoài Kim", que2: "Cấn Thổ", element: "Thuỷ"},
+            {id: 44, canChi: "Đinh Mùi", yNghia: "Thất Quần Chi Dương (Dê lạc đàn)", amDuong: "Thủy -", menh: "Thiên Hà Thủy (Nước trên trời)", que1: "Càn Kim", que2: "Ly Hoả", element: "Thuỷ"},
+            {id: 45, canChi: "Mậu Thân", yNghia: "Độc Lập Chi Hầu (Khỉ độc thân)", amDuong: "Thổ +", menh: "Đại Trạch Thổ (Đất nền nhà)", que1: "Khôn Thổ", que2: "Khảm Thuỷ", element: "Thổ"},
+            {id: 46, canChi: "Kỷ Dậu", yNghia: "Báo Hiệu Chi Kê (Gà gáy)", amDuong: "Thổ -", menh: "Đại Trạch Thổ (Đất nền nhà)", que1: "Tốn Mộc", que2: "Khôn Thổ", element: "Thổ"},
+            {id: 47, canChi: "Canh Tuất", yNghia: "Tự Quan Chi Cẩu (Chó nhà chùa)", amDuong: "Kim +", menh: "Thoa Xuyến Kim (Vàng trang sức)", que1: "Chấn Mộc", que2: "Chấn Mộc", element: "Kim"},
+            {id: 48, canChi: "Tân Hợi", yNghia: "Khuyên Dưỡng Chi Trư (Lợn nuôi nhốt)", amDuong: "Kim -", menh: "Thoa Xuyến Kim (Vàng trang sức)", que1: "Khôn Thổ", que2: "Tốn Mộc", element: "Kim"},
+            {id: 49, canChi: "Nhâm Tý", yNghia: "Sơn Thượng Chi Thử (Chuột trên núi)", amDuong: "Mộc +", menh: "Tang Đố Mộc (Gỗ cây dâu)", que1: "Khảm Thuỷ", que2: "Khôn Thổ", element: "Mộc"},
+            {id: 50, canChi: "Quý Sửu", yNghia: "Lan Ngoại Chi Ngưu (Trâu ngoài chuồng)", amDuong: "Mộc -", menh: "Tang Đố Mộc (Gỗ cây dâu)", que1: "Ly Hoả", que2: "Càn Kim", element: "Mộc"},
+            {id: 51, canChi: "Giáp Dần", yNghia: "Lập Định Chi Hổ (Hổ tự lập)", amDuong: "Thủy +", menh: "Đại Khe Thủy (Nước khe lớn)", que1: "Cấn Thổ", que2: "Đoài Kim", element: "Thuỷ"},
+            {id: 52, canChi: "Ất Mão", yNghia: "Đắc Đạo Chi Thố (Thỏ đắc đạo)", amDuong: "Thủy -", menh: "Đại Khe Thủy (Nước khe lớn)", que1: "Đoài Kim", que2: "Cấn Thổ", element: "Thuỷ"},
+            {id: 53, canChi: "Bính Thìn", yNghia: "Thiên Thượng Chi Long (Rồng trên trời)", amDuong: "Thổ +", menh: "Sa Trung Thổ (Đất pha cát)", que1: "Càn Kim", que2: "Ly Hoả", element: "Thổ"},
+            {id: 54, canChi: "Đinh Tỵ", yNghia: "Đầm Nội Chi Xà (Rắn trong đầm)", amDuong: "Thổ -", menh: "Sa Trung Thổ (Đất pha cát)", que1: "Khôn Thổ", que2: "Khảm Thuỷ", element: "Thổ"},
+            {id: 55, canChi: "Mậu Ngọ", yNghia: "Cứu Nội Chi Mã (Ngựa trong chuồng)", amDuong: "Hỏa +", menh: "Thiên Thượng Hỏa (Lửa trên trời)", que1: "Tốn Mộc", que2: "Khôn Thổ", element: "Hoả"},
+            {id: 56, canChi: "Kỷ Mùi", yNghia: "Thảo Dã Chi Dương (Dê đồng cỏ)", amDuong: "Hỏa -", menh: "Thiên Thượng Hỏa (Lửa trên trời)", que1: "Chấn Mộc", que2: "Chấn Mộc", element: "Hoả"},
+            {id: 57, canChi: "Canh Thân", yNghia: "Thực Quả Chi Hầu (Khỉ ăn hoa quả)", amDuong: "Mộc +", menh: "Thạch Lựu Mộc (Gỗ cây lựu đá)", que1: "Khôn Thổ", que2: "Tốn Mộc", element: "Mộc"},
+            {id: 58, canChi: "Tân Dậu", yNghia: "Long Tàng Chi Kê (Gà trong lồng)", amDuong: "Mộc -", menh: "Thạch Lựu Mộc (Gỗ cây lựu đá)", que1: "Khảm Thuỷ", que2: "Khôn Thổ", element: "Mộc"},
+            {id: 59, canChi: "Nhâm Tuất", yNghia: "Cố Gia Chi Khuyển (Chó về nhà)", amDuong: "Thủy +", menh: "Đại Hải Thủy (Nước biển lớn)", que1: "Ly Hoả", que2: "Càn Kim", element: "Thuỷ"},
+            {id: 60, canChi: "Quý Hợi", yNghia: "Lâm Hạ Chi Trư (Lợn trong rừng)", amDuong: "Thủy -", menh: "Đại Hải Thủy (Nước biển lớn)", que1: "Cấn Thổ", que2: "Đoài Kim", element: "Thuỷ"}
+        ];
+
+        // Ngày chuẩn (18/12/2025 10:00)
+        const STANDARD_DATE = {
+            year: 2025,
+            month: 12,
+            day: 18,
+            hour: 10,
+            canChi: {
+                hour: "Quý Tỵ",
+                day: "Tân Dậu",
+                month: "Đinh Hợi",
+                year: "Ất Tỵ"
+            }
+        };
+
+        // Bảng quy đổi năm dương lịch sang Can Chi (đơn giản)
+        const canChiYearMap = {
+            1944: "Giáp Thân", 1945: "Ất Dậu", 1946: "Bính Tuất", 1947: "Đinh Hợi", 1948: "Mậu Tý",
+            1949: "Kỷ Sửu", 1950: "Canh Dần", 1951: "Tân Mão", 1952: "Nhâm Thìn", 1953: "Quý Tỵ",
+            1954: "Giáp Ngọ", 1955: "Ất Mùi", 1956: "Bính Thân", 1957: "Đinh Dậu", 1958: "Mậu Tuất",
+            1959: "Kỷ Hợi", 1960: "Canh Tý", 1961: "Tân Sửu", 1962: "Nhâm Dần", 1963: "Quý Mão",
+            1964: "Giáp Thìn", 1965: "Ất Tỵ", 1966: "Bính Ngọ", 1967: "Đinh Mùi", 1968: "Mậu Thân",
+            1969: "Kỷ Dậu", 1970: "Canh Tuất", 1971: "Tân Hợi", 1972: "Nhâm Tý", 1973: "Quý Sửu",
+            1974: "Giáp Dần", 1975: "Ất Mão", 1976: "Bính Thìn", 1977: "Đinh Tỵ", 1978: "Mậu Ngọ",
+            1979: "Kỷ Mùi", 1980: "Canh Thân", 1981: "Tân Dậu", 1982: "Nhâm Tuất", 1983: "Quý Hợi",
+            1984: "Giáp Tý", 1985: "Ất Sửu", 1986: "Bính Dần", 1987: "Đinh Mão", 1988: "Mậu Thìn",
+            1989: "Kỷ Tỵ", 1990: "Canh Ngọ", 1991: "Tân Mùi", 1992: "Nhâm Thân", 1993: "Quý Dậu",
+            1994: "Giáp Tuất", 1995: "Ất Hợi", 1996: "Bính Tý", 1997: "Đinh Sửu", 1998: "Mậu Dần",
+            1999: "Kỷ Mão", 2000: "Canh Thìn", 2001: "Tân Tỵ", 2002: "Nhâm Ngọ", 2003: "Quý Mùi",
+            2004: "Giáp Thân", 2005: "Ất Dậu", 2006: "Bính Tuất", 2007: "Đinh Hợi", 2008: "Mậu Tý",
+            2009: "Kỷ Sửu", 2010: "Canh Dần", 2011: "Tân Mão", 2012: "Nhâm Thìn", 2013: "Quý Tỵ",
+            2014: "Giáp Ngọ", 2015: "Ất Mùi", 2016: "Bính Thân", 2017: "Đinh Dậu", 2018: "Mậu Tuất",
+            2019: "Kỷ Hợi", 2020: "Canh Tý", 2021: "Tân Sửu", 2022: "Nhâm Dần", 2023: "Quý Mão",
+            2024: "Giáp Thìn", 2025: "Ất Tỵ"
+        };
+
+        // Đề xuất công việc kinh doanh theo ngũ hành
+        const businessSuggestions = {
+            "Kim": ["Công nghệ thông tin", "Kinh doanh vàng bạc, đá quý", "Dịch vụ tài chính ngân hàng", "Cơ khí chế tạo", "Bất động sản cao cấp"],
+            "Mộc": ["Nông nghiệp, lâm nghiệp", "Thiết kế nội thất", "Xuất bản, giáo dục", "Thời trang từ chất liệu tự nhiên", "Y tế, dược phẩm"],
+            "Thuỷ": ["Du lịch, vận tải biển", "Kinh doanh nước giải khát", "Dịch vụ spa, thẩm mỹ", "Truyền thông, quảng cáo", "Công nghệ nước, môi trường"],
+            "Hoả": ["Nhà hàng, khách sạn", "Năng lượng, điện lực", "Giải trí, thể thao", "Mỹ phẩm, làm đẹp", "Công nghệ nhiệt"],
+            "Thổ": ["Xây dựng, vật liệu xây dựng", "Bất động sản", "Nông sản thực phẩm", "Tư vấn phong thuỷ", "Khách sạn, khu nghỉ dưỡng"]
+        };
+
+        // Danh sách người được thêm
+        let peopleList = [];
+
+        // ==============================
+        // HÀM TIỆN ÍCH CHUNG
+        // ==============================
+        
+        // Tìm thông tin theo Can Chi
+        function findInfoByCanChi(canChi) {
+            return canChiData.find(item => item.canChi === canChi);
+        }
+
+        // Tìm chỉ số của Can Chi
+        function findIndexByCanChi(canChi) {
+            return canChiData.findIndex(item => item.canChi === canChi);
+        }
+
+        // Lấy Can Chi từ chỉ số
+        function getCanChiByIndex(index) {
+            while (index < 0) index += 60;
+            while (index >= 60) index -= 60;
+            return canChiData[index].canChi;
+        }
+
+        // Tính số ngày giữa hai ngày
+        function getDaysBetween(date1, date2) {
+            const oneDay = 24 * 60 * 60 * 1000;
+            const firstDate = new Date(date1.year, date1.month - 1, date1.day);
+            const secondDate = new Date(date2.year, date2.month - 1, date2.day);
+            const diffDays = Math.round((secondDate - firstDate) / oneDay);
+            return diffDays;
+        }
+
+        // Lấy class CSS cho ngũ hành
+        function getElementClass(element) {
+            switch(element) {
+                case "Mộc": return "wood";
+                case "Hoả": return "fire";
+                case "Thổ": return "earth";
+                case "Kim": return "metal";
+                case "Thuỷ": return "water";
+                default: return "wood";
+            }
+        }
+
+        // ==============================
+        // TÍNH CAN CHI TỪ DƯƠNG LỊCH
+        // ==============================
+        
+        function calculateCanChiFromSolar(solarDate) {
+            const daysDiff = getDaysBetween(STANDARD_DATE, solarDate);
+            const hoursDiff = (daysDiff * 24) + (solarDate.hour - STANDARD_DATE.hour);
+            
+            // Tính chỉ số của từng Can Chi dựa trên ngày chuẩn
+            const hourIndex = findIndexByCanChi(STANDARD_DATE.canChi.hour);
+            const dayIndex = findIndexByCanChi(STANDARD_DATE.canChi.day);
+            const monthIndex = findIndexByCanChi(STANDARD_DATE.canChi.month);
+            const yearIndex = findIndexByCanChi(STANDARD_DATE.canChi.year);
+            
+            // Tính chỉ số mới
+            const newHourIndex = (hourIndex + hoursDiff) % 60;
+            const newDayIndex = (dayIndex + daysDiff) % 60;
+            
+            // Tính tháng: mỗi tháng âm lịch khoảng 29.53 ngày
+            const monthsDiff = Math.floor(daysDiff / 29.53);
+            const newMonthIndex = (monthIndex + monthsDiff) % 60;
+            
+            // Tính năm: mỗi năm âm lịch khoảng 354.37 ngày
+            const yearsDiff = Math.floor(daysDiff / 354.37);
+            const newYearIndex = (yearIndex + yearsDiff) % 60;
+            
+            return {
+                hour: getCanChiByIndex(newHourIndex),
+                day: getCanChiByIndex(newDayIndex),
+                month: getCanChiByIndex(newMonthIndex),
+                year: getCanChiByIndex(newYearIndex)
+            };
+        }
+
+        // ==============================
+        // TÍNH DƯƠNG LỊCH TỪ CAN CHI
+        // ==============================
+        
+        function calculateSolarFromCanChi(canChiInput) {
+            // Tìm chỉ số của Can Chi nhập vào
+            const hourIndex = findIndexByCanChi(canChiInput.hour);
+            const dayIndex = findIndexByCanChi(canChiInput.day);
+            const monthIndex = findIndexByCanChi(canChiInput.month);
+            const yearIndex = findIndexByCanChi(canChiInput.year);
+            
+            // Tìm chỉ số của Can Chi chuẩn
+            const stdHourIndex = findIndexByCanChi(STANDARD_DATE.canChi.hour);
+            const stdDayIndex = findIndexByCanChi(STANDARD_DATE.canChi.day);
+            const stdMonthIndex = findIndexByCanChi(STANDARD_DATE.canChi.month);
+            const stdYearIndex = findIndexByCanChi(STANDARD_DATE.canChi.year);
+            
+            // Tính khoảng cách
+            let hourDiff = hourIndex - stdHourIndex;
+            let dayDiff = dayIndex - stdDayIndex;
+            let monthDiff = monthIndex - stdMonthIndex;
+            let yearDiff = yearIndex - stdYearIndex;
+            
+            // Điều chỉnh khoảng cách về khoảng -30 đến 30
+            if (hourDiff > 30) hourDiff = hourDiff - 60;
+            if (hourDiff < -30) hourDiff = hourDiff + 60;
+            
+            if (dayDiff > 30) dayDiff = dayDiff - 60;
+            if (dayDiff < -30) dayDiff = dayDiff + 60;
+            
+            if (monthDiff > 30) monthDiff = monthDiff - 60;
+            if (monthDiff < -30) monthDiff = monthDiff + 60;
+            
+            if (yearDiff > 30) yearDiff = yearDiff - 60;
+            if (yearDiff < -30) yearDiff = yearDiff + 60;
+            
+            // Ưu tiên sử dụng chênh lệch ngày
+            const totalDays = dayDiff;
+            
+            // Tính ngày mới
+            const standardDateObj = new Date(STANDARD_DATE.year, STANDARD_DATE.month - 1, STANDARD_DATE.day);
+            const newDateObj = new Date(standardDateObj);
+            newDateObj.setDate(standardDateObj.getDate() + totalDays);
+            
+            // Tính giờ mới
+            const hourOffset = hourDiff;
+            let newHour = (STANDARD_DATE.hour + hourOffset) % 24;
+            if (newHour < 0) newHour += 24;
+            
+            return {
+                year: newDateObj.getFullYear(),
+                month: newDateObj.getMonth() + 1,
+                day: newDateObj.getDate(),
+                hour: Math.floor(newHour)
+            };
+        }
+
+        // ==============================
+        // KHỞI TẠO ỨNG DỤNG
+        // ==============================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePersonList();
+            populateSampleList();
+            populateCanChiSelectOptions();
+            
+            // Gán sự kiện
+            document.getElementById('addPersonBtn').addEventListener('click', addPersonFromInput);
+            document.getElementById('calculateBtn').addEventListener('click', calculateAndGroup);
+            document.getElementById('clearListBtn').addEventListener('click', clearPeopleList);
+            document.getElementById('birthdayInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') addPersonFromInput();
+            });
+            
+            // Sự kiện cho công cụ tính Can Chi
+            document.getElementById('calculateForward').addEventListener('click', () => calculateFromCanChi('forward'));
+            document.getElementById('calculateBackward').addEventListener('click', () => calculateFromCanChi('backward'));
+            document.getElementById('resetCanChi').addEventListener('click', resetCanChiForm);
+            document.getElementById('calculateFromSolar').addEventListener('click', calculateFromSolar);
+            document.getElementById('calculateToSolar').addEventListener('click', calculateToSolar);
+            document.getElementById('applyToPerson').addEventListener('click', applySolarToPerson);
+            
+            // Sự kiện cho các tab
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    switchTab(tabName);
+                });
+            });
+            
+            // Tự động chuyển tab khi focus
+            document.getElementById('hour').addEventListener('focus', () => switchTab('canchi'));
+            document.getElementById('day').addEventListener('focus', () => switchTab('canchi'));
+            document.getElementById('month').addEventListener('focus', () => switchTab('canchi'));
+            document.getElementById('year').addEventListener('focus', () => switchTab('canchi'));
+            document.getElementById('solarHour').addEventListener('focus', () => switchTab('solar'));
+            document.getElementById('solarDay').addEventListener('focus', () => switchTab('solar'));
+            document.getElementById('solarMonth').addEventListener('focus', () => switchTab('solar'));
+            document.getElementById('solarYear').addEventListener('focus', () => switchTab('solar'));
+        });
+
+        // ==============================
+        // QUẢN LÝ DANH SÁCH NGƯỜI
+        // ==============================
+        
+        function initializePersonList() {
+            const savedList = localStorage.getItem('peopleList');
+            if (savedList) {
+                peopleList = JSON.parse(savedList);
+                updatePersonListDisplay();
+            }
+        }
+
+        function populateSampleList() {
+            const personListElement = document.getElementById('personList');
+            personListElement.innerHTML = '';
+            
+            samplePeople.forEach(person => {
+                const personElement = document.createElement('div');
+                personElement.className = 'person-item';
+                personElement.innerHTML = `
+                    <strong>${person.id}. ${person.name}</strong>
+                    <div>Ngày sinh: ${person.birthday}</div>
+                `;
+                
+                personElement.addEventListener('click', function() {
+                    document.getElementById('nameInput').value = person.name;
+                    document.getElementById('birthdayInput').value = person.birthday;
+                    
+                    document.querySelectorAll('.person-item').forEach(item => {
+                        item.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                });
+                
+                personListElement.appendChild(personElement);
+            });
+        }
+
+        function addPersonFromInput() {
+            const name = document.getElementById('nameInput').value.trim();
+            const birthday = document.getElementById('birthdayInput').value.trim();
+            
+            if (!name || !birthday) {
+                alert('Vui lòng nhập đầy đủ tên và ngày sinh!');
+                return;
+            }
+            
+            if (!isValidDateFormat(birthday)) {
+                alert('Định dạng ngày sinh không hợp lệ. Vui lòng nhập theo định dạng dd/mm/yyyy (VD: 04/06/1944)');
+                return;
+            }
+            
+            const newPerson = {
+                id: peopleList.length + 1,
+                name: name,
+                birthday: birthday
+            };
+            
+            peopleList.push(newPerson);
+            updatePersonListDisplay();
+            saveToLocalStorage();
+            
+            document.getElementById('nameInput').value = '';
+            document.getElementById('birthdayInput').value = '';
+            
+            alert(`Đã thêm ${name} vào danh sách phân tích!`);
+        }
+
+        function isValidDateFormat(dateString) {
+            const regex = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+            if (!regex.test(dateString)) return false;
+            
+            const parts = dateString.split('/');
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10);
+            const year = parseInt(parts[2], 10);
+            
+            if (year < 1900 || year > 2025) return false;
+            if (month < 1 || month > 12) return false;
+            
+            const monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            if (year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0)) {
+                monthLength[1] = 29;
+            }
+            
+            return day > 0 && day <= monthLength[month - 1];
+        }
+
+        function updatePersonListDisplay() {
+            const resultSection = document.getElementById('individualResults');
+            
+            if (peopleList.length === 0) {
+                resultSection.innerHTML = '<p class="no-results">Chưa có dữ liệu. Vui lòng nhập thông tin và nhấn "Phân Tích & Phân Nhóm".</p>';
+                return;
+            }
+            
+            let html = '<h3><i class="fas fa-users"></i> Danh sách người đã thêm:</h3>';
+            
+            peopleList.forEach(person => {
+                const year = parseInt(person.birthday.split('/')[2]);
+                const canChi = getCanChiFromYear(year);
+                const info = findInfoByCanChi(canChi);
+                const element = info ? info.element : "Không xác định";
+                
+                html += `
+                    <div class="result-item">
+                        <div class="person-name">${person.id}. ${person.name}</div>
+                        <div class="person-details">
+                            <div class="detail-item"><i class="far fa-calendar"></i> ${person.birthday}</div>
+                            <div class="detail-item"><i class="fas fa-chart-bar"></i> ${canChi}</div>
+                            <div class="detail-item element-badge badge-${getElementClass(element)}">${element}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultSection.innerHTML = html;
+        }
+
+        function getCanChiFromYear(year) {
+            return canChiYearMap[year] || "Không xác định";
+        }
+
+        function clearPeopleList() {
+            if (confirm('Bạn có chắc chắn muốn xóa toàn bộ danh sách người đã thêm?')) {
+                peopleList = [];
+                updatePersonListDisplay();
+                saveToLocalStorage();
+                document.getElementById('groupSection').style.display = 'none';
+            }
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('peopleList', JSON.stringify(peopleList));
+        }
+
+        // ==============================
+        // TÍNH TOÁN VÀ PHÂN NHÓM
+        // ==============================
+        
+        function calculateAndGroup() {
+            if (peopleList.length === 0) {
+                alert('Vui lòng thêm ít nhất một người vào danh sách trước khi phân tích!');
+                return;
+            }
+            
+            // Phân tích từng người
+            const analyzedPeople = peopleList.map(person => {
+                const birthdayParts = person.birthday.split('/');
+                const year = parseInt(birthdayParts[2]);
+                const canChi = getCanChiFromYear(year);
+                const info = findInfoByCanChi(canChi) || { element: "Không xác định", yNghia: "Không xác định", amDuong: "Không xác định", menh: "Không xác định", que1: "Không xác định", que2: "Không xác định" };
+                
+                // Giả định giới tính dựa trên tên
+                const isMale = !person.name.includes("THI") && !person.name.includes("THỊ");
+                
+                return {
+                    ...person,
+                    canChi: canChi,
+                    element: info.element,
+                    yNghia: info.yNghia,
+                    amDuong: info.amDuong,
+                    menh: info.menh,
+                    destiny: isMale ? info.que2 : info.que1,
+                    isMale: isMale
+                };
+            });
+            
+            // Cập nhật hiển thị chi tiết
+            updateDetailedDisplay(analyzedPeople);
+            
+            // Phân nhóm theo ngũ hành
+            groupByElement(analyzedPeople);
+            
+            // Hiển thị phần nhóm
+            document.getElementById('groupSection').style.display = 'block';
+        }
+
+        function updateDetailedDisplay(people) {
+            let html = '<h3><i class="fas fa-chart-bar"></i> Kết quả phân tích chi tiết:</h3>';
+            
+            people.forEach(person => {
+                html += `
+                    <div class="result-item">
+                        <div class="person-name">${person.id}. ${person.name} <span style="font-size: 0.9rem; color: #666;">(${person.isMale ? 'Nam' : 'Nữ'})</span></div>
+                        <div class="person-details">
+                            <div class="detail-item"><i class="far fa-calendar"></i> ${person.birthday}</div>
+                            <div class="detail-item"><i class="fas fa-chart-bar"></i> ${person.canChi}</div>
+                            <div class="detail-item element-badge badge-${getElementClass(person.element)}">${person.element}</div>
+                            <div class="detail-item"><i class="fas fa-star"></i> ${person.destiny}</div>
+                        </div>
+                        <div><strong>Ý nghĩa:</strong> ${person.yNghia}</div>
+                        <div><strong>Mệnh:</strong> ${person.menh}</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('individualResults').innerHTML = html;
+        }
+
+        function groupByElement(people) {
+            const groups = {
+                "Mộc": [],
+                "Hoả": [],
+                "Thổ": [],
+                "Kim": [],
+                "Thuỷ": []
+            };
+            
+            people.forEach(person => {
+                if (groups[person.element]) {
+                    groups[person.element].push(person);
+                }
+            });
+            
+            displayGroups(groups);
+        }
+
+        function displayGroups(groups) {
+            let html = '';
+            const elements = ["Mộc", "Hoả", "Thổ", "Kim", "Thuỷ"];
+            
+            elements.forEach(element => {
+                const group = groups[element];
+                if (group.length > 0) {
+                    // Xác định đội trưởng (người lớn tuổi nhất trong nhóm)
+                    const leader = group.reduce((oldest, current) => {
+                        const currentYear = parseInt(current.birthday.split('/')[2]);
+                        const oldestYear = parseInt(oldest.birthday.split('/')[2]);
+                        return currentYear < oldestYear ? current : oldest;
+                    });
+                    
+                    html += `
+                        <div class="group-card color-${getElementClass(element)}">
+                            <div class="group-title">
+                                <span class="element-badge badge-${getElementClass(element)}">${element}</span>
+                                Nhóm ${element} (${group.length} thành viên)
+                            </div>
+                            
+                            <div class="group-leader">
+                                <i class="fas fa-crown"></i> Đội trưởng: ${leader.name} (${leader.birthday})
+                            </div>
+                            
+                            <div><strong>Thành viên:</strong></div>
+                            <ul class="members-list">
+                                ${group.map(person => `<li>${person.name} (${person.birthday}) - ${person.canChi}</li>`).join('')}
+                            </ul>
+                            
+                            <div class="business-suggestion">
+                                <strong><i class="fas fa-lightbulb"></i> Đề xuất kinh doanh:</strong><br>
+                                ${getBusinessSuggestion(element)}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            document.getElementById('groupResults').innerHTML = html;
+        }
+
+        function getBusinessSuggestion(element) {
+            const suggestions = businessSuggestions[element] || ["Chưa có đề xuất cụ thể"];
+            const randomIndex = Math.floor(Math.random() * suggestions.length);
+            return suggestions[randomIndex];
+        }
+
+        // ==============================
+        // CÔNG CỤ TÍNH CAN CHI
+        // ==============================
+        
+        function populateCanChiSelectOptions() {
+            const hourSelect = document.getElementById('hour');
+            const daySelect = document.getElementById('day');
+            const monthSelect = document.getElementById('month');
+            const yearSelect = document.getElementById('year');
+            
+            canChiData.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.canChi;
+                option.textContent = item.canChi;
+                
+                hourSelect.appendChild(option.cloneNode(true));
+                daySelect.appendChild(option.cloneNode(true));
+                monthSelect.appendChild(option.cloneNode(true));
+                yearSelect.appendChild(option.cloneNode(true));
+            });
+            
+            // Đặt giá trị mặc định theo thời gian chuẩn
+            hourSelect.value = STANDARD_DATE.canChi.hour;
+            daySelect.value = STANDARD_DATE.canChi.day;
+            monthSelect.value = STANDARD_DATE.canChi.month;
+            yearSelect.value = STANDARD_DATE.canChi.year;
+        }
+
+        function calculateFromCanChi(direction) {
+            const hour = document.getElementById('hour').value;
+            const day = document.getElementById('day').value;
+            const month = document.getElementById('month').value;
+            const year = document.getElementById('year').value;
+            
+            if (!hour || !day || !month || !year) {
+                alert("Vui lòng chọn đầy đủ giờ, ngày, tháng, năm!");
+                return;
+            }
+            
+            const hourInfo = findInfoByCanChi(hour);
+            const dayInfo = findInfoByCanChi(day);
+            const monthInfo = findInfoByCanChi(month);
+            const yearInfo = findInfoByCanChi(year);
+            
+            if (!hourInfo || !dayInfo || !monthInfo || !yearInfo) {
+                alert("Không tìm thấy thông tin cho một hoặc nhiều giá trị đã chọn!");
+                return;
+            }
+            
+            const resultContent = document.getElementById('canchiResultContent');
+            
+            let items;
+            if (direction === 'forward') {
+                items = [
+                    {label: "Giờ", info: hourInfo},
+                    {label: "Ngày", info: dayInfo},
+                    {label: "Tháng", info: monthInfo},
+                    {label: "Năm", info: yearInfo}
+                ];
+            } else {
+                items = [
+                    {label: "Năm", info: yearInfo},
+                    {label: "Tháng", info: monthInfo},
+                    {label: "Ngày", info: dayInfo},
+                    {label: "Giờ", info: hourInfo}
+                ];
+            }
+            
+            let html = '';
+            items.forEach(item => {
+                html += `
+                    <div class="result-item">
+                        <div class="result-title">${item.label}: ${item.info.canChi}</div>
+                        <div class="result-content">
+                            <div class="result-detail">
+                                <div class="detail-label">Ý Nghĩa:</div>
+                                <div class="detail-value">${item.info.yNghia}</div>
+                            </div>
+                            <div class="result-detail">
+                                <div class="detail-label">Âm Dương Ngũ Hành:</div>
+                                <div class="detail-value">${item.info.amDuong}</div>
+                            </div>
+                            <div class="result-detail">
+                                <div class="detail-label">Mệnh:</div>
+                                <div class="detail-value">${item.info.menh}</div>
+                            </div>
+                            <div class="result-detail">
+                                <div class="detail-label">Quẻ 1:</div>
+                                <div class="detail-value">${item.info.que1}</div>
+                            </div>
+                            <div class="result-detail">
+                                <div class="detail-label">Quẻ 2:</div>
+                                <div class="detail-value">${item.info.que2}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultContent.innerHTML = html;
+            document.getElementById('canchiResult').style.display = 'block';
+        }
+
+        function calculateFromSolar() {
+            const hour = parseInt(document.getElementById('solarHour').value);
+            const day = parseInt(document.getElementById('solarDay').value);
+            const month = parseInt(document.getElementById('solarMonth').value);
+            const year = parseInt(document.getElementById('solarYear').value);
+            
+            if (isNaN(hour) || isNaN(day) || isNaN(month) || isNaN(year)) {
+                alert("Vui lòng nhập đầy đủ thông tin!");
+                return;
+            }
+            
+            if (hour < 0 || hour > 23) {
+                alert("Giờ phải từ 0 đến 23!");
+                return;
+            }
+            
+            if (day < 1 || day > 31) {
+                alert("Ngày không hợp lệ!");
+                return;
+            }
+            
+            if (month < 1 || month > 12) {
+                alert("Tháng không hợp lệ!");
+                return;
+            }
+            
+            const solarDate = { year, month, day, hour };
+            const canChiResult = calculateCanChiFromSolar(solarDate);
+            
+            const hourInfo = findInfoByCanChi(canChiResult.hour);
+            const dayInfo = findInfoByCanChi(canChiResult.day);
+            const monthInfo = findInfoByCanChi(canChiResult.month);
+            const yearInfo = findInfoByCanChi(canChiResult.year);
+            
+            const resultContent = document.getElementById('canchiResultContent');
+            
+            let html = `
+                <div class="result-item">
+                    <div class="result-title">Ngày Dương Lịch Nhập: ${day}/${month}/${year} - ${hour} giờ</div>
+                </div>
+            `;
+            
+            const items = [
+                {label: "Giờ", info: hourInfo},
+                {label: "Ngày", info: dayInfo},
+                {label: "Tháng", info: monthInfo},
+                {label: "Năm", info: yearInfo}
+            ];
+            
+            items.forEach(item => {
+                if (item.info) {
+                    html += `
+                        <div class="result-item">
+                            <div class="result-title">${item.label}: ${item.info.canChi}</div>
+                            <div class="result-content">
+                                <div class="result-detail">
+                                    <div class="detail-label">Ý Nghĩa:</div>
+                                    <div class="detail-value">${item.info.yNghia}</div>
+                                </div>
+                                <div class="result-detail">
+                                    <div class="detail-label">Âm Dương Ngũ Hành:</div>
+                                    <div class="detail-value">${item.info.amDuong}</div>
+                                </div>
+                                <div class="result-detail">
+                                    <div class="detail-label">Mệnh:</div>
+                                    <div class="detail-value">${item.info.menh}</div>
+                                </div>
+                                <div class="result-detail">
+                                    <div class="detail-label">Quẻ 1:</div>
+                                    <div class="detail-value">${item.info.que1}</div>
+                                </div>
+                                <div class="result-detail">
+                                    <div class="detail-label">Quẻ 2:</div>
+                                    <div class="detail-value">${item.info.que2}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            resultContent.innerHTML = html;
+            document.getElementById('canchiResult').style.display = 'block';
+        }
+
+        function calculateToSolar() {
+            const hour = document.getElementById('hour').value;
+            const day = document.getElementById('day').value;
+            const month = document.getElementById('month').value;
+            const year = document.getElementById('year').value;
+            
+            if (!hour || !day || !month || !year) {
+                alert("Vui lòng chọn đầy đủ giờ, ngày, tháng, năm Can Chi!");
+                return;
+            }
+            
+            const canChiInput = { hour, day, month, year };
+            const solarResult = calculateSolarFromCanChi(canChiInput);
+            
+            const resultContent = document.getElementById('canchiResultContent');
+            
+            let html = `
+                <div class="result-item">
+                    <div class="result-title">Can Chi Nhập: Giờ ${hour} - Ngày ${day} - Tháng ${month} - Năm ${year}</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-title">Ngày Dương Lịch Tương Ứng (Gần Đúng):</div>
+                    <div class="result-content">
+                        <div class="result-detail">
+                            <div class="detail-label">Giờ:</div>
+                            <div class="detail-value">${solarResult.hour} giờ</div>
+                        </div>
+                        <div class="result-detail">
+                            <div class="detail-label">Ngày:</div>
+                            <div class="detail-value">${solarResult.day}</div>
+                        </div>
+                        <div class="result-detail">
+                            <div class="detail-label">Tháng:</div>
+                            <div class="detail-value">${solarResult.month}</div>
+                        </div>
+                        <div class="result-detail">
+                            <div class="detail-label">Năm:</div>
+                            <div class="detail-value">${solarResult.year}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="result-item">
+                    <div class="result-title">Lưu ý:</div>
+                    <div class="result-detail">
+                        <div class="detail-value">Kết quả này là tính toán gần đúng dựa trên chu kỳ 60 Can Chi và ngày chuẩn 18/12/2025. 
+                        Độ chính xác có thể sai lệch do sự khác biệt giữa lịch âm và dương.</div>
+                    </div>
+                </div>
+            `;
+            
+            resultContent.innerHTML = html;
+            document.getElementById('canchiResult').style.display = 'block';
+        }
+
+        function applySolarToPerson() {
+            const hour = parseInt(document.getElementById('solarHour').value);
+            const day = parseInt(document.getElementById('solarDay').value);
+            const month = parseInt(document.getElementById('solarMonth').value);
+            const year = parseInt(document.getElementById('solarYear').value);
+            
+            if (isNaN(hour) || isNaN(day) || isNaN(month) || isNaN(year)) {
+                alert("Vui lòng nhập đầy đủ thông tin dương lịch!");
+                return;
+            }
+            
+            // Format ngày sinh cho danh sách người
+            const formattedDay = day.toString().padStart(2, '0');
+            const formattedMonth = month.toString().padStart(2, '0');
+            const formattedBirthday = `${formattedDay}/${formattedMonth}/${year}`;
+            
+            // Đặt giá trị vào form nhập người
+            document.getElementById('birthdayInput').value = formattedBirthday;
+            
+            // Tính Can Chi để hiển thị gợi ý tên
+            const solarDate = { year, month, day, hour };
+            const canChiResult = calculateCanChiFromSolar(solarDate);
+            const yearInfo = findInfoByCanChi(canChiResult.year);
+            
+            let nameSuggestion = "";
+            if (yearInfo) {
+                const element = yearInfo.element;
+                switch(element) {
+                    case "Kim": nameSuggestion = "Gợi ý tên: Kim, Ngân, Cương, Khoa"; break;
+                    case "Mộc": nameSuggestion = "Gợi ý tên: Xuân, Mai, Lâm, Tùng"; break;
+                    case "Thuỷ": nameSuggestion = "Gợi ý tên: Thuỷ, Hà, Giang, Hải"; break;
+                    case "Hoả": nameSuggestion = "Gợi ý tên: Hoả, Nhiệt, Minh, Dương"; break;
+                    case "Thổ": nameSuggestion = "Gợi ý tên: Sơn, Thổ, Địa, Nham"; break;
+                }
+            }
+            
+            document.getElementById('nameInput').placeholder = `Nhập tên (${nameSuggestion})`;
+            alert(`Đã áp dụng ngày ${formattedBirthday} vào ô ngày sinh. Bạn có thể nhập tên và thêm vào danh sách.`);
+        }
+
+        function resetCanChiForm() {
+            document.getElementById('hour').value = STANDARD_DATE.canChi.hour;
+            document.getElementById('day').value = STANDARD_DATE.canChi.day;
+            document.getElementById('month').value = STANDARD_DATE.canChi.month;
+            document.getElementById('year').value = STANDARD_DATE.canChi.year;
+            
+            document.getElementById('solarHour').value = STANDARD_DATE.hour;
+            document.getElementById('solarDay').value = STANDARD_DATE.day;
+            document.getElementById('solarMonth').value = STANDARD_DATE.month;
+            document.getElementById('solarYear').value = STANDARD_DATE.year;
+            
+            document.getElementById('canchiResult').style.display = 'none';
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

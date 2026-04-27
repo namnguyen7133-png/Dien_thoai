@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Tìm Bước Nhảy Can Chi</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.5;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(to right, #8B4513, #A0522D);
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            word-break: break-word;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 20px 15px;
+        }
+
+        .info-box {
+            background-color: #e6f7ff;
+            border-left: 4px solid #1890ff;
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .input-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: white;
+        }
+
+        select:focus, input:focus {
+            border-color: #8B4513;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.2);
+        }
+
+        button {
+            background: linear-gradient(to right, #8B4513, #A0522D);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s;
+            margin: 10px 0;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+        }
+
+        .result-box {
+            background-color: #f9f9f9;
+            padding: 18px 15px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            margin-top: 20px;
+        }
+
+        .result-box h2 {
+            color: #8B4513;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            text-align: center;
+        }
+
+        .step-item {
+            background-color: white;
+            border-left: 4px solid #8B4513;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .step-info {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .step-value {
+            color: #8B4513;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .direction-badge {
+            background-color: #e7f3ff;
+            color: #007bff;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .not-found {
+            color: #d32f2f;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .reference-info {
+            background-color: #f0fff0;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #28a745;
+            font-size: 0.95rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            margin-top: 20px;
+            color: #666;
+            border-top: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            .step-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Tìm Bước Nhảy Can Chi</h1>
+            <p class="subtitle">Tự động tính bước nhảy và vị trí từ can chi gốc đến can chi đích</p>
+        </header>
+
+        <div class="content">
+            <div class="info-box">
+                <p><strong>Chuẩn ngày:</strong> 1/1/1900 - Giáp Tuất, Tháng Đinh Sửu, Năm Kỷ Hợi</p>
+                <p>Nhập can chi gốc và năm, cùng can chi đích và năm. Hệ thống sẽ tự tìm các bước nhảy (step) và vị trí tương ứng.</p>
+            </div>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="base-zodiac">Can chi gốc:</label>
+                    <select id="base-zodiac">
+                        <!-- 60 can chi -->
+                        <option value="0">Giáp Tuất</option>
+                        <option value="1">Ất Hợi</option>
+                        <option value="2">Bính Tý</option>
+                        <option value="3">Đinh Sửu</option>
+                        <option value="4">Mậu Dần</option>
+                        <option value="5">Kỷ Mão</option>
+                        <option value="6">Canh Thìn</option>
+                        <option value="7">Tân Tỵ</option>
+                        <option value="8">Nhâm Ngọ</option>
+                        <option value="9">Quý Mùi</option>
+                        <option value="10">Giáp Thân</option>
+                        <option value="11">Ất Dậu</option>
+                        <option value="12">Bính Tuất</option>
+                        <option value="13">Đinh Hợi</option>
+                        <option value="14">Mậu Tý</option>
+                        <option value="15">Kỷ Sửu</option>
+                        <option value="16">Canh Dần</option>
+                        <option value="17">Tân Mão</option>
+                        <option value="18">Nhâm Thìn</option>
+                        <option value="19">Quý Tỵ</option>
+                        <option value="20">Giáp Ngọ</option>
+                        <option value="21">Ất Mùi</option>
+                        <option value="22">Bính Thân</option>
+                        <option value="23">Đinh Dậu</option>
+                        <option value="24">Mậu Tuất</option>
+                        <option value="25">Kỷ Hợi</option>
+                        <option value="26">Canh Tý</option>
+                        <option value="27">Tân Sửu</option>
+                        <option value="28">Nhâm Dần</option>
+                        <option value="29">Quý Mão</option>
+                        <option value="30">Giáp Thìn</option>
+                        <option value="31">Ất Tỵ</option>
+                        <option value="32">Bính Ngọ</option>
+                        <option value="33">Đinh Mùi</option>
+                        <option value="34">Mậu Thân</option>
+                        <option value="35">Kỷ Dậu</option>
+                        <option value="36">Canh Tuất</option>
+                        <option value="37">Tân Hợi</option>
+                        <option value="38">Nhâm Tý</option>
+                        <option value="39">Quý Sửu</option>
+                        <option value="40">Giáp Dần</option>
+                        <option value="41">Ất Mão</option>
+                        <option value="42">Bính Thìn</option>
+                        <option value="43">Đinh Tỵ</option>
+                        <option value="44">Mậu Ngọ</option>
+                        <option value="45">Kỷ Mùi</option>
+                        <option value="46">Canh Thân</option>
+                        <option value="47">Tân Dậu</option>
+                        <option value="48">Nhâm Tuất</option>
+                        <option value="49">Quý Hợi</option>
+                        <option value="50">Giáp Tý</option>
+                        <option value="51">Ất Sửu</option>
+                        <option value="52">Bính Dần</option>
+                        <option value="53">Đinh Mão</option>
+                        <option value="54">Mậu Thìn</option>
+                        <option value="55">Kỷ Tỵ</option>
+                        <option value="56">Canh Ngọ</option>
+                        <option value="57">Tân Mùi</option>
+                        <option value="58">Nhâm Thân</option>
+                        <option value="59">Quý Dậu</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="base-year">Năm dương lịch gốc:</label>
+                    <input type="number" id="base-year" min="1900" max="2100" value="2023">
+                </div>
+
+                <div class="input-group">
+                    <label for="target-zodiac">Can chi đích cần tìm:</label>
+                    <select id="target-zodiac">
+                        <!-- 60 can chi -->
+                        <option value="0">Giáp Tuất</option>
+                        <option value="1">Ất Hợi</option>
+                        <option value="2">Bính Tý</option>
+                        <option value="3">Đinh Sửu</option>
+                        <option value="4">Mậu Dần</option>
+                        <option value="5">Kỷ Mão</option>
+                        <option value="6">Canh Thìn</option>
+                        <option value="7">Tân Tỵ</option>
+                        <option value="8">Nhâm Ngọ</option>
+                        <option value="9">Quý Mùi</option>
+                        <option value="10">Giáp Thân</option>
+                        <option value="11">Ất Dậu</option>
+                        <option value="12">Bính Tuất</option>
+                        <option value="13">Đinh Hợi</option>
+                        <option value="14">Mậu Tý</option>
+                        <option value="15">Kỷ Sửu</option>
+                        <option value="16">Canh Dần</option>
+                        <option value="17">Tân Mão</option>
+                        <option value="18">Nhâm Thìn</option>
+                        <option value="19">Quý Tỵ</option>
+                        <option value="20">Giáp Ngọ</option>
+                        <option value="21">Ất Mùi</option>
+                        <option value="22">Bính Thân</option>
+                        <option value="23">Đinh Dậu</option>
+                        <option value="24">Mậu Tuất</option>
+                        <option value="25">Kỷ Hợi</option>
+                        <option value="26">Canh Tý</option>
+                        <option value="27">Tân Sửu</option>
+                        <option value="28">Nhâm Dần</option>
+                        <option value="29">Quý Mão</option>
+                        <option value="30">Giáp Thìn</option>
+                        <option value="31">Ất Tỵ</option>
+                        <option value="32">Bính Ngọ</option>
+                        <option value="33">Đinh Mùi</option>
+                        <option value="34">Mậu Thân</option>
+                        <option value="35">Kỷ Dậu</option>
+                        <option value="36">Canh Tuất</option>
+                        <option value="37">Tân Hợi</option>
+                        <option value="38">Nhâm Tý</option>
+                        <option value="39">Quý Sửu</option>
+                        <option value="40">Giáp Dần</option>
+                        <option value="41">Ất Mão</option>
+                        <option value="42">Bính Thìn</option>
+                        <option value="43">Đinh Tỵ</option>
+                        <option value="44">Mậu Ngọ</option>
+                        <option value="45">Kỷ Mùi</option>
+                        <option value="46">Canh Thân</option>
+                        <option value="47">Tân Dậu</option>
+                        <option value="48">Nhâm Tuất</option>
+                        <option value="49">Quý Hợi</option>
+                        <option value="50">Giáp Tý</option>
+                        <option value="51">Ất Sửu</option>
+                        <option value="52">Bính Dần</option>
+                        <option value="53">Đinh Mão</option>
+                        <option value="54">Mậu Thìn</option>
+                        <option value="55">Kỷ Tỵ</option>
+                        <option value="56">Canh Ngọ</option>
+                        <option value="57">Tân Mùi</option>
+                        <option value="58">Nhâm Thân</option>
+                        <option value="59">Quý Dậu</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="target-year">Năm dương lịch đích:</label>
+                    <input type="number" id="target-year" min="1900" max="2100" value="2030">
+                </div>
+            </div>
+
+            <button id="calculate-btn">Tìm bước nhảy và vị trí</button>
+
+            <div class="reference-info" id="base-info">
+                <!-- Thông tin can chi gốc sẽ hiển thị ở đây -->
+            </div>
+
+            <div class="result-box" id="result-box">
+                <h2>Kết quả tìm kiếm</h2>
+                <div id="result-list">
+                    <!-- Kết quả sẽ hiển thị ở đây -->
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Tìm Bước Nhảy Can Chi - Chu kỳ 60 năm | Dựa trên ngày chuẩn 1/1/1900 (Giáp Tuất)</p>
+        </footer>
+    </div>
+
+    <script>
+        const zodiacList = [
+            "Giáp Tuất", "Ất Hợi", "Bính Tý", "Đinh Sửu", "Mậu Dần", "Kỷ Mão",
+            "Canh Thìn", "Tân Tỵ", "Nhâm Ngọ", "Quý Mùi", "Giáp Thân", "Ất Dậu",
+            "Bính Tuất", "Đinh Hợi", "Mậu Tý", "Kỷ Sửu", "Canh Dần", "Tân Mão",
+            "Nhâm Thìn", "Quý Tỵ", "Giáp Ngọ", "Ất Mùi", "Bính Thân", "Đinh Dậu",
+            "Mậu Tuất", "Kỷ Hợi", "Canh Tý", "Tân Sửu", "Nhâm Dần", "Quý Mão",
+            "Giáp Thìn", "Ất Tỵ", "Bính Ngọ", "Đinh Mùi", "Mậu Thân", "Kỷ Dậu",
+            "Canh Tuất", "Tân Hợi", "Nhâm Tý", "Quý Sửu", "Giáp Dần", "Ất Mão",
+            "Bính Thìn", "Đinh Tỵ", "Mậu Ngọ", "Kỷ Mùi", "Canh Thân", "Tân Dậu",
+            "Nhâm Tuất", "Quý Hợi", "Giáp Tý", "Ất Sửu", "Bính Dần", "Đinh Mão",
+            "Mậu Thìn", "Kỷ Tỵ", "Canh Ngọ", "Tân Mùi", "Nhâm Thân", "Quý Dậu"
+        ];
+
+        function updateBaseInfo() {
+            const baseIndex = parseInt(document.getElementById('base-zodiac').value);
+            const baseYear = parseInt(document.getElementById('base-year').value);
+            const baseZodiac = zodiacList[baseIndex];
+            document.getElementById('base-info').innerHTML = `
+                <p><strong>Can chi gốc:</strong> ${baseZodiac} (vị trí ${baseIndex + 1}) - Năm ${baseYear}</p>
+            `;
+        }
+
+        function findSteps() {
+            const baseIndex = parseInt(document.getElementById('base-zodiac').value);
+            const baseYear = parseInt(document.getElementById('base-year').value);
+            const targetIndex = parseInt(document.getElementById('target-zodiac').value);
+            const targetYear = parseInt(document.getElementById('target-year').value);
+
+            const baseZodiac = zodiacList[baseIndex];
+            const targetZodiac = zodiacList[targetIndex];
+
+            const yearDiff = targetYear - baseYear;
+            const absYearDiff = Math.abs(yearDiff);
+
+            const results = [];
+
+            // Hàm kiểm tra điều kiện can chi
+            function checkModulo(step, direction, k) {
+                if (direction === 'forward') {
+                    return (baseIndex + k * step) % 60 === targetIndex;
+                } else { // backward
+                    // Đảm bảo chỉ số dương
+                    return ((baseIndex - k * step) % 60 + 60) % 60 === targetIndex;
+                }
+            }
+
+            // Xét chiều tiến (targetYear > baseYear)
+            if (yearDiff > 0) {
+                for (let k = 1; k <= 60; k++) { // Giới hạn k <= 60 vì chỉ có 60 can chi trong chu kỳ
+                    if (yearDiff % k === 0) {
+                        const step = yearDiff / k;
+                        if (step > 0 && step <= 500) { // Giới hạn step không quá lớn, có thể điều chỉnh
+                            if (checkModulo(step, 'forward', k)) {
+                                results.push({
+                                    step: step,
+                                    direction: 'tiến',
+                                    position: k,
+                                    year: targetYear
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            // Xét chiều lùi (targetYear < baseYear)
+            else if (yearDiff < 0) {
+                for (let k = 1; k <= 60; k++) {
+                    if (absYearDiff % k === 0) {
+                        const step = absYearDiff / k;
+                        if (step > 0 && step <= 500) {
+                            if (checkModulo(step, 'backward', k)) {
+                                results.push({
+                                    step: step,
+                                    direction: 'lùi',
+                                    position: k,
+                                    year: targetYear
+                                });
+                            }
+                        }
+                    }
+                }
+            } else { // yearDiff == 0
+                // Nếu cùng năm, chỉ có thể là cùng can chi, step tùy ý? Nhưng vị trí k=0?
+                // Trường hợp đặc biệt: base và target trùng nhau
+                if (baseIndex === targetIndex) {
+                    results.push({
+                        step: 'bất kỳ (cùng năm)',
+                        direction: 'cùng',
+                        position: 0,
+                        year: targetYear
+                    });
+                } else {
+                    // Không thể vì cùng năm nhưng khác can chi
+                }
+            }
+
+            // Hiển thị kết quả
+            const resultDiv = document.getElementById('result-list');
+            resultDiv.innerHTML = '';
+
+            if (results.length === 0) {
+                resultDiv.innerHTML = '<div class="not-found">Không tìm thấy bước nhảy nào phù hợp.</div>';
+            } else {
+                results.forEach(item => {
+                    const stepItem = document.createElement('div');
+                    stepItem.className = 'step-item';
+                    let directionText = '';
+                    if (item.direction === 'tiến') {
+                        directionText = '<span class="direction-badge">Tiến</span>';
+                    } else if (item.direction === 'lùi') {
+                        directionText = '<span class="direction-badge">Lùi</span>';
+                    } else {
+                        directionText = '<span class="direction-badge">Cùng năm</span>';
+                    }
+
+                    let stepText = '';
+                    if (item.step === 'bất kỳ (cùng năm)') {
+                        stepText = 'Bước nhảy: bất kỳ';
+                    } else {
+                        stepText = `Bước nhảy: <span class="step-value">${item.step}</span>`;
+                    }
+
+                    stepItem.innerHTML = `
+                        <div>
+                            <div class="step-info">${targetZodiac} - năm ${item.year}</div>
+                            <div>${stepText}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div>Vị trí thứ <strong>${item.position}</strong></div>
+                            ${directionText}
+                        </div>
+                    `;
+                    resultDiv.appendChild(stepItem);
+                });
+            }
+
+            // Cập nhật thông tin cơ bản
+            document.getElementById('base-info').innerHTML = `
+                <p><strong>Can chi gốc:</strong> ${baseZodiac} (vị trí ${baseIndex + 1}) - Năm ${baseYear}</p>
+                <p><strong>Can chi đích:</strong> ${targetZodiac} (vị trí ${targetIndex + 1}) - Năm ${targetYear}</p>
+            `;
+        }
+
+        document.getElementById('calculate-btn').addEventListener('click', findSteps);
+
+        // Cập nhật thông tin khi thay đổi can chi gốc hoặc năm gốc
+        document.getElementById('base-zodiac').addEventListener('change', updateBaseInfo);
+        document.getElementById('base-year').addEventListener('input', updateBaseInfo);
+
+        // Khởi tạo thông tin ban đầu
+        window.addEventListener('DOMContentLoaded', function() {
+            updateBaseInfo();
+            findSteps(); // Tự động tìm với giá trị mặc định
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

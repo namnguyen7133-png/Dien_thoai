@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phan tich ngay y khoa</title>
+
+<style>
+body{
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding:15px;
+  max-width:100%;
+  overflow-x:auto;
+  background-color:#f5f7fa;
+  color:#333;
+}
+input,select,button{
+  padding:12px 15px;
+  margin:8px 0;
+  width:100%;
+  font-size:16px;
+  border:2px solid #ddd;
+  border-radius:8px;
+  box-sizing:border-box;
+  transition:all 0.3s;
+}
+input:focus, select:focus{
+  border-color:#4a6fa5;
+  outline:none;
+  box-shadow:0 0 0 3px rgba(74, 111, 165, 0.2);
+}
+button{
+  font-weight:bold;
+  cursor:pointer;
+  transition:all 0.3s;
+}
+button:nth-child(1){background:#4a6fa5;color:white;}
+button:nth-child(2){background:#2e7d32;color:white;}
+button:nth-child(3){background:#c62828;color:white;}
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+h2{
+  color:#2c3e50;
+  text-align:center;
+  padding:15px;
+  background:linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color:white;
+  border-radius:10px;
+  margin-bottom:25px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
+
+table{
+  border-collapse:collapse;
+  width:100%;
+  margin-top:20px;
+  font-size:14px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.08);
+  border-radius:10px;
+  overflow:hidden;
+}
+th,td{
+  border:1px solid #e0e0e0;
+  padding:10px 8px;
+  text-align:center;
+  word-break:break-word;
+  line-height:1.4;
+}
+th{
+  background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color:white;
+  font-weight:600;
+  font-size:13px;
+  padding:12px 5px;
+}
+tr:nth-child(even){
+  background-color:#f8f9fa;
+}
+tr:hover{
+  background-color:#e8f4fd;
+  transition:background-color 0.2s;
+}
+
+.big-alert{
+  font-size:1.6em;
+  color:#c62828;
+  font-weight:bold;
+  border:3px solid #c62828;
+  padding:20px;
+  margin:20px 0;
+  border-radius:12px;
+  word-wrap:break-word;
+  background:linear-gradient(135deg, #fff5f5 0%, #ffeaea 100%);
+  box-shadow:0 5px 15px rgba(198, 40, 40, 0.1);
+  line-height:1.6;
+}
+.warn{
+  color:#c62828;
+  font-weight:bold;
+  background-color:#fff5f5;
+  padding:3px 6px;
+  border-radius:4px;
+}
+.highlight{
+  background:linear-gradient(135deg, #fffacd 0%, #fff5a0 100%);
+  font-weight:bold;
+}
+.column-note{
+  font-size:13px;
+  color:#555;
+  margin:15px 0;
+  padding:15px;
+  background:linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius:10px;
+  border-left:5px solid #4a6fa5;
+  box-shadow:0 3px 10px rgba(0,0,0,0.05);
+}
+.container{
+  max-width:1400px;
+  margin:0 auto;
+  background:white;
+  padding:25px;
+  border-radius:15px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+.header-controls{
+  background:#f8f9fa;
+  padding:20px;
+  border-radius:10px;
+  margin-bottom:20px;
+  border:2px solid #e9ecef;
+}
+.alert-header{
+  background:linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+  color:white;
+  padding:15px;
+  border-radius:10px;
+  margin:20px 0;
+  font-size:1.4em;
+  text-align:center;
+  box-shadow:0 4px 15px rgba(255, 65, 108, 0.2);
+}
+.date-display{
+  background:#e3f2fd;
+  padding:10px 15px;
+  border-radius:8px;
+  margin:10px 0;
+  font-weight:bold;
+  color:#1565c0;
+  border-left:5px solid #2196f3;
+}
+.no-alerts{
+  background:linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  color:white;
+  border:3px solid #2e7d32;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h2>PHÂN TÍCH NGÀY Y KHOA THEO BẢNG 2</h2>
+  
+  <div class="header-controls">
+    <div class="date-display">📅 Ngày hiện tại: <span id="current-date"></span></div>
+    
+    <label style="font-weight:bold; color:#2c3e50;">Ngày hiện tại</label>
+    <input type="date" id="today">
+    
+    <label style="font-weight:bold; color:#2c3e50;">Chọn tên</label>
+    <select id="name"></select>
+    
+    <label style="font-weight:bold; color:#2c3e50;">Ngày sinh</label>
+    <input type="date" id="birth" readonly>
+    
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:15px;">
+      <button onclick="calcOne()">🔵 TÍNH 1 NGƯỜI</button>
+      <button onclick="calcAll()">🟢 TÍNH TẤT CẢ</button>
+      <button onclick="resetAll()">🔴 XÓA DỮ LIỆU</button>
+    </div>
+  </div>
+
+  <div id="alerts"></div>
+  <div id="out"></div>
+</div>
+
+<script>
+// ================= BẢNG 1 =================
+const people=[
+["NGUYENKHACNANG","1944-06-04"],["TOTHIHA","1948-08-29"],
+["NGUYENMINHNAM","1971-03-03"],["THANTHIKIMANH","1981-09-23"],
+["NGUYENTONGANAN","2014-09-28"],["NGUYENTOMINHCHAU","2016-07-25"],
+["NGUYENTOBICHNGOC","2020-02-05"],["NGUYENTHIMINHHANG","1974-01-07"],
+["NGOQUYCUONG","1973-05-23"],["NGOGIABACH","2000-10-12"],
+["NGOGIALINH","2005-04-05"],["NGUYENTHIMINHPHUONG","1978-11-06"],
+["HOANGANHDUNG","1978-09-21"],["HOANGHAIVINH","2010-06-03"],
+["HOANGTHIENBACHANH","2015-11-14"],["TOKIMHUE","1960-08-09"],
+["NGUYENTUANANH","1983-10-23"],["NGUYENTHEANH","2001-03-24"],
+["NGOTHIMAI","1948-12-12"],["TOVIETHUNG","1996-06-17"],
+["TOTHIHONG","1964-10-10"],["VUVANHIEP","1974-04-24"],
+["NGUYENTHICHI","1946-02-08"],["NGUYENTANBAC","1957-11-30"],
+["NGUYENTHITAM","1954-08-08"]
+];
+
+// ================= BẢNG 2 =================
+const divisors=[
+23,28,33,38,43,53,
+108,285,298,318,
+644,759,874,924,989,
+1064,1204,1219,1254,
+1419,1484,1634,1690,
+1749,1911,2014,2279,
+4850,21252,24472,27692,
+34132,35112,39732,
+48972,53922,66462,86602
+];
+
+// ================= THÔNG BÁO CỘT 10 =================
+const col10Msg = {
+  23: "Cần nghỉ ngơi,<br>không leo trèo, làm nặng<br>6 giờ tiếp theo",
+  28: "Hãy nghe nhạc, xem phim<br>tâm lý, đi dạo ngoài trời<br>12 giờ tiếp theo",
+  33: "Không học hành<br>nghiên cứu sâu<br>18 giờ tiếp theo",
+  43: "Không bình luận,<br>chỉ xem trình diễn<br>thời trang 24 giờ",
+  53: "Không đến nơi ầm ĩ,<br>giữ tĩnh lặng<br>28 giờ tiếp theo"
+};
+
+// ================= THÔNG BÁO KHI SỐ DƯ NHỎ HƠN 7 =================
+const duLessThan7Msg = {
+  0: "NGUY HIỂM<br>Số dư = 0",
+  1: "Rất nguy hiểm<br>Số dư = 1",
+  2: "Nguy hiểm cao<br>Số dư = 2",
+  3: "Nguy hiểm<br>Số dư = 3",
+  4: "Cảnh báo<br>Số dư = 4",
+  5: "Cảnh báo nhẹ<br>Số dư = 5",
+  6: "Cảnh báo nhẹ<br>Số dư = 6"
+};
+
+// ================= HÀM CHUYỂN ĐỔI ĐỊNH DẠNG NGÀY VIỆT =================
+function formatDateViet(dateStr) {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+// ================= KHỞI TẠO =================
+window.onload=()=>{
+  let s=document.getElementById("name");
+  s.innerHTML="<option value=''>-- Chọn người --</option>";
+  people.forEach(p=>{
+    let o=document.createElement("option");
+    o.value=p[1]; 
+    o.text=p[0];
+    s.appendChild(o);
+  });
+  s.onchange=()=>{
+    document.getElementById("birth").value = s.value;
+  };
+  const today = new Date();
+  document.getElementById("today").value = today.toISOString().split("T")[0];
+  document.getElementById("current-date").textContent = formatDateViet(today.toISOString());
+  
+  // Cập nhật ngày hiện tại khi thay đổi
+  document.getElementById("today").addEventListener('change', function() {
+    document.getElementById("current-date").textContent = formatDateViet(this.value);
+  });
+};
+
+// ================= CORE =================
+function runCalc(personName,birth){
+  let todayD = new Date(document.getElementById("today").value);
+  let birthD = new Date(birth);
+  let diff = Math.floor((todayD - birthD) / 86400000);
+  let alerts = [];
+  
+  // Lấy ngày hiện tại định dạng Việt
+  let todayStr = formatDateViet(todayD.toISOString());
+
+  let columnNotes = `<div class="column-note">
+  <strong style="color:#2c3e50; font-size:14px;">📊 GIẢI THÍCH CÁC CỘT:</strong><br><br>
+  <strong>1. STT</strong> | <strong>2. Số chia</strong> | <strong>3. Thương</strong> | <strong>4. Số dư</strong> | 
+  <strong>5. Số dư lần</strong> | <strong>6. Hiệu</strong> | <strong>7. Ngày kết thúc</strong><br>
+  <strong>8. Cảnh báo (dư&lt;7)</strong> | <strong>9. Cảnh báo đặc biệt</strong> | <strong>10. Thông báo đặc biệt</strong><br>
+  <strong>11. Ngày bắt đầu chu kỳ</strong> | <strong>12. Ngày kết thúc chu kỳ</strong> | 
+  <strong>13. Số chênh lệch</strong> | <strong>14. Ngày sinh</strong>
+  </div>`;
+
+  let html = `<h3 style="color:#2c3e50; border-bottom:3px solid #4a6fa5; padding-bottom:10px;">
+  👨‍⚕️ ${personName}</h3>${columnNotes}
+  <table>
+<tr>
+<th>1<br><small>STT</small></th>
+<th>2<br><small>Số chia</small></th>
+<th>3<br><small>Thương</small></th>
+<th>4<br><small>Số dư</small></th>
+<th>5<br><small>Số dư<br>lần</small></th>
+<th>6<br><small>Hiệu</small></th>
+<th>7<br><small>Ngày<br>kết thúc</small></th>
+<th>8<br><small>Cảnh<br>báo</small></th>
+<th>9<br><small>Cảnh báo<br>đặc biệt</small></th>
+<th>10<br><small>Thông báo<br>đặc biệt</small></th>
+<th>11<br><small>Ngày<br>bắt đầu</small></th>
+<th>12<br><small>Ngày<br>kết thúc</small></th>
+<th>13<br><small>Chênh<br>lệch</small></th>
+<th>14<br><small>Ngày<br>sinh</small></th>
+</tr>`;
+
+  divisors.forEach((d,i)=>{
+    // LOGIC: NẾU SỐ CHIA LỚN HƠN SỐ CHÊNH LỆCH => NHÂN SỐ CHÊNH LỆCH VỚI 24
+    let baseValue = diff; // Giá trị mặc định
+    let isHourCalculation = false;
+    
+    if(d > diff){
+      baseValue = diff * 24; // NHÂN SỐ CHÊNH LỆCH VỚI 24
+      isHourCalculation = true;
+    }
+    
+    // Cột 3: Thương chẵn của số chênh lệch chia số chia (Lần)
+    let thuong = Math.floor(baseValue/d);
+    
+    // Cột 4: Số dư số chênh lệch chia số chia
+    let du = baseValue % d;
+    
+    // Cột 5: Thương của cột 3 chia số chia (số dư lần)
+    let lan2 = Math.floor(thuong/d);
+    
+    // Cột 6: Số chia trừ số dư 
+    let hieu = d - du;
+    
+    // Cột 7: Số dư cộng ngày hiện tại (chia 24 nếu tính theo giờ)
+    let ngayKetThuc = new Date(todayD);
+    let duNgay = du;
+    if(isHourCalculation) {
+      duNgay = du / 24; // Chia 24 để chuyển từ giờ sang ngày
+    }
+    ngayKetThuc.setDate(ngayKetThuc.getDate() + duNgay);
+    let ngayKTStr = formatDateViet(ngayKetThuc.toISOString());
+    
+    // Cột 11: Ngày bắt đầu = (thương cột 3 × số chia cột 2) + ngày sinh
+    let ngayBatDau = new Date(birthD);
+    let soNgayCongThem = thuong * d;
+    ngayBatDau.setDate(ngayBatDau.getDate() + soNgayCongThem);
+    let ngayBDStr = formatDateViet(ngayBatDau.toISOString());
+    
+    // Cột 12: Ngày kết thúc = ((thương cột 3 + 1) × số chia cột 2) + ngày sinh
+    let ngayKetThuc2 = new Date(birthD);
+    let soNgayKetThuc2 = (thuong + 1) * d;
+    ngayKetThuc2.setDate(ngayKetThuc2.getDate() + soNgayKetThuc2);
+    let ngayKT2Str = formatDateViet(ngayKetThuc2.toISOString());
+    
+    // Cột 13: Số chênh lệch - SỬA LẠI: nếu tính theo giờ thì phải chia 24
+    let chenhLech = diff;
+    let displayChenhLech = diff;
+    if(isHourCalculation) {
+      displayChenhLech = `${diff}<br><small>(giờ: ${diff*24})</small>`;
+    }
+    
+    // Cột 14: Ngày tháng năm sinh
+    let ngaySinhStr = formatDateViet(birth);
+    
+    // Cột 8: Thông báo số dư nhỏ hơn 7 của cột 4
+    let warnC8 = du < 7 ? "⚠<br>DƯ<7" : "";
+    
+    // Cột 9: Thông báo số dư bằng 0, nhỏ hơn 7 của cột 5
+    let warnC9 = "";
+    if(lan2 === 0) {
+      if(d < 100 && du === 0) {
+        warnC9 = "SỐ 0";
+      } else if(d >= 100 && thuong.toString().includes("0")){
+        if(d >= 10000) warnC9 = "NGHỈ<br>5 NGÀY";
+        else if(d >= 1000) warnC9 = "NGHỈ<br>4 NGÀY";
+        else warnC9 = "NGHỈ<br>3 NGÀY";
+      }
+    }
+    
+    // CỘT 10: THÔNG BÁO TỪ KHI CỘT 4 NHỎ HƠN 7 ĐẾN KHI BẰNG 0
+    let warnC10 = "";
+    if(du < 7) {
+      // Nếu có thông báo đặc biệt cho số chia này
+      if(col10Msg[d]) {
+        warnC10 = col10Msg[d];
+      } 
+      // Nếu không, hiển thị thông báo theo số dư
+      else if(duLessThan7Msg[du]) {
+        warnC10 = duLessThan7Msg[du];
+      }
+    }
+    
+    // Thêm cảnh báo vào danh sách
+    if(warnC8 || warnC9 || warnC10){
+      let alertMsg = `🚨 <strong style="color:#2c3e50;">${personName}</strong> - Ngày ${todayStr}<br>`;
+      alertMsg += `<strong>Số chia ${d}:</strong> `;
+      if(warnC8) alertMsg += `<span class="warn">Số dư ${du} &lt; 7</span> `;
+      if(warnC9) alertMsg += `<span class="warn">${warnC9.replace(/<br>/g, ' ')}</span> `;
+      if(warnC10) alertMsg += `<span class="warn">${warnC10.replace(/<br>/g, ' ')}</span>`;
+      if(isHourCalculation) alertMsg += ` <em>(tính theo giờ)</em>`;
+      alerts.push(alertMsg);
+    }
+
+    html += `<tr${isHourCalculation ? " class='highlight'" : ""}>
+<td>${i+1}</td>
+<td>${d}</td>
+<td>${thuong}</td>
+<td>${du}</td>
+<td>${lan2}</td>
+<td>${hieu}</td>
+<td>${ngayKTStr}</td>
+<td class="warn">${warnC8}</td>
+<td class="warn">${warnC9}</td>
+<td class="warn">${warnC10}</td>
+<td>${ngayBDStr}</td>
+<td>${ngayKT2Str}</td>
+<td>${displayChenhLech}</td>
+<td>${ngaySinhStr}</td>
+</tr>`;
+  });
+
+  html += "</table>";
+  return {html, alerts};
+}
+
+// ================= NÚT =================
+function calcOne(){
+  let nameSelect = document.getElementById("name");
+  let birthInput = document.getElementById("birth");
+  
+  if(!birthInput.value){
+    alert("Vui lòng chọn người trước khi tính toán");
+    return;
+  }
+  
+  // Lấy tên người đã chọn
+  let selectedName = nameSelect.options[nameSelect.selectedIndex].text;
+  let r = runCalc(selectedName, birthInput.value);
+  document.getElementById("out").innerHTML = r.html;
+  showAlerts(r.alerts);
+}
+
+function calcAll(){
+  let allHTML = "<div class='alert-header'>📋 KẾT QUẢ TÍNH TOÁN CHO TẤT CẢ MỌI NGƯỜI</div>";
+  let allAlerts = [];
+  
+  people.forEach((p, index) => {
+    let r = runCalc(p[0], p[1]);
+    allHTML += r.html;
+    if(index < people.length - 1) {
+      allHTML += "<div style='height:30px;'></div>";
+    }
+    allAlerts = allAlerts.concat(r.alerts);
+  });
+  
+  document.getElementById("out").innerHTML = allHTML;
+  showAlerts(allAlerts);
+}
+
+function showAlerts(arr){
+  let alertsDiv = document.getElementById("alerts");
+  if(arr.length > 0) {
+    // Sắp xếp cảnh báo theo mức độ nguy hiểm
+    arr.sort((a, b) => {
+      const getDuValue = (str) => {
+        if(str.includes("Số dư = 0")) return 0;
+        if(str.includes("Số dư = 1")) return 1;
+        if(str.includes("Số dư = 2")) return 2;
+        if(str.includes("Số dư = 3")) return 3;
+        if(str.includes("Số dư = 4")) return 4;
+        if(str.includes("Số dư = 5")) return 5;
+        if(str.includes("Số dư = 6")) return 6;
+        return 7;
+      };
+      return getDuValue(a) - getDuValue(b);
+    });
+    
+    let alertHTML = `<div class="alert-header">⚠️ TỔNG HỢP ${arr.length} CẢNH BÁO</div>`;
+    
+    arr.forEach(alert => {
+      alertHTML += `<div class="big-alert">${alert}</div>`;
+    });
+    
+    alertsDiv.innerHTML = alertHTML;
+  } else {
+    alertsDiv.innerHTML = `<div class="big-alert no-alerts">
+      ✅ KHÔNG CÓ CẢNH BÁO NÀO<br>
+      Ngày ${formatDateViet(document.getElementById("today").value)}
+    </div>`;
+  }
+}
+
+function resetAll(){
+  if(confirm("Bạn có chắc chắn muốn xóa tất cả dữ liệu?")) {
+    document.getElementById("out").innerHTML = "";
+    document.getElementById("alerts").innerHTML = "";
+    document.getElementById("name").value = "";
+    document.getElementById("birth").value = "";
+    const today = new Date();
+    document.getElementById("today").value = today.toISOString().split("T")[0];
+    document.getElementById("current-date").textContent = formatDateViet(today.toISOString());
+  }
+}
+</script>
+
+</body>
+</html>

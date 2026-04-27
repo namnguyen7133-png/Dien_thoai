@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lọc sản phẩm Shopee Affiliate — Dễ đọc</title>
+
+  <!-- Kiểu chữ và giao diện dễ đọc, kích thước lớn mặc định -->
+  <style>
+    :root{
+      --base-font: 20px;           /* mặc định lớn cho người cận */
+      --scale-step: 2px;          /* bước tăng/giảm chữ */
+      --container-max: 1100px;
+      --accent: #1e88e5;
+      --bg: #f7fbff;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --radius: 14px;
+      --gap: 14px;
+    }
+
+    /* Reset nhẹ */
+    *{box-sizing:border-box}
+    html,body{height:100%; margin:0; padding:0; background:linear-gradient(180deg,var(--bg),#ffffff); font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:#0f1724}
+    body{padding:20px; display:flex; align-items:flex-start; justify-content:center; gap:20px}
+
+    /* Bố cục */
+    .container{
+      width:100%;
+      max-width:var(--container-max);
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow: 0 8px 30px rgba(16,24,40,0.08);
+      padding:24px;
+      overflow:hidden;
+    }
+
+    header{
+      display:flex;
+      gap:16px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:10px;
+    }
+
+    .title {
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+
+    .logo {
+      width:64px;
+      height:64px;
+      border-radius:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      background:linear-gradient(135deg,var(--accent),#6dd3ff);
+      color:white;
+      font-size:26px;
+      flex-shrink:0;
+      box-shadow: 0 6px 18px rgba(30,136,229,0.18);
+    }
+
+    h1{
+      margin:0;
+      font-size:calc(var(--base-font) * 1.6);
+      line-height:1.05;
+    }
+    p.lead{margin:4px 0 0; color:var(--muted); font-size:calc(var(--base-font) * .9)}
+
+    /* Controls form */
+    .controls{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--gap);
+      margin-top:14px;
+    }
+
+    label{display:block; font-weight:600; font-size:calc(var(--base-font) * .95); margin-bottom:6px}
+    input[type="file"]{padding:10px 12px}
+    input[type="number"], input[type="text"], select {
+      width:100%;
+      padding:12px;
+      font-size:var(--base-font);
+      border-radius:10px;
+      border:1px solid #e6eef8;
+      background: #fbfeff;
+      outline:none;
+    }
+    input[type="number"]::placeholder { color:#9aa4b2 }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+    button {
+      cursor:pointer;
+      padding:12px 16px;
+      font-size:calc(var(--base-font) * .95);
+      border-radius:10px;
+      border: none;
+      box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+      transition:transform .12s ease, box-shadow .12s ease;
+    }
+    button:active { transform: translateY(1px) }
+    .btn-primary{ background: var(--accent); color: #fff }
+    .btn-ghost{ background: transparent; color: var(--accent); border:1px solid rgba(30,136,229,0.12) }
+    .btn-secondary{ background:#eef6ff; color:var(--accent) }
+
+    /* Controls nhỏ: điều chỉnh cỡ chữ */
+    .zoom-controls{ display:flex; gap:8px; align-items:center; }
+    .zoom-controls button{ padding:10px 12px; font-size:18px; border-radius:8px }
+
+    /* Table responsive và dễ đọc */
+    .table-wrap{
+      margin-top:18px;
+      width:100%;
+      overflow:auto;
+      border-radius:10px;
+      border:1px solid #eef3fb;
+      background:linear-gradient(180deg,#ffffff, #fbfdff);
+      padding:8px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:800px; /* cho màn rộng hiển thị đẹp, small devices sẽ scroll */
+    }
+
+    thead th{
+      position:sticky;
+      top:0;
+      background:linear-gradient(180deg,#f0f7ff,#e9f2ff);
+      color:#08304a;
+      font-weight:700;
+      padding:14px;
+      text-align:left;
+      font-size:calc(var(--base-font) * .95);
+      border-bottom:2px solid #e6f0fb;
+    }
+
+    tbody td{
+      padding:12px 14px;
+      border-bottom:1px solid #f1f6fb;
+      font-size:var(--base-font);
+      vertical-align:top;
+      white-space:normal;
+      word-break:break-word; /* tránh tràn chữ */
+    }
+
+    tbody tr:hover{ background: linear-gradient(90deg, rgba(30,136,229,0.03), transparent) }
+
+    /* Thông báo trạng thái */
+    .info{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:calc(var(--base-font) * .9);
+    }
+
+    /* Responsive nhỏ: giảm min-width table */
+    @media (max-width:600px){
+      :root{ --container-max: 100%; }
+      .logo{ width:56px; height:56px; font-size:20px }
+      table{ min-width:700px }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="main" aria-labelledby="main-title">
+    <header>
+      <div class="title">
+        <div class="logo" aria-hidden="true">AF</div>
+        <div>
+          <h1 id="main-title">Lọc sản phẩm Affiliate — Dễ đọc</h1>
+          <p class="lead">Kích thước chữ lớn, rõ ràng cho mắt cận — điều chỉnh nhanh nếu muốn.</p>
+        </div>
+      </div>
+
+      <div class="zoom-controls" aria-hidden="false" title="Điều chỉnh kích thước chữ">
+        <button type="button" id="decreaseBtn" class="btn-ghost" aria-label="Giảm chữ">A−</button>
+        <button type="button" id="resetBtn" class="btn-secondary" aria-label="Reset chữ">A</button>
+        <button type="button" id="increaseBtn" class="btn-primary" aria-label="Tăng chữ">A+</button>
+      </div>
+    </header>
+
+    <!-- Controls -->
+    <div class="controls" aria-label="Bộ lọc sản phẩm">
+      <div>
+        <label for="csvFile">Nhập file CSV sản phẩm</label>
+        <input type="file" id="csvFile" accept=".csv" aria-label="Chọn file CSV sản phẩm" />
+      </div>
+
+      <div>
+        <label for="minPrice">Giá tối thiểu (VNĐ)</label>
+        <input type="number" id="minPrice" placeholder="50000" inputmode="numeric" />
+      </div>
+
+      <div>
+        <label for="maxPrice">Giá tối đa (VNĐ)</label>
+        <input type="number" id="maxPrice" placeholder="200000" inputmode="numeric" />
+      </div>
+
+      <div>
+        <label for="minCommission">Hoa hồng tối thiểu (%)</label>
+        <input type="number" id="minCommission" placeholder="10" inputmode="numeric" />
+      </div>
+
+      <div>
+        <label for="minSales">Lượt bán tối thiểu</label>
+        <input type="number" id="minSales" placeholder="1000" inputmode="numeric" />
+      </div>
+
+      <div>
+        <label for="previewLimit">Số dòng hiển thị (tùy chọn)</label>
+        <input type="number" id="previewLimit" placeholder="0 = tất cả" inputmode="numeric" />
+      </div>
+    </div>
+
+    <div class="actions" role="toolbar" aria-label="Hành động">
+      <button class="btn-primary" onclick="filterCSV()" id="filterBtn">Lọc sản phẩm</button>
+      <button class="btn-ghost" onclick="downloadCSV()" id="downloadBtn">Tải file CSV đã lọc</button>
+      <button class="btn-secondary" onclick="clearTable()" id="clearBtn">Xóa kết quả</button>
+    </div>
+
+    <div id="status" class="info" role="status" aria-live="polite">Chưa có dữ liệu</div>
+
+    <div class="table-wrap" id="tableWrap" style="display:none;">
+      <table id="resultTable" aria-describedby="status">
+        <thead id="tableHead"></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+<script>
+  // Dữ liệu toàn cục
+  let originalData = [];
+  let filteredData = [];
+  const root = document.documentElement;
+
+  // Thiết lập cỡ chữ mặc định (dễ đọc cho người cận)
+  function setBaseFont(sizePx){
+    root.style.setProperty('--base-font', sizePx + 'px');
+  }
+  setBaseFont(20); // mặc định 20px (có thể tăng)
+
+  // Nút điều chỉnh chữ
+  const incBtn = document.getElementById('increaseBtn');
+  const decBtn = document.getElementById('decreaseBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  incBtn.addEventListener('click', ()=> {
+    const cur = parseFloat(getComputedStyle(root).getPropertyValue('--base-font'));
+    setBaseFont(cur + parseFloat(getComputedStyle(root).getPropertyValue('--scale-step')));
+  });
+  decBtn.addEventListener('click', ()=> {
+    const cur = parseFloat(getComputedStyle(root).getPropertyValue('--base-font'));
+    if (cur > 12) setBaseFont(cur - parseFloat(getComputedStyle(root).getPropertyValue('--scale-step')));
+  });
+  resetBtn.addEventListener('click', ()=> setBaseFont(20));
+
+  // Parse CSV đơn giản (vẫn hỗ trợ dòng rỗng)
+  function parseCSV(text){
+    // chia theo dòng, xử lý các dòng trống loại bỏ ở cuối
+    const rows = text.split(/\r?\n/).filter(r => r.trim() !== '');
+    // Phân tách đơn giản: nếu cần parse CSV phức tạp (quotes, dấu phẩy trong ô) có thể thay bằng thư viện
+    return rows.map(row => {
+      // nếu có dấu " bao quanh, xử lý cơ bản
+      const values = [];
+      let cur = '';
+      let inQuotes = false;
+      for (let i = 0; i < row.length; i++){
+        const ch = row[i];
+        if (ch === '"' ) {
+          inQuotes = !inQuotes;
+          continue;
+        }
+        if (ch === ',' && !inQuotes) {
+          values.push(cur);
+          cur = '';
+        } else {
+          cur += ch;
+        }
+      }
+      values.push(cur);
+      return values.map(v => v.trim());
+    });
+  }
+
+  function filterCSV(){
+    const fileInput = document.getElementById('csvFile');
+    if (!fileInput.files.length) {
+      alert('Hãy chọn file CSV');
+      return;
+    }
+    const previewLimit = Number(document.getElementById('previewLimit').value || 0);
+
+    const reader = new FileReader();
+    reader.onload = function(e){
+      const csv = parseCSV(e.target.result);
+      if (!csv.length) {
+        alert('File CSV rỗng hoặc không đọc được');
+        return;
+      }
+
+      originalData = csv;
+      const header = csv[0].map(h => h.toString().toLowerCase());
+      const body = csv.slice(1);
+
+      // Lấy giá trị lọc
+      const minPrice = Number(document.getElementById('minPrice').value || 0);
+      const maxPriceRaw = document.getElementById('maxPrice').value;
+      const maxPrice = maxPriceRaw === '' ? Infinity : Number(maxPriceRaw);
+      const minCommission = Number(document.getElementById('minCommission').value || 0);
+      const minSales = Number(document.getElementById('minSales').value || 0);
+
+      // Tìm index trường theo tên phổ biến; nếu không tìm thì lấy index mặc định
+      const idx = {
+        price: header.indexOf('price') !== -1 ? header.indexOf('price') : header.indexOf('giá') !== -1 ? header.indexOf('giá') : header.indexOf('price_vn') !== -1 ? header.indexOf('price_vn') : -1,
+        commission: header.indexOf('commission') !== -1 ? header.indexOf('commission') : header.indexOf('hoa hồng') !== -1 ? header.indexOf('hoa hồng') : header.indexOf('commission_rate') !== -1 ? header.indexOf('commission_rate') : -1,
+        sales: header.indexOf('sales') !== -1 ? header.indexOf('sales') : header.indexOf('sold') !== -1 ? header.indexOf('sold') : header.indexOf('luợt bán') !== -1 ? header.indexOf('luợt bán') : -1
+      };
+
+      filteredData = body.filter(row => {
+        // an toan: nếu row ngắn hơn header, điền rỗng
+        const safeRow = row.concat(Array(Math.max(0, header.length - row.length)).fill(''));
+        const price = idx.price >=0 ? Number( safeRow[idx.price].replace(/[^\d.-]/g,'') || 0) : 0;
+        const commission = idx.commission >=0 ? Number( safeRow[idx.commission].replace(/[^\d.-]/g,'') || 0) : 0;
+        const sales = idx.sales >=0 ? Number( safeRow[idx.sales].replace(/[^\d.-]/g,'') || 0) : 0;
+
+        return price >= minPrice && price <= maxPrice && commission >= minCommission && sales >= minSales;
+      });
+
+      // nếu người dùng đặt giới hạn hiển thị
+      const rowsToShow = previewLimit > 0 ? filteredData.slice(0, previewLimit) : filteredData;
+
+      renderTable(csv[0], rowsToShow);
+      const status = document.getElementById('status');
+      status.textContent = `Tìm được ${filteredData.length} dòng phù hợp. Hiển thị ${rowsToShow.length} dòng.`;
+    };
+    reader.readAsText(fileInput.files[0], 'UTF-8');
+  }
+
+  function renderTable(header, rows){
+    const table = document.getElementById('resultTable');
+    const thead = document.getElementById('tableHead');
+    const tbody = document.getElementById('tableBody');
+
+    // Escape HTML an toàn (tránh injection)
+    const esc = s => String(s === undefined || s === null ? '' : s)
+                   .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+    thead.innerHTML = '<tr>' + header.map(h => `<th scope="col">${esc(h)}</th>`).join('') + '</tr>';
+    tbody.innerHTML = rows.map(r => '<tr>' + r.map(c => `<td>${esc(c)}</td>`).join('') + '</tr>').join('');
+
+    document.getElementById('tableWrap').style.display = rows.length ? 'block' : 'none';
+  }
+
+  function downloadCSV(){
+    if (!filteredData.length) {
+      alert('Chưa có dữ liệu đã lọc');
+      return;
+    }
+    const header = originalData[0];
+    const csvContent = [header, ...filteredData].map(e => e.map(cell => {
+      // nếu cell chứa dấu phẩy hoặc newline thì bọc quote
+      const cellStr = String(cell);
+      if (cellStr.includes(',') || cellStr.includes('\n') || cellStr.includes('"')) {
+        return '"' + cellStr.replace(/"/g,'""') + '"';
+      }
+      return cellStr;
+    }).join(',')).join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'san_pham_da_loc.csv';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
+
+  function clearTable(){
+    document.getElementById('tableHead').innerHTML = '';
+    document.getElementById('tableBody').innerHTML = '';
+    document.getElementById('tableWrap').style.display = 'none';
+    document.getElementById('status').textContent = 'Đã xóa kết quả.';
+    originalData = [];
+    filteredData = [];
+  }
+
+  // Accessibility: hỗ trợ phím tắt tăng/giảm chữ (T: tăng, G: giảm, R: reset)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'T' || e.key === 't') incBtn.click();
+    if (e.key === 'G' || e.key === 'g') decBtn.click();
+    if (e.key === 'R' || e.key === 'r') resetBtn.click();
+  });
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

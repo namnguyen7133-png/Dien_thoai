@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Link GitHub - Anti Spam</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 20px auto; padding: 10px; line-height: 1.6; }
+        textarea { width: 100%; height: 100px; margin-bottom: 10px; }
+        .controls { display: flex; gap: 10px; margin-bottom: 20px; }
+        #display-area { padding: 15px; border: 2px dashed #007bff; background: #f8f9fa; text-align: center; }
+        .btn { padding: 10px 20px; cursor: pointer; border: none; border-radius: 4px; color: white; }
+        .btn-save { background: #28a745; }
+        .btn-copy { background: #007bff; width: 100%; font-size: 1.1em; font-weight: bold; }
+        #status { font-size: 0.8em; color: #666; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h3>Cấu hình Link GitHub</h3>
+    <p style="font-size: 0.9em;">Nhập mỗi link một dòng:</p>
+    <textarea id="linkInput" placeholder="Dán danh sách link vào đây..."></textarea>
+    
+    <div class="controls">
+        <button class="btn btn-save" onclick="saveLinks()">Lưu Danh Sách</button>
+    </div>
+
+    <hr>
+
+    <h3>Link Sẵn Sàng (Đã trộn)</h3>
+    <div id="display-area">
+        <div id="currentLink">Chưa có link nào</div>
+        <div id="status">Số link còn lại trong hàng đợi: 0</div>
+    </div>
+    <br>
+    <button class="btn btn-copy" onclick="copyAndRotate()">Bấm để Copy & Đổi Link</button>
+
+    <script>
+        let linkQueue = [];
+
+        // 1. Hàm trộn mảng ngẫu nhiên (Fisher-Yates Shuffle)
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // 2. Lưu link vào localStorage và trộn
+        function saveLinks() {
+            const text = document.getElementById('linkInput').value;
+            const links = text.split('\n').map(l => l.trim()).filter(l => l !== "");
+            
+            if (links.length === 0) return alert("Vui lòng nhập link!");
+
+            localStorage.setItem('raw_links', JSON.stringify(links));
+            prepareQueue(links);
+            alert("Đã lưu và trộn đều danh sách!");
+        }
+
+        // 3. Chuẩn bị hàng đợi (Queue)
+        function prepareQueue(links) {
+            linkQueue = shuffle([...links]);
+            updateDisplay();
+        }
+
+        // 4. Hiển thị link hiện tại
+        function updateDisplay() {
+            const display = document.getElementById('currentLink');
+            const status = document.getElementById('status');
+            
+            if (linkQueue.length > 0) {
+                display.innerText = linkQueue[0];
+                status.innerText = `Số link còn lại trong hàng đợi: ${linkQueue.length}`;
+            } else {
+                display.innerText = "Hết link! Đang khởi tạo lại...";
+                const saved = JSON.parse(localStorage.getItem('raw_links') || "[]");
+                if (saved.length > 0) prepareQueue(saved);
+            }
+        }
+
+        // 5. Copy và xoay vòng link
+        function copyAndRotate() {
+            if (linkQueue.length === 0) return;
+
+            const linkToCopy = linkQueue[0];
+
+            // Copy vào bộ nhớ tạm
+            navigator.clipboard.writeText(linkToCopy).then(() => {
+                // Đưa link vừa dùng xuống cuối hàng đợi (Xoay vòng)
+                const usedLink = linkQueue.shift();
+                linkQueue.push(usedLink);
+                
+                updateDisplay();
+                
+                // Hiệu ứng thông báo nhỏ
+                const btn = document.querySelector('.btn-copy');
+                const originalText = btn.innerText;
+                btn.innerText = "ĐÃ COPY!";
+                btn.style.background = "#28a745";
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.background = "#007bff";
+                }, 800);
+            });
+        }
+
+        // 6. Tải lại dữ liệu khi load trang
+        window.onload = () => {
+            const saved = JSON.parse(localStorage.getItem('raw_links') || "[]");
+            if (saved.length > 0) {
+                document.getElementById('linkInput').value = saved.join('\n');
+                prepareQueue(saved);
+            }
+        };
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

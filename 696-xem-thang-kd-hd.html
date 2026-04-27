@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phân tích Nhân sự & Chiến lược</title>
+
+<style>
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg,#eef2ff,#ffffff);
+    margin:0;
+    padding:15px;
+}
+.container{
+    max-width:900px;
+    margin:auto;
+    background:#fff;
+    border-radius:20px;
+    padding:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.15);
+}
+h1{
+    text-align:center;
+    font-size:32px;
+    margin-bottom:10px;
+}
+label{
+    font-size:22px;
+    font-weight:bold;
+    margin-top:15px;
+    display:block;
+}
+input, select{
+    width:100%;
+    font-size:22px;
+    padding:14px;
+    border-radius:12px;
+    border:2px solid #ccc;
+    margin-top:6px;
+}
+button{
+    width:100%;
+    font-size:26px;
+    font-weight:bold;
+    padding:16px;
+    margin-top:25px;
+    border:none;
+    border-radius:16px;
+    background:#4f46e5;
+    color:white;
+}
+.result{
+    margin-top:25px;
+    padding:20px;
+    border-radius:16px;
+    background:#f8f9ff;
+    font-size:22px;
+    line-height:1.6;
+}
+.box{
+    margin-bottom:16px;
+    padding:16px;
+    border-radius:14px;
+    background:white;
+    border-left:6px solid #4f46e5;
+}
+.highlight{
+    font-size:24px;
+    font-weight:bold;
+    color:#1e3a8a;
+}
+@media(max-width:600px){
+    h1{font-size:28px}
+    label,input,select,.result{font-size:20px}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>🔮 PHÂN TÍCH NHÂN SỰ – CHIẾN LƯỢC</h1>
+
+<label>📅 Ngày hiện tại</label>
+<input type="date" id="today">
+
+<label>👤 Tên người</label>
+<input type="text" id="name">
+
+<label>🎂 Ngày tháng năm sinh</label>
+<input type="date" id="dob">
+
+<label>📋 Chọn từ danh sách</label>
+<select id="list" onchange="autoFill()">
+<option value="">-- Chọn --</option>
+<option value="NGUYENKHACNANG|1944-06-04">NGUYENKHACNANG</option>
+<option value="TOTHIHA|1948-08-29">TOTHIHA</option>
+<option value="NGUYENMINHNAM|1971-03-03">NGUYENMINHNAM</option>
+<option value="THANTHIKIMANH|1981-09-23">THANTHIKIMANH</option>
+<option value="NGUYENTONGANAN|2014-09-28">NGUYENTONGANAN</option>
+<option value="NGUYENTOMINHCHAU|2016-07-25">NGUYENTOMINHCHAU</option>
+<option value="NGUYENTOBICHNGOC|2020-02-05">NGUYENTOBICHNGOC</option>
+<option value="NGUYENTHIMINHHANG|1974-01-07">NGUYENTHIMINHHANG</option>
+<option value="NGOQUYCUONG|1973-05-23">NGOQUYCUONG</option>
+<option value="NGOGIABACH|2000-10-12">NGOGIABACH</option>
+<option value="NGOGIALINH|2005-04-05">NGOGIALINH</option>
+<option value="NGUYENTHIMINHPHUONG|1978-11-06">NGUYENTHIMINHPHUONG</option>
+<option value="HOANGANHDUNG|1978-09-21">HOANGANHDUNG</option>
+<option value="HOANGHAIVINH|2010-06-03">HOANGHAIVINH</option>
+<option value="HOANGTHIENBACHANH|2015-11-14">HOANGTHIENBACHANH</option>
+<option value="TÔ KIM HUỆ|1960-08-09">TÔ KIM HUỆ</option>
+<option value="NGUYỄN TUẤN ANH|1983-10-23">NGUYỄN TUẤN ANH</option>
+<option value="NGUYỄN THẾ ANH|2001-03-24">NGUYỄN THẾ ANH</option>
+<option value="NGÔ THỊ MAI|1948-12-12">NGÔ THỊ MAI</option>
+<option value="TÔ VIỆT HƯNG|1996-06-17">TÔ VIỆT HƯNG</option>
+<option value="TÔ THỊ HỒNG|1964-10-10">TÔ THỊ HỒNG</option>
+<option value="VŨ VĂN HIỆP|1974-04-24">VŨ VĂN HIỆP</option>
+<option value="NGUYỄN THỊ CHI|1946-02-08">NGUYỄN THỊ CHI</option>
+<option value="NGUYỄN TẤN BẮC|1957-11-30">NGUYỄN TẤN BẮC</option>
+<option value="NGUYỄN THỊ TÂM|1954-08-08">NGUYỄN THỊ TÂM</option>
+</select>
+
+<button onclick="analyze()">✨ PHÂN TÍCH</button>
+
+<div id="result" class="result"></div>
+
+</div>
+
+<script>
+document.getElementById("today").valueAsDate = new Date();
+
+function autoFill(){
+    let v=document.getElementById("list").value;
+    if(!v) return;
+    let p=v.split("|");
+    document.getElementById("name").value=p[0];
+    document.getElementById("dob").value=p[1];
+}
+
+function zodiac(d,m){
+    if((m==3&&d>=21)||(m==4&&d<=19))return "♈ Bạch Dương";
+    if((m==4&&d>=20)||(m==5&&d<=20))return "♉ Kim Ngưu";
+    if((m==5&&d>=21)||(m==6&&d<=21))return "♊ Song Tử";
+    if((m==6&&d>=22)||(m==7&&d<=22))return "♋ Cự Giải";
+    if((m==7&&d>=23)||(m==8&&d<=22))return "♌ Sư Tử";
+    if((m==8&&d>=23)||(m==9&&d<=22))return "♍ Xử Nữ";
+    if((m==9&&d>=23)||(m==10&&d<=23))return "♎ Thiên Bình";
+    if((m==10&&d>=24)||(m==11&&d<=22))return "♏ Thiên Yết";
+    if((m==11&&d>=23)||(m==12&&d<=21))return "♐ Nhân Mã";
+    if((m==12&&d>=22)||(m==1&&d<=19))return "♑ Ma Kết";
+    if((m==1&&d>=20)||(m==2&&d<=18))return "♒ Bảo Bình";
+    return "♓ Song Ngư";
+}
+
+function calculateMonthsBetween(date1, date2) {
+    let months = (date2.getFullYear() - date1.getFullYear()) * 12;
+    months += date2.getMonth() - date1.getMonth();
+    // Adjust if the day of month2 is earlier than day of month1
+    if (date2.getDate() < date1.getDate()) {
+        months--;
+    }
+    return months;
+}
+
+function analyze(){
+    let name=document.getElementById("name").value;
+    let dob=new Date(document.getElementById("dob").value);
+    if(!name||!dob)return;
+
+    let d=dob.getDate(), m=dob.getMonth()+1, y=dob.getFullYear();
+    let now=new Date();
+    
+    let totalMonths = calculateMonthsBetween(dob, now);
+    let ageMod = totalMonths % 64 || 64;
+
+    let rankNum=y%6||6;
+    let rankMap={6:"👑 VUA",5:"👸 HOÀNG HẬU",4:"🐘 VOI",3:"🚗 XE",2:"🐎 NGỰA",1:"🪖 LÍNH"};
+    let rank=rankMap[rankNum];
+
+    let side=d<=15?"➡️ Bên phải Vua":"⬅️ Bên trái Vua";
+    let level=m<=6?"⬇️ Tuyến dưới":"⬆️ Tuyến trên";
+
+    let strategy=ageMod<22?"Khởi nghiệp – học hỏi":
+                 ageMod<44?"Mở rộng – kinh doanh":
+                 "Ổn định – cố vấn – đầu tư";
+
+    document.getElementById("result").innerHTML=`
+    <div class="box"><span class="highlight">👤 ${name}</span></div>
+    <div class="box">🌟 Cung hoàng đạo: <b>${zodiac(d,m)}</b></div>
+    <div class="box">♟️ Cấp bậc: <b>${rank}</b></div>
+    <div class="box">${side} | ${level}</div>
+    <div class="box">🎯 Số tháng tuổi (mod 64): <b>${totalMonths} tháng = ${ageMod}</b></div>
+    <div class="box">💼 Chiến lược phù hợp: <b>${strategy}</b></div>
+    `;
+}
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    body { font-family: sans-serif; margin: 0; padding: 5px; background: #f0f0f0; }
+    .container { max-width: 100%; background: #fff; padding: 5px; border-radius: 8px; }
+    h2 { font-size: 14px; text-align: center; margin: 5px 0; }
+    .btns { display: flex; justify-content: center; gap: 5px; margin-bottom: 5px; }
+    button { font-size: 11px; padding: 5px; cursor: pointer; border: none; border-radius: 4px; color: #fff; }
+    
+    .board { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    .cell { border: 1px solid #ccc; height: 65px; vertical-align: top; padding: 2px; font-size: 9px; overflow: hidden; }
+    .label { background: #444; color: #fff; text-align: center; font-size: 9px; height: 20px; }
+    
+    /* Màu theo Mod 8 */
+    .m-phai { background: #e0f2fe; } /* C1,2,3 */
+    .m-truoc { background: #fef9c3; border: 1px solid #facc15; } /* C4,5 */
+    .m-trai { background: #f3e8ff; } /* C6,7,8 */
+    
+    .p-name { display: block; font-weight: bold; color: #1e40af; line-height: 1; margin-top: 2px; border-bottom: 1px solid #ddd; padding-bottom: 2px; }
+    .age { color: red; }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>♟️ CHIẾN THẾ THEO TUỔI (64 Ô)</h2>
+    <div class="btns">
+        <button onclick="draw('UP')" style="background:#10b981">T. TRÊN</button>
+        <button onclick="draw('DOWN')" style="background:#3b82f6">T. DƯỚI</button>
+    </div>
+    <table class="board" id="b"></table>
+</div>
+
+<script>
+const people = [
+    { n:"NANG", d:"1944-06-04"}, { n:"HA", d:"1948-08-29"}, { n:"NAM", d:"1971-03-03"}, { n:"K.ANH", d:"1981-09-23"},
+    { n:"ANAN", d:"2014-09-28"}, { n:"M.CHAU", d:"2016-07-25"}, { n:"B.NGOC", d:"2020-02-05"}, { n:"HANG", d:"1974-01-07"},
+    { n:"CUONG", d:"1973-05-23"}, { n:"BACH", d:"2000-10-12"}, { n:"LINH", d:"2005-04-05"}, { n:"PHUONG", d:"1978-11-06"},
+    { n:"DUNG", d:"1978-09-21"}, { n:"VINH", d:"2010-06-03"}, { n:"ANH", d:"2015-11-14"}, { n:"HUE", d:"1960-08-09"},
+    { n:"T.ANH", d:"1983-10-23"}, { n:"THE.A", d:"2001-03-24"}, { n:"MAI", d:"1948-12-12"}, { n:"HUNG", d:"1996-06-17"},
+    { n:"HONG", d:"1964-10-10"}, { n:"HIEP", d:"1974-04-24"}, { n:"CHI", d:"1946-02-08"}, { n:"BAC", d:"1957-11-30"},
+    { n:"TAM", d:"1954-08-08"}
+];
+
+const now = new Date();
+
+function calculateMonthsBetween(dob) {
+    const birthDate = new Date(dob);
+    let months = (now.getFullYear() - birthDate.getFullYear()) * 12;
+    months += now.getMonth() - birthDate.getMonth();
+    if (now.getDate() < birthDate.getDate()) {
+        months--;
+    }
+    return months;
+}
+
+function draw(m) {
+    const b = document.getElementById('b');
+    let h = '<tr><td class="label"></td>';
+    for(let c=1;c<=8;c++) h+=`<td class="label">C${c}</td>`;
+    h+='</tr>';
+
+    const map = {};
+    people.forEach(p => {
+        const totalMonths = calculateMonthsBetween(p.d);
+        const pos = totalMonths % 64 || 64;
+        if(!map[pos]) map[pos] = [];
+        map[pos].push({n: p.n, a: totalMonths});
+    });
+
+    for(let r=1;r<=8;r++) {
+        h += `<tr><td class="label">H${r}</td>`;
+        for(let c=1;c<=8;c++) {
+            let num = (m==='UP') ? (r-1)*8+c : (8-r)*8+(8-c+1);
+            let mod = num % 8;
+            let cls = (mod>=1 && mod<=3) ? 'm-phai' : (mod==4 || mod==5) ? 'm-truoc' : 'm-trai';
+            
+            h += `<td class="cell ${cls}"><b>${num}</b>`;
+            if(map[num]) {
+                map[num].forEach(i => h += `<span class="p-name">${i.n} <span class="age">${i.a}T</span></span>`);
+            }
+            h += `</td>`;
+        }
+        h += '</tr>';
+    }
+    b.innerHTML = h;
+}
+window.onload = () => draw('UP');
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bàn Cờ Chiến Lược Theo Tuổi</title>
+<style>
+    :root { --vua: #ffd700; --phai: #dbeafe; --trai: #f3e8ff; --truoc: #fef9c3; }
+    body { font-family: sans-serif; background: #f4f4f9; padding: 20px; }
+    .container { max-width: 1200px; margin: auto; background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    h1 { text-align: center; color: #333; }
+    .controls { text-align: center; margin-bottom: 20px; }
+    button { padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 5px; border: 1px solid #ccc; margin: 5px; }
+    
+    .chess-board { border-collapse: collapse; margin: auto; border: 4px solid #444; }
+    .cell { width: 130px; height: 90px; border: 1px solid #bbb; vertical-align: top; padding: 5px; font-size: 11px; }
+    .header-cell { background: #444; color: #fff; text-align: center; padding: 5px; }
+    
+    /* Màu sắc theo logic Mod 8 */
+    .nhom-phai { background-color: var(--phai); }
+    .nhom-trai { background-color: var(--trai); }
+    .nhom-truoc { background-color: var(--truoc); border: 2px solid orange; }
+    
+    .name-tag { display: block; font-weight: bold; color: #1e40af; margin-top: 4px; background: rgba(255,255,255,0.6); border-radius: 3px; padding: 2px; }
+    .age-badge { color: #ef4444; font-weight: bold; }
+    .mod-info { color: #666; font-style: italic; }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>♟️ CHIẾN THẾ BÀN CỜ THEO TUỔI (HIỆN TẠI)</h1>
+    <div class="controls">
+        <button onclick="render('UP')" style="background: #10b981; color: white;">⬆️ TUYẾN TRÊN (Tuổi 1 tại H1C1)</button>
+        <button onclick="render('DOWN')" style="background: #3b82f6; color: white;">⬇️ TUYẾN DƯỚI (Tuổi 1 tại H8C8)</button>
+    </div>
+    <table class="chess-board" id="board"></table>
+</div>
+
+<script>
+const people = [
+    { name:"NGUYENKHACNANG", dob:"1944-06-04"}, { name:"TOTHIHA", dob:"1948-08-29"},
+    { name:"NGUYENMINHNAM", dob:"1971-03-03"}, { name:"THANTHIKIMANH", dob:"1981-09-23"},
+    { name:"NGUYENTONGANAN", dob:"2014-09-28"}, { name:"NGUYENTOMINHCHAU", dob:"2016-07-25"},
+    { name:"NGUYENTOBICHNGOC", dob:"2020-02-05"}, { name:"NGUYENTHIMINHHANG", dob:"1974-01-07"},
+    { name:"NGOQUYCUONG", dob:"1973-05-23"}, { name:"NGOGIABACH", dob:"2000-10-12"},
+    { name:"NGOGIALINH", dob:"2005-04-05"}, { name:"NGUYENTHIMINHPHUONG", dob:"1978-11-06"},
+    { name:"HOANGANHDUNG", dob:"1978-09-21"}, { name:"HOANGHAIVINH", dob:"2010-06-03"},
+    { name:"HOANGTHIENBACHANH", dob:"2015-11-14"}, { name:"TÔ KIM HUỆ", dob:"1960-08-09"},
+    { name:"NGUYỄN TUẤN ANH", dob:"1983-10-23"}, { name:"NGUYỄN THẾ ANH", dob:"2001-03-24"},
+    { name:"NGÔ THỊ MAI", dob:"1948-12-12"}, { name:"TÔ VIỆT HƯNG", dob:"1996-06-17"},
+    { name:"TÔ THỊ HỒNG", dob:"1964-10-10"}, { name:"VŨ VĂN HIỆP", dob:"1974-04-24"},
+    { name:"NGUYỄN THỊ CHI", dob:"1946-02-08"}, { name:"NGUYỄN TẤN BẮC", dob:"1957-11-30"},
+    { name:"NGUYỄN THỊ TÂM", dob:"1954-08-08"}
+];
+
+const now = new Date();
+
+function calculateMonthsBetween(dob) {
+    const birthDate = new Date(dob);
+    let months = (now.getFullYear() - birthDate.getFullYear()) * 12;
+    months += now.getMonth() - birthDate.getMonth();
+    if (now.getDate() < birthDate.getDate()) {
+        months--;
+    }
+    return months;
+}
+
+function render(mode) {
+    const board = document.getElementById('board');
+    let html = '<tr><th class="header-cell"></th>';
+    for(let c=1; c<=8; c++) html += `<th class="header-cell">C${c}</th>`;
+    html += '</tr>';
+
+    // Chuẩn bị dữ liệu: Tính số tháng tuổi và phân nhóm
+    const map = {};
+    people.forEach(p => {
+        const totalMonths = calculateMonthsBetween(p.dob);
+        const pos = totalMonths % 64 || 64;
+        if(!map[pos]) map[pos] = [];
+        map[pos].push({ 
+            name: p.name, 
+            months: totalMonths, 
+            mod8: totalMonths % 8 
+        });
+    });
+
+    for(let r=1; r<=8; r++) {
+        html += `<tr><td class="header-cell">H${r}</td>`;
+        for(let c=1; c<=8; c++) {
+            let cellNum = (mode === 'UP') ? (r-1)*8 + c : (8-r)*8 + (8-c+1);
+            let mod8 = cellNum % 8;
+            let bgColorClass = "";
+            let roleText = "";
+
+            // Xác định màu sắc và vai trò theo logic yêu cầu
+            if (mod8 >= 1 && mod8 <= 3) { 
+                bgColorClass = "nhom-phai"; 
+                roleText = "👉 Phải Vua"; 
+            }
+            else if (mod8 === 4) { 
+                bgColorClass = "nhom-truoc"; 
+                roleText = "🛡️ Trước Vua"; 
+            }
+            else if (mod8 === 5) { 
+                bgColorClass = "nhom-truoc"; 
+                roleText = "📜 Trước Hậu"; 
+            }
+            else { 
+                bgColorClass = "nhom-trai"; 
+                roleText = "👈 Trái Hậu"; 
+            }
+
+            html += `<td class="cell ${bgColorClass}">
+                        <div style="color:#999">Ô ${cellNum}</div>
+                        <div style="font-size:9px; font-weight:bold">${roleText}</div>`;
+            
+            if(map[cellNum]) {
+                map[cellNum].forEach(person => {
+                    html += `<span class="name-tag">${person.name} <br><span class="age-badge">${person.months}T</span></span>`;
+                });
+            }
+            html += `</td>`;
+        }
+        html += '</tr>';
+    }
+    board.innerHTML = html;
+}
+
+window.onload = () => render('UP');
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

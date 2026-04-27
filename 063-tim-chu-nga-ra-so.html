@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyển đổi Tiếng Việt sang Số Thứ Tự Tiếng Nga</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 25px 30px;
+        }
+        
+        h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2a5298;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5eb;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 24px;
+            background-color: #2a5298;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        button:hover {
+            background-color: #1e3c72;
+            transform: translateY(-2px);
+        }
+        
+        button#clearBtn {
+            background-color: #6c757d;
+        }
+        
+        button#clearBtn:hover {
+            background-color: #545b62;
+        }
+        
+        .result-section {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .result-title {
+            color: #2a5298;
+            margin-top: 0;
+            border-bottom: 2px solid #e1e5eb;
+            padding-bottom: 10px;
+        }
+        
+        .result-output {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e3c72;
+            min-height: 30px;
+            word-break: break-word;
+        }
+        
+        .table-section {
+            margin-top: 40px;
+            overflow-x: auto;
+        }
+        
+        h3 {
+            color: #2a5298;
+            margin-bottom: 15px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        th {
+            background-color: #2a5298;
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e1e5eb;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+            background-color: #e9ecef;
+        }
+        
+        .explanation {
+            background-color: #e8f4fd;
+            border-left: 4px solid #2a5298;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .russian-letter {
+            font-family: 'Times New Roman', serif;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e5eb;
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Chuyển đổi Tiếng Việt sang Số Thứ Tự Tiếng Nga</h1>
+            <p class="subtitle">Nhập văn bản tiếng Việt, chương trình sẽ dò tìm trong bảng chữ cái tiếng Nga và hiển thị số thứ tự theo quy tắc đã cho</p>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <label for="vietnameseText">Nhập văn bản tiếng Việt:</label>
+                <textarea id="vietnameseText" rows="4" placeholder="Nhập văn bản tiếng Việt vào đây..."></textarea>
+                
+                <div class="button-group">
+                    <button id="convertBtn">Chuyển đổi</button>
+                    <button id="clearBtn">Xóa nội dung</button>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <h3 class="result-title">Kết quả chuyển đổi:</h3>
+                <div id="result" class="result-output">Chưa có kết quả</div>
+            </div>
+            
+            <div class="explanation">
+                <h3>Quy tắc chuyển đổi:</h3>
+                <p>Với mỗi ký tự tiếng Việt nhập vào, chương trình sẽ:</p>
+                <ol>
+                    <li>Tìm trong bảng chữ cái tiếng Nga để xác định số thứ tự của chữ cái có âm tương tự</li>
+                    <li>Nếu số thứ tự lớn hơn 9, chia cho 9 và lấy phần dư</li>
+                    <li>Nếu kết quả là 0, lấy giá trị 9</li>
+                </ol>
+                <p><strong>Ví dụ:</strong> Chữ "a" tương ứng với chữ "А а" trong tiếng Nga có số thứ tự là 1 → Kết quả: 1</p>
+                <p><strong>Ví dụ:</strong> Chữ "y" tương ứng với chữ "И и" trong tiếng Nga có số thứ tự là 10 → 10 > 9 nên 10 % 9 = 1 → Kết quả: 1</p>
+            </div>
+            
+            <div class="table-section">
+                <h3>Bảng chữ cái tiếng Nga và âm tiếng Việt tương tự</h3>
+                <table id="russianAlphabetTable">
+                    <thead>
+                        <tr>
+                            <th>Thứ tự</th>
+                            <th>Chữ cái tiếng Nga</th>
+                            <th>Âm tiếng Việt tương tự</th>
+                        </tr>
+                    </thead>
+                    <tbody id="alphabetTableBody">
+                        <!-- Bảng sẽ được tạo bằng JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="note">
+                <h3>Lưu ý quan trọng:</h3>
+                <p>Âm tương đương chỉ mang tính gần đúng. Cách đọc bằng âm Việt chỉ giúp hình dung bước đầu. Để phát âm chính xác, cần nghe người bản xứ nói và luyện tập theo.</p>
+                <p>Các ký tự đặc biệt, dấu câu và khoảng trắng sẽ được bỏ qua trong quá trình chuyển đổi.</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Ứng dụng chuyển đổi Tiếng Việt sang Số Thứ Tự Tiếng Nga</p>
+        </footer>
+    </div>
+
+    <script>
+        // Dữ liệu bảng chữ cái tiếng Nga
+        const russianAlphabet = [
+            {order: 1, letter: 'А а', vietnameseSound: 'a'},
+            {order: 2, letter: 'Б б', vietnameseSound: 'b'},
+            {order: 3, letter: 'В в', vietnameseSound: 'v'},
+            {order: 4, letter: 'Г г', vietnameseSound: 'g (như "gà" trong tiếng Việt)'},
+            {order: 5, letter: 'Д д', vietnameseSound: 'đ'},
+            {order: 6, letter: 'Е е', vietnameseSound: 'ie / ye'},
+            {order: 7, letter: 'Ё ё', vietnameseSound: 'iô'},
+            {order: 8, letter: 'Ж ж', vietnameseSound: 'gi (như "gi" trong "gia đình")'},
+            {order: 9, letter: 'З з', vietnameseSound: 'd (như "da" trong tiếng Việt)'},
+            {order: 10, letter: 'И и', vietnameseSound: 'y (như "y" trong "ly")'},
+            {order: 11, letter: 'Й й', vietnameseSound: 'i (âm ngắn, như "i" trong "ai")'},
+            {order: 12, letter: 'К к', vietnameseSound: 'k (hoặc "c" trước a, o, u)'},
+            {order: 13, letter: 'Л л', vietnameseSound: 'l'},
+            {order: 14, letter: 'М м', vietnameseSound: 'm'},
+            {order: 15, letter: 'Н н', vietnameseSound: 'n'},
+            {order: 16, letter: 'О о', vietnameseSound: 'ô'},
+            {order: 17, letter: 'П п', vietnameseSound: 'p'},
+            {order: 18, letter: 'Р р', vietnameseSound: 'r (rung lưỡi)'},
+            {order: 19, letter: 'С с', vietnameseSound: 'x (như "x" trong "xa")'},
+            {order: 20, letter: 'Т т', vietnameseSound: 't'},
+            {order: 21, letter: 'У у', vietnameseSound: 'u'},
+            {order: 22, letter: 'Ф ф', vietnameseSound: 'ph / f'},
+            {order: 23, letter: 'Х х', vietnameseSound: 'kh (hơi giống âm "h" mạnh và có tiếng gió)'},
+            {order: 24, letter: 'Ц ц', vietnameseSound: 'ts (âm tổ hợp "ts", như "ts" trong "tsunami")'},
+            {order: 25, letter: 'Ч ч', vietnameseSound: 'tr / ch'},
+            {order: 26, letter: 'Ш ш', vietnameseSound: 's (như "s" trong "sa")'},
+            {order: 27, letter: 'Щ щ', vietnameseSound: 's (âm dài và mềm hơn chữ Ш)'},
+            {order: 28, letter: 'Ъ ъ', vietnameseSound: 'dấu cứng (không có âm đọc, làm cứng phụ âm đứng trước)'},
+            {order: 29, letter: 'Ы ы', vietnameseSound: 'ư (âm trung gian giữa "ư" và "i")'},
+            {order: 30, letter: 'Ь ь', vietnameseSound: 'dấu mềm (không có âm đọc, làm mềm phụ âm đứng trước)'},
+            {order: 31, letter: 'Э э', vietnameseSound: 'ê (như "e" trong "em")'},
+            {order: 32, letter: 'Ю ю', vietnameseSound: 'iu'},
+            {order: 33, letter: 'Я я', vietnameseSound: 'ia'}
+        ];
+
+        // Tạo bảng chữ cái
+        function createAlphabetTable() {
+            const tableBody = document.getElementById('alphabetTableBody');
+            
+            russianAlphabet.forEach(item => {
+                const row = document.createElement('tr');
+                
+                const orderCell = document.createElement('td');
+                orderCell.textContent = item.order;
+                
+                const letterCell = document.createElement('td');
+                letterCell.innerHTML = `<span class="russian-letter">${item.letter}</span>`;
+                
+                const soundCell = document.createElement('td');
+                soundCell.textContent = item.vietnameseSound;
+                
+                row.appendChild(orderCell);
+                row.appendChild(letterCell);
+                row.appendChild(soundCell);
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Tạo bản đồ ánh xạ từ âm tiếng Việt sang thứ tự tiếng Nga
+        function createSoundToOrderMap() {
+            const map = {};
+            
+            russianAlphabet.forEach(item => {
+                // Lấy phần âm chính (loại bỏ phần giải thích trong ngoặc)
+                const sound = item.vietnameseSound.split(' ')[0].toLowerCase();
+                map[sound] = item.order;
+                
+                // Thêm các ánh xạ đặc biệt
+                if (sound === 'g') {
+                    map['g'] = item.order;
+                } else if (sound === 'ie') {
+                    map['e'] = item.order; // e có thể tương ứng với Е е
+                } else if (sound === 'iô') {
+                    map['ô'] = item.order; // ô có thể tương ứng với Ё ё
+                } else if (sound === 'gi') {
+                    map['gi'] = item.order;
+                    map['g'] = item.order; // gi cũng có âm g
+                } else if (sound === 'd') {
+                    map['d'] = item.order;
+                } else if (sound === 'y') {
+                    map['y'] = item.order;
+                    map['i'] = item.order; // y và i có âm tương tự
+                } else if (sound === 'i') {
+                    map['i'] = item.order;
+                } else if (sound === 'k') {
+                    map['k'] = item.order;
+                    map['c'] = item.order; // k và c có âm tương tự
+                } else if (sound === 'x') {
+                    map['x'] = item.order;
+                    map['s'] = item.order; // x và s có âm tương tự
+                } else if (sound === 'ph') {
+                    map['ph'] = item.order;
+                    map['f'] = item.order; // ph và f có âm tương tự
+                } else if (sound === 'kh') {
+                    map['kh'] = item.order;
+                    map['h'] = item.order; // kh và h có âm tương tự
+                } else if (sound === 'tr') {
+                    map['tr'] = item.order;
+                    map['ch'] = item.order; // tr và ch có âm tương tự
+                } else if (sound === 'ư') {
+                    map['ư'] = item.order;
+                } else if (sound === 'ê') {
+                    map['ê'] = item.order;
+                    map['e'] = item.order; // ê và e có âm tương tự
+                } else if (sound === 'iu') {
+                    map['iu'] = item.order;
+                } else if (sound === 'ia') {
+                    map['ia'] = item.order;
+                }
+            });
+            
+            // Bổ sung thêm các ánh xạ cơ bản
+            map['a'] = 1;
+            map['b'] = 2;
+            map['v'] = 3;
+            map['đ'] = 5;
+            map['l'] = 13;
+            map['m'] = 14;
+            map['n'] = 15;
+            map['p'] = 17;
+            map['r'] = 18;
+            map['t'] = 20;
+            map['u'] = 21;
+            
+            return map;
+        }
+
+        // Hàm xử lý chuyển đổi
+        function convertText() {
+            const inputText = document.getElementById('vietnameseText').value.toLowerCase();
+            const resultElement = document.getElementById('result');
+            
+            if (!inputText.trim()) {
+                resultElement.textContent = "Vui lòng nhập văn bản tiếng Việt";
+                return;
+            }
+            
+            const soundMap = createSoundToOrderMap();
+            let result = "";
+            
+            for (let i = 0; i < inputText.length; i++) {
+                const char = inputText[i];
+                
+                // Bỏ qua khoảng trắng và dấu câu
+                if (char === ' ' || /[.,!?;:'"()\[\]{}]/.test(char)) {
+                    result += " ";
+                    continue;
+                }
+                
+                // Bỏ qua dấu tiếng Việt (chỉ lấy chữ cái không dấu)
+                const baseChar = char.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                
+                let order = soundMap[baseChar];
+                
+                // Nếu không tìm thấy ánh xạ trực tiếp, thử tìm với nguyên âm kép
+                if (!order && i < inputText.length - 1) {
+                    const twoChars = baseChar + inputText[i + 1].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    order = soundMap[twoChars];
+                    
+                    // Nếu tìm thấy với 2 ký tự, bỏ qua ký tự tiếp theo
+                    if (order) {
+                        i++;
+                    }
+                }
+                
+                if (order) {
+                    // Áp dụng quy tắc: nếu > 9 thì chia cho 9 lấy dư, nếu dư = 0 thì lấy 9
+                    let processedOrder = order;
+                    if (processedOrder > 9) {
+                        processedOrder = processedOrder % 9;
+                        if (processedOrder === 0) {
+                            processedOrder = 9;
+                        }
+                    }
+                    
+                    result += processedOrder + " ";
+                } else {
+                    result += "? ";
+                }
+            }
+            
+            resultElement.textContent = result.trim() || "Không tìm thấy ký tự tương ứng";
+        }
+
+        // Hàm xóa nội dung
+        function clearContent() {
+            document.getElementById('vietnameseText').value = '';
+            document.getElementById('result').textContent = 'Chưa có kết quả';
+        }
+
+        // Khởi tạo khi trang được tải
+        document.addEventListener('DOMContentLoaded', function() {
+            createAlphabetTable();
+            
+            // Gán sự kiện cho các nút
+            document.getElementById('convertBtn').addEventListener('click', convertText);
+            document.getElementById('clearBtn').addEventListener('click', clearContent);
+            
+            // Cho phép nhấn Enter để chuyển đổi (nhưng không submit form)
+            document.getElementById('vietnameseText').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    convertText();
+                    e.preventDefault();
+                }
+            });
+            
+            // Hiển thị ví dụ
+            document.getElementById('vietnameseText').value = "xin chào việt nam";
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

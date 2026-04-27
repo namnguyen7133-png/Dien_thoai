@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tính nhẩm nhanh – Giải thích từng bước</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    padding: 20px;
+}
+.container {
+    max-width: 800px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+h2 {
+    text-align: center;
+    color: #2c3e50;
+}
+input, select, button {
+    padding: 8px;
+    margin: 5px 0;
+    width: 100%;
+}
+button {
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover {
+    background: #2980b9;
+}
+.result {
+    margin-top: 15px;
+    background: #eef9ff;
+    padding: 15px;
+    border-radius: 5px;
+    line-height: 1.6;
+}
+.step {
+    margin-left: 10px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+<h2>📘 TÍNH NHẨM NHANH – THEO MẸO VIDEO</h2>
+
+<label>Số thứ nhất</label>
+<input type="number" id="a">
+
+<label>Số thứ hai</label>
+<input type="number" id="b">
+
+<label>Chọn phương pháp</label>
+<select id="method">
+    <option value="sub">➖ Trừ – Mượn để triệt tiêu</option>
+    <option value="add">➕ Cộng – Làm tròn chục</option>
+    <option value="near100">✖ Nhân gần 100</option>
+    <option value="over100">✖ Nhân lớn hơn 100</option>
+    <option value="sameTen">✖ Nhân cùng hàng chục</option>
+    <option value="diffTen">✖ Nhân khác hàng chục</option>
+</select>
+
+<button onclick="calculate()">Tính & Giải thích</button>
+
+<div id="output" class="result"></div>
+</div>
+
+<script>
+function calculate() {
+    let a = parseInt(document.getElementById("a").value);
+    let b = parseInt(document.getElementById("b").value);
+    let method = document.getElementById("method").value;
+    let out = "";
+
+    if (isNaN(a) || isNaN(b)) {
+        document.getElementById("output").innerHTML = "⚠ Vui lòng nhập đủ 2 số";
+        return;
+    }
+
+    if (method === "sub") {
+        let d = (10 - (a - b) % 10) % 10;
+        out += `<b>${a} - ${b}</b><br>`;
+        out += `Mượn ${d} để triệt tiêu hàng đơn vị<br>`;
+        out += `${a + d} - ${b} = ${(a + d) - b}<br>`;
+        out += `Trả lại ${d}: ${(a + d) - b} - ${d} = <b>${a - b}</b>`;
+    }
+
+    if (method === "add") {
+        let d = 10 - (a % 10);
+        out += `<b>${a} + ${b}</b><br>`;
+        out += `Làm tròn: ${a} + ${d} = ${a + d}<br>`;
+        out += `${a + d} + ${b} = ${a + b + d}<br>`;
+        out += `Trả ${d}: ${a + b + d} - ${d} = <b>${a + b}</b>`;
+    }
+
+    if (method === "near100") {
+        let x = 100 - a;
+        let y = 100 - b;
+        out += `<b>${a} × ${b}</b><br>`;
+        out += `Thiếu: ${x} và ${y}<br>`;
+        out += `Hai số cuối: ${x} × ${y} = ${x * y}<br>`;
+        out += `Hai số đầu: ${a} - ${y} = ${a - y}<br>`;
+        out += `Kết quả: <b>${a - y}${String(x * y).padStart(2,"0")}</b>`;
+    }
+
+    if (method === "over100") {
+        let x = a - 100;
+        let y = b - 100;
+        out += `<b>${a} × ${b}</b><br>`;
+        out += `Thừa: ${x} và ${y}<br>`;
+        out += `Hai số cuối: ${x} × ${y} = ${x * y}<br>`;
+        out += `Hai số đầu: ${a} + ${y} = ${a + y}<br>`;
+        out += `Kết quả: <b>${a + y}${String(x * y).padStart(2,"0")}</b>`;
+    }
+
+    if (method === "sameTen") {
+        let ten = Math.floor(a / 10);
+        let u1 = a % 10;
+        let u2 = b % 10;
+        out += `<b>${a} × ${b}</b><br>`;
+        out += `( ${a} + ${u2} ) × ${ten * 10} = ${(a + u2) * (ten * 10)}<br>`;
+        out += `${u1} × ${u2} = ${u1 * u2}<br>`;
+        out += `Cộng lại: <b>${(a + u2) * (ten * 10) + (u1 * u2)}</b>`;
+    }
+
+    if (method === "diffTen") {
+        let a1 = Math.floor(a / 10), a2 = a % 10;
+        let b1 = Math.floor(b / 10), b2 = b % 10;
+
+        let unit = a2 * b2;
+        let ten = a1 * b2 + a2 * b1;
+        let hundred = a1 * b1;
+
+        out += `<b>${a} × ${b}</b><br>`;
+        out += `Hàng đơn vị: ${a2} × ${b2} = ${unit}<br>`;
+        out += `Hàng chục: (${a1}×${b2}) + (${a2}×${b1}) = ${ten}<br>`;
+        out += `Hàng trăm: ${a1} × ${b1} = ${hundred}<br>`;
+        out += `Kết quả: <b>${a * b}</b>`;
+    }
+
+    document.getElementById("output").innerHTML = out;
+}
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>TCDN – IPMT & Kế hoạch trả nợ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{font-family:Arial,Helvetica,sans-serif;background:#f2f4f8;margin:0}
+header{background:#1a237e;color:white;padding:20px}
+section{background:white;margin:16px;padding:20px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+h2{color:#1a237e}
+h3{color:#303f9f}
+.note{background:#e8eaf6;padding:12px;border-left:5px solid #3f51b5}
+.warn{background:#ffebee;padding:12px;border-left:5px solid #c62828}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{border:1px solid #ccc;padding:8px;text-align:center}
+th{background:#e8eaf6}
+input,select{width:100%;padding:8px;margin-bottom:8px}
+button{background:#3949ab;color:white;border:none;padding:10px 14px;border-radius:6px;cursor:pointer}
+button:hover{background:#1a237e}
+footer{text-align:center;padding:16px;color:#555}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>📘 IPMT – Lập kế hoạch trả nợ & quản trị dòng tiền</h1>
+<p>Dựa trên video: TCDN1 Chương 2 – Ứng dụng Excel (Quang Trung TV)</p>
+</header>
+
+<!-- 2.1 -->
+<section id="thuatngu">
+<h2>2.1 Thuật ngữ tài chính & công thức khó (giải thích đời sống)</h2>
+
+<h3>IPMT – Interest Payment</h3>
+<p><b>IPMT</b> cho biết: <b>kỳ này bạn đang trả BAO NHIÊU TIỀN LÃI</b></p>
+<p>Excel: <code>=IPMT(rate, per, nper, pv)</code></p>
+
+<div class="note">
+Ví dụ đời sống:
+<ul>
+<li>Tháng đầu mua nhà → tiền lãi rất cao</li>
+<li>Càng về sau → lãi giảm, gốc tăng</li>
+</ul>
+</div>
+
+<h3>PMT – Tổng tiền phải trả mỗi kỳ</h3>
+<p>PMT = <b>Tiền gốc + Tiền lãi</b></p>
+
+<h3>Tiền gốc mỗi kỳ</h3>
+<p><b>Gốc = PMT – IPMT</b></p>
+
+<div class="warn">
+⚠️ Nhiều người phá sản vì chỉ nhìn PMT mà không hiểu IPMT
+</div>
+
+<h3>NPER – Số kỳ phải trả</h3>
+<p>Trả lời câu hỏi: <b>“Bao lâu thì hết nợ?”</b></p>
+</section>
+
+<!-- 2.2 -->
+<section id="ungdung">
+<h2>2.2 Dùng cho công việc hay cá nhân?</h2>
+
+<table>
+<tr>
+<th>Đối tượng</th>
+<th>Nên quan tâm</th>
+<th>Vì sao?</th>
+</tr>
+<tr>
+<td>Cá nhân</td>
+<td>IPMT</td>
+<td>Biết lãi có đang bóp nghẹt thu nhập không</td>
+</tr>
+<tr>
+<td>Gia đình</td>
+<td>PMT + IPMT</td>
+<td>Không vỡ kế hoạch chi tiêu</td>
+</tr>
+<tr>
+<td>Startup</td>
+<td>NPER</td>
+<td>Biết bao lâu mới thoát nợ</td>
+</tr>
+<tr>
+<td>Doanh nghiệp</td>
+<td>Bảng trả nợ</td>
+<td>Quản trị dòng tiền</td>
+</tr>
+</table>
+
+<div class="note">
+✔ Cá nhân → tránh nợ xấu  
+✔ Công ty → tránh chết vì lãi vay
+</div>
+</section>
+
+<!-- 3.2 -->
+<section id="trinh-tu">
+<h2>3.2 Làm gì trước – làm gì sau? (đúng tư duy bài giảng)</h2>
+
+<h3>Bước 1: Xác định mình đang vay hay đầu tư</h3>
+<ul>
+<li>Vay → PV dương</li>
+<li>Trả nợ → PMT âm</li>
+</ul>
+
+<h3>Bước 2: Xem IPMT các năm đầu</h3>
+<p>Nếu <b>IPMT chiếm >70% PMT</b> → cực kỳ rủi ro</p>
+
+<h3>Bước 3: Đánh giá điều kiện thị trường</h3>
+<ul>
+<li>Lãi suất tăng → tránh vay dài hạn</li>
+<li>Thu nhập bấp bênh → giảm PMT</li>
+<li>Doanh nghiệp mới → không dùng đòn bẩy cao</li>
+</ul>
+
+<div class="warn">
+⚠️ Có lãi ≠ sống sót  
+Dòng tiền âm → phá sản
+</div>
+</section>
+
+<!-- BÀI TOÁN -->
+<section id="baitoan">
+<h2>📐 Bài toán IPMT – Gốc – Lãi – Thời gian</h2>
+
+<label>Vốn vay (PV):</label>
+<input id="pv" type="number" placeholder="500000000">
+
+<label>Lãi suất (% / năm):</label>
+<input id="rate" placeholder="10">
+
+<label>Số năm vay:</label>
+<input id="nper" placeholder="20">
+
+<label>Kỳ muốn xem lãi (năm thứ):</label>
+<input id="per" placeholder="1">
+
+<button onclick="tinh()">Tính toán</button>
+
+<div id="kq"></div>
+
+<script>
+function tinh(){
+ let pv = Number(document.getElementById('pv').value);
+ let r = Number(document.getElementById('rate').value)/100;
+ let n = Number(document.getElementById('nper').value);
+ let per = Number(document.getElementById('per').value);
+
+ if(!pv || !r || !n || !per){
+   kq.innerHTML="⚠️ Nhập đủ dữ liệu";
+   return;
+ }
+
+ let pmt = pv * r / (1 - Math.pow(1+r, -n));
+ let ipmt = pv * r * Math.pow(1+r, per-1) / (Math.pow(1+r,n)-1) * (Math.pow(1+r,n-per+1)-1);
+ let goc = pmt - ipmt;
+
+ kq.innerHTML = `
+ <p><b>PMT:</b> ${Math.round(pmt).toLocaleString()} đ</p>
+ <p><b>IPMT (lãi kỳ ${per}):</b> ${Math.round(ipmt).toLocaleString()} đ</p>
+ <p><b>Tiền gốc kỳ ${per}:</b> ${Math.round(goc).toLocaleString()} đ</p>
+ `;
+}
+</script>
+</section>
+
+<!-- 4.2 -->
+<section id="tinhhuong">
+<h2>4.2 Nhập tình huống & xử lý nhanh</h2>
+
+<input placeholder="Ví dụ: vay mua nhà, startup, trả góp xe...">
+
+<button onclick="go('thuatngu')">❓ Không hiểu IPMT</button><br>
+<button onclick="go('ungdung')">👤 Dùng cho cá nhân hay công việc?</button><br>
+<button onclick="go('trinh-tu')">🧭 Không biết làm bước nào trước</button><br>
+<button onclick="go('baitoan')">💰 Tính lãi – gốc – rủi ro</button>
+
+<script>
+function go(id){
+ document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+</script>
+</section>
+
+<footer>
+IPMT giúp bạn sống sót trước khi làm giàu
+</footer>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Tra Cứu Thần Số</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #2980b9;
+            border-left: 5px solid #3498db;
+            padding-left: 15px;
+            margin-top: 30px;
+        }
+        
+        .input-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            display: block;
+            margin: 30px auto;
+            width: 200px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .result-section {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #3498db;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 15px;
+            text-align: center;
+        }
+        
+        td {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .highlight {
+            background-color: #e8f4fc;
+            font-weight: bold;
+        }
+        
+        .dot {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            line-height: 20px;
+            text-align: center;
+        }
+        
+        .result-box {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        .result-label {
+            font-size: 18px;
+            font-weight: bold;
+            color: #3498db;
+            margin-top: 15px;
+        }
+        
+        .result-value {
+            font-size: 20px;
+            color: #e74c3c;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        .section-title {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 25px 0 15px 0;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .table-inputs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .table-input-group {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+        
+        @media (max-width: 768px) {
+            .input-section, .table-inputs {
+                grid-template-columns: 1fr;
+            }
+            
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HỆ THỐNG TRA CỨU THẦN SỐ</h1>
+        
+        <div class="input-section">
+            <div>
+                <div class="input-group">
+                    <label for="currentDate">Ô 1: Ngày tháng năm hiện tại</label>
+                    <input type="date" id="currentDate">
+                </div>
+                
+                <div class="input-group">
+                    <label for="birthDate">Ô 2: Ngày tháng năm sinh</label>
+                    <input type="date" id="birthDate">
+                </div>
+                
+                <div class="input-group">
+                    <label for="personSelect">Ô 3: Danh sách cuộn (chọn để nhập ngày sinh vào ô 2)</label>
+                    <select id="personSelect">
+                        <option value="">Chọn người từ danh sách</option>
+                        <option value="04/06/1944">1 - NGUYENKHACNANG - 04/06/1944</option>
+                        <option value="29/08/1948">2 - TOTHIHA - 29/08/1948</option>
+                        <option value="03/03/1971">3 - NGUYENMINHNAM - 03/03/1971</option>
+                        <option value="23/09/1981">4 - THANTHIKIMANH - 23/09/1981</option>
+                        <option value="28/09/2014">5 - NGƯYENTONGANAN - 28/09/2014</option>
+                        <option value="25/07/2016">6 - NGƯYENTOMINHCHAU - 25/07/2016</option>
+                        <option value="05/02/2020">7 - NGƯYENTOBICHNGOC - 05/02/2020</option>
+                        <option value="07/01/1974">8 - NGƯYENTHIMINHHANG - 07/01/1974</option>
+                        <option value="23/05/1973">9 - NGOQUYCUONG - 23/05/1973</option>
+                        <option value="12/10/2000">10 - NGOGIABACH - 12/10/2000</option>
+                        <option value="05/04/2005">11 - NGOGIALINH - 05/04/2005</option>
+                        <option value="06/11/1978">12 - NGƯYENTHIMINHPHUONG - 06/11/1978</option>
+                        <option value="21/09/1978">13 - HOANGANHDUNG - 21/09/1978</option>
+                        <option value="03/06/2010">14 - HOANGHAIVINH - 03/06/2010</option>
+                        <option value="14/11/2015">15 - HOANGTHIENBACHANH - 14/11/2015</option>
+                        <option value="09/08/1960">16 - TÔ KIM HUỆ - 9/8/1960</option>
+                        <option value="23/10/1983">17 - NGƯYỄN TUẤN ANH - 23/10/1983</option>
+                        <option value="24/03/2001">18 - NGƯYỄN THẾ ANH - 24/3/2001</option>
+                        <option value="12/12/1948">19 - NGÔ THỊ MAI - 12/12/1948</option>
+                        <option value="17/06/1996">20 - TÔ VIỆT HƯNG - 17/6/1996</option>
+                        <option value="10/10/1964">21 - TÔ THỊ HỒNG - 10/10/1964</option>
+                        <option value="24/04/1974">22 - VŨ VĂN HIỆP - 24/4/1974</option>
+                        <option value="08/02/1946">23 - NGƯYỄN THỊ CHI - 8/2/1946</option>
+                        <option value="30/11/1957">24 - NGƯYỄN TẤN BẮC - 30/11/1957</option>
+                        <option value="08/08/1954">25 - NGƯYỄN THỊ TÂM - 8/8/1954</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <div class="result-label">Kết quả tính toán:</div>
+                <div id="lunarMonthResult" class="result-value">Chưa tính</div>
+                
+                <div class="result-label">Tháng sinh âm lịch:</div>
+                <div id="table1Result" class="result-value">Chưa tính</div>
+                
+                <div class="result-label">Tra bảng 2 được số:</div>
+                <div id="table2Result" class="result-value">Chưa tính</div>
+                
+                <div class="result-box">
+                    <div>Tiền vận: <span id="tienVanResult">-</span></div>
+                    <div>Trung vận: <span id="trungVanResult">-</span></div>
+                    <div>Hậu vận: <span id="hauVanResult">-</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Phần nhập liệu cho bảng 3 -->
+        <div class="section-title">NHẬP LIỆU CHO BẢNG 3</div>
+        <div class="table-inputs">
+            <div class="table-input-group">
+                <label for="monthCol3">Tháng sinh (Cột 3):</label>
+                <input type="number" id="monthCol3" min="1" max="12" placeholder="Nhập số từ 1-12" value="4">
+                <small>Tháng âm lịch = 2, Chi = Mão, Tra bảng 2 = 4</small>
+            </div>
+            
+            <div class="table-input-group">
+                <label for="dayCol3">Ngày sinh (Cột 3):</label>
+                <input type="number" id="dayCol3" min="1" max="12" placeholder="Nhập số từ 1-12">
+                <small>Giá trị cho cột 3 dòng Ngày sinh</small>
+            </div>
+            
+            <div class="table-input-group">
+                <label for="weekCol3">Tuần sinh (Cột 3):</label>
+                <input type="number" id="weekCol3" min="1" max="12" placeholder="Nhập số từ 1-12">
+                <small>Giá trị cho cột 3 dòng Tuần sinh</small>
+            </div>
+        </div>
+        
+        <button id="calculateBtn">TÍNH TOÁN KẾT QUẢ</button>
+        
+        <div class="section-title">BẢNG 1: CHI</div>
+        <div class="table-container">
+            <table id="table1">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Chi</th>
+                        <th>STT</th>
+                        <th>Chi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>11</td><td>TÝ</td><td>5</td><td>NGỌ</td></tr>
+                    <tr><td>12</td><td>SỬU</td><td>6</td><td>MÙI</td></tr>
+                    <tr><td>1</td><td>DẦN</td><td>7</td><td>THÂN</td></tr>
+                    <tr><td>2</td><td>MÃO</td><td>8</td><td>DẬU</td></tr>
+                    <tr><td>3</td><td>THÌN</td><td>9</td><td>TUẤT</td></tr>
+                    <tr><td>4</td><td>TỴ</td><td>10</td><td>HỢI</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section-title">BẢNG 2: CHI - SỐ</div>
+        <div class="table-container">
+            <table id="table2">
+                <thead>
+                    <tr>
+                        <th>Chi</th>
+                        <th>Số</th>
+                        <th>Chi</th>
+                        <th>Số</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>TÝ</td><td>1</td><td>NGỌ</td><td>1</td></tr>
+                    <tr><td>SỬU</td><td>2</td><td>MÙI</td><td>2</td></tr>
+                    <tr><td>DẦN</td><td>3</td><td>THÂN</td><td>3</td></tr>
+                    <tr><td>MÃO</td><td>4</td><td>DẬU</td><td>4</td></tr>
+                    <tr><td>THÌN</td><td>5</td><td>TUẤT</td><td>5</td></tr>
+                    <tr><td>TỴ</td><td>6</td><td>HỢI</td><td>6</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section-title">BẢNG 3: TÍNH TOÁN</div>
+        <div class="table-container">
+            <table id="table3">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Loại</th>
+                        <th>Cột 3</th>
+                        <th>Cột 4</th>
+                        <th>Cột 5</th>
+                        <th>Cột 6</th>
+                        <th>Cột 7</th>
+                        <th>Cột 8</th>
+                        <th>Cột 9</th>
+                        <th>Cột 10</th>
+                        <th>Cột 11</th>
+                        <th>Cột 12</th>
+                        <th>Cột 13</th>
+                        <th>Cột 14</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dữ liệu bảng 3 sẽ được điền bằng JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section-title">BẢNG 4: VẬN MỆNH</div>
+        <div class="table-container">
+            <table id="table4">
+                <thead>
+                    <tr>
+                        <th>Tiền vận</th>
+                        <th>Trung vận</th>
+                        <th>Hậu vận</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="tienVanCell">-</td>
+                        <td id="trungVanCell">-</td>
+                        <td id="hauVanCell">-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section-title">BẢNG 5: TRA CỨU VẬN MỆNH</div>
+        <div class="table-container">
+            <table id="table5">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Số dư</th>
+                        <th>Ý nghĩa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>12</td><td>1</td><td>Đại phát tài</td></tr>
+                    <tr><td>11</td><td>2</td><td>Quyền lực</td></tr>
+                    <tr><td>10</td><td>3</td><td>Giàu có</td></tr>
+                    <tr><td>9</td><td>4</td><td>Của cải</td></tr>
+                    <tr><td>8</td><td>5</td><td>Hạnh phúc</td></tr>
+                    <tr><td>7</td><td>6</td><td>Tai nạn</td></tr>
+                    <tr><td>6</td><td>7</td><td>Hợp tác, LD</td></tr>
+                    <tr><td>5</td><td>8</td><td>Tiểu thương</td></tr>
+                    <tr><td>4</td><td>9</td><td>Học vấn</td></tr>
+                    <tr><td>3</td><td>10</td><td>Xuất ngoại</td></tr>
+                    <tr><td>2</td><td>11</td><td>Khổ tâm</td></tr>
+                    <tr><td>1</td><td>12</td><td>Bệnh tật</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section-title">BẢNG 6: ĐÁNH DẤU ĐIỂM</div>
+        <div class="table-container">
+            <table id="table6">
+                <thead>
+                    <!-- Tiêu đề bảng 6 sẽ được tạo bằng JavaScript -->
+                </thead>
+                <tbody>
+                    <!-- Dữ liệu bảng 6 sẽ được điền bằng JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="footer">
+            <p>Hệ thống tra cứu thần số - Tính toán dựa trên ngày tháng năm sinh</p>
+            <p>© 2023 - Ứng dụng HTML/JavaScript</p>
+        </div>
+    </div>
+
+    <script>
+        // Khai báo biến toàn cục
+        let lunarMonth = 2; // Tháng âm lịch = 2
+        let table1ResultValue = "MÃO"; // Chi = Mão
+        let table2ResultValue = 4; // Tra bảng 2 = 4
+        
+        // Bảng dữ liệu
+        const table1Data = {
+            11: "TÝ", 5: "NGỌ",
+            12: "SỬU", 6: "MÙI",
+            1: "DẦN", 7: "THÂN",
+            2: "MÃO", 8: "DẬU",
+            3: "THÌN", 9: "TUẤT",
+            4: "TỴ", 10: "HỢI"
+        };
+        
+        const table2Data = {
+            "TÝ": 1, "NGỌ": 1,
+            "SỬU": 2, "MÙI": 2,
+            "DẦN": 3, "THÂN": 3,
+            "MÃO": 4, "DẬU": 4,
+            "THÌN": 5, "TUẤT": 5,
+            "TỴ": 6, "HỢI": 6
+        };
+        
+        const table5Data = {
+            1: "Đại phát tài",
+            2: "Quyền lực",
+            3: "Giàu có",
+            4: "Của cải",
+            5: "Hạnh phúc",
+            6: "Tai nạn",
+            7: "Hợp tác, LD",
+            8: "Tiểu thương",
+            9: "Học vấn",
+            10: "Xuất ngoại",
+            11: "Khổ tâm",
+            12: "Bệnh tật"
+        };
+        
+        // Hàm khởi tạo
+        function init() {
+            // Đặt ngày hiện tại mặc định
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0];
+            document.getElementById('currentDate').value = todayStr;
+            
+            // Hiển thị thông tin cố định
+            document.getElementById('lunarMonthResult').textContent = lunarMonth;
+            document.getElementById('table1Result').textContent = table1ResultValue;
+            document.getElementById('table2Result').textContent = table2ResultValue;
+            
+            // Đăng ký sự kiện
+            document.getElementById('personSelect').addEventListener('change', function() {
+                if (this.value) {
+                    // Chuyển đổi định dạng ngày từ dd/mm/yyyy sang yyyy-mm-dd
+                    const parts = this.value.split('/');
+                    const formattedDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+                    document.getElementById('birthDate').value = formattedDate;
+                }
+            });
+            
+            document.getElementById('calculateBtn').addEventListener('click', calculateAll);
+            
+            // Khởi tạo bảng 3 và bảng 6
+            initTable3();
+            initTable6();
+        }
+        
+        // Hàm tính toán số tiếp theo với mod 12 (nếu = 0 thì lấy 12)
+        function calculateNextValue(currentValue) {
+            const nextValue = (currentValue % 12) + 1;
+            return nextValue === 12 ? 12 : nextValue;
+        }
+        
+        // Hàm tính toán bảng 3 theo yêu cầu mới
+        function calculateTable3() {
+            const table3 = document.getElementById('table3');
+            const tbody = table3.querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            // Lấy giá trị từ các ô nhập
+            const monthCol3 = parseInt(document.getElementById('monthCol3').value) || 4;
+            const dayCol3 = parseInt(document.getElementById('dayCol3').value) || 1;
+            const weekCol3 = parseInt(document.getElementById('weekCol3').value) || 1;
+            
+            // Dòng 1: Tháng sinh
+            const row1 = document.createElement('tr');
+            row1.innerHTML = `<td>1</td><td>Tháng sinh</td>`;
+            
+            // Cột 3: giá trị nhập vào
+            row1.innerHTML += `<td class="highlight">${monthCol3}</td>`;
+            
+            // Cột 4-8: tính theo công thức (cột trước + 1) mod 12 (nếu = 0 lấy 12)
+            let currentValue = monthCol3;
+            for (let col = 4; col <= 14; col++) {
+                if (col <= 8) {
+                    currentValue = calculateNextValue(currentValue);
+                    row1.innerHTML += `<td>${currentValue}</td>`;
+                } else {
+                    row1.innerHTML += `<td></td>`;
+                }
+            }
+            tbody.appendChild(row1);
+            
+            // Dòng 2: Ngày sinh
+            const row2 = document.createElement('tr');
+            row2.innerHTML = `<td>2</td><td>Ngày sinh</td>`;
+            
+            // Cột 3: giá trị nhập vào
+            row2.innerHTML += `<td class="highlight">${dayCol3}</td>`;
+            
+            // Cột 4-14: tính theo công thức (cột trước + 1) mod 12 (nếu = 0 lấy 12)
+            currentValue = dayCol3;
+            for (let col = 4; col <= 14; col++) {
+                currentValue = calculateNextValue(currentValue);
+                row2.innerHTML += `<td>${currentValue}</td>`;
+            }
+            tbody.appendChild(row2);
+            
+            // Dòng 3: Tuần sinh
+            const row3 = document.createElement('tr');
+            row3.innerHTML = `<td>3</td><td>Tuần sinh</td>`;
+            
+            // Cột 3: giá trị nhập vào
+            row3.innerHTML += `<td class="highlight">${weekCol3}</td>`;
+            
+            // Cột 4-14: tính theo công thức (cột trước + 1) mod 12 (nếu = 0 lấy 12)
+            currentValue = weekCol3;
+            for (let col = 4; col <= 14; col++) {
+                currentValue = calculateNextValue(currentValue);
+                row3.innerHTML += `<td>${currentValue}</td>`;
+            }
+            tbody.appendChild(row3);
+            
+            // Dòng 4: Tổng
+            const row4 = document.createElement('tr');
+            row4.innerHTML = `<td>4</td><td>Tổng</td>`;
+            
+            // Tính tổng từng cột
+            for (let col = 3; col <= 14; col++) {
+                const monthValue = parseInt(row1.querySelector(`td:nth-child(${col})`).textContent) || 0;
+                const dayValue = parseInt(row2.querySelector(`td:nth-child(${col})`).textContent) || 0;
+                const weekValue = parseInt(row3.querySelector(`td:nth-child(${col})`).textContent) || 0;
+                
+                const sum = monthValue + dayValue + weekValue;
+                row4.innerHTML += `<td>${sum}</td>`;
+            }
+            tbody.appendChild(row4);
+            
+            // Dòng 5: Số dư
+            const row5 = document.createElement('tr');
+            row5.innerHTML = `<td>5</td><td>Số dư (chia 12)</td>`;
+            
+            // Tính số dư khi chia 12 (nếu = 0 lấy 12)
+            for (let col = 3; col <= 14; col++) {
+                const sumValue = parseInt(row4.querySelector(`td:nth-child(${col})`).textContent) || 0;
+                const remainder = sumValue % 12;
+                row5.innerHTML += `<td>${remainder === 0 ? 12 : remainder}</td>`;
+            }
+            tbody.appendChild(row5);
+            
+            // Dòng 6: Số phải tìm
+            const row6 = document.createElement('tr');
+            row6.innerHTML = `<td>6</td><td>Số phải tìm (13 - số dư)</td>`;
+            
+            // Tính số phải tìm: 13 - số dư
+            for (let col = 3; col <= 14; col++) {
+                const remainder = parseInt(row5.querySelector(`td:nth-child(${col})`).textContent) || 0;
+                const targetNumber = 13 - remainder;
+                row6.innerHTML += `<td class="highlight">${targetNumber}</td>`;
+            }
+            tbody.appendChild(row6);
+            
+            // Trả về mảng số phải tìm
+            return Array.from(row6.querySelectorAll('td')).slice(2).map(td => parseInt(td.textContent) || 0);
+        }
+        
+        // Hàm tính vận mệnh (bảng 4)
+        function calculateDestiny(numbersToFind) {
+            // Tính tổng cho từng vận
+            const tienVanSum = numbersToFind.slice(0, 4).reduce((a, b) => a + b, 0);
+            const trungVanSum = numbersToFind.slice(4, 8).reduce((a, b) => a + b, 0);
+            const hauVanSum = numbersToFind.slice(8, 12).reduce((a, b) => a + b, 0);
+            
+            // Tính số dư khi chia 12
+            const tienVanRemainder = tienVanSum % 12 || 12;
+            const trungVanRemainder = trungVanSum % 12 || 12;
+            const hauVanRemainder = hauVanSum % 12 || 12;
+            
+            // Tra cứu ý nghĩa từ bảng 5
+            const tienVanMeaning = table5Data[tienVanRemainder] || "Không xác định";
+            const trungVanMeaning = table5Data[trungVanRemainder] || "Không xác định";
+            const hauVanMeaning = table5Data[hauVanRemainder] || "Không xác định";
+            
+            // Cập nhật kết quả
+            document.getElementById('tienVanResult').textContent = tienVanMeaning;
+            document.getElementById('trungVanResult').textContent = trungVanMeaning;
+            document.getElementById('hauVanResult').textContent = hauVanMeaning;
+            
+            document.getElementById('tienVanCell').textContent = tienVanMeaning;
+            document.getElementById('trungVanCell').textContent = trungVanMeaning;
+            document.getElementById('hauVanCell').textContent = hauVanMeaning;
+            
+            return {
+                tienVan: {sum: tienVanSum, remainder: tienVanRemainder, meaning: tienVanMeaning},
+                trungVan: {sum: trungVanSum, remainder: trungVanRemainder, meaning: trungVanMeaning},
+                hauVan: {sum: hauVanSum, remainder: hauVanRemainder, meaning: hauVanMeaning}
+            };
+        }
+        
+        // Hàm tạo bảng 6 với cột 1 chứa số 1-12 và cột 2 chứa ý nghĩa từ bảng 5
+        function createTable6(numbersToFind) {
+            const table6 = document.getElementById('table6');
+            const thead = table6.querySelector('thead');
+            const tbody = table6.querySelector('tbody');
+            
+            // Xóa nội dung cũ
+            thead.innerHTML = '';
+            tbody.innerHTML = '';
+            
+            // Tạo tiêu đề cho bảng 6
+            let headerRow = document.createElement('tr');
+            headerRow.innerHTML = '<th>STT</th><th>Ý nghĩa của bảng 5</th>';
+            
+            // Tạo 12 cột với tiêu đề là Cột 3, Cột 4, ... Cột 14
+            for (let i = 3; i <= 14; i++) {
+                headerRow.innerHTML += `<th>Cột ${i}</th>`;
+            }
+            thead.appendChild(headerRow);
+            
+            // Dòng 1-12: Các số từ 1 đến 12 (cột 1 của bảng 6) và ý nghĩa từ bảng 5
+            for (let rowNum = 1; rowNum <= 12; rowNum++) {
+                const row = document.createElement('tr');
+                // Cột 1: Số thứ tự
+                row.innerHTML = `<td>${rowNum}</td>`;
+                // Cột 2: Ý nghĩa từ bảng 5
+                row.innerHTML += `<td>${table5Data[rowNum] || "Không xác định"}</td>`;
+                
+                // Duyệt qua từng cột từ 3 đến 14
+                for (let col = 3; col <= 14; col++) {
+                    // Lấy số phải tìm từ bảng 3 cho cột này
+                    const targetNumber = numbersToFind[col - 3]; // col-3 vì mảng bắt đầu từ 0
+                    
+                    // Kiểm tra nếu số ở cột 1 (rowNum) bằng số phải tìm
+                    if (rowNum === targetNumber) {
+                        row.innerHTML += `<td><span class="dot">•</span></td>`;
+                    } else {
+                        row.innerHTML += `<td></td>`;
+                    }
+                }
+                tbody.appendChild(row);
+            }
+            
+            // Dòng 13: STT 13 - Tháng sinh
+            const row13 = document.createElement('tr');
+            row13.innerHTML = `<td>13</td><td>Tháng sinh</td>`;
+            
+            for (let col = 3; col <= 14; col++) {
+                const colValue = col - 2; // Chuyển cột thành giá trị 1-12
+                const value = lunarMonth - 1 + colValue;
+                const remainder = value % 12 || 12;
+                // Chỉ lấy số chẵn
+                const evenRemainder = remainder % 2 === 0 ? remainder : (remainder + 1) % 12 || 12;
+                row13.innerHTML += `<td>${evenRemainder}</td>`;
+            }
+            tbody.appendChild(row13);
+            
+            // Dòng 14: STT 14 - Năm hiện tại - năm sinh + 1
+            const row14 = document.createElement('tr');
+            row14.innerHTML = `<td>14</td><td>Năm hiện tại - năm sinh + 1</td>`;
+            
+            const birthYear = new Date(document.getElementById('birthDate').value).getFullYear();
+            const currentYear = new Date(document.getElementById('currentDate').value).getFullYear();
+            const yearDiff = currentYear - birthYear + 1;
+            
+            for (let col = 3; col <= 14; col++) {
+                const colValue = col - 2;
+                const value = yearDiff + colValue;
+                row14.innerHTML += `<td>${value}</td>`;
+            }
+            tbody.appendChild(row14);
+            
+            // Dòng 15: STT 15 - Tổng dòng 13 + dòng 14 - 1
+            const row15 = document.createElement('tr');
+            row15.innerHTML = `<td>15</td><td>Tổng (dòng 13 + dòng 14 - 1)</td>`;
+            
+            for (let col = 3; col <= 14; col++) {
+                const value13 = parseInt(row13.querySelector(`td:nth-child(${col})`).textContent) || 0;
+                const value14 = parseInt(row14.querySelector(`td:nth-child(${col})`).textContent) || 0;
+                const sum = value13 + value14 - 1;
+                row15.innerHTML += `<td>${sum}</td>`;
+            }
+            tbody.appendChild(row15);
+        }
+        
+        // Hàm khởi tạo bảng 3
+        function initTable3() {
+            const table3 = document.getElementById('table3');
+            const tbody = table3.querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            // Tạo 6 dòng trống
+            for (let i = 1; i <= 6; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${i}</td><td>Đang chờ tính toán...</td>`;
+                
+                for (let col = 3; col <= 14; col++) {
+                    row.innerHTML += `<td></td>`;
+                }
+                tbody.appendChild(row);
+            }
+        }
+        
+        // Hàm khởi tạo bảng 6
+        function initTable6() {
+            const table6 = document.getElementById('table6');
+            const thead = table6.querySelector('thead');
+            const tbody = table6.querySelector('tbody');
+            
+            // Tạo tiêu đề với cột "Ý nghĩa của bảng 5"
+            let headerRow = document.createElement('tr');
+            headerRow.innerHTML = '<th>STT</th><th>Ý nghĩa của bảng 5</th><th>Cột 1</th><th>Cột 2</th><th>Cột 3</th>';
+            thead.appendChild(headerRow);
+            
+            // Tạo một dòng trống
+            const row = document.createElement('tr');
+            row.innerHTML = '<td colspan="5">Đang chờ tính toán...</td>';
+            tbody.appendChild(row);
+        }
+        
+        // Hàm tính toán tất cả
+        function calculateAll() {
+            // Lấy giá trị từ các ô nhập liệu
+            const currentDate = document.getElementById('currentDate').value;
+            const birthDate = document.getElementById('birthDate').value;
+            
+            // Kiểm tra dữ liệu đầu vào
+            if (!birthDate) {
+                alert("Vui lòng nhập ngày tháng năm sinh!");
+                return;
+            }
+            
+            // 1. Hiển thị thông tin cố định
+            document.getElementById('lunarMonthResult').textContent = lunarMonth;
+            document.getElementById('table1Result').textContent = table1ResultValue;
+            document.getElementById('table2Result').textContent = table2ResultValue;
+            
+            // 2. Tính toán bảng 3 theo công thức mới
+            const numbersToFind = calculateTable3();
+            
+            // 3. Tính vận mệnh (bảng 4)
+            calculateDestiny(numbersToFind);
+            
+            // 4. Tạo bảng 6 theo yêu cầu mới
+            createTable6(numbersToFind);
+        }
+        
+        // Khởi chạy ứng dụng khi trang đã tải xong
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ứng dụng tính toán và bảng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            padding: 8px;
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-left: 4px solid #4CAF50;
+            margin: 10px 0;
+        }
+        table {
+            border-collapse: collapse;
+            margin: 20px 0;
+            width: 100%;
+            font-size: 13px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 5px;
+            text-align: center;
+            min-width: 35px;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .notification {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .col {
+            flex: 1;
+            min-width: 300px;
+        }
+        .person-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: white;
+        }
+        .person-item {
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .person-item:hover {
+            background-color: #e8f5e9;
+        }
+        .person-item.selected {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .date-display {
+            background-color: #e3f2fd;
+            padding: 10px;
+            border: 1px solid #bbdefb;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+        .table-container {
+            overflow-x: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ứng dụng tính toán và bảng</h1>
+        
+        <div class="row">
+            <div class="col">
+                <!-- Ô 1: Nhập ngày muốn xem -->
+                <div class="form-group">
+                    <label for="currentDate">Ô 1: Ngày muốn xem</label>
+                    <input type="date" id="currentDate">
+                </div>
+                
+                <!-- Ô 2: Hiển thị tên tuổi từ danh sách -->
+                <div class="form-group">
+                    <label for="selectedName">Ô 2: Tên tuổi (chọn từ danh sách)</label>
+                    <input type="text" id="selectedName" readonly>
+                </div>
+                
+                <!-- Ô 3: Hiển thị ngày tháng năm sinh từ danh sách -->
+                <div class="form-group">
+                    <label for="selectedBirthDate">Ô 3: Ngày tháng năm sinh (chọn từ danh sách)</label>
+                    <input type="text" id="selectedBirthDate" readonly>
+                </div>
+                
+                <!-- Ô 4: Danh sách chọn -->
+                <div class="form-group">
+                    <label>Ô 4: Danh sách (bấm chọn để hiển thị vào ô 2 và ô 3)</label>
+                    <div class="person-list" id="personListContainer">
+                        <!-- Danh sách sẽ được hiển thị ở đây -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col">
+                <!-- Ô 5: Kết quả tính toán 1 -->
+                <div class="form-group">
+                    <label for="result5">Ô 5: Số ngày từ 01/01/1900 đến ngày muốn xem</label>
+                    <input type="text" id="result5" readonly>
+                    <div id="notification5" class="notification" style="display: none;"></div>
+                </div>
+                
+                <!-- Ô 6: Xác định giới tính từ số ngày -->
+                <div class="form-group">
+                    <label for="result6">Ô 6: Giới tính (từ ô 5 - Chẵn: Trai, Lẻ: Gái)</label>
+                    <input type="text" id="result6" readonly>
+                    <div id="notification6" class="notification" style="display: none;"></div>
+                </div>
+                
+                <!-- Ô 7: Kết quả tính toán 2 -->
+                <div class="form-group">
+                    <label for="result7">Ô 7: Ngày muốn xem - 286 - 01/01/1900</label>
+                    <input type="text" id="result7" readonly>
+                    <div id="notification7" class="notification" style="display: none;"></div>
+                </div>
+                
+                <!-- Ô 8: Xác định giới tính từ ô 7 -->
+                <div class="form-group">
+                    <label for="result8">Ô 8: Giới tính (từ ô 7 - Chẵn: Trai, Lẻ: Gái)</label>
+                    <input type="text" id="result8" readonly>
+                    <div id="notification8" class="notification" style="display: none;"></div>
+                </div>
+                
+                <!-- Ô 9: Hiển thị kết quả của ô 7 -->
+                <div class="form-group">
+                    <label>Ô 9: Kết quả của ô 7</label>
+                    <div class="date-display" id="result9">
+                        <!-- Kết quả sẽ được hiển thị ở đây -->
+                    </div>
+                    <div id="notification9" class="notification" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Nút tính toán -->
+        <div class="form-group">
+            <button onclick="calculateAll()">Tính toán tất cả</button>
+            <button onclick="addNewPerson()">Thêm người mới</button>
+            <button onclick="loadDefaultList()">Tải danh sách mặc định</button>
+            <button onclick="clearAll()">Xóa tất cả</button>
+        </div>
+        
+        <!-- Bảng kết quả -->
+        <div class="form-group">
+            <h2>Bảng kết quả (24 dòng + 1 dòng STT) - 14 cột dữ liệu</h2>
+            <div class="table-container">
+                <table id="resultTable">
+                    <!-- Bảng sẽ được tạo bằng JavaScript -->
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Danh sách người dùng mặc định
+        const defaultPersonList = [
+            { id: 1, name: "NGUYENKHACNANG", birthDate: "1944-06-04", formattedBirthDate: "04/06/1944" },
+            { id: 2, name: "TOTHIHA", birthDate: "1948-08-29", formattedBirthDate: "29/08/1948" },
+            { id: 3, name: "NGUYENMINHNAM", birthDate: "1971-03-03", formattedBirthDate: "03/03/1971" },
+            { id: 4, name: "THANTHIKIMANH", birthDate: "1981-09-23", formattedBirthDate: "23/09/1981" },
+            { id: 5, name: "NGUYENTONGANAN", birthDate: "2014-09-28", formattedBirthDate: "28/09/2014" },
+            { id: 6, name: "NGUYENTOMINHCHAU", birthDate: "2016-07-25", formattedBirthDate: "25/07/2016" },
+            { id: 7, name: "NGUYENTOBICHNGOC", birthDate: "2020-02-05", formattedBirthDate: "05/02/2020" },
+            { id: 8, name: "NGUYENTHIMINHHANG", birthDate: "1974-01-07", formattedBirthDate: "07/01/1974" },
+            { id: 9, name: "NGOQUYCUONG", birthDate: "1973-05-23", formattedBirthDate: "23/05/1973" },
+            { id: 10, name: "NGOGIABACH", birthDate: "2000-10-12", formattedBirthDate: "12/10/2000" },
+            { id: 11, name: "NGOGIALINH", birthDate: "2005-04-05", formattedBirthDate: "05/04/2005" },
+            { id: 12, name: "NGUYENTHIMINHPHUONG", birthDate: "1978-11-06", formattedBirthDate: "06/11/1978" },
+            { id: 13, name: "HOANGANHDUNG", birthDate: "1978-09-21", formattedBirthDate: "21/09/1978" },
+            { id: 14, name: "HOANGHAIVINH", birthDate: "2010-06-03", formattedBirthDate: "03/06/2010" },
+            { id: 15, name: "HOANGTHIENBACHANH", birthDate: "2015-11-14", formattedBirthDate: "14/11/2015" },
+            { id: 16, name: "TÔ KIM HUỆ", birthDate: "1960-08-09", formattedBirthDate: "09/08/1960" },
+            { id: 17, name: "NGUYỄN TUẤN ANH", birthDate: "1983-10-23", formattedBirthDate: "23/10/1983" },
+            { id: 18, name: "NGUYỄN THẾ ANH", birthDate: "2001-03-24", formattedBirthDate: "24/03/2001" },
+            { id: 19, name: "NGÔ THỊ MAI", birthDate: "1948-12-12", formattedBirthDate: "12/12/1948" },
+            { id: 20, name: "TÔ VIỆT HƯNG", birthDate: "1996-06-17", formattedBirthDate: "17/06/1996" },
+            { id: 21, name: "TÔ THỊ HỒNG", birthDate: "1964-10-10", formattedBirthDate: "10/10/1964" },
+            { id: 22, name: "VŨ VĂN HIỆP", birthDate: "1974-04-24", formattedBirthDate: "24/04/1974" },
+            { id: 23, name: "NGUYỄN THỊ CHI", birthDate: "1946-02-08", formattedBirthDate: "08/02/1946" },
+            { id: 24, name: "NGUYỄN TẤN BẮC", birthDate: "1957-11-30", formattedBirthDate: "30/11/1957" },
+            { id: 25, name: "NGUYỄN THỊ TÂM", birthDate: "1954-08-08", formattedBirthDate: "08/08/1954" }
+        ];
+
+        let personList = [...defaultPersonList];
+        let selectedPersonId = null;
+        
+        // Hàm định dạng ngày
+        function formatDate(date) {
+            if (!date) return '';
+            const d = new Date(date);
+            return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
+        }
+        
+        // Hàm tính số ngày từ 01/01/1900
+        function daysFrom1900(date) {
+            const startDate = new Date('1900-01-01');
+            const currentDate = new Date(date);
+            const diffTime = currentDate - startDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays;
+        }
+        
+        // Hàm xác định giới tính từ số
+        function getGenderFromNumber(number) {
+            const lastDigit = Math.abs(number) % 10;
+            return lastDigit % 2 === 0 ? 'Con trai (T)' : 'Con gái (G)';
+        }
+        
+        // Hàm lấy ký hiệu giới tính
+        function getGenderSymbol(number) {
+            const lastDigit = Math.abs(number) % 10;
+            return lastDigit % 2 === 0 ? 'T' : 'G';
+        }
+        
+        // Hàm hiển thị thông báo
+        function showNotification(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.style.display = 'block';
+            
+            // Tự động ẩn thông báo sau 5 giây
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Hàm hiển thị danh sách
+        function displayPersonList() {
+            const container = document.getElementById('personListContainer');
+            container.innerHTML = '';
+            
+            if (personList.length === 0) {
+                container.innerHTML = '<p style="color: #666; text-align: center;">Danh sách trống</p>';
+                return;
+            }
+            
+            personList.forEach(person => {
+                const item = document.createElement('div');
+                item.className = 'person-item';
+                if (person.id === selectedPersonId) {
+                    item.classList.add('selected');
+                }
+                item.innerHTML = `
+                    <strong>${person.id}. ${person.name}</strong>
+                    <div style="color: ${person.id === selectedPersonId ? '#fff' : '#666'}; font-size: 12px;">
+                        Sinh ngày: ${person.formattedBirthDate}
+                    </div>
+                `;
+                
+                // Thêm sự kiện click
+                item.onclick = () => selectPerson(person.id);
+                
+                container.appendChild(item);
+            });
+        }
+        
+        // Hàm chọn người từ danh sách
+        function selectPerson(personId) {
+            selectedPersonId = personId;
+            const person = personList.find(p => p.id === personId);
+            
+            if (person) {
+                // Hiển thị thông tin vào ô 2 và ô 3
+                document.getElementById('selectedName').value = person.name;
+                document.getElementById('selectedBirthDate').value = person.formattedBirthDate;
+                
+                // Hiển thị lại danh sách với item được chọn
+                displayPersonList();
+                
+                // Hiển thị thông báo
+                showNotification('notification5', `Đã chọn: ${person.name} - ${person.formattedBirthDate}`);
+            }
+        }
+        
+        // Hàm thêm người mới
+        function addNewPerson() {
+            const name = prompt("Nhập tên người mới:");
+            if (!name) return;
+            
+            const birthDateStr = prompt("Nhập ngày sinh (định dạng dd/mm/yyyy):");
+            if (!birthDateStr) return;
+            
+            // Chuyển đổi ngày từ dd/mm/yyyy sang yyyy-mm-dd
+            const parts = birthDateStr.split('/');
+            if (parts.length !== 3) {
+                alert("Định dạng ngày không đúng! Vui lòng nhập dd/mm/yyyy");
+                return;
+            }
+            
+            const day = parseInt(parts[0]);
+            const month = parseInt(parts[1]) - 1; // Tháng bắt đầu từ 0
+            const year = parseInt(parts[2]);
+            
+            const birthDate = new Date(year, month, day);
+            if (isNaN(birthDate.getTime())) {
+                alert("Ngày không hợp lệ!");
+                return;
+            }
+            
+            const formattedDate = birthDate.toISOString().split('T')[0];
+            const formattedDisplay = formatDate(formattedDate);
+            
+            const person = {
+                id: personList.length + 1,
+                name: name,
+                birthDate: formattedDate,
+                formattedBirthDate: formattedDisplay
+            };
+            
+            personList.push(person);
+            displayPersonList();
+            
+            // Tự động chọn người vừa thêm
+            selectPerson(person.id);
+            
+            alert(`Đã thêm ${person.name} vào danh sách!`);
+        }
+        
+        // Hàm tải danh sách mặc định
+        function loadDefaultList() {
+            if (confirm('Bạn có chắc chắn muốn tải danh sách mặc định? Dữ liệu hiện tại sẽ bị ghi đè.')) {
+                personList = [...defaultPersonList];
+                selectedPersonId = null;
+                document.getElementById('selectedName').value = '';
+                document.getElementById('selectedBirthDate').value = '';
+                displayPersonList();
+                alert(`Đã tải ${personList.length} người từ danh sách mặc định!`);
+            }
+        }
+        
+        // Hàm tính toán tất cả
+        function calculateAll() {
+            // Lấy ngày muốn xem từ ô 1
+            const currentDateInput = document.getElementById('currentDate').value;
+            
+            if (!currentDateInput) {
+                alert('Vui lòng nhập ngày muốn xem vào ô 1!');
+                return;
+            }
+            
+            const currentDate = new Date(currentDateInput);
+            
+            // Tính toán cho ô 5
+            const days1 = daysFrom1900(currentDate);
+            document.getElementById('result5').value = days1;
+            showNotification('notification5', `Kết quả ô 5: ${days1} ngày từ 01/01/1900 đến ${formatDate(currentDate)}`);
+            
+            // Tính toán cho ô 6
+            const gender1 = getGenderFromNumber(days1);
+            document.getElementById('result6').value = gender1;
+            showNotification('notification6', `Kết quả ô 6: ${gender1} (số ${days1}, số cuối ${days1 % 10})`);
+            
+            // Tính toán cho ô 7: Ngày ô 1 - 286
+            const pastDate = new Date(currentDate);
+            pastDate.setDate(pastDate.getDate() - 286);
+            const days2 = daysFrom1900(pastDate);
+            document.getElementById('result7').value = days2;
+            showNotification('notification7', `Kết quả ô 7: ${days2} ngày (${formatDate(currentDate)} - 286 ngày = ${formatDate(pastDate)})`);
+            
+            // Tính toán cho ô 8
+            const gender2 = getGenderFromNumber(days2);
+            document.getElementById('result8').value = gender2;
+            showNotification('notification8', `Kết quả ô 8: ${gender2} (số ${days2}, số cuối ${days2 % 10})`);
+            
+            // Hiển thị kết quả ô 7 vào ô 9
+            const result9 = document.getElementById('result9');
+            result9.innerHTML = `
+                <strong>Kết quả từ ô 7:</strong><br>
+                Số ngày: <strong>${days2}</strong><br>
+                Ngày tương ứng: <strong>${formatDate(pastDate)}</strong><br>
+                Giới tính: <strong>${gender2}</strong>
+            `;
+            showNotification('notification9', `Ô 9: Hiển thị kết quả từ ô 7 - Số ngày: ${days2}, Ngày: ${formatDate(pastDate)}, Giới tính: ${gender2}`);
+            
+            // Tạo bảng
+            createTable(days2);
+        }
+        
+        // Hàm tạo bảng
+        function createTable(baseNumber) {
+            const table = document.getElementById('resultTable');
+            table.innerHTML = '';
+            
+            // Tạo tiêu đề bảng - Dòng 1
+            const headerRow = document.createElement('tr');
+            
+            // Cột 1 dòng 1: STT
+            const th1 = document.createElement('th');
+            th1.textContent = 'STT';
+            th1.style.width = '50px';
+            headerRow.appendChild(th1);
+            
+            // Tạo các cột từ 2 đến 15 (tổng cộng 14 cột)
+            for (let col = 2; col <= 15; col++) {
+                const th = document.createElement('th');
+                const colValue = baseNumber + (col - 2);
+                const colGender = getGenderSymbol(colValue);
+                th.textContent = `${colValue} (${colGender})`;
+                th.title = `Cột ${col}: ${colValue} - ${colGender === 'T' ? 'Trai' : 'Gái'}`;
+                headerRow.appendChild(th);
+            }
+            
+            table.appendChild(headerRow);
+            
+            // Tạo các dòng từ 2 đến 25 (tổng cộng 24 dòng + 1 dòng tiêu đề)
+            for (let row = 2; row <= 25; row++) {
+                const tr = document.createElement('tr');
+                
+                // Cột 1: STT với giới tính (từ 1 đến 24)
+                const td1 = document.createElement('td');
+                const rowValue = row - 1; // 1 đến 24
+                const rowGender = getGenderSymbol(rowValue);
+                td1.textContent = `${rowValue} (${rowGender})`;
+                td1.style.fontWeight = 'bold';
+                td1.title = `Dòng ${row}: ${rowValue} - ${rowGender === 'T' ? 'Trai' : 'Gái'}`;
+                tr.appendChild(td1);
+                
+                // Các cột từ 2 đến 15
+                for (let col = 2; col <= 15; col++) {
+                    const td = document.createElement('td');
+                    const colValue = baseNumber + (col - 2);
+                    const colGender = getGenderSymbol(colValue);
+                    const cellValue = `${rowGender}${colGender}`;
+                    
+                    // Đổi màu nền dựa trên kết quả
+                    if (cellValue === 'TT') {
+                        td.style.backgroundColor = '#a5d6a7'; // Xanh nhạt cho Trai-Trai
+                    } else if (cellValue === 'GG') {
+                        td.style.backgroundColor = '#f48fb1'; // Hồng nhạt cho Gái-Gái
+                    } else if (cellValue === 'TG' || cellValue === 'GT') {
+                        td.style.backgroundColor = '#fff59d'; // Vàng nhạt cho khác giới
+                    }
+                    
+                    td.textContent = cellValue;
+                    td.title = `Giao điểm: Dòng ${rowValue}(${rowGender}) × Cột ${colValue}(${colGender}) = ${cellValue}`;
+                    tr.appendChild(td);
+                }
+                
+                table.appendChild(tr);
+            }
+            
+            // Thêm dòng tổng (dòng 25)
+            const totalRow = document.createElement('tr');
+            totalRow.style.backgroundColor = '#e8f5e9';
+            
+            const totalTd1 = document.createElement('td');
+            totalTd1.textContent = 'Tổng';
+            totalTd1.style.fontWeight = 'bold';
+            totalRow.appendChild(totalTd1);
+            
+            for (let col = 2; col <= 15; col++) {
+                const td = document.createElement('td');
+                const colValue = baseNumber + (col - 2);
+                const colGender = getGenderSymbol(colValue);
+                td.textContent = `${colValue} (${colGender})`;
+                td.style.fontWeight = 'bold';
+                totalRow.appendChild(td);
+            }
+            
+            table.appendChild(totalRow);
+            
+            // Hiển thị thông báo
+            const notificationMessage = `Đã tạo bảng thành công!\n- Số cơ sở từ ô 7: ${baseNumber}\n- Tổng số dòng: 25 (24 dòng dữ liệu + 1 dòng STT)\n- Tổng số cột: 15 (1 cột STT + 14 cột dữ liệu)`;
+            showNotification('notification5', notificationMessage);
+            alert(notificationMessage);
+        }
+        
+        // Hàm xóa tất cả
+        function clearAll() {
+            if (confirm('Bạn có chắc chắn muốn xóa tất cả dữ liệu?')) {
+                // Xóa các ô nhập
+                document.getElementById('currentDate').value = '';
+                
+                // Xóa các ô hiển thị
+                document.getElementById('selectedName').value = '';
+                document.getElementById('selectedBirthDate').value = '';
+                
+                // Xóa các ô kết quả
+                document.getElementById('result5').value = '';
+                document.getElementById('result6').value = '';
+                document.getElementById('result7').value = '';
+                document.getElementById('result8').value = '';
+                document.getElementById('result9').innerHTML = '';
+                
+                // Xóa danh sách
+                personList = [];
+                selectedPersonId = null;
+                displayPersonList();
+                
+                // Xóa bảng
+                document.getElementById('resultTable').innerHTML = '';
+                
+                // Ẩn thông báo
+                ['notification5', 'notification6', 'notification7', 'notification8', 'notification9'].forEach(id => {
+                    document.getElementById(id).style.display = 'none';
+                });
+                
+                alert('Đã xóa tất cả dữ liệu!');
+            }
+        }
+        
+        // Khởi tạo ngày hiện tại và hiển thị danh sách mặc định
+        window.onload = function() {
+            const today = new Date();
+            const formattedToday = today.toISOString().split('T')[0];
+            document.getElementById('currentDate').value = formattedToday;
+            
+            // Hiển thị danh sách mặc định
+            displayPersonList();
+            
+            // Tự động chọn người đầu tiên
+            if (personList.length > 0) {
+                setTimeout(() => {
+                    selectPerson(1);
+                }, 500);
+            }
+            
+            // Tính toán tự động
+            setTimeout(() => {
+                calculateAll();
+            }, 1000);
+        };
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

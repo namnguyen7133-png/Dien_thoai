@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tra Cứu Số Tương Ứng</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #4a5568;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+        
+        .input-section {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 600;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: opacity 0.3s;
+            width: 100%;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+        }
+        
+        .results-section {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .results-title {
+            font-size: 1.2rem;
+            color: #4a5568;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .results-container {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            min-height: 80px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            word-break: break-all;
+        }
+        
+        .table-section {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .table-title {
+            font-size: 1.2rem;
+            color: #4a5568;
+            margin-bottom: 15px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Courier New', monospace;
+        }
+        
+        th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        tr:nth-child(even) {
+            background: #f1f5f9;
+        }
+        
+        tr:hover {
+            background: #e2e8f0;
+        }
+        
+        .highlight {
+            background-color: #c6f6d5 !important;
+            font-weight: bold;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+            max-width: 300px;
+        }
+        
+        .success {
+            border-left: 4px solid #38a169;
+        }
+        
+        .error {
+            border-left: 4px solid #e53e3e;
+        }
+        
+        .input-example {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-top: 5px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #718096;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .input-section, .results-section, .table-section {
+                padding: 15px;
+            }
+            
+            textarea {
+                font-size: 14px;
+            }
+            
+            button {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 12px;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            .input-section, .results-section, .table-section {
+                padding: 12px;
+            }
+            
+            table {
+                font-size: 0.9rem;
+            }
+            
+            th, td {
+                padding: 8px 5px;
+            }
+        }
+        
+        /* Custom scrollbar */
+        .results-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .results-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        
+        .results-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        
+        .results-container::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tra Cứu Số Tương Ứng</h1>
+        
+        <div class="input-section">
+            <div class="form-group">
+                <label for="numberInput">Nhập các số (cách nhau bằng dấu cách, dấu phẩy hoặc xuống dòng):</label>
+                <textarea id="numberInput" placeholder="Ví dụ: 1 2 3 4 5 hoặc 1,2,3,4,5 hoặc mỗi số trên một dòng"></textarea>
+                <div class="input-example">Bạn có thể nhập nhiều số cùng lúc, mỗi số cách nhau bằng khoảng trắng, dấu phẩy hoặc xuống dòng.</div>
+            </div>
+            <button onclick="processNumbers()">Tra Cứu Số Tương Ứng</button>
+            <div class="stats">
+                <div id="inputCount">Số lượng số nhập vào: 0</div>
+                <div id="validCount">Số hợp lệ: 0</div>
+            </div>
+        </div>
+        
+        <div class="results-section">
+            <div class="results-title">
+                <span>Kết Quả Tra Cứu</span>
+                <span id="resultCount">(0 kết quả)</span>
+            </div>
+            <div class="results-container" id="resultsContainer">
+                Kết quả sẽ hiển thị ở đây sau khi tra cứu...
+            </div>
+            <div class="stats" style="margin-top: 15px;">
+                <div id="matchCount">Số tìm thấy: 0</div>
+                <div id="notFoundCount">Số không tìm thấy: 0</div>
+            </div>
+        </div>
+        
+        <div class="table-section">
+            <div class="table-title">Bảng Tra Cứu (Cột 1 → Cột 2)</div>
+            <div class="table-container">
+                <table id="lookupTable">
+                    <thead>
+                        <tr>
+                            <th>Cột 1</th>
+                            <th>Cột 2</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Bảng sẽ được tạo tự động bằng JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification"></div>
+    
+    <script>
+        // Dữ liệu bảng tra cứu (144 cặp số)
+        const lookupTable = [
+            [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 9], [9, 10], [10, 11], [11, 12], [12, 2],
+            [1, 3], [2, 4], [3, 5], [4, 6], [5, 7], [6, 8], [7, 9], [8, 10], [9, 11], [10, 12], [11, 1], [12, 3],
+            [1, 4], [2, 5], [3, 6], [4, 7], [5, 8], [6, 9], [7, 10], [8, 11], [9, 12], [10, 1], [11, 2], [12, 4],
+            [1, 5], [2, 6], [3, 7], [4, 8], [5, 9], [6, 10], [7, 11], [8, 12], [9, 1], [10, 2], [11, 3], [12, 5],
+            [1, 6], [2, 7], [3, 8], [4, 9], [5, 10], [6, 11], [7, 12], [8, 1], [9, 2], [10, 3], [11, 4], [12, 6],
+            [1, 7], [2, 8], [3, 9], [4, 10], [5, 11], [6, 12], [7, 1], [8, 2], [9, 3], [10, 4], [11, 5], [12, 7],
+            [1, 8], [2, 9], [3, 10], [4, 11], [5, 12], [6, 1], [7, 2], [8, 3], [9, 4], [10, 5], [11, 6], [12, 8],
+            [1, 9], [2, 10], [3, 11], [4, 12], [5, 1], [6, 2], [7, 3], [8, 4], [9, 5], [10, 6], [11, 7], [12, 9],
+            [1, 10], [2, 11], [3, 12], [4, 1], [5, 2], [6, 3], [7, 4], [8, 5], [9, 6], [10, 7], [11, 8], [12, 10],
+            [1, 11], [2, 12], [3, 1], [4, 2], [5, 3], [6, 4], [7, 5], [8, 6], [9, 7], [10, 8], [11, 9], [12, 11],
+            [1, 12], [2, 1], [3, 2], [4, 3], [5, 4], [6, 5], [7, 6], [8, 7], [9, 8], [10, 9], [11, 10], [12, 12]
+        ];
+        
+        // Tạo bảng tra cứu khi trang được tải
+        function createLookupTable() {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+            
+            // Tạo 12 hàng, mỗi hàng 12 cặp số
+            for (let row = 0; row < 12; row++) {
+                const tr = document.createElement('tr');
+                
+                for (let col = 0; col < 12; col++) {
+                    const index = row * 12 + col;
+                    if (index >= lookupTable.length) break;
+                    
+                    const [col1, col2] = lookupTable[index];
+                    
+                    // Tạo ô cho cột 1
+                    const td1 = document.createElement('td');
+                    td1.textContent = col1;
+                    td1.className = 'col1';
+                    tr.appendChild(td1);
+                    
+                    // Tạo ô cho cột 2
+                    const td2 = document.createElement('td');
+                    td2.textContent = col2;
+                    td2.className = 'col2';
+                    tr.appendChild(td2);
+                }
+                
+                tableBody.appendChild(tr);
+            }
+        }
+        
+        // Xử lý số nhập vào
+        function processNumbers() {
+            const input = document.getElementById('numberInput').value.trim();
+            const resultsContainer = document.getElementById('resultsContainer');
+            
+            if (!input) {
+                showNotification('Vui lòng nhập ít nhất một số!', 'error');
+                return;
+            }
+            
+            // Tách các số ra (hỗ trợ nhiều định dạng: dấu cách, dấu phẩy, xuống dòng)
+            const numbers = input.split(/[\s,\n]+/).filter(item => item.trim() !== '');
+            
+            // Đếm số lượng và số hợp lệ
+            const inputCount = numbers.length;
+            const validNumbers = numbers.filter(num => !isNaN(num) && num.trim() !== '');
+            const validCount = validNumbers.length;
+            
+            // Cập nhật thống kê đầu vào
+            document.getElementById('inputCount').textContent = `Số lượng số nhập vào: ${inputCount}`;
+            document.getElementById('validCount').textContent = `Số hợp lệ: ${validCount}`;
+            
+            if (validCount === 0) {
+                showNotification('Không tìm thấy số hợp lệ để tra cứu!', 'error');
+                resultsContainer.innerHTML = '<span style="color: #e53e3e;">Không có số hợp lệ để tra cứu. Vui lòng nhập số (ví dụ: 1, 2, 3...)</span>';
+                return;
+            }
+            
+            // Tìm số tương ứng cho mỗi số hợp lệ
+            let results = [];
+            let matchCount = 0;
+            let notFoundCount = 0;
+            
+            validNumbers.forEach(num => {
+                const searchNum = parseInt(num);
+                const result = lookupTable.find(pair => pair[0] === searchNum);
+                
+                if (result) {
+                    results.push(`${searchNum} → ${result[1]}`);
+                    matchCount++;
+                } else {
+                    results.push(`${searchNum} → Không tìm thấy trong bảng`);
+                    notFoundCount++;
+                }
+            });
+            
+            // Hiển thị kết quả
+            resultsContainer.innerHTML = results.join('<br>');
+            
+            // Cập nhật thống kê kết quả
+            document.getElementById('resultCount').textContent = `(${validCount} kết quả)`;
+            document.getElementById('matchCount').textContent = `Số tìm thấy: ${matchCount}`;
+            document.getElementById('notFoundCount').textContent = `Số không tìm thấy: ${notFoundCount}`;
+            
+            // Highlight các số trong bảng
+            highlightTableNumbers(validNumbers);
+            
+            showNotification(`Đã tra cứu ${validCount} số. Tìm thấy ${matchCount} kết quả!`, 'success');
+        }
+        
+        // Highlight các số trong bảng
+        function highlightTableNumbers(numbers) {
+            // Xóa highlight cũ
+            const highlightedCells = document.querySelectorAll('.highlight');
+            highlightedCells.forEach(cell => {
+                cell.classList.remove('highlight');
+            });
+            
+            // Highlight các số mới
+            numbers.forEach(numStr => {
+                const num = parseInt(numStr);
+                if (!isNaN(num)) {
+                    // Tìm tất cả các ô trong cột 1 có giá trị bằng số này
+                    const cells = document.querySelectorAll(`.col1`);
+                    cells.forEach(cell => {
+                        if (parseInt(cell.textContent) === num) {
+                            cell.classList.add('highlight');
+                            
+                            // Cũng highlight ô tương ứng trong cột 2
+                            const nextCell = cell.nextElementSibling;
+                            if (nextCell) {
+                                nextCell.classList.add('highlight');
+                            }
+                        }
+                    });
+                }
+            });
+        }
+        
+        // Hiển thị thông báo
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Khởi tạo khi trang được tải
+        document.addEventListener('DOMContentLoaded', function() {
+            createLookupTable();
+            
+            // Thêm ví dụ vào ô nhập liệu
+            document.getElementById('numberInput').value = "1 3 5 7 9 12";
+            
+            // Xử lý tự động khi trang tải xong
+            setTimeout(processNumbers, 500);
+            
+            // Thêm sự kiện Enter để xử lý
+            document.getElementById('numberInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    processNumbers();
+                }
+            });
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảng Tính Sinh Con Trai Con Gái Theo Cổ Học Phương Đông</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            position: relative;
+        }
+
+        header::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 4px;
+            background: linear-gradient(to right, #4CAF50, #2196F3);
+            border-radius: 2px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #4CAF50, #2196F3);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .legend-boy {
+            background: linear-gradient(to right, #e3f2fd, #bbdefb);
+            color: #1565c0;
+        }
+
+        .legend-girl {
+            background: linear-gradient(to right, #fce4ec, #f8bbd9);
+            color: #c2185b;
+        }
+
+        .legend-icon {
+            font-size: 1.2rem;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: linear-gradient(to right, #2c3e50, #34495e);
+            color: white;
+        }
+
+        th {
+            padding: 18px 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-align: center;
+            position: relative;
+            transition: background 0.3s;
+        }
+
+        th:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        th.mother-age {
+            background: linear-gradient(to bottom, #e8f5e9, #c8e6c9);
+            color: #2e7d32;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        th.month-header {
+            background: linear-gradient(to bottom, #e3f2fd, #bbdefb);
+            color: #1565c0;
+            font-weight: bold;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s;
+        }
+
+        tbody tr:hover {
+            background: #f9f9f9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        td {
+            padding: 16px 12px;
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 500;
+            position: relative;
+        }
+
+        td.mother-age-cell {
+            background: linear-gradient(to right, #e8f5e9, #c8e6c9);
+            color: #2e7d32;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-right: 3px solid #4CAF50;
+        }
+
+        .boy {
+            background: linear-gradient(to bottom, #e3f2fd, #bbdefb);
+            color: #1565c0;
+            font-weight: bold;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .boy::before {
+            content: "♂";
+            position: absolute;
+            top: 50%;
+            left: 8px;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            opacity: 0.3;
+        }
+
+        .girl {
+            background: linear-gradient(to bottom, #fce4ec, #f8bbd9);
+            color: #c2185b;
+            font-weight: bold;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .girl::before {
+            content: "♀";
+            position: absolute;
+            top: 50%;
+            left: 8px;
+            transform: translateY(-50%);
+            font-size: 1rem;
+            opacity: 0.3;
+        }
+
+        .instructions {
+            background: linear-gradient(to right, #fffde7, #fff9c4);
+            border-left: 5px solid #ffd600;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .instructions h3 {
+            color: #f57f17;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .instructions ul {
+            list-style-type: none;
+            padding-left: 10px;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .instructions li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .note {
+            background: linear-gradient(to right, #e8eaf6, #c5cae9);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-style: italic;
+            color: #3f51b5;
+            border-left: 4px solid #3f51b5;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .calculator {
+            background: linear-gradient(to right, #f3e5f5, #e1bee7);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .calculator h3 {
+            color: #7b1fa2;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .calculator-inputs {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #7b1fa2;
+            font-weight: 600;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #d1c4e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: #7b1fa2;
+            box-shadow: 0 0 0 3px rgba(123, 31, 162, 0.2);
+        }
+
+        .calculate-btn {
+            background: linear-gradient(to right, #7b1fa2, #9c27b0);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 auto;
+        }
+
+        .calculate-btn:hover {
+            background: linear-gradient(to right, #6a1b9a, #8e24aa);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(123, 31, 162, 0.3);
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .result.boy {
+            background: linear-gradient(to right, #e3f2fd, #bbdefb);
+            color: #1565c0;
+            border: 3px solid #1565c0;
+        }
+
+        .result.girl {
+            background: linear-gradient(to right, #fce4ec, #f8bbd9);
+            color: #c2185b;
+            border: 3px solid #c2185b;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .highlight {
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            th, td {
+                padding: 12px 8px;
+                font-size: 1rem;
+            }
+            
+            .calculator-inputs {
+                flex-direction: column;
+            }
+            
+            .legend {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            th, td {
+                padding: 10px 5px;
+                font-size: 0.9rem;
+            }
+            
+            .instructions, .calculator {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-baby"></i> Bảng Tính Sinh Con Trai, Con Gái</h1>
+            <p class="subtitle">Theo phương pháp cổ học phương Đông - Lưu truyền từ thời xa xưa</p>
+            
+            <div class="legend">
+                <div class="legend-item legend-boy">
+                    <i class="fas fa-mars legend-icon"></i>
+                    <span>Con Trai</span>
+                </div>
+                <div class="legend-item legend-girl">
+                    <i class="fas fa-venus legend-icon"></i>
+                    <span>Con Gái</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th rowspan="2" class="mother-age">TUỔI CỦA MẸ</th>
+                        <th colspan="12" class="month-header">THÁNG THỤ THAI (ÂM LỊCH)</th>
+                    </tr>
+                    <tr>
+                        <th class="month-header">1</th>
+                        <th class="month-header">2</th>
+                        <th class="month-header">3</th>
+                        <th class="month-header">4</th>
+                        <th class="month-header">5</th>
+                        <th class="month-header">6</th>
+                        <th class="month-header">7</th>
+                        <th class="month-header">8</th>
+                        <th class="month-header">9</th>
+                        <th class="month-header">10</th>
+                        <th class="month-header">11</th>
+                        <th class="month-header">12</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="mother-age-cell">18</td>
+                        <td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                        <td class="boy">Trai</td><td class="boy">Trai</td><td class="boy">Trai</td><td class="boy">Trai</td>
+                        <td class="boy">Trai</td><td class="boy">Trai</td><td class="boy">Trai</td><td class="boy">Trai</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">19</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="boy">Trai</td><td class="boy">Trai</td><td class="boy">Trai</td>
+                        <td class="boy">Trai</td><td class="boy">Trai</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">20</td>
+                        <td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                        <td class="boy">Trai</td><td class="boy">Trai</td><td class="boy">Trai</td><td class="boy">Trai</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="boy">Trai</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">21</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">22</td>
+                        <td class="girl">Gái</td><td class="boy">Trai</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">23</td>
+                        <td class="boy">Trai</td><td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">24</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="boy">Trai</td>
+                        <td class="girl">Gái</td><td class="boy">Trai</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">25</td>
+                        <td class="girl">Gái</td><td class="boy">Trai</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                        <td class="boy">Trai</td><td class="boy">Trai</td><td class="boy">Trai</td><td class="boy">Trai</td>
+                    </tr>
+                    <!-- Thêm các hàng còn lại -->
+                    <tr>
+                        <td class="mother-age-cell">26</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">27</td>
+                        <td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="boy">Trai</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">28</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">29</td>
+                        <td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="boy">Trai</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">30</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">31</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">32</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">33</td>
+                        <td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">34</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">35</td>
+                        <td class="boy">Trai</td><td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="boy">Trai</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">36</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">37</td>
+                        <td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">38</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">39</td>
+                        <td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                        <td class="boy">Trai</td><td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">40</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">41</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">42</td>
+                        <td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">43</td>
+                        <td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                        <td class="boy">Trai</td><td class="boy">Trai</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">44</td>
+                        <td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="boy">Trai</td><td class="boy">Trai</td><td class="girl">Gái</td><td class="boy">Trai</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="boy">Trai</td>
+                    </tr>
+                    <tr>
+                        <td class="mother-age-cell">45</td>
+                        <td class="girl">Gái</td><td class="boy">Trai</td><td class="boy">Trai</td><td class="girl">Gái</td>
+                        <td class="girl">Gái</td><td class="girl">Gái</td><td class="boy">Trai</td><td class="boy">Trai</td>
+                        <td class="girl">Gái</td><td class="boy">Trai</td><td class="girl">Gái</td><td class="girl">Gái</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="calculator">
+            <h3><i class="fas fa-calculator"></i> Công Cụ Tính Toán</h3>
+            <div class="calculator-inputs">
+                <div class="input-group">
+                    <label for="motherAge"><i class="fas fa-female"></i> Tuổi của mẹ (Âm lịch)</label>
+                    <input type="number" id="motherAge" min="18" max="45" placeholder="Nhập tuổi từ 18 đến 45">
+                </div>
+                <div class="input-group">
+                    <label for="conceptionMonth"><i class="fas fa-calendar-alt"></i> Tháng thụ thai (Âm lịch)</label>
+                    <select id="conceptionMonth">
+                        <option value="">Chọn tháng</option>
+                        <option value="1">Tháng 1</option>
+                        <option value="2">Tháng 2</option>
+                        <option value="3">Tháng 3</option>
+                        <option value="4">Tháng 4</option>
+                        <option value="5">Tháng 5</option>
+                        <option value="6">Tháng 6</option>
+                        <option value="7">Tháng 7</option>
+                        <option value="8">Tháng 8</option>
+                        <option value="9">Tháng 9</option>
+                        <option value="10">Tháng 10</option>
+                        <option value="11">Tháng 11</option>
+                        <option value="12">Tháng 12</option>
+                    </select>
+                </div>
+            </div>
+            <button class="calculate-btn" id="calculateBtn">
+                <i class="fas fa-baby"></i> Dự Đoán Giới Tính
+            </button>
+            
+            <div class="result" id="result"></div>
+        </div>
+        
+        <div class="instructions">
+            <h3><i class="fas fa-info-circle"></i> Hướng Dẫn Sử Dụng</h3>
+            <ul>
+                <li>Bảng tính này dựa trên phương pháp cổ học phương Đông, lưu truyền từ nhiều đời</li>
+                <li>Tuổi của mẹ tính theo tuổi Âm lịch (tuổi mụ)</li>
+                <li>Tháng thụ thai tính theo Âm lịch</li>
+                <li>Kết quả dự đoán mang tính chất tham khảo, không đảm bảo chính xác 100%</li>
+                <li>Nên kết hợp với các phương pháp khoa học hiện đại</li>
+            </ul>
+            
+            <div class="note">
+                <strong>Lưu ý:</strong> Bảng tính này chỉ mang tính chất tham khảo, dựa trên kinh nghiệm dân gian. 
+                Giới tính thai nhi được quyết định bởi nhiều yếu tố khoa học và tự nhiên.
+            </div>
+        </div>
+        
+        <footer>
+            <p><i class="fas fa-heart"></i> Chúc các gia đình luôn hạnh phúc với những đứa con khỏe mạnh!</p>
+            <p>Bảng tính theo cổ học phương Đông - Phiên bản hiện đại hóa</p>
+        </footer>
+    </div>
+
+    <script>
+        // Dữ liệu bảng tính
+        const predictionTable = {
+            18: ["Gái", "Trai", "Gái", "Trai", "Trai", "Trai", "Trai", "Trai", "Trai", "Trai", "Trai", "Trai"],
+            19: ["Trai", "Gái", "Trai", "Gái", "Gái", "Trai", "Trai", "Trai", "Trai", "Trai", "Gái", "Gái"],
+            20: ["Gái", "Trai", "Gái", "Trai", "Trai", "Trai", "Trai", "Trai", "Trai", "Gái", "Trai", "Trai"],
+            21: ["Trai", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái"],
+            22: ["Gái", "Trai", "Trai", "Gái", "Trai", "Gái", "Gái", "Trai", "Gái", "Gái", "Gái", "Gái"],
+            23: ["Trai", "Trai", "Gái", "Trai", "Trai", "Gái", "Trai", "Gái", "Gái", "Gái", "Gái", "Trai"],
+            24: ["Trai", "Gái", "Trai", "Trai", "Gái", "Trai", "Trai", "Gái", "Gái", "Gái", "Gái", "Gái"],
+            25: ["Gái", "Trai", "Trai", "Gái", "Gái", "Trai", "Gái", "Trai", "Trai", "Trai", "Trai", "Trai"],
+            26: ["Trai", "Gái", "Trai", "Gái", "Gái", "Trai", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái"],
+            27: ["Gái", "Trai", "Gái", "Trai", "Gái", "Gái", "Trai", "Trai", "Trai", "Gái", "Gái", "Gái"],
+            28: ["Trai", "Gái", "Trai", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Trai"],
+            29: ["Gái", "Trai", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Trai", "Trai"],
+            30: ["Trai", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Trai"],
+            31: ["Trai", "Gái", "Trai", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái"],
+            32: ["Trai", "Gái", "Trai", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái"],
+            33: ["Gái", "Trai", "Gái", "Trai", "Gái", "Gái", "Gái", "Trai", "Trai", "Gái", "Gái", "Gái"],
+            34: ["Trai", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Gái", "Trai"],
+            35: ["Trai", "Trai", "Gái", "Trai", "Gái", "Gái", "Trai", "Gái", "Gái", "Gái", "Trai", "Trai"],
+            36: ["Trai", "Gái", "Trai", "Gái", "Gái", "Gái", "Trai", "Gái", "Gái", "Gái", "Gái", "Trai"],
+            37: ["Gái", "Trai", "Gái", "Trai", "Trai", "Gái", "Trai", "Gái", "Gái", "Trai", "Gái", "Trai"],
+            38: ["Trai", "Gái", "Trai", "Gái", "Trai", "Gái", "Trai", "Gái", "Gái", "Gái", "Gái", "Trai"],
+            39: ["Gái", "Trai", "Gái", "Gái", "Trai", "Trai", "Gái", "Trai", "Gái", "Gái", "Gái", "Gái"],
+            40: ["Trai", "Gái", "Trai", "Gái", "Gái", "Gái", "Trai", "Gái", "Gái", "Gái", "Gái", "Gái"],
+            41: ["Trai", "Gái", "Trai", "Gái", "Gái", "Gái", "Trai", "Gái", "Gái", "Gái", "Gái", "Trai"],
+            42: ["Gái", "Trai", "Gái", "Trai", "Gái", "Gái", "Trai", "Gái", "Gái", "Gái", "Gái", "Trai"],
+            43: ["Gái", "Trai", "Gái", "Trai", "Trai", "Gái", "Gái", "Trai", "Trai", "Trai", "Gái", "Gái"],
+            44: ["Trai", "Gái", "Trai", "Gái", "Trai", "Trai", "Gái", "Trai", "Gái", "Gái", "Trai", "Trai"],
+            45: ["Gái", "Trai", "Trai", "Gái", "Gái", "Gái", "Trai", "Trai", "Gái", "Trai", "Gái", "Gái"]
+        };
+
+        // DOM Elements
+        const calculateBtn = document.getElementById('calculateBtn');
+        const motherAgeInput = document.getElementById('motherAge');
+        const conceptionMonthSelect = document.getElementById('conceptionMonth');
+        const resultElement = document.getElementById('result');
+        const tableCells = document.querySelectorAll('td.boy, td.girl');
+
+        // Sự kiện tính toán
+        calculateBtn.addEventListener('click', function() {
+            const motherAge = parseInt(motherAgeInput.value);
+            const conceptionMonth = parseInt(conceptionMonthSelect.value);
+            
+            // Xóa highlight cũ
+            tableCells.forEach(cell => {
+                cell.classList.remove('highlight');
+            });
+            
+            // Kiểm tra dữ liệu nhập
+            if (!motherAge || !conceptionMonth) {
+                alert('Vui lòng nhập đầy đủ tuổi của mẹ và chọn tháng thụ thai!');
+                return;
+            }
+            
+            if (motherAge < 18 || motherAge > 45) {
+                alert('Tuổi của mẹ phải từ 18 đến 45 (theo bảng tính)!');
+                return;
+            }
+            
+            if (conceptionMonth < 1 || conceptionMonth > 12) {
+                alert('Tháng thụ thai phải từ 1 đến 12!');
+                return;
+            }
+            
+            // Lấy kết quả dự đoán
+            const prediction = predictionTable[motherAge][conceptionMonth - 1];
+            
+            // Hiển thị kết quả
+            resultElement.textContent = `Kết quả dự đoán: Con ${prediction === 'Trai' ? 'Trai 👶' : 'Gái 👧'}`;
+            resultElement.className = `result ${prediction === 'Trai' ? 'boy' : 'girl'}`;
+            resultElement.style.display = 'block';
+            
+            // Highlight ô tương ứng trong bảng
+            const rows = document.querySelectorAll('tbody tr');
+            const targetRow = Array.from(rows).find(row => {
+                const ageCell = row.querySelector('.mother-age-cell');
+                return ageCell && parseInt(ageCell.textContent) === motherAge;
+            });
+            
+            if (targetRow) {
+                const targetCell = targetRow.querySelectorAll('td:not(.mother-age-cell)')[conceptionMonth - 1];
+                if (targetCell) {
+                    targetCell.classList.add('highlight');
+                    targetCell.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+            
+            // Cuộn đến kết quả
+            resultElement.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Tự động điền khi người dùng click vào ô trong bảng
+        tableCells.forEach(cell => {
+            cell.addEventListener('click', function() {
+                const row = this.parentElement;
+                const ageCell = row.querySelector('.mother-age-cell');
+                const motherAge = parseInt(ageCell.textContent);
+                
+                // Tìm vị trí cột của ô được click
+                const cells = Array.from(row.querySelectorAll('td:not(.mother-age-cell)'));
+                const monthIndex = cells.indexOf(this) + 1;
+                
+                // Điền vào form
+                motherAgeInput.value = motherAge;
+                conceptionMonthSelect.value = monthIndex;
+                
+                // Highlight ô được chọn
+                tableCells.forEach(c => c.classList.remove('highlight'));
+                this.classList.add('highlight');
+                
+                // Hiển thị kết quả
+                const prediction = this.classList.contains('boy') ? 'Trai' : 'Gái';
+                resultElement.textContent = `Kết quả dự đoán: Con ${prediction === 'Trai' ? 'Trai 👶' : 'Gái 👧'}`;
+                resultElement.className = `result ${prediction === 'Trai' ? 'boy' : 'girl'}`;
+                resultElement.style.display = 'block';
+                
+                // Cuộn đến công cụ tính toán
+                document.querySelector('.calculator').scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Thêm hiệu ứng hover cho các ô
+        tableCells.forEach(cell => {
+            cell.addEventListener('mouseenter', function() {
+                if (!this.classList.contains('highlight')) {
+                    this.style.transform = 'scale(1.1)';
+                    this.style.transition = 'transform 0.2s';
+                }
+            });
+            
+            cell.addEventListener('mouseleave', function() {
+                if (!this.classList.contains('highlight')) {
+                    this.style.transform = 'scale(1)';
+                }
+            });
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

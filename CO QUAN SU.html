@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cờ Quân Sự Việt Nam - Lục Quân Kỳ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a192f 0%, #1a365d 50%, #0f3460 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        header {
+            text-align: center;
+            padding: 15px 0;
+            margin-bottom: 20px;
+            background: rgba(0, 30, 60, 0.8);
+            border-radius: 15px;
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a3d5ff;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        /* Khu vực bàn cờ */
+        .board-section {
+            flex: 1;
+            min-width: 800px;
+            max-width: 850px;
+            background: rgba(5, 25, 55, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            border: 3px solid #1e88e5;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .board-container {
+            position: relative;
+            margin: 0 auto;
+            width: 808px;
+            height: 564px;
+            background: #2c3e50;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(11, 1fr);
+            grid-template-rows: repeat(11, 1fr);
+            gap: 2px;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+        }
+
+        /* Khu vực điều khiển */
+        .control-section {
+            flex: 0 0 350px;
+            background: rgba(5, 25, 55, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            border: 3px solid #1e88e5;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .control-btn {
+            padding: 18px 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .setup-btn {
+            background: linear-gradient(to right, #4CAF50, #2E7D32);
+            color: white;
+            box-shadow: 0 4px 0 #1B5E20;
+        }
+
+        .play-btn {
+            background: linear-gradient(to right, #2196F3, #0D47A1);
+            color: white;
+            box-shadow: 0 4px 0 #0D47A1;
+        }
+
+        .hide-btn {
+            background: linear-gradient(to right, #9C27B0, #6A1B9A);
+            color: white;
+            box-shadow: 0 4px 0 #4A148C;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(to right, #FF9800, #EF6C00);
+            color: white;
+            box-shadow: 0 4px 0 #E65100;
+        }
+
+        .auto-btn {
+            background: linear-gradient(to right, #F44336, #C62828);
+            color: white;
+            box-shadow: 0 4px 0 #B71C1C;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Ô bàn cờ */
+        .cell {
+            background: #8B4513;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cell:hover {
+            transform: scale(1.05);
+            z-index: 10;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        .border-cell {
+            background: #555 !important;
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 5px,
+                rgba(255,255,255,0.1) 5px,
+                rgba(255,255,255,0.1) 10px
+            ) !important;
+        }
+
+        .blue {
+            background: linear-gradient(135deg, #1e88e5, #0d47a1);
+            color: white;
+        }
+
+        .red {
+            background: linear-gradient(135deg, #e53935, #b71c1c);
+            color: white;
+        }
+
+        .hidden {
+            background: linear-gradient(135deg, #424242, #212121);
+            color: transparent;
+        }
+
+        .hidden::after {
+            content: "?";
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        /* Thông tin */
+        .game-info {
+            background: rgba(0, 20, 40, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 2px solid #ffd700;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .info-label {
+            color: #a3d5ff;
+            font-weight: bold;
+        }
+
+        .info-value {
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Hiển thị quân */
+        .piece-info {
+            background: rgba(0, 30, 60, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+            border: 2px solid #1e88e5;
+            min-height: 180px;
+        }
+
+        .piece-info h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.4rem;
+        }
+
+        .piece-details {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .piece-symbol {
+            font-size: 3.5rem;
+            flex-shrink: 0;
+        }
+
+        .piece-text {
+            flex-grow: 1;
+        }
+
+        .piece-name {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .piece-description {
+            color: #a3d5ff;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        /* Thanh trạng thái */
+        .status-bar {
+            background: rgba(0, 30, 60, 0.9);
+            border-radius: 10px;
+            padding: 15px 25px;
+            margin-bottom: 20px;
+            border: 2px solid #1e88e5;
+            text-align: center;
+            font-size: 1.2rem;
+            color: #ffd700;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Nhãn hàng và cột */
+        .row-label, .col-label {
+            position: absolute;
+            color: #ffd700;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 3px;
+        }
+
+        .row-label {
+            width: 30px;
+            height: 50px;
+            left: -35px;
+        }
+
+        .col-label {
+            width: 50px;
+            height: 25px;
+            top: -30px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1300px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .board-section, .control-section {
+                width: 100%;
+                max-width: 900px;
+            }
+            
+            .board-section {
+                min-width: auto;
+            }
+            
+            .board-container {
+                width: 100%;
+                height: 500px;
+                max-width: 808px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .board-container {
+                height: 400px;
+            }
+            
+            .cell {
+                font-size: 18px;
+            }
+            
+            .hidden::after {
+                font-size: 22px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .board-container {
+                height: 350px;
+            }
+            
+            .cell {
+                font-size: 14px;
+            }
+            
+            .control-btn {
+                padding: 12px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Animation */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Hiệu ứng chiến thắng */
+        .victory {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .victory h2 {
+            font-size: 4rem;
+            color: #ffd700;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        }
+
+        .victory p {
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .victory-btn {
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            background: linear-gradient(to right, #4CAF50, #2E7D32);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .victory-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Hiệu ứng ăn quân */
+        .capture-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+            z-index: 20;
+            animation: fadeOut 0.5s forwards;
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-chess-board"></i> CỜ QUÂN SỰ VIỆT NAM</h1>
+            <p class="subtitle">Lục Quân Kỳ - Trò chơi chiến thuật quân sự đỉnh cao</p>
+        </header>
+
+        <div class="status-bar" id="status">
+            Nhấn "XẾP QUÂN" để bắt đầu trò chơi
+        </div>
+
+        <div class="main-content">
+            <section class="board-section">
+                <div class="board-container">
+                    <!-- Nhãn hàng (1-11) -->
+                    <div class="row-labels">
+                        <div class="row-label" style="top: 25px;">1</div>
+                        <div class="row-label" style="top: 75px;">2</div>
+                        <div class="row-label" style="top: 125px;">3</div>
+                        <div class="row-label" style="top: 175px;">4</div>
+                        <div class="row-label" style="top: 225px;">5</div>
+                        <div class="row-label" style="top: 275px;">6</div>
+                        <div class="row-label" style="top: 325px;">7</div>
+                        <div class="row-label" style="top: 375px;">8</div>
+                        <div class="row-label" style="top: 425px;">9</div>
+                        <div class="row-label" style="top: 475px;">10</div>
+                        <div class="row-label" style="top: 525px;">11</div>
+                    </div>
+                    
+                    <!-- Nhãn cột (A-K) -->
+                    <div class="col-labels">
+                        <div class="col-label" style="left: 25px;">A</div>
+                        <div class="col-label" style="left: 75px;">B</div>
+                        <div class="col-label" style="left: 125px;">C</div>
+                        <div class="col-label" style="left: 175px;">D</div>
+                        <div class="col-label" style="left: 225px;">E</div>
+                        <div class="col-label" style="left: 275px;">F</div>
+                        <div class="col-label" style="left: 325px;">G</div>
+                        <div class="col-label" style="left: 375px;">H</div>
+                        <div class="col-label" style="left: 425px;">I</div>
+                        <div class="col-label" style="left: 475px;">J</div>
+                        <div class="col-label" style="left: 525px;">K</div>
+                    </div>
+                    
+                    <div id="board"></div>
+                </div>
+            </section>
+
+            <section class="control-section">
+                <div class="buttons-grid">
+                    <button class="control-btn setup-btn" id="setupBtn">
+                        <i class="fas fa-random"></i> XẾP QUÂN
+                    </button>
+                    <button class="control-btn play-btn" id="playBtn">
+                        <i class="fas fa-play"></i> CHƠI
+                    </button>
+                    <button class="control-btn hide-btn" id="hideBtn">
+                        <i class="fas fa-eye-slash"></i> ÚP QUÂN
+                    </button>
+                    <button class="control-btn reveal-btn" id="revealBtn">
+                        <i class="fas fa-eye"></i> NGỬA QUÂN
+                    </button>
+                    <button class="control-btn auto-btn" id="autoBtn">
+                        <i class="fas fa-robot"></i> CHƠI TỰ ĐỘNG
+                    </button>
+                </div>
+
+                <div class="game-info">
+                    <div class="info-row">
+                        <span class="info-label">XANH (Bạn):</span>
+                        <span class="info-value" id="blueCount">25 quân</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">ĐỎ (Địch):</span>
+                        <span class="info-value" id="redCount">25 quân</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">ĐÃ LOẠI:</span>
+                        <span class="info-value" id="capturedCount">0 quân</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">THỜI GIAN:</span>
+                        <span class="info-value" id="timeDisplay">00:00</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">LƯỢT CHƠI:</span>
+                        <span class="info-value" id="turnDisplay">XANH</span>
+                    </div>
+                </div>
+
+                <div class="piece-info" id="pieceInfo">
+                    <h3><i class="fas fa-info-circle"></i> THÔNG TIN QUÂN CỜ</h3>
+                    <div class="piece-details">
+                        <div class="piece-symbol" id="pieceSymbol">⭐</div>
+                        <div class="piece-text">
+                            <div class="piece-name" id="pieceName">Tư lệnh</div>
+                            <div class="piece-description" id="pieceDescription">
+                                Cấp bậc cao nhất. Thua là mất toàn bộ. Chỉ đứng ở hàng 1 (Xanh) hoặc 11 (Đỏ).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Màn hình chiến thắng -->
+    <div class="victory" id="victoryScreen">
+        <h2 id="victoryTitle">CHIẾN THẮNG!</h2>
+        <p id="victoryMessage">Đội Xanh đã giành chiến thắng!</p>
+        <button class="victory-btn" id="playAgainBtn">CHƠI LẠI</button>
+    </div>
+
+    <script>
+        // Khai báo biến toàn cục
+        const board = Array(11).fill().map(() => Array(11).fill(null));
+        let isHidden = true;
+        let isManualMode = false;
+        let selectedCell = null;
+        let gameStarted = false;
+        let gameTime = 0;
+        let timerInterval = null;
+        let bluePieces = 25;
+        let redPieces = 25;
+        let capturedPieces = 0;
+        let currentTurn = 'blue';
+        let isAutoPlaying = false;
+
+        // Danh sách quân cờ với thông tin chi tiết
+        const pieces = [
+            {symbol: "⭐", name: "Tư lệnh", rank: 13, count: 1, description: "Cấp bậc cao nhất. Thua là mất toàn bộ. Chỉ đứng ở hàng 1 (Xanh) hoặc 11 (Đỏ)."},
+            {symbol: "🚩", name: "Quân kỳ", rank: 0, count: 1, description: "Không được di chuyển. Bảo vệ là mục tiêu chính.", immovable: true},
+            {symbol: "💣", name: "Bom", rank: 12, count: 2, description: "Nổ cả hai khi ăn hoặc bị ăn. Công binh có thể phá bom.", bomb: true},
+            {symbol: "★★★★", name: "Sư trưởng", rank: 11, count: 1, description: "Cao nhất sau Tư lệnh."},
+            {symbol: "★★★", name: "Quân trưởng", rank: 10, count: 1, description: "Cấp bậc chỉ huy cao cấp."},
+            {symbol: "★★", name: "Sư đoàn trưởng", rank: 9, count: 2, description: "Chỉ huy cấp sư đoàn."},
+            {symbol: "★", name: "Lữ đoàn trưởng", rank: 8, count: 2, description: "Chỉ huy cấp lữ đoàn."},
+            {symbol: "▌▌▌", name: "Trung đoàn trưởng", rank: 7, count: 2, description: "Chỉ huy cấp trung đoàn."},
+            {symbol: "▌▌", name: "Tiểu đoàn trưởng", rank: 6, count: 2, description: "Chỉ huy cấp tiểu đoàn."},
+            {symbol: "▌", name: "Đại đội trưởng", rank: 5, count: 3, description: "Chỉ huy cấp đại đội."},
+            {symbol: "⚙️", name: "Công binh", rank: 4, count: 3, description: "Chuyên phá bom và mìn. Có thể ăn mìn."},
+            {symbol: "⛔", name: "Mìn", rank: 3, count: 3, description: "Không di chuyển. Công binh có thể phá mìn.", immovable: true},
+            {symbol: "👁️", name: "Trinh sát", rank: 2, count: 2, description: "Có thể ăn Tư lệnh nếu tấn công trực diện."}
+        ];
+
+        // DOM Elements
+        const boardElement = document.getElementById('board');
+        const statusElement = document.getElementById('status');
+        const blueCountElement = document.getElementById('blueCount');
+        const redCountElement = document.getElementById('redCount');
+        const capturedCountElement = document.getElementById('capturedCount');
+        const timeDisplayElement = document.getElementById('timeDisplay');
+        const turnDisplayElement = document.getElementById('turnDisplay');
+        const pieceInfoElement = document.getElementById('pieceInfo');
+        const pieceSymbolElement = document.getElementById('pieceSymbol');
+        const pieceNameElement = document.getElementById('pieceName');
+        const pieceDescriptionElement = document.getElementById('pieceDescription');
+        const victoryScreen = document.getElementById('victoryScreen');
+        const victoryTitle = document.getElementById('victoryTitle');
+        const victoryMessage = document.getElementById('victoryMessage');
+
+        // Tạo bàn cờ
+        function createBoard() {
+            boardElement.innerHTML = '';
+            
+            for (let row = 0; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    
+                    // Đánh dấu biên giới (hàng 6 - hàng giữa)
+                    if (row === 5) {
+                        cell.classList.add('border-cell');
+                    }
+                    
+                    // Gán sự kiện
+                    cell.addEventListener('click', () => handleCellClick(row, col));
+                    cell.addEventListener('mouseenter', () => showPieceInfo(row, col));
+                    
+                    boardElement.appendChild(cell);
+                }
+            }
+            
+            // Đặt vị trí bàn cờ theo tọa độ yêu cầu
+            const boardContainer = document.querySelector('.board-container');
+            boardContainer.style.position = 'absolute';
+            boardContainer.style.left = '381px';
+            boardContainer.style.top = '128px';
+            boardContainer.style.width = '808px'; // 1189 - 381 = 808
+            boardContainer.style.height = '564px'; // 692 - 128 = 564
+        }
+
+        // Xếp quân ngẫu nhiên
+        function setupRandomBoard() {
+            // Reset bàn cờ
+            for (let row = 0; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    board[row][col] = null;
+                }
+            }
+            
+            // Reset số lượng quân
+            bluePieces = 25;
+            redPieces = 25;
+            capturedPieces = 0;
+            currentTurn = 'blue';
+            isHidden = true;
+            selectedCell = null;
+            gameStarted = true;
+            
+            // Tạo danh sách vị trí cho mỗi bên
+            const bluePositions = [];
+            const redPositions = [];
+            
+            // Xanh: hàng 6-11 (không bao gồm hàng biên giới 6)
+            for (let row = 6; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    bluePositions.push({row, col});
+                }
+            }
+            
+            // Đỏ: hàng 0-4 (không bao gồm hàng biên giới 6)
+            for (let row = 0; row < 5; row++) {
+                for (let col = 0; col < 11; col++) {
+                    redPositions.push({row, col});
+                }
+            }
+            
+            // Xáo trộn vị trí
+            shuffleArray(bluePositions);
+            shuffleArray(redPositions);
+            
+            // Xếp quân Xanh
+            let blueIndex = 0;
+            for (const piece of pieces) {
+                for (let i = 0; i < piece.count; i++) {
+                    if (blueIndex >= bluePositions.length) break;
+                    
+                    const pos = bluePositions[blueIndex];
+                    board[pos.row][pos.col] = {
+                        symbol: piece.symbol,
+                        name: piece.name,
+                        rank: piece.rank,
+                        side: 'blue',
+                        revealed: false,
+                        bomb: piece.bomb || false,
+                        immovable: piece.immovable || false,
+                        description: piece.description
+                    };
+                    blueIndex++;
+                }
+            }
+            
+            // Đảm bảo Tư lệnh Xanh ở hàng 10 (hàng 11 theo yêu cầu)
+            placeCommander('blue', 10);
+            
+            // Xếp quân Đỏ
+            let redIndex = 0;
+            for (const piece of pieces) {
+                for (let i = 0; i < piece.count; i++) {
+                    if (redIndex >= redPositions.length) break;
+                    
+                    const pos = redPositions[redIndex];
+                    board[pos.row][pos.col] = {
+                        symbol: piece.symbol,
+                        name: piece.name,
+                        rank: piece.rank,
+                        side: 'red',
+                        revealed: false,
+                        bomb: piece.bomb || false,
+                        immovable: piece.immovable || false,
+                        description: piece.description
+                    };
+                    redIndex++;
+                }
+            }
+            
+            // Đảm bảo Tư lệnh Đỏ ở hàng 0 (hàng 1 theo yêu cầu)
+            placeCommander('red', 0);
+            
+            // Bắt đầu đồng hồ
+            startTimer();
+            
+            // Cập nhật giao diện
+            updateDisplay();
+            renderBoard();
+            
+            statusElement.textContent = "Đã xếp quân ngẫu nhiên. Nhấn 'CHƠI' để bắt đầu!";
+            statusElement.style.color = "#4CAF50";
+        }
+
+        // Đặt Tư lệnh vào hàng cụ thể
+        function placeCommander(side, targetRow) {
+            // Tìm Tư lệnh hiện tại
+            let commanderPos = null;
+            for (let row = 0; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    if (board[row][col] && 
+                        board[row][col].symbol === "⭐" && 
+                        board[row][col].side === side) {
+                        commanderPos = {row, col};
+                        break;
+                    }
+                }
+                if (commanderPos) break;
+            }
+            
+            if (!commanderPos) return;
+            
+            // Tìm vị trí trống trong hàng mục tiêu
+            const emptyCells = [];
+            for (let col = 0; col < 11; col++) {
+                if (!board[targetRow][col]) {
+                    emptyCells.push(col);
+                }
+            }
+            
+            if (emptyCells.length === 0) return;
+            
+            // Chọn ngẫu nhiên một cột trống
+            const randomCol = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+            
+            // Di chuyển Tư lệnh
+            const commander = board[commanderPos.row][commanderPos.col];
+            board[commanderPos.row][commanderPos.col] = null;
+            board[targetRow][randomCol] = commander;
+        }
+
+        // Xáo trộn mảng
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Render bàn cờ
+        function renderBoard() {
+            for (let row = 0; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    const cellIndex = row * 11 + col;
+                    const cell = boardElement.children[cellIndex];
+                    const piece = board[row][col];
+                    
+                    // Reset lớp CSS
+                    cell.className = 'cell';
+                    if (row === 5) cell.classList.add('border-cell');
+                    
+                    if (piece) {
+                        // Thêm lớp màu
+                        if (piece.side === 'blue') {
+                            cell.classList.add('blue');
+                        } else {
+                            cell.classList.add('red');
+                        }
+                        
+                        // Hiển thị quân
+                        if (isHidden && !piece.revealed) {
+                            cell.classList.add('hidden');
+                            cell.textContent = '';
+                        } else {
+                            cell.textContent = piece.symbol;
+                            cell.classList.remove('hidden');
+                        }
+                        
+                        // Đánh dấu ô được chọn
+                        if (selectedCell && selectedCell.row === row && selectedCell.col === col) {
+                            cell.style.boxShadow = '0 0 20px #ffd700';
+                            cell.style.transform = 'scale(1.1)';
+                        }
+                    } else {
+                        cell.textContent = '';
+                        cell.classList.remove('blue', 'red', 'hidden');
+                    }
+                }
+            }
+        }
+
+        // Xử lý click ô
+        function handleCellClick(row, col) {
+            if (!gameStarted || isAutoPlaying) return;
+            
+            const piece = board[row][col];
+            
+            if (!isManualMode) {
+                statusElement.textContent = "Vui lòng nhấn 'CHƠI' để bắt đầu chế độ thủ công!";
+                return;
+            }
+            
+            if (!piece) {
+                statusElement.textContent = "Ô trống! Vui lòng chọn quân cờ.";
+                return;
+            }
+            
+            // Nếu chưa chọn quân nào
+            if (!selectedCell) {
+                // Chỉ được chọn quân của lượt hiện tại
+                if (piece.side !== currentTurn) {
+                    statusElement.textContent = `Lượt ${currentTurn === 'blue' ? 'XANH' : 'ĐỎ'}! Chọn quân của bạn.`;
+                    return;
+                }
+                
+                selectedCell = {row, col};
+                piece.revealed = true;
+                statusElement.textContent = `Đã chọn ${piece.name}. Chọn quân địch cùng cột để tấn công!`;
+                renderBoard();
+                showPieceInfo(row, col);
+            } 
+            // Nếu đã chọn quân tấn công
+            else {
+                const selectedPiece = board[selectedCell.row][selectedCell.col];
+                
+                // Kiểm tra hợp lệ
+                if (!isValidMove(selectedCell, {row, col})) {
+                    statusElement.textContent = "Nước đi không hợp lệ! Chỉ được đi dọc trong cùng cột.";
+                    selectedCell = null;
+                    renderBoard();
+                    return;
+                }
+                
+                // Thực hiện tấn công
+                performAttack(selectedCell, {row, col});
+                selectedCell = null;
+            }
+        }
+
+        // Kiểm tra nước đi hợp lệ
+        function isValidMove(from, to) {
+            // Không cùng cột
+            if (from.col !== to.col) return false;
+            
+            // Không di chuyển ngang (luôn đúng vì đã check cùng cột)
+            
+            // Không di chuyển ra ngoài bàn cờ
+            if (to.row < 0 || to.row > 10 || to.col < 0 || to.col > 10) return false;
+            
+            // Không di chuyển đến ô trống (phải có quân địch)
+            if (!board[to.row][to.col]) return false;
+            
+            // Quân đích phải là địch
+            const fromPiece = board[from.row][from.col];
+            const toPiece = board[to.row][to.col];
+            if (fromPiece.side === toPiece.side) return false;
+            
+            // Quân không được di chuyển
+            if (fromPiece.immovable) return false;
+            
+            // Chỉ được di chuyển đến ô liền kề (trên/dưới)
+            return Math.abs(from.row - to.row) === 1;
+        }
+
+        // Thực hiện tấn công
+        function performAttack(from, to) {
+            const attacker = board[from.row][from.col];
+            const defender = board[to.row][to.col];
+            
+            // Ngửa cả hai quân
+            attacker.revealed = true;
+            defender.revealed = true;
+            
+            // Hiệu ứng
+            const cell = boardElement.children[to.row * 11 + to.col];
+            const effect = document.createElement('div');
+            effect.className = 'capture-effect';
+            cell.appendChild(effect);
+            setTimeout(() => effect.remove(), 500);
+            
+            // Xác định kết quả
+            let resultMessage = "";
+            let winner = null;
+            
+            // Bom nổ
+            if (attacker.bomb || defender.bomb) {
+                board[from.row][from.col] = null;
+                board[to.row][to.col] = null;
+                bluePieces--;
+                redPieces--;
+                capturedPieces += 2;
+                resultMessage = "💥 BOM NỔ! Cả hai quân bị tiêu diệt!";
+            }
+            // Công binh phá bom/mìn
+            else if (attacker.name === "Công binh" && (defender.bomb || defender.name === "Mìn")) {
+                board[to.row][to.col] = attacker;
+                board[from.row][from.col] = null;
+                if (defender.side === 'blue') bluePieces--; else redPieces--;
+                capturedPieces++;
+                resultMessage = `⚙️ Công binh phá ${defender.bomb ? 'bom' : 'mìn'} thành công!`;
+                winner = attacker;
+            }
+            else if (defender.name === "Công binh" && (attacker.bomb || attacker.name === "Mìn")) {
+                board[to.row][to.col] = defender;
+                board[from.row][from.col] = null;
+                if (attacker.side === 'blue') bluePieces--; else redPieces--;
+                capturedPieces++;
+                resultMessage = `⚙️ Công binh phá ${attacker.bomb ? 'bom' : 'mìn'} thành công!`;
+                winner = defender;
+            }
+            // So sánh cấp bậc
+            else if (attacker.rank > defender.rank) {
+                board[to.row][to.col] = attacker;
+                board[from.row][from.col] = null;
+                if (defender.side === 'blue') bluePieces--; else redPieces--;
+                capturedPieces++;
+                resultMessage = `${attacker.name} (${attacker.symbol}) ăn ${defender.name} (${defender.symbol})!`;
+                winner = attacker;
+            }
+            else if (attacker.rank < defender.rank) {
+                board[to.row][to.col] = defender;
+                board[from.row][from.col] = null;
+                if (attacker.side === 'blue') bluePieces--; else redPieces--;
+                capturedPieces++;
+                resultMessage = `${defender.name} (${defender.symbol}) ăn ${attacker.name} (${attacker.symbol})!`;
+                winner = defender;
+            }
+            // Cùng cấp bậc
+            else {
+                board[from.row][from.col] = null;
+                board[to.row][to.col] = null;
+                bluePieces--;
+                redPieces--;
+                capturedPieces += 2;
+                resultMessage = "⚔️ HAI QUÂN CÙNG CẤP - CẢ HAI BỊ TIÊU DIỆT!";
+            }
+            
+            // Cập nhật hiển thị
+            updateDisplay();
+            renderBoard();
+            
+            // Hiển thị thông báo
+            const colName = String.fromCharCode(65 + to.col); // A-K
+            statusElement.innerHTML = `${resultMessage}<br>Vị trí: Cột ${colName}, Hàng ${to.row + 1}`;
+            
+            // Kiểm tra điều kiện thắng
+            checkWinCondition();
+            
+            // Đổi lượt nếu chưa kết thúc
+            if (winner) {
+                currentTurn = winner.side;
+                updateTurnDisplay();
+            }
+            
+            // Tự động úp quân nếu đang ở chế độ úp
+            if (isHidden && gameStarted && !isAutoPlaying) {
+                setTimeout(() => {
+                    for (let row = 0; row < 11; row++) {
+                        for (let col = 0; col < 11; col++) {
+                            const piece = board[row][col];
+                            if (piece) {
+                                piece.revealed = false;
+                            }
+                        }
+                    }
+                    renderBoard();
+                    statusElement.textContent = `Lượt ${currentTurn === 'blue' ? 'XANH' : 'ĐỎ'}: Chọn quân để tấn công!`;
+                }, 1500);
+            }
+        }
+
+        // Hiển thị thông tin quân cờ
+        function showPieceInfo(row, col) {
+            const piece = board[row][col];
+            
+            if (piece) {
+                pieceSymbolElement.textContent = piece.symbol;
+                pieceNameElement.textContent = `${piece.name} (${piece.side === 'blue' ? 'XANH' : 'ĐỎ'})`;
+                pieceDescriptionElement.textContent = piece.description;
+                
+                // Thêm thông tin di chuyển
+                if (piece.immovable) {
+                    pieceDescriptionElement.textContent += " KHÔNG DI CHUYỂN.";
+                } else {
+                    pieceDescriptionElement.textContent += " Di chuyển dọc trong cột, tiến sát đối thủ.";
+                }
+            } else {
+                const colName = String.fromCharCode(65 + col);
+                pieceSymbolElement.textContent = "◻️";
+                pieceNameElement.textContent = `Ô trống - Cột ${colName}, Hàng ${row + 1}`;
+                pieceDescriptionElement.textContent = "Ô trống trên bàn cờ.";
+            }
+        }
+
+        // Cập nhật hiển thị thông tin
+        function updateDisplay() {
+            blueCountElement.textContent = `${bluePieces} quân`;
+            redCountElement.textContent = `${redPieces} quân`;
+            capturedCountElement.textContent = `${capturedPieces} quân`;
+            updateTurnDisplay();
+        }
+
+        // Cập nhật hiển thị lượt chơi
+        function updateTurnDisplay() {
+            turnDisplayElement.textContent = currentTurn === 'blue' ? 'XANH' : 'ĐỎ';
+            turnDisplayElement.style.color = currentTurn === 'blue' ? '#1e88e5' : '#e53935';
+        }
+
+        // Bắt đầu đồng hồ
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            gameTime = 0;
+            
+            timerInterval = setInterval(() => {
+                gameTime++;
+                const minutes = Math.floor(gameTime / 60);
+                const seconds = gameTime % 60;
+                timeDisplayElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // Kiểm tra điều kiện thắng
+        function checkWinCondition() {
+            // Kiểm tra Tư lệnh
+            let blueCommander = false;
+            let redCommander = false;
+            
+            for (let row = 0; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    const piece = board[row][col];
+                    if (piece && piece.symbol === "⭐") {
+                        if (piece.side === 'blue') blueCommander = true;
+                        if (piece.side === 'red') redCommander = true;
+                    }
+                }
+            }
+            
+            // Kiểm tra hết quân
+            if (bluePieces === 0 || !blueCommander) {
+                endGame('red', "ĐỎ chiến thắng!");
+                return;
+            }
+            
+            if (redPieces === 0 || !redCommander) {
+                endGame('blue', "XANH chiến thắng!");
+                return;
+            }
+        }
+
+        // Kết thúc game
+        function endGame(winner, message) {
+            gameStarted = false;
+            isManualMode = false;
+            isAutoPlaying = false;
+            
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            
+            // Hiển thị màn hình chiến thắng
+            victoryTitle.textContent = winner === 'blue' ? "XANH CHIẾN THẮNG!" : "ĐỎ CHIẾN THẮNG!";
+            victoryTitle.style.color = winner === 'blue' ? '#1e88e5' : '#e53935';
+            victoryMessage.textContent = message;
+            victoryScreen.style.display = 'flex';
+            
+            // Ngửa tất cả quân
+            isHidden = false;
+            for (let row = 0; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    const piece = board[row][col];
+                    if (piece) {
+                        piece.revealed = true;
+                    }
+                }
+            }
+            renderBoard();
+        }
+
+        // Chơi tự động
+        async function autoPlay() {
+            if (!gameStarted || isAutoPlaying) return;
+            
+            isAutoPlaying = true;
+            isManualMode = false;
+            isHidden = false;
+            
+            // Ngửa tất cả quân
+            for (let row = 0; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    const piece = board[row][col];
+                    if (piece) {
+                        piece.revealed = true;
+                    }
+                }
+            }
+            
+            renderBoard();
+            statusElement.textContent = "Đang chơi tự động...";
+            
+            // Lặp cho đến khi kết thúc game
+            while (gameStarted && isAutoPlaying) {
+                await autoPlayTurn();
+                
+                // Kiểm tra điều kiện thắng
+                checkWinCondition();
+                
+                // Chờ một chút giữa các lượt
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
+            isAutoPlaying = false;
+        }
+
+        // Thực hiện một lượt chơi tự động
+        async function autoPlayTurn() {
+            // Tìm tất cả cột có quân của cả hai bên
+            const columnsWithBoth = [];
+            
+            for (let col = 0; col < 11; col++) {
+                let hasBlue = false;
+                let hasRed = false;
+                let bluePos = null;
+                let redPos = null;
+                
+                for (let row = 0; row < 11; row++) {
+                    const piece = board[row][col];
+                    if (piece) {
+                        if (piece.side === 'blue') {
+                            hasBlue = true;
+                            bluePos = {row, col};
+                        } else {
+                            hasRed = true;
+                            redPos = {row, col};
+                        }
+                    }
+                }
+                
+                if (hasBlue && hasRed && bluePos && redPos) {
+                    // Tìm cặp quân gần nhau nhất trong cột
+                    columnsWithBoth.push({
+                        col,
+                        bluePos,
+                        redPos,
+                        distance: Math.abs(bluePos.row - redPos.row)
+                    });
+                }
+            }
+            
+            if (columnsWithBoth.length === 0) {
+                // Không còn cột nào có cả hai bên
+                statusElement.textContent = "Không còn cột nào có quân của cả hai bên!";
+                return;
+            }
+            
+            // Chọn cột có khoảng cách gần nhất
+            columnsWithBoth.sort((a, b) => a.distance - b.distance);
+            const selectedColumn = columnsWithBoth[0];
+            
+            // Xác định quân nào tấn công (quân gần biên giới hơn)
+            let attacker, defender;
+            
+            if (selectedColumn.bluePos.row < selectedColumn.redPos.row) {
+                // Xanh ở trên, Đỏ ở dưới
+                attacker = selectedColumn.bluePos;
+                defender = selectedColumn.redPos;
+            } else {
+                // Đỏ ở trên, Xanh ở dưới
+                attacker = selectedColumn.redPos;
+                defender = selectedColumn.bluePos;
+            }
+            
+            // Di chuyển quân tấn công đến sát quân phòng thủ
+            const attackDirection = attacker.row < defender.row ? 1 : -1;
+            const targetRow = defender.row - attackDirection;
+            
+            // Kiểm tra xem có thể tấn công trực tiếp không
+            if (Math.abs(attacker.row - defender.row) === 1) {
+                // Tấn công trực tiếp
+                performAttack(attacker, defender);
+            } else {
+                // Di chuyển đến vị trí sát đối thủ
+                const piece = board[attacker.row][attacker.col];
+                board[attacker.row][attacker.col] = null;
+                board[targetRow][attacker.col] = piece;
+                
+                // Cập nhật vị trí attacker
+                attacker.row = targetRow;
+                
+                // Render và chờ
+                renderBoard();
+                statusElement.textContent = `Di chuyển quân đến vị trí sát đối thủ (Cột ${String.fromCharCode(65 + attacker.col)})`;
+                await new Promise(resolve => setTimeout(resolve, 800));
+                
+                // Tấn công
+                performAttack(attacker, defender);
+            }
+            
+            // Chờ một chút
+            await new Promise(resolve => setTimeout(resolve, 800));
+        }
+
+        // Sự kiện cho các nút
+        document.getElementById('setupBtn').addEventListener('click', () => {
+            setupRandomBoard();
+            statusElement.textContent = "Đã xếp quân ngẫu nhiên! Nhấn 'CHƠI' để bắt đầu.";
+            statusElement.style.color = "#4CAF50";
+        });
+
+        document.getElementById('playBtn').addEventListener('click', () => {
+            if (!gameStarted) {
+                statusElement.textContent = "Vui lòng xếp quân trước!";
+                statusElement.style.color = "#FF9800";
+                return;
+            }
+            
+            isManualMode = true;
+            isAutoPlaying = false;
+            statusElement.textContent = "Chế độ thủ công: Lượt XANH, chọn quân xanh để tấn công!";
+            statusElement.style.color = "#2196F3";
+        });
+
+        document.getElementById('hideBtn').addEventListener('click', () => {
+            isHidden = true;
+            for (let row = 0; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    const piece = board[row][col];
+                    if (piece) {
+                        piece.revealed = false;
+                    }
+                }
+            }
+            renderBoard();
+            statusElement.textContent = "Đã úp tất cả quân cờ!";
+            statusElement.style.color = "#9C27B0";
+        });
+
+        document.getElementById('revealBtn').addEventListener('click', () => {
+            isHidden = false;
+            for (let row = 0; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    const piece = board[row][col];
+                    if (piece) {
+                        piece.revealed = true;
+                    }
+                }
+            }
+            renderBoard();
+            statusElement.textContent = "Đã ngửa tất cả quân cờ!";
+            statusElement.style.color = "#FF9800";
+        });
+
+        document.getElementById('autoBtn').addEventListener('click', () => {
+            if (!gameStarted) {
+                statusElement.textContent = "Vui lòng xếp quân trước!";
+                return;
+            }
+            autoPlay();
+        });
+
+        document.getElementById('playAgainBtn').addEventListener('click', () => {
+            victoryScreen.style.display = 'none';
+            setupRandomBoard();
+        });
+
+        // Khởi tạo
+        window.addEventListener('load', () => {
+            createBoard();
+            updateDisplay();
+            
+            // Đặt kích thước bàn cờ chính xác
+            const boardContainer = document.querySelector('.board-container');
+            boardContainer.style.width = '808px';
+            boardContainer.style.height = '564px';
+            
+            statusElement.textContent = "Chào mừng đến với Cờ Quân Sự Việt Nam! Nhấn 'XẾP QUÂN' để bắt đầu.";
+        });
+
+        // Xử lý resize window
+        window.addEventListener('resize', () => {
+            // Giữ bàn cờ trong kích thước cố định
+            const boardContainer = document.querySelector('.board-container');
+            boardContainer.style.width = '808px';
+            boardContainer.style.height = '564px';
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

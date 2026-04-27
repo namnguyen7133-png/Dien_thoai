@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Game Mô Phỏng Cuộc Sống & Tài Chính</title>
+<style>
+body{font-family:Arial;background:#f4f6f8;padding:20px}
+.stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.box{background:#fff;padding:10px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1)}
+button{padding:10px 15px;margin:10px 5px;border:0;border-radius:6px;background:#2563eb;color:#fff;cursor:pointer}
+button:hover{opacity:.9}
+h2,h3{margin-top:20px}
+</style>
+</head>
+<body>
+
+<h2>🎮 Game Mô Phỏng Cuộc Sống – Thu Nhập – Gia Đình</h2>
+
+<div class="stat">
+<div class="box">📆 Năm: <span id="year">0</span></div>
+<div class="box">💰 Thu nhập/năm: <span id="income">0</span></div>
+<div class="box">🏦 Tài sản: <span id="asset">0</span></div>
+<div class="box">⭐ Cấp sống: <span id="level">1</span></div>
+<div class="box">❤️ Từ thiện: <span id="charity">0</span></div>
+<div class="box">🧭 Kim tứ đồ: <span id="quad">E</span></div>
+</div>
+
+<button onclick="nextYear()">⏭️ Sang năm tiếp theo</button>
+
+<h3>🎓 Học tập & đào tạo</h3>
+<div class="stat">
+<div class="box">⏱️ Thời gian học (năm): <input id="studyYears" type="number" value="0" min="0" style="width:80px"></div>
+<div class="box">🏫 Trường/Đào tạo: <select id="school"><option>Không</option><option>Nghề</option><option>Cao đẳng</option><option>Đại học</option><option>MBA</option><option>Quốc tế</option></select></div>
+<div class="box">📚 Ngành: <select id="major"><option>Phổ thông</option><option>IT</option><option>Kinh doanh</option><option>Tài chính</option><option>Kỹ thuật</option><option>Y tế</option></select></div>
+</div>
+<button onclick="invest()">📈 Đầu tư</button>
+<button onclick="donate()">🤝 Làm từ thiện</button>
+
+<h3>👨‍👩‍👧‍👦 Gia đình & giáo dục</h3>
+<div class="stat">
+<div class="box">👨 Cha: <span id="father"></span></div>
+<div class="box">👩 Mẹ: <span id="mother"></span></div>
+<div class="box">🧑 Con trai: <span id="son"></span></div>
+<div class="box">👧 Con gái: <span id="daughter"></span></div>
+<div class="box">💍 Dâu/Rể: <span id="inlaw"></span></div>
+</div>
+
+<h3>🌐 Xu hướng hiện đại</h3>
+<div class="stat">
+<div class="box">🤖 AI: <span id="aiSkill"></span></div>
+<div class="box">💻 Nghề số: <span id="digitalJob"></span></div>
+<div class="box">🧠 Tinh thần: <span id="mental"></span></div>
+<div class="box">🌱 Bền vững: <span id="green"></span></div>
+<div class="box">🌍 Toàn cầu: <span id="global"></span></div>
+</div>
+
+<script>
+let year=0,income=5000,asset=10000,level=1,charity=0,quad='E';
+let aiSkill=1,digitalJob=false,mental=60,green=5,global=0;
+
+function nextYear(){
+ year++;
+ let sy=parseInt(document.getElementById('studyYears').value||0);
+ if(sy>0){
+  document.getElementById('studyYears').value=sy-1;
+  income+=500*level;
+ }else{
+  income+=2000*level;
+ }
+ asset+=income*0.4;
+ if(asset>20000) level=2;
+ if(asset>80000) level=3;
+ if(asset>300000) level=4;
+ if(asset>1000000) level=5;
+ if(year%2===0 && aiSkill<5) aiSkill++;
+ if(level>=3) digitalJob=true;
+ mental=Math.min(100,mental+(sy>0?-1:(level>=3?3:-2)));
+ green+=level>=4?5:2;
+ global=level>=4?1:0;
+ update();
+}
+
+function invest(){asset+=asset*0.1;quad='I';update();}
+function donate(){if(asset>1000){asset-=1000;charity+=1000;quad='B';}update();}
+
+function update(){
+ document.getElementById('year').innerText=year;
+ document.getElementById('income').innerText=income.toLocaleString();
+ document.getElementById('asset').innerText=asset.toLocaleString();
+ document.getElementById('level').innerText=level;
+ document.getElementById('charity').innerText=charity.toLocaleString();
+ document.getElementById('quad').innerText=quad;
+ const edu={
+ 1:['Lao động','Nội trợ','Học nghề','Học nghề','Cấp 1'],
+ 2:['Thợ lành nghề','Dịch vụ','CĐ/ĐH','CĐ/ĐH','Cấp 2'],
+ 3:['Kinh doanh','Quản lý','ĐH','ĐH','Cấp 3'],
+ 4:['CEO','Tài chính','MBA','MBA','Cấp 4'],
+ 5:['Nhà đầu tư','Quản trị TS','QT quốc tế','QT quốc tế','Cấp 5']};
+ document.getElementById('father').innerText=edu[level][0];
+ document.getElementById('mother').innerText=edu[level][1];
+ document.getElementById('son').innerText=edu[level][2];
+ document.getElementById('daughter').innerText=edu[level][3];
+ document.getElementById('inlaw').innerText=edu[level][4];
+ document.getElementById('aiSkill').innerText=['Cơ bản','Khá','Tốt','Nâng cao','Chuyên gia'][aiSkill-1];
+ document.getElementById('digitalJob').innerText=digitalJob?'Có':'Chưa';
+ document.getElementById('mental').innerText=mental>70?'Tốt':mental>50?'Ổn định':'Căng thẳng';
+ document.getElementById('green').innerText=green+'%';
+ document.getElementById('global').innerText=global?'Quốc tế':'Nội địa';
+}
+update();
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

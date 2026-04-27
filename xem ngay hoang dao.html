@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoàng Đạo Giờ Chiếu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        h1 {
+            color: #1a237e;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            color: #5d4037;
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+        
+        .info-panel {
+            background: linear-gradient(135deg, #ffeb3b, #ffc107);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 2px solid #ff9800;
+        }
+        
+        .highlight {
+            color: #d32f2f;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+        
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 14px;
+            text-align: center;
+            min-width: 80px;
+            transition: all 0.3s ease;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #2e7d32, #4caf50);
+            color: white;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            font-size: 1.1rem;
+        }
+        
+        td[contenteditable="true"] {
+            background-color: #f9f9f9;
+            cursor: pointer;
+        }
+        
+        td[contenteditable="true"]:hover {
+            background-color: #e3f2fd;
+            transform: scale(1.05);
+        }
+        
+        .current-hour {
+            background-color: #ff9800 !important;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 0 8px rgba(255, 152, 0, 0.7);
+        }
+        
+        .current-day {
+            background-color: #2196f3 !important;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 0 8px rgba(33, 150, 243, 0.7);
+        }
+        
+        .hour-range {
+            font-size: 0.75rem;
+            color: #e8f5e9;
+            display: block;
+            margin-top: 5px;
+            font-weight: normal;
+        }
+        
+        .instructions {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            border-left: 5px solid #4caf50;
+        }
+        
+        .instructions h3 {
+            color: #2e7d32;
+            margin-bottom: 8px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            th, td {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+            
+            .hour-range {
+                font-size: 0.65rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Hoàng Đạo Giờ Chiếu</h1>
+            <p class="subtitle">Tra cứu giờ hoàng đạo theo ngày Can Chi - Dữ liệu từ 24h.com.vn</p>
+        </header>
+        
+        <div class="info-panel" id="currentInfo">
+            <div class="loading">Đang tải dữ liệu từ 24h.com.vn...</div>
+        </div>
+        
+        <table id="poemTable">
+            <thead>
+                <tr>
+                    <th>Ngày</th>
+                    <th>Tí<span class="hour-range">23h-1h</span></th>
+                    <th>Sửu<span class="hour-range">1h-3h</span></th>
+                    <th>Dần<span class="hour-range">3h-5h</span></th>
+                    <th>Mão<span class="hour-range">5h-7h</span></th>
+                    <th>Thìn<span class="hour-range">7h-9h</span></th>
+                    <th>Tỵ<span class="hour-range">9h-11h</span></th>
+                    <th>Ngọ<span class="hour-range">11h-13h</span></th>
+                    <th>Mùi<span class="hour-range">13h-15h</span></th>
+                    <th>Thân<span class="hour-range">15h-17h</span></th>
+                    <th>Dậu<span class="hour-range">17h-19h</span></th>
+                    <th>Tuất<span class="hour-range">19h-21h</span></th>
+                    <th>Hợi<span class="hour-range">21h-23h</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td contenteditable="true">(Dần Thân)</td>
+                    <td contenteditable="true">Đi</td>
+                    <td contenteditable="true">Đứng</td>
+                    <td contenteditable="true">bình</td>
+                    <td contenteditable="true">yên</td>
+                    <td contenteditable="true">Đến</td>
+                    <td contenteditable="true">Đâu</td>
+                    <td contenteditable="true">cũng</td>
+                    <td contenteditable="true">được</td>
+                    <td contenteditable="true">người</td>
+                    <td contenteditable="true">quen</td>
+                    <td contenteditable="true">Đón</td>
+                    <td contenteditable="true">chào</td>
+                </tr>
+
+                <tr>
+                    <td contenteditable="true">(Mão Dậu)</td>
+                    <td contenteditable="true">Đến</td>
+                    <td contenteditable="true">cửa</td>
+                    <td contenteditable="true">Động</td>
+                    <td contenteditable="true">Đào</td>
+                    <td contenteditable="true">có</td>
+                    <td contenteditable="true">tiên</td>
+                    <td contenteditable="true">Đưa</td>
+                    <td contenteditable="true">Đón</td>
+                    <td contenteditable="true">qua</td>
+                    <td contenteditable="true">Đèo</td>
+                    <td contenteditable="true">Thiên</td>
+                    <td contenteditable="true">thai</td>
+                </tr>
+
+                <tr>
+                    <td contenteditable="true">(Thìn Tuất)</td>
+                    <td contenteditable="true">Ai</td>
+                    <td contenteditable="true">ngóng</td>
+                    <td contenteditable="true">Đợi</td>
+                    <td contenteditable="true">ai</td>
+                    <td contenteditable="true">Đường</td>
+                    <td contenteditable="true">Đi</td>
+                    <td contenteditable="true">suôn</td>
+                    <td contenteditable="true">sẻ</td>
+                    <td contenteditable="true">Đẹp</td>
+                    <td contenteditable="true">Đôi</td>
+                    <td contenteditable="true">bạn</td>
+                    <td contenteditable="true">Đời</td>
+                </tr>
+
+                <tr>
+                    <td contenteditable="true">(Tị Hợi)</td>
+                    <td contenteditable="true">Cuối</td>
+                    <td contenteditable="true">Đất</td>
+                    <td contenteditable="true">cùng</td>
+                    <td contenteditable="true">trời</td>
+                    <td contenteditable="true">Đến</td>
+                    <td contenteditable="true">nơi</td>
+                    <td contenteditable="true">Đắc</td>
+                    <td contenteditable="true">Địa</td>
+                    <td contenteditable="true">còn</td>
+                    <td contenteditable="true">ngồi</td>
+                    <td contenteditable="true">Đắn</td>
+                    <td contenteditable="true">Đo</td>
+                </tr>
+
+                <tr>
+                    <td contenteditable="true">(Tí Ngọ)</td>
+                    <td contenteditable="true">Đẹp</td>
+                    <td contenteditable="true">Đẽ</td>
+                    <td contenteditable="true">tiền</td>
+                    <td contenteditable="true">đồ</td>
+                    <td contenteditable="true">qua</td>
+                    <td contenteditable="true">sông</td>
+                    <td contenteditable="true">Đừng</td>
+                    <td contenteditable="true">vội</td>
+                    <td contenteditable="true">Đợi</td>
+                    <td contenteditable="true">Đò</td>
+                    <td contenteditable="true">sang</td>
+                    <td contenteditable="true">ngang</td>
+                </tr>
+
+                <tr>
+                    <td contenteditable="true">(Sửu Mùi)</td>
+                    <td contenteditable="true">Sẳn</td>
+                    <td contenteditable="true">kẻ</td>
+                    <td contenteditable="true">Đưa</td>
+                    <td contenteditable="true">Đường</td>
+                    <td contenteditable="true">băng</td>
+                    <td contenteditable="true">đèo</td>
+                    <td contenteditable="true">vượt</td>
+                    <td contenteditable="true">suối</td>
+                    <td contenteditable="true">Đem</td>
+                    <td contenteditable="true">sang</td>
+                    <td contenteditable="true">Đồn</td>
+                    <td contenteditable="true">Điền</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="instructions">
+            <h3>Hướng dẫn sử dụng</h3>
+            <p>• Ô màu <span style="color:#2196f3; font-weight:bold">xanh dương</span> hiển thị ngày Can Chi hiện tại</p>
+            <p>• Ô màu <span style="color:#ff9800; font-weight:bold">cam</span> hiển thị giờ Can Chi hiện tại</p>
+            <p>• Bạn có thể chỉnh sửa nội dung trong các ô bằng cách click vào chúng</p>
+            <p>• Thông tin ngày giờ Can Chi được cập nhật tự động mỗi phút</p>
+            <p>• Dữ liệu ngày âm lịch được lấy từ 24h.com.vn</p>
+        </div>
+        
+        <footer>
+            <p>Game Hoàng Đạo Giờ Chiếu | Dữ liệu từ 24h.com.vn</p>
+        </footer>
+    </div>
+
+    <script>
+        // Dữ liệu giờ Can Chi
+        const chiHours = {
+            'Tí': [23, 0, 1], 'Sửu': [1, 2, 3], 'Dần': [3, 4, 5], 'Mão': [5, 6, 7],
+            'Thìn': [7, 8, 9], 'Tỵ': [9, 10, 11], 'Ngọ': [11, 12, 13], 'Mùi': [13, 14, 15],
+            'Thân': [15, 16, 17], 'Dậu': [17, 18, 19], 'Tuất': [19, 20, 21], 'Hợi': [21, 22, 23]
+        };
+
+        // Biến lưu trữ dữ liệu ngày Can Chi
+        let currentCanChiData = null;
+
+        function getCurrentVietnameseDateTime() {
+            const now = new Date();
+            const options = { 
+                timeZone: 'Asia/Ho_Chi_Minh', 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false 
+            };
+            
+            const formatter = new Intl.DateTimeFormat('vi-VN', options);
+            const parts = formatter.formatToParts(now);
+            
+            const date = {
+                day: parseInt(parts.find(p => p.type === 'day').value),
+                month: parseInt(parts.find(p => p.type === 'month').value),
+                year: parseInt(parts.find(p => p.type === 'year').value),
+                hour: parseInt(parts.find(p => p.type === 'hour').value),
+                minute: parseInt(parts.find(p => p.type === 'minute').value)
+            };
+            
+            return date;
+        }
+
+        // Hàm lấy dữ liệu từ 24h.com.vn (sử dụng proxy CORS)
+        async function fetchLunarDataFrom24h() {
+            try {
+                const currentDate = getCurrentVietnameseDateTime();
+                const today = `${currentDate.day}/${currentDate.month}/${currentDate.year}`;
+                
+                // Sử dụng CORS proxy để tránh lỗi CORS
+                const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+                const targetUrl = `https://www2.24h.com.vn/lich-van-nien-c936.html`;
+                
+                const response = await fetch(proxyUrl + targetUrl);
+                
+                if (!response.ok) {
+                    throw new Error('Không thể tải dữ liệu từ 24h.com.vn');
+                }
+                
+                const html = await response.text();
+                return parseLunarDataFromHTML(html, currentDate);
+                
+            } catch (error) {
+                console.error('Lỗi khi lấy dữ liệu:', error);
+                // Fallback: sử dụng dữ liệu mẫu
+                return getFallbackLunarData();
+            }
+        }
+
+        // Hàm phân tích HTML để lấy dữ liệu âm lịch
+        function parseLunarDataFromHTML(html, currentDate) {
+            // Tạo DOM ảo để phân tích HTML
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            // Tìm thông tin ngày âm lịch trong HTML
+            // (Cần điều chỉnh selector dựa trên cấu trúc thực tế của trang)
+            const lunarElements = doc.querySelectorAll('.lunar-date, .amlich, .canchi');
+            
+            let lunarDate = 'Bính Thân'; // Giá trị mặc định
+            
+            // Thử các selector khác nhau để tìm thông tin Can Chi
+            for (let element of lunarElements) {
+                const text = element.textContent.trim();
+                if (text.match(/(Giáp|Ất|Bính|Đinh|Mậu|Kỷ|Canh|Tân|Nhâm|Quý)\s+(Tý|Sửu|Dần|Mão|Thìn|Tỵ|Ngọ|Mùi|Thân|Dậu|Tuất|Hợi)/i)) {
+                    lunarDate = text;
+                    break;
+                }
+            }
+            
+            return {
+                date: currentDate,
+                canChi: lunarDate,
+                lunarDay: 'Mồng 1', // Có thể thêm thông tin này nếu có
+                lunarMonth: '1',
+                lunarYear: 'Giáp Thìn'
+            };
+        }
+
+        // Dữ liệu fallback khi không thể lấy dữ liệu từ web
+        function getFallbackLunarData() {
+            const currentDate = getCurrentVietnameseDateTime();
+            
+            // Dữ liệu mẫu - cập nhật theo ngày thực tế
+            const fallbackData = {
+                "2024": {
+                    "01": {
+                        "30": "Bính Thân"
+                    }
+                }
+            };
+            
+            const canChi = fallbackData[currentDate.year] && 
+                          fallbackData[currentDate.year][currentDate.month] && 
+                          fallbackData[currentDate.year][currentDate.month][currentDate.day] 
+                          ? fallbackData[currentDate.year][currentDate.month][currentDate.day] 
+                          : "Bính Thân"; // Giá trị mặc định
+            
+            return {
+                date: currentDate,
+                canChi: canChi,
+                lunarDay: 'Mồng 1',
+                lunarMonth: '1', 
+                lunarYear: 'Giáp Thìn'
+            };
+        }
+
+        function calculateCanChiHour(hour, dayCanChi) {
+            const canList = ['Giáp', 'Ất', 'Bính', 'Đinh', 'Mậu', 'Kỷ', 'Canh', 'Tân', 'Nhâm', 'Quý'];
+            const chiList = ['Tí', 'Sửu', 'Dần', 'Mão', 'Thìn', 'Tỵ', 'Ngọ', 'Mùi', 'Thân', 'Dậu', 'Tuất', 'Hợi'];
+            
+            // Xác định Chi của giờ
+            let hourChi = '';
+            for (const [chi, hours] of Object.entries(chiHours)) {
+                if (hour >= hours[0] && hour < hours[2]) {
+                    hourChi = chi;
+                    break;
+                }
+            }
+            
+            // Tính Can của giờ dựa trên Can của ngày
+            const dayCan = dayCanChi.split(' ')[0];
+            const canIndex = canList.indexOf(dayCan);
+            const chiIndex = chiList.indexOf(hourChi);
+            
+            // Công thức tính Can giờ: (Can ngày * 2 + Chi giờ) % 10
+            const hourCanIndex = (canIndex * 2 + chiIndex) % 10;
+            
+            return `${canList[hourCanIndex]} ${hourChi}`;
+        }
+
+        function getCurrentHourChi() {
+            const current = getCurrentVietnameseDateTime();
+            for (const [chi, hours] of Object.entries(chiHours)) {
+                if (current.hour >= hours[0] && current.hour < hours[2]) {
+                    return chi;
+                }
+            }
+            return '';
+        }
+
+        function getCurrentDayChi() {
+            if (!currentCanChiData) return '';
+            return currentCanChiData.canChi.split(' ')[1]; // Lấy Chi từ Can Chi
+        }
+
+        function highlightCurrentCells() {
+            const currentDayChi = getCurrentDayChi();
+            const currentHourChi = getCurrentHourChi();
+            
+            if (!currentDayChi) return;
+            
+            const table = document.getElementById('poemTable');
+            const headers = table.querySelectorAll('thead th');
+            let hourColumnIndex = -1;
+            
+            headers.forEach((header, index) => {
+                if (header.textContent.includes(currentHourChi)) {
+                    hourColumnIndex = index;
+                }
+            });
+            
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const dayCell = row.cells[0];
+                if (dayCell.textContent.includes(currentDayChi)) {
+                    dayCell.classList.add('current-day');
+                }
+                
+                if (hourColumnIndex !== -1) {
+                    const hourCell = row.cells[hourColumnIndex];
+                    if (hourCell) {
+                        hourCell.classList.add('current-hour');
+                    }
+                }
+            });
+        }
+
+        async function updateCurrentInfo() {
+            const current = getCurrentVietnameseDateTime();
+            
+            // Lấy dữ liệu mới nếu chưa có hoặc đã qua ngày mới
+            if (!currentCanChiData || 
+                currentCanChiData.date.day !== current.day || 
+                currentCanChiData.date.month !== current.month) {
+                
+                currentCanChiData = await fetchLunarDataFrom24h();
+            }
+            
+            const canChiHour = calculateCanChiHour(current.hour, currentCanChiData.canChi);
+            
+            const infoPanel = document.getElementById('currentInfo');
+            infoPanel.innerHTML = `
+                Hôm nay: ${current.day}/${current.month}/${current.year} - 
+                Giờ: ${current.hour}:${current.minute.toString().padStart(2, '0')} - 
+                Ngày <span class="highlight">${currentCanChiData.canChi}</span> - 
+                Giờ <span class="highlight">${canChiHour}</span>
+                <br>
+                <small>Dữ liệu từ 24h.com.vn</small>
+            `;
+            
+            // Xóa highlight cũ
+            const table = document.getElementById('poemTable');
+            const allCells = table.querySelectorAll('td');
+            allCells.forEach(cell => {
+                cell.classList.remove('current-day', 'current-hour');
+            });
+            
+            highlightCurrentCells();
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            await updateCurrentInfo();
+            
+            // Cập nhật mỗi phút
+            setInterval(updateCurrentInfo, 60000);
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

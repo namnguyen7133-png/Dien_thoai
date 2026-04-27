@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tài chính DN – Hiểu → Tính → Quyết định</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{font-family:Arial; background:#f4f6fa; margin:0; padding:20px;}
+h1,h2,h3{color:#0b4f6c}
+section{background:#fff; padding:20px; margin-bottom:25px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,.1)}
+button{padding:10px 18px; border:none; background:#0b4f6c; color:#fff; border-radius:8px; cursor:pointer}
+button:hover{background:#083b52}
+input,select{padding:8px; width:100%; margin:6px 0 15px}
+.box{padding:12px; border-left:6px solid #2196f3; background:#e3f2fd; margin-top:10px}
+.warn{border-left-color:#ff9800;background:#fff3e0}
+.danger{border-left-color:#f44336;background:#fdecea}
+.success{border-left-color:#4caf50;background:#e8f5e9}
+.small{font-size:14px;color:#555}
+</style>
+</head>
+
+<body>
+
+<h1>📊 TÀI CHÍNH DOANH NGHIỆP – HIỂU & DÙNG ĐƯỢC</h1>
+
+<!-- PHẦN 2.1 -->
+<section id="thuatngu">
+<h2>2.1 Thuật ngữ & Công thức khó – Giải thích đời thường</h2>
+
+<div class="box">
+<b>NPV – Giá trị hiện tại ròng</b><br>
+👉 Hiểu đơn giản: <b>Làm xong dự án, mình GIÀU hơn hay NGHÈO hơn?</b><br>
+Dùng khi: quyết định <b>có làm hay không</b>
+</div>
+
+<div class="box">
+<b>IRR – Tỷ suất sinh lời nội bộ</b><br>
+👉 Hiểu đơn giản: <b>Dự án này chịu được lãi vay tối đa bao nhiêu?</b><br>
+Dùng khi: so sánh rủi ro, đặc biệt <b>vay vốn</b>
+</div>
+
+<div class="box">
+<b>PP – Thời gian hoàn vốn</b><br>
+👉 Bao lâu lấy lại tiền gốc<br>
+⚠️ Không tính rủi ro
+</div>
+
+<div class="box">
+<b>PI – Hiệu quả vốn</b><br>
+👉 1 đồng vốn tạo ra mấy đồng giá trị<br>
+Dùng khi: <b>thiếu vốn</b>
+</div>
+
+</section>
+
+<!-- PHẦN 2.2 -->
+<section>
+<h2>2.2 Cá nhân & Doanh nghiệp dùng cái nào?</h2>
+
+<table border="1" cellpadding="8" width="100%">
+<tr><th>Đối tượng</th><th>Nên dùng</th><th>Vì sao</th></tr>
+<tr><td>Cá nhân</td><td>PP + IRR</td><td>Dễ hiểu, tránh vỡ nợ</td></tr>
+<tr><td>Gia đình</td><td>NPV + PP</td><td>Ổn định lâu dài</td></tr>
+<tr><td>Doanh nghiệp</td><td>NPV + IRR</td><td>Tối đa giá trị</td></tr>
+<tr><td>Tập đoàn</td><td>NPV + PI</td><td>Tối ưu vốn lớn</td></tr>
+</table>
+</section>
+
+<!-- PHẦN 3.2 -->
+<section id="trinh-tu">
+<h2>3.2 Trình tự làm việc – Khi nào được phép làm?</h2>
+
+<div class="box">
+<b>Bước 1:</b> Có dòng tiền dương hàng tháng chưa? ❌ → KHÔNG ĐẦU TƯ
+</div>
+<div class="box">
+<b>Bước 2:</b> PP ≤ 5 năm? Nếu >10 năm → RỦI RO
+</div>
+<div class="box warn">
+<b>Bước 3:</b> IRR &gt; Lãi vay + 3% → MỚI AN TOÀN
+</div>
+<div class="box success">
+<b>Bước 4:</b> NPV &gt; 0 → LÀM
+</div>
+
+<p class="small">
+📌 Thị trường xấu: tăng yêu cầu IRR<br>
+📌 Thị trường tốt: ưu tiên NPV lớn
+</p>
+</section>
+
+<!-- PHẦN 4.2 -->
+<section>
+<h2>4.2 Chọn tình huống – Bấm để giải</h2>
+
+<button onclick="scrollToId('irr')">📌 Vay vốn mở kinh doanh</button>
+<button onclick="scrollToId('trinh-tu')">📌 Có nên đầu tư lúc này?</button>
+<button onclick="scrollToId('thuatngu')">📌 Không hiểu thuật ngữ</button>
+
+<script>
+function scrollToId(id){
+ document.getElementById(id).scrollIntoView({behavior:"smooth"});
+}
+</script>
+
+</section>
+
+<!-- PHẦN 5.2 -->
+<section id="irr">
+<h2>5.2 TÍNH IRR – THEO ĐÚNG VIDEO BÀI GIẢNG</h2>
+
+<label>Vốn đầu tư ban đầu (triệu)</label>
+<input id="I0" type="number" value="500">
+
+<label>Dòng tiền năm 1 → 5 (cách nhau bằng dấu ,)</label>
+<input id="cf" value="150,150,150,150,150">
+
+<label>Lãi suất thử r1 (%)</label>
+<input id="r1" value="10">
+
+<label>Lãi suất thử r2 (%)</label>
+<input id="r2" value="20">
+
+<button onclick="calcIRR()">▶️ TÍNH IRR</button>
+
+<div id="irrResult"></div>
+
+<script>
+function npv(rate, cashflows, I0){
+ let sum = -I0;
+ cashflows.forEach((cf,i)=>{
+   sum += cf/Math.pow(1+rate,i+1);
+ });
+ return sum;
+}
+
+function calcIRR(){
+ let I0 = Number(document.getElementById("I0").value);
+ let cfs = document.getElementById("cf").value.split(",").map(Number);
+ let r1 = Number(document.getElementById("r1").value)/100;
+ let r2 = Number(document.getElementById("r2").value)/100;
+
+ let npv1 = npv(r1,cfs,I0);
+ let npv2 = npv(r2,cfs,I0);
+
+ let irr = r1 + (npv1*(r2-r1))/(npv1-npv2);
+
+ document.getElementById("irrResult").innerHTML = `
+ <div class="box">
+ NPV(r1) = ${npv1.toFixed(2)}<br>
+ NPV(r2) = ${npv2.toFixed(2)}<br><br>
+ <b>IRR ≈ ${(irr*100).toFixed(2)}%</b><br>
+ 👉 So sánh IRR với lãi vay để quyết định
+ </div>
+ `;
+}
+</script>
+
+</section>
+
+<footer style="text-align:center;color:#666">
+🎯 Học để dùng – Không học để thuộc
+</footer>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

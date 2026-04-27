@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công Cụ Tính Toán & Dự Đoán Đặc Biệt V2</title>
+    <style>
+        /* CSS tương tự phiên bản trước, đảm bảo nổi bật trên điện thoại */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f39c12 0%, #e74c3c 100%); /* Màu nền mới: Vàng cam đỏ */
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.85);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.9);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #f1c40f;
+            margin-bottom: 25px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #ecf0f1;
+            font-size: 0.95em;
+        }
+
+        .date-time-inputs {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="date"],
+        input[type="time"],
+        input[type="text"] { /* Dùng type="text" để xử lý số lớn/chuỗi số */
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+        
+        input[type="date"] { flex: 2; }
+        input[type="time"] { flex: 1; }
+        input[type="text"] { width: 100%; margin-top: 5px; }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        #calculateButton {
+            background-color: #2ecc71; /* Màu xanh lá cây nổi bật */
+            color: white;
+        }
+
+        #resetButton {
+            background-color: #95a5a6; /* Màu xám */
+        }
+
+        #result {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            white-space: pre-wrap;
+            color: #ecf0f1;
+            word-wrap: break-word;
+            font-size: 0.95em;
+        }
+        
+        .highlight {
+            color: #f1c40f; /* Vàng */
+            font-weight: bold;
+        }
+        
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.85em;
+        }
+        .result-table th, .result-table td {
+            padding: 8px 5px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .result-table th {
+            background-color: rgba(46, 204, 113, 0.3); /* Xanh lá mờ */
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🔢 Thuật Toán Ghép Số Đặc Biệt</h1>
+
+    <div class="input-group">
+        <label>⏰ Ô 1: Ngày Hiện Tại (16/12/2025)</label>
+        <input type="date" id="currentDateInput" value="2025-12-16">
+    </div>
+    <div class="input-group">
+        <label>🕒 Ô 2: Giờ Hiện Tại (19:00:00)</label>
+        <input type="time" id="currentTimeInput" value="19:00:00" step="1">
+    </div>
+
+    <div class="input-group">
+        <label for="numberInput">🔢 Ô 3: Nhập số (1 đến 15 chữ số. VD: 311211)</label>
+        <input type="text" id="numberInput" placeholder="VD: 311211" maxlength="15">
+    </div>
+
+    <button id="calculateButton" onclick="calculate()">✨ Tính Toán Ghép Số & Dự Đoán Ngày</button>
+    <button id="resetButton" onclick="resetForm()">❌ Xóa Đi & Nhập Lại</button>
+
+    <div id="result">
+        **Kết quả sẽ hiển thị ở đây.**
+    </div>
+</div>
+
+<script>
+    // Khai báo ngày chuẩn: 1/1/1900 UTC
+    const STANDARD_DATE = new Date('1900-01-01T00:00:00Z');
+
+    /**
+     * Hàm chuyển đổi miliseconds thành Chuỗi "Ngày Giờ Phút Giây"
+     */
+    function msToDayTime(ms) {
+        if (isNaN(ms) || ms < 0) return "Dữ liệu không hợp lệ.";
+        
+        const totalSeconds = Math.floor(ms / 1000);
+        const totalMinutes = Math.floor(totalSeconds / 60);
+        const totalHours = Math.floor(totalMinutes / 60);
+        const days = Math.floor(totalHours / 24);
+
+        const seconds = totalSeconds % 60;
+        const minutes = totalMinutes % 60;
+        const hours = totalHours % 24;
+
+        return `${days} ngày, ${hours} giờ, ${minutes} phút, ${seconds} giây.`;
+    }
+
+    /**
+     * Thuật toán Hoán vị (Permutation) - Tạo ra tất cả các số có thể
+     */
+    function getPermutations(arr) {
+        if (arr.length === 0) return [[]];
+        if (arr.length === 1) return [[arr[0]]];
+
+        const first = arr[0];
+        const rest = arr.slice(1);
+        const permsWithoutFirst = getPermutations(rest);
+        const allPerms = [];
+
+        permsWithoutFirst.forEach(perm => {
+            for (let i = 0; i <= perm.length; i++) {
+                const p = [...perm.slice(0, i), first, ...perm.slice(i)];
+                allPerms.push(p);
+            }
+        });
+        return allPerms;
+    }
+
+    /**
+     * Hàm tính toán chính
+     */
+    function calculate() {
+        const currentDateStr = document.getElementById('currentDateInput').value;
+        const currentTimeStr = document.getElementById('currentTimeInput').value;
+        const numberInput = document.getElementById('numberInput').value;
+        const resultDiv = document.getElementById('result');
+
+        resultDiv.innerHTML = "Đang tính toán...";
+
+        if (!currentDateStr || !currentTimeStr || !numberInput) {
+            resultDiv.innerHTML = "Vui lòng nhập đầy đủ Ngày, Giờ và Số cần Hoán vị (Ô 1, Ô 2, Ô 3).";
+            return;
+        }
+        
+        // --- 1. TÍNH T0 (Tổng Giây Hiện Tại) ---
+        // Ghép ngày và giờ nhập vào
+        const currentDateTime = new Date(`${currentDateStr}T${currentTimeStr}`);
+        const currentMs = currentDateTime.getTime();
+        
+        // Tính tổng mili-giây từ 1/1/1900
+        const diffToStandardMs = currentMs - STANDARD_DATE.getTime();
+        const totalCurrentSeconds = Math.floor(diffToStandardMs / 1000); 
+        const T0 = String(totalCurrentSeconds); // Chuyển thành chuỗi để dễ dàng thao tác
+
+        let output = `## 1. Mốc Thời Gian Cơ Sở (T₀)\n\n`;
+        output += `⏰ Thời điểm tính toán: <span class="highlight">${currentDateTime.toLocaleString('vi-VN')}</span>\n`;
+        output += `➡️ T₀ (Tổng số giây từ 01/01/1900): <span class="highlight">${T0.toLocaleString('vi-VN')} giây</span>\n\n`;
+
+        // --- 2. HOÁN VỊ SỐ NHẬP VÀO (Ô 3) ---
+        const digits = numberInput.split('');
+        const permutations = getPermutations(digits);
+        const uniquePerms = [...new Set(permutations.map(arr => arr.join('')))].sort((a, b) => {
+            // Sắp xếp số (dùng BigInt nếu cần)
+            return BigInt(a) > BigInt(b) ? 1 : -1;
+        });
+        
+        output += `## 2. Hoán Vị Số (${numberInput})\n\n`;
+        output += `➡️ Tổng số hoán vị độc nhất: <span class="highlight">${uniquePerms.length}</span>\n\n`;
+        
+        // --- 3. ÁP DỤNG THUẬT TOÁN GHÉP SỐ ĐẶC BIỆT ---
+        output += `## 3. Kết Quả Ghép Số và Dự Đoán Ngày/Giờ\n\n`;
+        
+        const results = [];
+
+        // Xác định độ dài số hoán vị để biết vị trí chữ số cần thay thế trong T0
+        // Nếu số hoán vị có 6 chữ số (111123), chữ số cần thay thế là chữ số thứ 7 (4).
+        // Nếu số hoán vị có 5 chữ số (11123), chữ số cần thay thế là chữ số thứ 6.
+        const L = uniquePerms[0].length; // Độ dài của số hoán vị
+        const V = T0.length - L;        // Vị trí (index) chữ số cần thay thế trong chuỗi T0
+        
+        if (V < 0 || V >= T0.length) {
+            output += `<span style="color:#e74c3c;">Lỗi: Số hoán vị (${L} chữ số) quá dài so với T₀.</span>`;
+            resultDiv.innerHTML = output;
+            return;
+        }
+
+        // Chữ số cần thay thế (Ví dụ T0='3974900400', L=6, V=4. Chữ số là '4')
+        const charToReplace = T0.charAt(V - 1); // JS index bắt đầu từ 0
+        const replacementDigit = String(Number(charToReplace) + 1); // Cộng thêm 1 (Ví dụ: 4 -> 5)
+
+        // Tiền tố của T0 (trước chữ số cần thay thế)
+        const prefix = T0.substring(0, V - 1); // Ví dụ: '397'
+        
+        // Ghi lại logic đã áp dụng
+        output += `* Logic Ghép số: Chữ số thứ <span class="highlight">${V}</span> của T₀ được thay bằng ${charToReplace} + 1 = ${replacementDigit}, sau đó ghép với số hoán vị.\n\n`;
+        output += `<table class="result-table">
+            <thead><tr><th>Số Ghép Mục Tiêu</th><th>Thời Gian Cần Thêm</th><th>Ngày/Giờ Dự Đoán</th></tr></thead>
+            <tbody>`;
+
+        uniquePerms.forEach(perm => {
+            // 1. GHÉP SỐ (Tạo Số Mục Tiêu)
+            const targetSecondsStr = prefix + replacementDigit + perm; 
+            const targetSeconds = BigInt(targetSecondsStr); // Ví dụ: 3975 + 111123 = 3975111123
+
+            // 2. TÍNH KHOẢNG CÁCH THỜI GIAN
+            const currentSecondsBigInt = BigInt(T0);
+            const differenceSecondsBigInt = targetSeconds - currentSecondsBigInt;
+
+            if (differenceSecondsBigInt <= 0) {
+                 // Bỏ qua nếu mốc đã trôi qua
+                 return;
+            }
+
+            const differenceMs = Number(differenceSecondsBigInt) * 1000;
+            
+            // 3. TÍNH NGÀY/GIỜ DỰ ĐOÁN
+            const targetMs = currentMs + differenceMs;
+            const targetDate = new Date(targetMs);
+            
+            // Định dạng kết quả
+            const timeToAdd = msToDayTime(differenceMs);
+            const predictedTime = targetDate.toLocaleString('vi-VN', { 
+                year: 'numeric', month: '2-digit', day: '2-digit', 
+                hour: '2-digit', minute: '2-digit', second: '2-digit', 
+                hour12: false 
+            });
+
+            // Hiển thị trong bảng
+            output += `<tr>
+                <td><span class="highlight">${targetSeconds.toLocaleString('vi-VN')}</span></td>
+                <td>${timeToAdd}</td>
+                <td>${predictedTime}</td>
+            </tr>`;
+        });
+
+        output += `</tbody></table>`;
+        resultDiv.innerHTML = output;
+    }
+
+    /**
+     * Xóa dữ liệu các trường nhập và kết quả
+     */
+    function resetForm() {
+        // Đặt lại ngày và giờ theo yêu cầu (16/12/2025, 19:00:00)
+        document.getElementById('currentDateInput').value = '2025-12-16';
+        document.getElementById('currentTimeInput').value = '19:00:00';
+        
+        // Đặt lại số hoán vị mẫu (311211)
+        document.getElementById('numberInput').value = '311211'; 
+
+        document.getElementById('result').innerHTML = "**Kết quả sẽ hiển thị ở đây.**";
+    }
+
+    // Đặt giá trị mặc định khi tải trang
+    document.addEventListener('DOMContentLoaded', (event) => {
+        resetForm();
+    });
+
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

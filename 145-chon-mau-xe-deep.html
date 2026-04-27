@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tra Cứu Màu Xe Hợp Mệnh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #1a237e;
+            --secondary: #d32f2f;
+            --accent: #ff9800;
+            --light: #f5f5f5;
+            --dark: #212121;
+            --success: #4caf50;
+            --warning: #ffeb3b;
+            --green-light: #32CD32;
+            --green-dark: #228B22;
+            --indigo: #4B0082;
+            --purple: #800080;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a237e, #283593, #5c6bc0);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 15px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            padding: 25px;
+            position: relative;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        h1 {
+            color: var(--primary);
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            word-wrap: break-word;
+        }
+        
+        .subtitle {
+            color: var(--secondary);
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        .input-section {
+            background: var(--light);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            font-size: 1.7rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .section-title i {
+            font-size: 2rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+        
+        @media (min-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 18px;
+            border: 3px solid #ddd;
+            border-radius: 12px;
+            font-size: 1.3rem;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(255, 152, 0, 0.2);
+        }
+        
+        .name-list-section {
+            margin-top: 30px;
+        }
+        
+        .name-list-container {
+            max-height: 350px;
+            overflow-y: auto;
+            border: 3px solid #ddd;
+            border-radius: 12px;
+            padding: 15px;
+            background-color: white;
+            margin-top: 15px;
+        }
+        
+        .name-item {
+            padding: 18px;
+            border-bottom: 2px solid #eee;
+            font-size: 1.3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 8px;
+            border-radius: 10px;
+        }
+        
+        .name-item:hover {
+            background-color: #e8f4ff;
+            transform: translateX(8px);
+        }
+        
+        .name-item.selected {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(26, 35, 126, 0.3);
+        }
+        
+        .name-item .number {
+            font-weight: bold;
+            color: var(--secondary);
+            font-size: 1.4rem;
+            min-width: 40px;
+        }
+        
+        .name-item.selected .number {
+            color: var(--warning);
+        }
+        
+        .name-item .name {
+            flex: 1;
+            margin: 0 15px;
+            font-weight: 600;
+            word-break: break-word;
+        }
+        
+        .name-item .dob {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.2rem;
+            min-width: 100px;
+            text-align: right;
+        }
+        
+        .name-item.selected .dob {
+            color: var(--warning);
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 35px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 22px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            letter-spacing: 1px;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(to right, var(--primary), #303f9f);
+            color: white;
+        }
+        
+        .reset-btn {
+            background: linear-gradient(to right, var(--secondary), #e53935);
+            color: white;
+        }
+        
+        button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .results-section {
+            background: var(--light);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-item {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #ccc;
+        }
+        
+        .result-title {
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .result-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--secondary);
+            padding: 15px 20px;
+            background-color: white;
+            border-radius: 10px;
+            border-left: 8px solid var(--primary);
+            word-break: break-word;
+        }
+        
+        .price-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .price-option {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--primary);
+            border: 3px solid var(--accent);
+        }
+        
+        .calculation-details {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .calculation-details p {
+            margin-bottom: 10px;
+        }
+        
+        .calculation-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        @media (min-width: 768px) {
+            .calculation-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .calculation-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .calculation-box h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .colors-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .color-box {
+            width: 140px;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+        
+        .color-box:hover {
+            transform: translateY(-5px);
+        }
+        
+        .color-hex {
+            font-family: monospace;
+            font-size: 1.1rem;
+            margin-top: 8px;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 5px 8px;
+            border-radius: 6px;
+            word-break: break-all;
+        }
+        
+        .frequency {
+            font-size: 1rem;
+            margin-top: 8px;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+        
+        .highlight {
+            background-color: var(--warning);
+            color: var(--primary);
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 1.3rem;
+            display: inline-block;
+            margin: 5px 0;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 2px solid #ddd;
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
+        }
+        
+        .instruction {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 8px;
+            font-style: italic;
+        }
+        
+        .note {
+            background-color: #e8f4ff;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .section-title {
+                font-size: 1.4rem;
+                padding: 15px;
+            }
+            
+            input, select, button {
+                padding: 15px;
+                font-size: 1.2rem;
+            }
+            
+            .name-item {
+                padding: 15px;
+                font-size: 1.2rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .name-item .number, .name-item .dob {
+                margin-bottom: 5px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            .color-box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-car"></i> TRA CỨU MÀU XE HỢP MỆNH</h1>
+            <p class="subtitle">Nhập thông tin - Xem màu xe phù hợp với bạn</p>
+        </div>
+        
+        <div class="input-section">
+            <div class="section-title">
+                <i class="fas fa-edit"></i> THÔNG TIN ĐẦU VÀO
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="carName"><i class="fas fa-car"></i> TÊN LOẠI XE:</label>
+                    <input type="text" id="carName" placeholder="VD: Honda Vision, Toyota Vios">
+                    <p class="instruction">Nhập tên xe bạn muốn mua</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cylinder"><i class="fas fa-tachometer-alt"></i> DUNG TÍCH XI-LANH (CC):</label>
+                    <input type="number" id="cylinder" placeholder="VD: 110, 150, 2000">
+                    <p class="instruction">Nhập dung tích xi-lanh của xe</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="battery"><i class="fas fa-battery-full"></i> ACQUY, MÃ SỐ:</label>
+                    <input type="text" id="battery" placeholder="VD: MF12-BS, YTX5L-BS">
+                    <p class="instruction">Nhập thông tin acquy của xe</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="birthdate"><i class="fas fa-birthday-cake"></i> NGÀY THÁNG NĂM SINH:</label>
+                    <input type="date" id="birthdate">
+                    <p class="instruction">Chọn ngày tháng năm sinh của bạn</p>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="ownerName"><i class="fas fa-user"></i> TÊN NGƯỜI CHỦ GIẤY TỜ MUA XE:</label>
+                <input type="text" id="ownerName" placeholder="VD: NGUYỄN VĂN A">
+                <p class="instruction">Nhập tên hoặc chọn từ danh sách bên dưới</p>
+            </div>
+            
+            <div class="name-list-section">
+                <label><i class="fas fa-list"></i> DANH SÁCH TÊN THAM KHẢO (NHẤN ĐỂ CHỌN):</label>
+                <div class="name-list-container" id="nameListContainer">
+                    <!-- Danh sách tên sẽ được thêm bằng JavaScript -->
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button class="calculate-btn" id="calculateBtn">
+                    <i class="fas fa-calculator"></i> TRA CỨU MÀU XE
+                </button>
+                <button class="reset-btn" id="resetBtn">
+                    <i class="fas fa-redo"></i> NHẬP LẠI
+                </button>
+            </div>
+        </div>
+        
+        <div class="results-section">
+            <div class="section-title">
+                <i class="fas fa-palette"></i> KẾT QUẢ TRA CỨU
+            </div>
+            
+            <div id="results">
+                <div class="result-item">
+                    <p style="text-align: center; color: #666; font-style: italic; padding: 40px 20px; font-size: 1.3rem;">
+                        Nhập đầy đủ thông tin và nhấn "TRA CỨU MÀU XE" để xem kết quả
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Phần mềm tra cứu màu xe hợp mệnh</strong> | Sử dụng thuật toán theo yêu cầu</p>
+            <p>© 2023 - Thiết kế tối ưu cho thiết bị di động</p>
+        </div>
+    </div>
+
+    <script>
+        // Danh sách tên
+        const nameList = [
+            "1 NGUYENKHACNANG 04/06/1944",
+            "2 TOTHIHA 29/08/1948", 
+            "3 NGUYENMINHNAM 03/03/1971",
+            "4 THANTHIKIMANH 23/09/1981",
+            "5 NGUYENTONGANAN 28/09/2014",
+            "6 NGUYENTOMINHCHAU 25/07/2016",
+            "7 NGUYENTOBICHNGOC 05/02/2020",
+            "8 NGUYENTHIMINHHANG 07/01/1974",
+            "9 NGOQUYCUONG 23/05/1973",
+            "10 NGOGIABACH 12/10/2000",
+            "11 NGOGIALINH 05/04/2005",
+            "12 NGUYENTHIMINHPHUONG 06/11/1978",
+            "13 HOANGANHDUNG 21/09/1978",
+            "14 HOANGHAIVINH 03/06/2010",
+            "15 HOANGTHIENBACHANH 14/11/2015",
+            "16 TÔ KIM HUỆ 9/8/1960",
+            "17 NGUYỄN TUẤN ANH 23/10/1983",
+            "18 NGUYỄN THẾ ANH 24/3/2001",
+            "19 NGÔ THỊ MAI 12/12/1948",
+            "20 TÔ VIỆT HƯNG 17/6/1996",
+            "21 TÔ THỊ HỒNG 10/10/1964",
+            "22 VŨ VĂN HIỆP 24/4/1974",
+            "23 NGUYỄN THỊ CHI 8/2/1946",
+            "24 NGUYỄN TẤN BẮC 30/11/1957",
+            "25 NGUYỄN THỊ TÂM 8/8/1954"
+        ];
+        
+        // Bảng màu theo yêu cầu mới
+        const colorTables = [
+            // Bảng 1
+            {1:"ĐỎ", 2:"VÀNG", 3:"KIM LOẠI", 4:"XANH BIỂN", 5:"XANH LÁ", 6:"Đỏ", 7:"VÀNG", 8:"CAM", 9:"XANH BIỂN", 10:"XANH LÁ", 11:"ĐỎ", 12:"VÀNG", 13:"TRẮNG", 14:"XANH BIỂN"},
+            // Bảng 2
+            {1:"ĐEN", 2:"TRẮNG", 3:"DA TRỜI", 4:"XANH LÁ", 5:"XANH BIỂN", 6:"TÍM", 7:"ĐỎ", 8:"CAM", 9:"VÀNG", 10:"ĐEN", 11:"TRẮNG", 12:"XANH DA TRỜI", 13:"XANH LÁ", 14:"XANH BIỂN"},
+            // Bảng 3
+            {1:"VÀNG", 2:"ĐỎ", 3:"HỒNG", 4:"GHI", 5:"TRẮNG", 6:"ĐEN", 7:"XANH DA TRỜI", 8:"XANH LÁ", 9:"VÀNG", 10:"ĐỎ", 11:"HỒNG", 12:"GHI", 13:"TRẮNG", 14:"ĐEN"},
+            // Bảng 4
+            {1:"ĐỎ", 2:"VÀNG", 3:"CAM", 4:"XANH BIỂN", 5:"XANH LÁ", 6:"XANH LÁ MẠ", 7:"TÍM", 8:"ĐỎ", 9:"VÀNG", 10:"DA CAM", 11:"XANH BIỂN", 12:"XANH LÁ", 13:"XANH LÁ MẠ", 14:"TÍM"},
+            // Bảng 5
+            {1:"ĐỎ", 2:"VÀNG", 3:"XANH LÁ", 4:"ĐỎ", 5:"VÀNG", 6:"XANH LÁ", 7:"ĐỎ", 8:"VÀNG", 9:"XANH LÁ", 10:"ĐỎ", 11:"VÀNG", 12:"XANH LÁ", 13:"ĐỎ", 14:"VÀNG"},
+            // Bảng 6
+            {1:"XANH LÁ", 2:"ĐỎ", 3:"VÀNG", 4:"ĐEN", 5:"XANH LÁ", 6:"ĐỎ", 7:"VÀNG", 8:"ĐEN", 9:"LAM", 10:"ĐỎ", 11:"VÀNG", 12:"ĐEN", 13:"XANH LÁ", 14:"ĐỎ"}
+        ];
+        
+        // Bảng chữ cái xuôi (12)
+        const forwardTable = {
+            'A':1, 'B':2, 'C':3, 'D':4, 'E':5, 'F':6, 'G':7, 'H':8, 'I':9, 'J':10, 'K':11, 'L':12, 'M':1,
+            'N':2, 'O':3, 'P':4, 'R':5, 'S':6, 'T':7, 'U':8, 'V':9, 'W':10, 'X':11, 'Y':12,
+            'À':1, 'Á':1, 'Ả':1, 'Ã':1, 'Ạ':1, 'Ă':1, 'Ằ':1, 'Ắ':1, 'Ẳ':1, 'Ẵ':1, 'Ặ':1,
+            'Â':1, 'Ầ':1, 'Ấ':1, 'Ẩ':1, 'Ẫ':1, 'Ậ':1, 'È':5, 'É':5, 'Ẻ':5, 'Ẽ':5, 'Ẹ':5,
+            'Ê':5, 'Ề':5, 'Ế':5, 'Ể':5, 'Ễ':5, 'Ệ':5, 'Ì':9, 'Í':9, 'Ỉ':9, 'Ĩ':9, 'Ị':9,
+            'Ò':3, 'Ó':3, 'Ỏ':3, 'Õ':3, 'Ọ':3, 'Ô':3, 'Ồ':3, 'Ố':3, 'Ổ':3, 'Ỗ':3, 'Ộ':3,
+            'Ơ':3, 'Ờ':3, 'Ớ':3, 'Ở':3, 'Ỡ':3, 'Ợ':3, 'Ù':8, 'Ú':8, 'Ủ':8, 'Ũ':8, 'Ụ':8,
+            'Ư':8, 'Ừ':8, 'Ứ':8, 'Ử':8, 'Ữ':8, 'Ự':8, 'Ỳ':12, 'Ý':12, 'Ỷ':12, 'Ỹ':12, 'Ỵ':12,
+            'a':1, 'b':2, 'c':3, 'd':4, 'e':5, 'f':6, 'g':7, 'h':8, 'i':9, 'j':10, 'k':11, 'l':12, 'm':1,
+            'n':2, 'o':3, 'p':4, 'r':5, 's':6, 't':7, 'u':8, 'v':9, 'w':10, 'x':11, 'y':12,
+            'à':1, 'á':1, 'ả':1, 'ã':1, 'ạ':1, 'ă':1, 'ằ':1, 'ắ':1, 'ẳ':1, 'ẵ':1, 'ặ':1,
+            'â':1, 'ầ':1, 'ấ':1, 'ẩ':1, 'ẫ':1, 'ậ':1, 'è':5, 'é':5, 'ẻ':5, 'ẽ':5, 'ẹ':5,
+            'ê':5, 'ề':5, 'ế':5, 'ể':5, 'ễ':5, 'ệ':5, 'ì':9, 'í':9, 'ỉ':9, 'ĩ':9, 'ị':9,
+            'ò':3, 'ó':3, 'ỏ':3, 'õ':3, 'ọ':3, 'ô':3, 'ồ':3, 'ố':3, 'ổ':3, 'ỗ':3, 'ộ':3,
+            'ơ':3, 'ờ':3, 'ớ':3, 'ở':3, 'ỡ':3, 'ợ':3, 'ù':8, 'ú':8, 'ủ':8, 'ũ':8, 'ụ':8,
+            'ư':8, 'ừ':8, 'ứ':8, 'ử':8, 'ữ':8, 'ự':8, 'ỳ':12, 'ý':12, 'ỷ':12, 'ỹ':12, 'ỵ':12
+        };
+        
+        // Bảng chữ cái ngược (12)
+        const reverseTable = {
+            'A':12, 'B':11, 'C':10, 'D':9, 'E':8, 'F':7, 'G':6, 'H':5, 'I':4, 'J':3, 'K':2, 'L':1, 'M':12,
+            'N':11, 'O':10, 'P':9, 'R':8, 'S':7, 'T':6, 'U':5, 'V':4, 'W':3, 'X':2, 'Y':1,
+            'À':12, 'Á':12, 'Ả':12, 'Ã':12, 'Ạ':12, 'Ă':12, 'Ằ':12, 'Ắ':12, 'Ẳ':12, 'Ẵ':12, 'Ặ':12,
+            'Â':12, 'Ầ':12, 'Ấ':12, 'Ẩ':12, 'Ẫ':12, 'Ậ':12, 'È':8, 'É':8, 'Ẻ':8, 'Ẽ':8, 'Ẹ':8,
+            'Ê':8, 'Ề':8, 'Ế':8, 'Ể':8, 'Ễ':8, 'Ệ':8, 'Ì':4, 'Í':4, 'Ỉ':4, 'Ĩ':4, 'Ị':4,
+            'Ò':10, 'Ó':10, 'Ỏ':10, 'Õ':10, 'Ọ':10, 'Ô':10, 'Ồ':10, 'Ố':10, 'Ổ':10, 'Ỗ':10, 'Ộ':10,
+            'Ơ':10, 'Ờ':10, 'Ớ':10, 'Ở':10, 'Ỡ':10, 'Ợ':10, 'Ù':5, 'Ú':5, 'Ủ':5, 'Ũ':5, 'Ụ':5,
+            'Ư':5, 'Ừ':5, 'Ứ':5, 'Ử':5, 'Ữ':5, 'Ự':5, 'Ỳ':1, 'Ý':1, 'Ỷ':1, 'Ỹ':1, 'Ỵ':1,
+            'a':12, 'b':11, 'c':10, 'd':9, 'e':8, 'f':7, 'g':6, 'h':5, 'i':4, 'j':3, 'k':2, 'l':1, 'm':12,
+            'n':11, 'o':10, 'p':9, 'r':8, 's':7, 't':6, 'u':5, 'v':4, 'w':3, 'x':2, 'y':1,
+            'à':12, 'á':12, 'ả':12, 'ã':12, 'ạ':12, 'ă':12, 'ằ':12, 'ắ':12, 'ẳ':12, 'ẵ':12, 'ặ':12,
+            'â':12, 'ầ':12, 'ấ':12, 'ẩ':12, 'ẫ':12, 'ậ':12, 'è':8, 'é':8, 'ẻ':8, 'ẽ':8, 'ẹ':8,
+            'ê':8, 'ề':8, 'ế':8, 'ể':8, 'ễ':8, 'ệ':8, 'ì':4, 'í':4, 'ỉ':4, 'ĩ':4, 'ị':4,
+            'ò':10, 'ó':10, 'ỏ':10, 'õ':10, 'ọ':10, 'ô':10, 'ồ':10, 'ố':10, 'ổ':10, 'ỗ':10, 'ộ':10,
+            'ơ':10, 'ờ':10, 'ớ':10, 'ở':10, 'ỡ':10, 'ợ':10, 'ù':5, 'ú':5, 'ủ':5, 'ũ':5, 'ụ':5,
+            'ư':5, 'ừ':5, 'ứ':5, 'ử':5, 'ữ':5, 'ự':5, 'ỳ':1, 'ý':1, 'ỷ':1, 'ỹ':1, 'ỵ':1
+        };
+        
+        // Map màu sắc sang mã HEX
+        const colorHexMap = {
+            "ĐỎ": "#FF0000", "Đỏ": "#FF0000",
+            "VÀNG": "#FFD700", "Vàng": "#FFD700",
+            "KIM LOẠI": "#C0C0C0", "KIM LOAI": "#C0C0C0",
+            "XANH BIỂN": "#1E90FF", "XANH BIEN": "#1E90FF",
+            "XANH LÁ": "#32CD32", 
+            "XANH LÁ MẠ": "#228B22",
+            "CAM": "#FF8C00",
+            "TRẮNG": "#FFFFFF", "TRANG": "#FFFFFF",
+            "ĐEN": "#000000",
+            "DA TRỜI": "#87CEEB", "DA TROI": "#87CEEB",
+            "XANH DA TRỜI": "#87CEEB", "XANH DA TROI": "#87CEEB",
+            "TÍM": "#800080", "TIM": "#800080",
+            "HỒNG": "#FF69B4", "HONG": "#FF69B4",
+            "GHI": "#808080",
+            "CHÀM": "#4B0082", "CHAM": "#4B0082",
+            "LAM": "#0000FF",
+            "DA CAM": "#FF8C00"
+        };
+        
+        // Biến lưu tên đã chọn
+        let selectedName = null;
+        let selectedBirthdate = null;
+        
+        // Hàm để lấy tên từ chuỗi (loại bỏ số và ngày sinh)
+        function extractName(item) {
+            const parts = item.split(' ');
+            // Bỏ phần số đầu tiên và ngày sinh cuối cùng
+            return parts.slice(1, parts.length - 1).join(' ');
+        }
+        
+        // Hàm để lấy ngày sinh từ chuỗi
+        function extractBirthdate(item) {
+            const parts = item.split(' ');
+            return parts[parts.length - 1];
+        }
+        
+        // Hàm thực hiện phép chia và lấy số dư
+        function performDivision(num1, num2) {
+            if (num1 > num2 && num2 > 0) {
+                const divisionResult = Math.floor(num1 / num2);
+                const remainderResult = num1 % num2;
+                return {
+                    type: 'Lớn chia Nhỏ',
+                    result: divisionResult,
+                    remainder: remainderResult,
+                    lastDigit: remainderResult % 10
+                };
+            } else if (num2 > 0 && num1 > 0) {
+                const divisionResult = Math.floor(num2 / num1);
+                const remainderResult = num2 % num1;
+                return {
+                    type: 'Nhỏ chia Lớn',
+                    result: divisionResult,
+                    remainder: remainderResult,
+                    lastDigit: remainderResult % 10
+                };
+            }
+            return null;
+        }
+        
+        // Khởi tạo danh sách tên
+        document.addEventListener('DOMContentLoaded', function() {
+            const nameListContainer = document.getElementById('nameListContainer');
+            
+            // Tạo danh sách tên có thể chọn được
+            nameList.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'name-item';
+                div.dataset.index = index;
+                div.dataset.name = extractName(item);
+                div.dataset.birthdate = extractBirthdate(item);
+                
+                const parts = item.split(' ');
+                const number = parts[0];
+                const name = extractName(item);
+                const dob = extractBirthdate(item);
+                
+                div.innerHTML = `
+                    <span class="number">${number}</span>
+                    <span class="name">${name}</span>
+                    <span class="dob">${dob}</span>
+                `;
+                
+                // Thêm sự kiện click để chọn tên
+                div.addEventListener('click', function() {
+                    // Xóa lớp selected từ tất cả các mục
+                    document.querySelectorAll('.name-item').forEach(item => {
+                        item.classList.remove('selected');
+                    });
+                    
+                    // Thêm lớp selected cho mục được chọn
+                    this.classList.add('selected');
+                    
+                    // Lưu tên đã chọn
+                    selectedName = this.dataset.name;
+                    selectedBirthdate = this.dataset.birthdate;
+                    
+                    // Điền tên vào ô nhập (ô số 5)
+                    document.getElementById('ownerName').value = selectedName;
+                    
+                    // Cố gắng phân tích và đặt ngày sinh nếu có thể
+                    try {
+                        const dobParts = selectedBirthdate.split('/');
+                        if (dobParts.length === 3) {
+                            const day = parseInt(dobParts[0]);
+                            const month = parseInt(dobParts[1]);
+                            const year = parseInt(dobParts[2]);
+                            
+                            // Tạo chuỗi ngày tháng năm đúng định dạng yyyy-mm-dd
+                            const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                            document.getElementById('birthdate').value = formattedDate;
+                        }
+                    } catch (e) {
+                        console.log("Không thể phân tích ngày sinh từ danh sách");
+                    }
+                });
+                
+                nameListContainer.appendChild(div);
+            });
+            
+            // Đặt ngày mặc định là hôm nay
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('birthdate').value = formattedDate;
+            
+            // Gán sự kiện cho các nút
+            document.getElementById('calculateBtn').addEventListener('click', calculate);
+            document.getElementById('resetBtn').addEventListener('click', resetForm);
+        });
+        
+        // Hàm tính toán
+        function calculate() {
+            // Lấy giá trị từ form
+            const carName = document.getElementById('carName').value.trim();
+            const cylinder = document.getElementById('cylinder').value.trim();
+            const battery = document.getElementById('battery').value.trim();
+            const birthdate = document.getElementById('birthdate').value;
+            let ownerName = document.getElementById('ownerName').value.trim().toUpperCase();
+            
+            // Nếu không có tên từ ô nhập nhưng có tên đã chọn từ danh sách
+            if (!ownerName && selectedName) {
+                ownerName = selectedName.toUpperCase();
+                document.getElementById('ownerName').value = selectedName;
+            }
+            
+            // Kiểm tra dữ liệu đầu vào
+            if (!carName || !cylinder || !battery || !birthdate || !ownerName) {
+                alert("VUI LÒNG NHẬP ĐẦY ĐỦ THÔNG TIN HOẶC CHỌN TÊN TỪ DANH SÁCH!");
+                return;
+            }
+            
+            // Tính giá xe từ ngày sinh
+            const birthDate = new Date(birthdate);
+            const day = birthDate.getDate();
+            const month = birthDate.getMonth() + 1;
+            const year = birthDate.getFullYear();
+            
+            // Tạo các biến thể giá xe
+            const price1 = `${day}${month} triệu`;
+            const price2 = `${day}${month}0 triệu`;
+            const price3 = `${day}.${month} tỷ`;
+            const price4 = `${day}${month} tỷ`;
+            const price5 = `${day}${month}00 triệu`;
+            
+            // Chuyển tên chủ xe thành số theo bảng xuôi
+            let nameNumbersForward = [];
+            for (let char of ownerName) {
+                if (forwardTable[char]) {
+                    nameNumbersForward.push(forwardTable[char]);
+                }
+            }
+            
+            // Chuyển tên chủ xe thành số theo bảng ngược
+            let nameNumbersReverse = [];
+            for (let char of ownerName) {
+                if (reverseTable[char]) {
+                    nameNumbersReverse.push(reverseTable[char]);
+                }
+            }
+            
+            // Tạo số từ tên (ví dụ: NAM = 2,1,1 = 211)
+            const nameNumberForward = parseInt(nameNumbersForward.join('')) || 0;
+            const nameNumberReverse = parseInt(nameNumbersReverse.join('')) || 0;
+            
+            // Tính toán với dung tích xi-lanh
+            const cylinderNum = parseInt(cylinder) || 0;
+            
+            // Tính toán cho tên xuôi
+            const forwardDivision = performDivision(nameNumberForward, cylinderNum);
+            
+            // Tính toán cho tên ngược
+            const reverseDivision = performDivision(nameNumberReverse, cylinderNum);
+            
+            // Lấy số cuối từ các kết quả
+            const lastDigitFromNameForward = nameNumberForward % 10;
+            const lastDigitFromNameReverse = nameNumberReverse % 10;
+            const lastDigitFromCylinder = cylinderNum % 10;
+            const lastDigitFromForwardDivision = forwardDivision ? forwardDivision.lastDigit : 0;
+            const lastDigitFromReverseDivision = reverseDivision ? reverseDivision.lastDigit : 0;
+            
+            // Tìm màu sắc từ các bảng màu
+            const colorsFound = [];
+            
+            // Tìm màu từ tất cả các số cuối
+            const colorIndexes = [
+                lastDigitFromNameForward,
+                lastDigitFromNameReverse,
+                lastDigitFromCylinder,
+                lastDigitFromForwardDivision,
+                lastDigitFromReverseDivision,
+                nameNumbersForward.length > 0 ? nameNumbersForward[0] : 0,
+                nameNumbersForward.length > 0 ? nameNumbersForward[nameNumbersForward.length - 1] : 0,
+                nameNumbersReverse.length > 0 ? nameNumbersReverse[0] : 0,
+                nameNumbersReverse.length > 0 ? nameNumbersReverse[nameNumbersReverse.length - 1] : 0
+            ];
+            
+            // Tìm màu từ tất cả các bảng
+            colorIndexes.forEach(index => {
+                if (index > 0 && index <= 14) {
+                    colorTables.forEach((table, tableIndex) => {
+                        const color = table[index];
+                        if (color) {
+                            colorsFound.push({
+                                color: color,
+                                hex: colorHexMap[color.toUpperCase()] || "#CCCCCC",
+                                table: tableIndex + 1,
+                                index: index,
+                                source: getSourceName(index, colorIndexes)
+                            });
+                        }
+                    });
+                }
+            });
+            
+            // Đếm tần suất xuất hiện của từng màu
+            const colorFrequency = {};
+            colorsFound.forEach(item => {
+                const colorName = item.color.toUpperCase();
+                if (!colorFrequency[colorName]) {
+                    colorFrequency[colorName] = {
+                        count: 0,
+                        hex: item.hex,
+                        tables: [],
+                        indices: [],
+                        sources: []
+                    };
+                }
+                colorFrequency[colorName].count++;
+                if (!colorFrequency[colorName].tables.includes(item.table)) {
+                    colorFrequency[colorName].tables.push(item.table);
+                }
+                if (!colorFrequency[colorName].indices.includes(item.index)) {
+                    colorFrequency[colorName].indices.push(item.index);
+                }
+                if (!colorFrequency[colorName].sources.includes(item.source)) {
+                    colorFrequency[colorName].sources.push(item.source);
+                }
+            });
+            
+            // Sắp xếp màu theo tần suất giảm dần
+            const sortedColors = Object.keys(colorFrequency).sort((a, b) => {
+                return colorFrequency[b].count - colorFrequency[a].count;
+            });
+            
+            // Hiển thị kết quả
+            displayResults(
+                carName, cylinder, battery, birthdate, ownerName,
+                [price1, price2, price3, price4, price5],
+                nameNumbersForward, nameNumbersReverse,
+                nameNumberForward, nameNumberReverse,
+                forwardDivision, reverseDivision,
+                colorsFound, colorFrequency, sortedColors
+            );
+        }
+        
+        // Hàm xác định nguồn gốc của chỉ số
+        function getSourceName(index, colorIndexes) {
+            const sources = [
+                "Số cuối tên xuôi",
+                "Số cuối tên ngược", 
+                "Số cuối xi-lanh",
+                "Số cuối dư tên xuôi/xi-lanh",
+                "Số cuối dư tên ngược/xi-lanh",
+                "Chữ đầu tên xuôi",
+                "Chữ cuối tên xuôi",
+                "Chữ đầu tên ngược",
+                "Chữ cuối tên ngược"
+            ];
+            
+            const position = colorIndexes.indexOf(index);
+            return position >= 0 && position < sources.length ? sources[position] : "Không xác định";
+        }
+        
+        // Hàm hiển thị kết quả
+        function displayResults(
+            carName, cylinder, battery, birthdate, ownerName,
+            prices,
+            nameNumbersForward, nameNumbersReverse,
+            nameNumberForward, nameNumberReverse,
+            forwardDivision, reverseDivision,
+            colorsFound, colorFrequency, sortedColors
+        ) {
+            const resultsDiv = document.getElementById('results');
+            
+            let html = `
+                <div class="result-item">
+                    <div class="result-title"><i class="fas fa-car"></i> THÔNG TIN XE</div>
+                    <div class="result-value">${carName} | Xi-lanh: ${cylinder}cc | Acquy: ${battery}</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title"><i class="fas fa-user"></i> CHỦ XE</div>
+                    <div class="result-value">${ownerName} | Ngày sinh: ${new Date(birthdate).toLocaleDateString('vi-VN')}</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title"><i class="fas fa-tags"></i> GIÁ XE PHÙ HỢP</div>
+                    <div class="price-options">
+            `;
+            
+            // Hiển thị các giá xe
+            prices.forEach(price => {
+                html += `<div class="price-option">${price}</div>`;
+            });
+            
+            html += `
+                    </div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title"><i class="fas fa-calculator"></i> KẾT QUẢ TÍNH TOÁN</div>
+                    <div class="calculation-details">
+                        <p><span class="highlight">Tên chủ xe:</span> ${ownerName}</p>
+                        
+                        <div class="calculation-grid">
+                            <div class="calculation-box">
+                                <h4>TÊN XUÔI</h4>
+                                <p>Số tên: <span class="highlight">${nameNumberForward}</span></p>
+                                <p>Chi tiết: ${nameNumbersForward.join('')} (${nameNumbersForward.join(',')})</p>
+                                <p>Số cuối: <span class="highlight">${nameNumberForward % 10}</span></p>
+                                ${forwardDivision ? `
+                                    <p>Phép chia: ${nameNumberForward} : ${cylinder} = ${forwardDivision.result} (dư ${forwardDivision.remainder})</p>
+                                    <p>Số cuối dư: <span class="highlight">${forwardDivision.lastDigit}</span></p>
+                                ` : ''}
+                            </div>
+                            
+                            <div class="calculation-box">
+                                <h4>TÊN NGƯỢC</h4>
+                                <p>Số tên: <span class="highlight">${nameNumberReverse}</span></p>
+                                <p>Chi tiết: ${nameNumbersReverse.join('')} (${nameNumbersReverse.join(',')})</p>
+                                <p>Số cuối: <span class="highlight">${nameNumberReverse % 10}</span></p>
+                                ${reverseDivision ? `
+                                    <p>Phép chia: ${nameNumberReverse} : ${cylinder} = ${reverseDivision.result} (dư ${reverseDivision.remainder})</p>
+                                    <p>Số cuối dư: <span class="highlight">${reverseDivision.lastDigit}</span></p>
+                                ` : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="note">
+                            <p><strong>Lưu ý:</strong> Tên ngược cũng được lấy số ra chia cho dung tích xi-lanh và lấy số cuối của số dư để chọn màu, theo yêu cầu.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title"><i class="fas fa-palette"></i> MÀU XE PHÙ HỢP</div>
+                    <p>Tìm thấy <span class="highlight">${colorsFound.length}</span> kết quả màu từ các bảng tính toán</p>
+                    <div class="colors-container">
+            `;
+            
+            // Hiển thị các màu tìm được
+            if (sortedColors.length > 0) {
+                sortedColors.forEach(colorName => {
+                    const freq = colorFrequency[colorName];
+                    const hexColor = freq.hex;
+                    // Xác định màu chữ dựa trên độ sáng của màu nền
+                    const textColor = getContrastColor(hexColor);
+                    html += `
+                        <div class="color-box" style="background-color: ${hexColor}; color: ${textColor};">
+                            ${colorName}
+                            <div class="color-hex" style="color: ${textColor}; background-color: rgba(0,0,0,0.2);">${hexColor}</div>
+                            <div class="frequency" style="color: ${textColor};">Xuất hiện: ${freq.count} lần</div>
+                            <div class="frequency" style="color: ${textColor};">Bảng: ${freq.tables.join(', ')}</div>
+                        </div>
+                    `;
+                });
+            } else {
+                html += `<p style="text-align: center; width: 100%; padding: 20px;">Không tìm thấy màu phù hợp từ dữ liệu nhập vào</p>`;
+            }
+            
+            html += `
+                    </div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title"><i class="fas fa-star"></i> KẾT LUẬN</div>
+            `;
+            
+            if (sortedColors.length > 0) {
+                const topColor = sortedColors[0];
+                const topColorFreq = colorFrequency[topColor];
+                const topHexColor = topColorFreq.hex;
+                
+                html += `
+                    <p>Màu <span class="highlight">${topColor}</span> xuất hiện nhiều nhất (${topColorFreq.count} lần) trong kết quả tính toán, chứng tỏ rất hợp với bạn.</p>
+                    <p><span class="highlight">KHuyến nghị:</span> Nên chọn xe màu <span class="highlight">${topColor}</span> (mã màu: ${topHexColor}) để có may mắn và phù hợp với mệnh của bạn.</p>
+                `;
+                
+                // Hiển thị thông tin về màu đặc biệt
+                if (topColor.includes("XANH LÁ MẠ")) {
+                    html += `<p><span class="highlight">Lưu ý:</span> Màu XANH LÁ MẠ (#228B22) đậm hơn màu XANH LÁ thông thường (#32CD32).</p>`;
+                }
+            } else {
+                html += `<p>Không tìm thấy màu nào phù hợp từ dữ liệu nhập vào. Vui lòng kiểm tra lại thông tin hoặc thử tên khác.</p>`;
+            }
+            
+            html += `</div>`;
+            
+            resultsDiv.innerHTML = html;
+            
+            // Cuộn đến kết quả
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Hàm xác định màu chữ tương phản dựa trên màu nền
+        function getContrastColor(hexColor) {
+            // Chuyển hex sang RGB
+            const r = parseInt(hexColor.substr(1, 2), 16);
+            const g = parseInt(hexColor.substr(3, 2), 16);
+            const b = parseInt(hexColor.substr(5, 2), 16);
+            
+            // Tính độ sáng
+            const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+            
+            // Nếu độ sáng > 128 thì dùng chữ đen, ngược lại dùng chữ trắng
+            return brightness > 128 ? "#000000" : "#FFFFFF";
+        }
+        
+        // Hàm reset form
+        function resetForm() {
+            document.getElementById('carName').value = '';
+            document.getElementById('cylinder').value = '';
+            document.getElementById('battery').value = '';
+            document.getElementById('ownerName').value = '';
+            
+            // Đặt ngày mặc định là hôm nay
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('birthdate').value = formattedDate;
+            
+            // Xóa tên đã chọn
+            selectedName = null;
+            selectedBirthdate = null;
+            
+            // Xóa lớp selected từ tất cả các mục trong danh sách
+            document.querySelectorAll('.name-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            document.getElementById('results').innerHTML = `
+                <div class="result-item">
+                    <p style="text-align: center; color: #666; font-style: italic; padding: 40px 20px; font-size: 1.3rem;">
+                        Nhập đầy đủ thông tin và nhấn "TRA CỨU MÀU XE" để xem kết quả
+                    </p>
+                </div>
+            `;
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

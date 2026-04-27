@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Rủi Ro Tai Nạn</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        .result-box {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border-left: 4px solid #3498db;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .calculate-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+        
+        .calculate-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .warning {
+            color: #e74c3c;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #ffeaea;
+            border: 1px solid #e74c3c;
+            display: none;
+        }
+        
+        .info {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #e8f4fc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .divider {
+            height: 1px;
+            background-color: #eee;
+            margin: 20px 0;
+        }
+        
+        .alert-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .alert-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
+        .alert-success {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .result-item {
+            margin-bottom: 5px;
+            padding: 3px 0;
+        }
+        
+        .zero-remainder {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .near-zero {
+            color: #e67e22;
+            font-weight: bold;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tính Rủi Ro Tai Nạn</h1>
+        
+        <div class="input-group">
+            <label for="birthDate">1. Ngày tháng năm sinh:</label>
+            <input type="date" id="birthDate">
+        </div>
+        
+        <div class="input-group">
+            <label for="pregnancyDate">2. Ngày tháng năm mang thai (sinh nhật - 285 ngày):</label>
+            <input type="date" id="pregnancyDate" readonly>
+        </div>
+        
+        <div class="input-group">
+            <label for="checkDate">3. Ngày tháng năm muốn xem:</label>
+            <input type="date" id="checkDate">
+        </div>
+        
+        <button class="calculate-btn" onclick="calculateRisk()">Tính Toán Rủi Ro</button>
+        
+        <div class="section-title">Kết quả tính toán</div>
+        
+        <div class="result-box">
+            <label>4. Kết quả phép chia (phần nguyên):</label>
+            <div id="divisionResults"></div>
+        </div>
+        
+        <div class="result-box">
+            <label>5. Kết quả phép chia (số dư):</label>
+            <div id="remainderResults"></div>
+        </div>
+        
+        <div class="result-box">
+            <label>6. Kết quả chia phần nguyên tiếp (số dư):</label>
+            <div id="quotientRemainderResults"></div>
+        </div>
+        
+        <div class="alert-box alert-danger" id="warningMessage">
+            <strong>CẢNH BÁO:</strong> Có nguy cơ tai nạn xảy ra! Các số có số dư bằng 0:
+            <div id="zeroRemainders"></div>
+        </div>
+        
+        <div class="alert-box alert-warning" id="nearZeroMessage">
+            <strong>LƯU Ý:</strong> Các số có số dư sắp bằng 0 (dưới 5):
+            <div id="nearZeroRemainders"></div>
+        </div>
+        
+        <div class="alert-box alert-success" id="safeMessage">
+            <strong>AN TOÀN:</strong> Không có số dư nào bằng 0. Nguy cơ tai nạn thấp.
+        </div>
+        
+        <div class="info">
+            <p><strong>Hướng dẫn sử dụng:</strong></p>
+            <p>1. Nhập ngày sinh của bạn vào ô số 1.</p>
+            <p>2. Ô số 2 sẽ tự động tính ngày mang thai (ngày sinh trừ 285 ngày).</p>
+            <p>3. Nhập ngày bạn muốn kiểm tra rủi ro vào ô số 3.</p>
+            <p>4. Nhấn nút "Tính Toán Rủi Ro" để xem kết quả.</p>
+            <p>5. Nếu có bất kỳ phép chia nào có số dư bằng 0, hệ thống sẽ cảnh báo nguy cơ tai nạn.</p>
+            <p>6. Hệ thống cũng cảnh báo các số có số dư gần bằng 0 (dưới 5).</p>
+        </div>
+    </div>
+
+    <script>
+        // Danh sách các số chia
+        const divisors = [
+            14,15,21,23,28,33,38,43,48,53,58,63,68,73,78,83,88,93,98,103,108,
+            183,188,283,288,293,298,313,318,644,756,924,763,768,1690,1911,4850,
+            111,222,333,444,555,666,777,888,999,159,195,168,186,276,267,294,249,
+            285,258,348,384,357,375,438,483,429,492,519,591,537,573,618,681,627,
+            672,726,762,735,753,816,861,825,852,843,834,915,951,924,942
+        ];
+        
+        // Cập nhật ngày mang thai khi ngày sinh thay đổi
+        document.getElementById('birthDate').addEventListener('change', function() {
+            const birthDate = new Date(this.value);
+            if (!isNaN(birthDate.getTime())) {
+                const pregnancyDate = new Date(birthDate);
+                pregnancyDate.setDate(pregnancyDate.getDate() - 285);
+                document.getElementById('pregnancyDate').valueAsDate = pregnancyDate;
+            }
+        });
+        
+        // Hàm tính toán rủi ro
+        function calculateRisk() {
+            const birthDate = new Date(document.getElementById('birthDate').value);
+            const pregnancyDate = new Date(document.getElementById('pregnancyDate').value);
+            const checkDate = new Date(document.getElementById('checkDate').value);
+            
+            // Kiểm tra dữ liệu đầu vào
+            if (isNaN(birthDate.getTime()) || isNaN(pregnancyDate.getTime()) || isNaN(checkDate.getTime())) {
+                alert('Vui lòng nhập đầy đủ các ngày!');
+                return;
+            }
+            
+            // Tính số ngày giữa ngày kiểm tra và ngày mang thai
+            const timeDiff = checkDate.getTime() - pregnancyDate.getTime();
+            const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+            
+            let divisionHTML = '';
+            let remainderHTML = '';
+            let quotientRemainderHTML = '';
+            let zeroRemainders = [];
+            let nearZeroRemainders = [];
+            
+            // Thực hiện các phép chia
+            for (let divisor of divisors) {
+                const quotient = Math.floor(dayDiff / divisor);
+                const remainder = dayDiff % divisor;
+                
+                // Kiểm tra số dư của phép chia ban đầu
+                if (remainder === 0) {
+                    zeroRemainders.push(`${dayDiff} ÷ ${divisor} = ${quotient} (dư ${remainder})`);
+                    divisionHTML += `<div class="result-item zero-remainder">${dayDiff} ÷ ${divisor} = ${quotient}</div>`;
+                    remainderHTML += `<div class="result-item zero-remainder">${dayDiff} ÷ ${divisor} dư ${remainder}</div>`;
+                } else if (remainder < 5) {
+                    nearZeroRemainders.push(`${dayDiff} ÷ ${divisor} = ${quotient} (dư ${remainder})`);
+                    divisionHTML += `<div class="result-item near-zero">${dayDiff} ÷ ${divisor} = ${quotient}</div>`;
+                    remainderHTML += `<div class="result-item near-zero">${dayDiff} ÷ ${divisor} dư ${remainder}</div>`;
+                } else {
+                    divisionHTML += `<div class="result-item">${dayDiff} ÷ ${divisor} = ${quotient}</div>`;
+                    remainderHTML += `<div class="result-item">${dayDiff} ÷ ${divisor} dư ${remainder}</div>`;
+                }
+                
+                // Thực hiện phép chia tiếp với phần nguyên
+                for (let divisor2 of divisors) {
+                    const quotient2 = Math.floor(quotient / divisor2);
+                    const remainder2 = quotient % divisor2;
+                    
+                    // Kiểm tra số dư của phép chia phần nguyên
+                    if (remainder2 === 0) {
+                        zeroRemainders.push(`(${dayDiff} ÷ ${divisor}) ÷ ${divisor2} = ${quotient2} (dư ${remainder2})`);
+                        quotientRemainderHTML += `<div class="result-item zero-remainder">(${dayDiff} ÷ ${divisor}) ÷ ${divisor2} dư ${remainder2}</div>`;
+                    } else if (remainder2 < 5) {
+                        nearZeroRemainders.push(`(${dayDiff} ÷ ${divisor}) ÷ ${divisor2} = ${quotient2} (dư ${remainder2})`);
+                        quotientRemainderHTML += `<div class="result-item near-zero">(${dayDiff} ÷ ${divisor}) ÷ ${divisor2} dư ${remainder2}</div>`;
+                    } else {
+                        quotientRemainderHTML += `<div class="result-item">(${dayDiff} ÷ ${divisor}) ÷ ${divisor2} dư ${remainder2}</div>`;
+                    }
+                }
+            }
+            
+            // Hiển thị kết quả
+            document.getElementById('divisionResults').innerHTML = divisionHTML;
+            document.getElementById('remainderResults').innerHTML = remainderHTML;
+            document.getElementById('quotientRemainderResults').innerHTML = quotientRemainderHTML;
+            
+            // Hiển thị cảnh báo
+            const warningMessage = document.getElementById('warningMessage');
+            const nearZeroMessage = document.getElementById('nearZeroMessage');
+            const safeMessage = document.getElementById('safeMessage');
+            const zeroRemaindersDiv = document.getElementById('zeroRemainders');
+            const nearZeroRemaindersDiv = document.getElementById('nearZeroRemainders');
+            
+            if (zeroRemainders.length > 0) {
+                warningMessage.style.display = 'block';
+                nearZeroMessage.style.display = 'none';
+                safeMessage.style.display = 'none';
+                
+                let zeroHTML = '';
+                for (let item of zeroRemainders) {
+                    zeroHTML += `<div>${item}</div>`;
+                }
+                zeroRemaindersDiv.innerHTML = zeroHTML;
+            } else if (nearZeroRemainders.length > 0) {
+                warningMessage.style.display = 'none';
+                nearZeroMessage.style.display = 'block';
+                safeMessage.style.display = 'none';
+                
+                let nearZeroHTML = '';
+                for (let item of nearZeroRemainders) {
+                    nearZeroHTML += `<div>${item}</div>`;
+                }
+                nearZeroRemaindersDiv.innerHTML = nearZeroHTML;
+            } else {
+                warningMessage.style.display = 'none';
+                nearZeroMessage.style.display = 'none';
+                safeMessage.style.display = 'block';
+            }
+        }
+        
+        // Đặt ngày mặc định cho dễ kiểm tra
+        window.onload = function() {
+            const today = new Date();
+            document.getElementById('checkDate').valueAsDate = today;
+            
+            // Tính ngày sinh mặc định (20 năm trước)
+            const defaultBirthDate = new Date();
+            defaultBirthDate.setFullYear(today.getFullYear() - 20);
+            document.getElementById('birthDate').valueAsDate = defaultBirthDate;
+            
+            // Tính ngày mang thai
+            const pregnancyDate = new Date(defaultBirthDate);
+            pregnancyDate.setDate(pregnancyDate.getDate() - 285);
+            document.getElementById('pregnancyDate').valueAsDate = pregnancyDate;
+        };
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

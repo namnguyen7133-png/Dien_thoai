@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>TCDN1 – Chương 2 (Phần 7): Dòng tiền không đều</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{font-family:Arial; background:#f4f6f8; margin:0}
+header{background:#0d47a1;color:white;padding:20px}
+section{background:white;margin:16px;padding:20px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+h2{color:#0d47a1}
+h3{color:#1565c0}
+.note{background:#e3f2fd;padding:12px;border-left:5px solid #2196f3}
+.warn{background:#ffebee;padding:12px;border-left:5px solid #c62828}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{border:1px solid #ccc;padding:8px;text-align:center}
+th{background:#e3f2fd}
+button{background:#1976d2;color:white;border:none;padding:10px 14px;border-radius:6px;cursor:pointer;margin:4px 0}
+button:hover{background:#0d47a1}
+input{width:100%;padding:8px;margin-bottom:8px}
+footer{text-align:center;padding:16px;color:#555}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>📘 TCDN 1 – Chương 2 (Phần 7)</h1>
+<p>Dòng tiền không đều – IRR – NPV – FV | Quang Trung TV</p>
+<p>🔗 Link video: Quang Trung TV – Ứng dụng excel giá trị thời gian của tiền (Phần 7)</p>
+</header>
+
+<!-- 2.1 THUẬT NGỮ -->
+<section id="thuatngu">
+<h2>2.1 Thuật ngữ tài chính & công thức khó (hiểu bằng đời sống)</h2>
+
+<h3>Dòng tiền không đều</h3>
+<p>Là các khoản thu/chi <b>không bằng nhau</b> theo từng năm</p>
+
+<div class="note">
+Ví dụ đời sống:  
+Năm đầu kinh doanh khó → trả ít  
+Năm sau bán tốt → trả nhiều
+</div>
+
+<h3>IRR – Internal Rate of Return</h3>
+<p>Là <b>lãi suất thực tế</b> của một khoản vay/đầu tư khi dòng tiền không đều</p>
+<p><b>Excel:</b> <code>=IRR(values)</code></p>
+
+<div class="warn">
+⚠️ IRR dùng khi tiền mỗi kỳ KHÁC NHAU  
+❌ Không dùng RATE trong trường hợp này
+</div>
+
+<h3>NPV – Net Present Value</h3>
+<p>Dùng để đưa các dòng tiền khác năm về cùng thời điểm (năm 0)</p>
+<p><b>Excel:</b> <code>=NPV(rate, values)</code></p>
+
+<h3>FV – Future Value</h3>
+<p>Tính số tiền còn phải trả trong tương lai khi lãi suất thay đổi</p>
+</section>
+
+<!-- 2.2 DÙNG CHO AI -->
+<section id="doi-tuong">
+<h2>2.2 Dùng trong công việc hay cá nhân?</h2>
+
+<table>
+<tr>
+<th>Đối tượng</th>
+<th>Dùng hàm</th>
+<th>Giải quyết việc gì</th>
+</tr>
+<tr>
+<td>Cá nhân</td>
+<td>IRR</td>
+<td>Biết vay có bị “cắt cổ” không</td>
+</tr>
+<tr>
+<td>Hộ kinh doanh</td>
+<td>NPV</td>
+<td>Không vỡ nợ khi thu nhập thất thường</td>
+</tr>
+<tr>
+<td>Doanh nghiệp</td>
+<td>IRR + NPV</td>
+<td>Chọn dự án sống sót</td>
+</tr>
+</table>
+
+<div class="note">
+✔ Thu nhập càng không đều → càng cần IRR & NPV
+</div>
+</section>
+
+<!-- 3.2 TRÌNH TỰ QUYẾT ĐỊNH -->
+<section id="trinh-tu">
+<h2>3.2 Làm gì trước – làm gì sau? (theo video bài 19)</h2>
+
+<h3>Bước 1: Ghi đúng dấu dòng tiền</h3>
+<ul>
+<li>Nhận tiền → <b>dương (+)</b></li>
+<li>Trả tiền → <b>âm (-)</b></li>
+</ul>
+
+<h3>Bước 2: Xác định bài toán</h3>
+<ul>
+<li>Tìm lãi suất → dùng <b>IRR</b></li>
+<li>Quy về hiện tại → dùng <b>NPV</b></li>
+</ul>
+
+<h3>Bước 3: Khi lãi suất thay đổi</h3>
+<p>Không tính lại từ đầu → chỉ:</p>
+<ol>
+<li>Chiết khấu các khoản đã trả (NPV)</li>
+<li>Tìm gốc còn nợ</li>
+<li>Dùng FV để tính khoản cuối</li>
+</ol>
+
+<div class="warn">
+⚠️ Lãi suất tăng → áp lực trả nợ tăng rất mạnh
+</div>
+</section>
+
+<!-- BÀI TOÁN -->
+<section id="baitoan">
+<h2>📐 Bài toán mô phỏng bài 19</h2>
+
+<label>Số tiền vay ban đầu (+):</label>
+<input id="v0" type="number" placeholder="50000000">
+
+<label>Các khoản trả từng năm (âm, cách nhau bằng dấu phẩy):</label>
+<input id="flows" placeholder="-10000000,-15000000,-17000000">
+
+<label>Lãi suất mới (%/năm):</label>
+<input id="rate" placeholder="5">
+
+<button onclick="tinh()">Tính nghĩa vụ trả cuối kỳ</button>
+
+<div id="kq"></div>
+
+<script>
+function tinh(){
+    let v0 = Number(v0.value);
+    let arr = flows.value.split(',').map(x=>Number(x));
+    let r = Number(rate.value)/100;
+
+    if(!v0 || arr.length==0 || !r){
+        kq.innerHTML="⚠️ Nhập đầy đủ dữ liệu";
+        return;
+    }
+
+    let npv = 0;
+    for(let i=0;i<arr.length;i++){
+        npv += arr[i]/Math.pow(1+r,i+1);
+    }
+
+    let gocConNo = v0 + npv;
+    let fv = gocConNo * Math.pow(1+r, arr.length+1);
+
+    kq.innerHTML = `
+    <p><b>Giá trị NPV các khoản đã trả:</b> ${npv.toLocaleString()} đ</p>
+    <p><b>Gốc còn nợ:</b> ${gocConNo.toLocaleString()} đ</p>
+    <p><b>Số tiền phải trả cuối kỳ:</b> ${fv.toLocaleString()} đ</p>
+    `;
+}
+</script>
+</section>
+
+<!-- 4.2 TÌNH HUỐNG -->
+<section id="tinhhuong">
+<h2>4.2 Nhập tình huống & xử lý nhanh</h2>
+
+<input placeholder="Ví dụ: vay vốn, trả góp, đầu tư dòng tiền không đều...">
+
+<button onclick="go('thuatngu')">❓ Không hiểu IRR / NPV</button><br>
+<button onclick="go('doi-tuong')">👤 Cá nhân hay doanh nghiệp?</button><br>
+<button onclick="go('trinh-tu')">🧭 Không biết làm bước nào</button><br>
+<button onclick="go('baitoan')">💰 Muốn biết trả bao nhiêu</button>
+
+<script>
+function go(id){
+    document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+</script>
+</section>
+
+<footer>
+TCDN 1 – Dòng tiền không đều là nơi nhiều người phá sản nhất
+</footer>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

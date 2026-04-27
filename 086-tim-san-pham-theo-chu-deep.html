@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm Chữ Cái Cuối Từ Trong Tài Liệu</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        
+        .description {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-top: 10px;
+        }
+        
+        .content {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .input-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        
+        @media (max-width: 768px) {
+            .input-section {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .input-box {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #f9fafc;
+        }
+        
+        .input-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #182848;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-clear {
+            background-color: #ff6b6b;
+            color: white;
+        }
+        
+        .btn-clear:hover {
+            background-color: #ff5252;
+        }
+        
+        .btn-search {
+            background-color: #4b6cb7;
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+        }
+        
+        .btn-search:hover {
+            background-color: #3a5795;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 300px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: vertical;
+            font-family: monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .search-input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: #4b6cb7;
+            box-shadow: 0 0 0 2px rgba(75, 108, 183, 0.2);
+        }
+        
+        .results-section {
+            border-top: 2px solid #eaeaea;
+            padding-top: 25px;
+        }
+        
+        .results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .result-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #f9fafc;
+            transition: all 0.3s ease;
+        }
+        
+        .result-item:hover {
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+        
+        .result-item.found {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .product-name {
+            font-weight: bold;
+            color: #182848;
+            font-size: 16px;
+        }
+        
+        .result-letter {
+            background-color: #4b6cb7;
+            color: white;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+        
+        .result-details {
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .highlight {
+            background-color: #fff9c4;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        .instructions {
+            background-color: #e3f2fd;
+            border-left: 4px solid #4b6cb7;
+            padding: 15px;
+            border-radius: 0 5px 5px 0;
+            margin-top: 10px;
+        }
+        
+        .instructions h3 {
+            margin-top: 0;
+            color: #182848;
+        }
+        
+        .instructions ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .status {
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .status.empty {
+            background-color: #f5f5f5;
+            color: #777;
+        }
+        
+        .status.searching {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .status.completed {
+            background-color: #e8f5e9;
+            color: #388e3c;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            color: #777;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Tìm Chữ Cái Cuối Từ Trong Tài Liệu</h1>
+            <p class="description">Nhập tài liệu và tìm kiếm chữ cái cuối cùng của các từ</p>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <div class="input-box">
+                    <div class="input-title">
+                        <h2>Ô 1: Nhập tài liệu</h2>
+                        <button class="btn btn-clear" id="clearTextBtn">Xoá tài liệu</button>
+                    </div>
+                    <textarea id="documentInput" placeholder="Dán tài liệu của bạn vào đây...">| Tên sản phẩm | Giá bán (VNĐ) | Tỷ lệ hoa hồng |
+|---|---|---|
+| Giày Thể Thao Bằng Da Chống Nước Chống Trượt... | 208.519 | 2% |
+| Bộ quần áo nỉ cho bé BUBO KIDS cổ trụ kéo khóa thêu ng... | 255.000 | 11% |
+| Lô 10 Đôi Tất Cổ Cao Siêu Nhân Anh Hùng Người ... | 79.000 | 2% |
+| Máy Rửa Xe 2 Pin - Cầm Tay Không Dây Áp Lực Cao C... | 399.000 | 15% |
+| Áo khoác da lộn xin, áo len cho bé trai bé gái ... (12-70kg) | 379.050 | 2% |
+| Balo Zoyzoii cho bé mầm non hình cây nấm mushroo... | 125.000 | 3% |
+| Đèn LED Pha Rạng Đông... (Chính Hãng, New 2025) | 137.904 | 5% |
+| Bán lẻ Màu Thia Muỗng Sứ Dễ thương Hot... | 8.000 | 12% |
+| Áo Vest Trẻ Em Hai Mặt Bé Trai Thu Đông 2024 ... | 385.435 | 12% |
+| Combo 60 miếng dán vết thương, chống nước ... | 17.027 | 10% |
+| Bộ 3 Khăn Tắm, Gội, Lau Mặt LOTUS 100% Cotton, ... | 108.998 | 15% |
+| Dép lẻ Bé Gái hoạt tiết Kuromi Dâu, dép quai ng... | 56.000 | 2% |
+| Cây Thông Noel Áo Cưới Nở Hoa Gần Trái Đô M... | 1.179.000 | 10% |
+| Sen đá mini mix 84 cây 2-3cm nhiều màu, nhiều l... | 255.600 | 16% |
+| Giày Đi Bộ Cho Bé Balabala Xăng đan Trẻ Em B... | 465.479 | 20% |
+| Nhang sạch Khuynh Diệp An An 1kg 100% là cây t... | 65.000 | 15% |</textarea>
+                </div>
+                
+                <div class="input-box">
+                    <div class="input-title">
+                        <h2>Ô 2: Nhập chữ cái tìm kiếm</h2>
+                        <button class="btn btn-clear" id="clearSearchBtn">Xoá chữ tìm</button>
+                    </div>
+                    <div class="search-input-container">
+                        <input type="text" class="search-input" id="searchInput" placeholder="Nhập chữ cái cách nhau bằng dấu phẩy, ví dụ: a, b, c, d">
+                    </div>
+                    <div class="instructions">
+                        <h3>Hướng dẫn:</h3>
+                        <ul>
+                            <li>Nhập các chữ cái cách nhau bằng dấu phẩy</li>
+                            <li>Mỗi chữ cái sẽ tìm một sản phẩm</li>
+                            <li>4 chữ cái sẽ tìm 4 sản phẩm tương ứng</li>
+                            <li>Chương trình sẽ tìm chữ cái cuối cùng của mỗi từ trong tên sản phẩm</li>
+                            <li>Đã tìm thấy sản phẩm cho một chữ cái sẽ không tìm lại</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-search" id="searchBtn">Tìm kiếm chữ cái</button>
+            </div>
+            
+            <div class="results-section">
+                <h2>Kết quả tìm kiếm</h2>
+                <div id="status" class="status empty">Chưa bắt đầu tìm kiếm. Hãy nhập chữ cái và nhấn nút "Tìm kiếm chữ cái".</div>
+                <div id="resultsContainer" class="results-container">
+                    <!-- Kết quả sẽ được hiển thị ở đây -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Ứng dụng tìm chữ cái cuối từ trong tài liệu | Mỗi chữ cái tương ứng với một sản phẩm</p>
+        </div>
+    </div>
+
+    <script>
+        // Lấy các phần tử DOM
+        const documentInput = document.getElementById('documentInput');
+        const searchInput = document.getElementById('searchInput');
+        const clearTextBtn = document.getElementById('clearTextBtn');
+        const clearSearchBtn = document.getElementById('clearSearchBtn');
+        const searchBtn = document.getElementById('searchBtn');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const statusElement = document.getElementById('status');
+        
+        // Dữ liệu sản phẩm đã tìm thấy
+        let foundProducts = [];
+        let foundLetters = [];
+        
+        // Xử lý sự kiện xóa tài liệu
+        clearTextBtn.addEventListener('click', function() {
+            documentInput.value = '';
+            resetSearch();
+        });
+        
+        // Xử lý sự kiện xóa chữ tìm kiếm
+        clearSearchBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            resetSearch();
+        });
+        
+        // Xử lý sự kiện tìm kiếm
+        searchBtn.addEventListener('click', function() {
+            performSearch();
+        });
+        
+        // Hàm đặt lại tìm kiếm
+        function resetSearch() {
+            foundProducts = [];
+            foundLetters = [];
+            resultsContainer.innerHTML = '';
+            updateStatus('empty', 'Chưa bắt đầu tìm kiếm. Hãy nhập chữ cái và nhấn nút "Tìm kiếm chữ cái".');
+        }
+        
+        // Hàm cập nhật trạng thái
+        function updateStatus(type, message) {
+            statusElement.textContent = message;
+            statusElement.className = 'status ' + type;
+        }
+        
+        // Hàm thực hiện tìm kiếm
+        function performSearch() {
+            const documentText = documentInput.value.trim();
+            const searchLettersText = searchInput.value.trim();
+            
+            // Kiểm tra dữ liệu đầu vào
+            if (!documentText) {
+                updateStatus('empty', 'Vui lòng nhập tài liệu vào ô 1.');
+                return;
+            }
+            
+            if (!searchLettersText) {
+                updateStatus('empty', 'Vui lòng nhập chữ cái cần tìm vào ô 2.');
+                return;
+            }
+            
+            // Phân tích chữ cái cần tìm
+            const lettersToFind = searchLettersText
+                .split(',')
+                .map(letter => letter.trim().toLowerCase())
+                .filter(letter => letter.length === 1 && /[a-zàáảãạâầấẩẫậăằắẳẵặđèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵ]/.test(letter));
+            
+            if (lettersToFind.length === 0) {
+                updateStatus('empty', 'Không tìm thấy chữ cái hợp lệ. Vui lòng nhập chữ cái cách nhau bằng dấu phẩy.');
+                return;
+            }
+            
+            // Cập nhật trạng thái
+            updateStatus('searching', `Đang tìm kiếm ${lettersToFind.length} chữ cái: ${lettersToFind.join(', ').toUpperCase()}...`);
+            
+            // Phân tích tài liệu để lấy sản phẩm
+            const products = parseDocument(documentText);
+            
+            // Tìm kiếm sản phẩm cho mỗi chữ cái
+            let foundCount = 0;
+            
+            for (const letter of lettersToFind) {
+                // Nếu chữ cái này đã tìm thấy sản phẩm rồi thì bỏ qua
+                if (foundLetters.includes(letter)) {
+                    continue;
+                }
+                
+                // Tìm sản phẩm cho chữ cái này
+                const product = findProductForLetter(products, letter, foundProducts);
+                
+                if (product) {
+                    foundProducts.push(product);
+                    foundLetters.push(letter);
+                    foundCount++;
+                    
+                    // Hiển thị sản phẩm đã tìm thấy
+                    displayProduct(product, letter);
+                }
+            }
+            
+            // Cập nhật trạng thái
+            if (foundCount > 0) {
+                updateStatus('completed', `Đã tìm thấy ${foundCount} sản phẩm mới. Tổng cộng ${foundProducts.length} sản phẩm đã được tìm thấy.`);
+            } else {
+                updateStatus('empty', 'Không tìm thấy sản phẩm mới nào cho các chữ cái đã nhập.');
+            }
+        }
+        
+        // Hàm phân tích tài liệu để lấy danh sách sản phẩm
+        function parseDocument(documentText) {
+            const lines = documentText.split('\n');
+            const products = [];
+            
+            for (const line of lines) {
+                // Bỏ qua các dòng không chứa sản phẩm (tiêu đề, separator)
+                if (!line.includes('|') || line.includes('---') || line.includes('Tên sản phẩm')) {
+                    continue;
+                }
+                
+                // Tách các cột
+                const columns = line.split('|').filter(col => col.trim() !== '');
+                
+                if (columns.length >= 3) {
+                    const productName = columns[0].trim();
+                    const price = columns[1].trim();
+                    const commission = columns[2].trim();
+                    
+                    products.push({
+                        name: productName,
+                        price: price,
+                        commission: commission,
+                        lastLetters: extractLastLetters(productName)
+                    });
+                }
+            }
+            
+            return products;
+        }
+        
+        // Hàm trích xuất chữ cái cuối cùng của mỗi từ
+        function extractLastLetters(text) {
+            // Tách thành các từ, loại bỏ ký tự đặc biệt và số
+            const words = text
+                .split(/[\s\-,.()...]+/)
+                .filter(word => word.length > 0 && /[a-zA-ZÀ-ỹ]/.test(word));
+            
+            // Lấy chữ cái cuối cùng của mỗi từ
+            const lastLetters = words.map(word => {
+                // Lấy ký tự cuối cùng
+                const lastChar = word[word.length - 1].toLowerCase();
+                
+                // Kiểm tra xem có phải chữ cái không (bao gồm cả chữ cái tiếng Việt)
+                if (/[a-zàáảãạâầấẩẫậăằắẳẵặđèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵ]/.test(lastChar)) {
+                    return lastChar;
+                }
+                
+                // Nếu không phải chữ cái, tìm chữ cái cuối cùng trong từ
+                for (let i = word.length - 1; i >= 0; i--) {
+                    const char = word[i].toLowerCase();
+                    if (/[a-zàáảãạâầấẩẫậăằắẳẵặđèéẻẽẹêềếểễệìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵ]/.test(char)) {
+                        return char;
+                    }
+                }
+                
+                return '';
+            }).filter(letter => letter !== '');
+            
+            return lastLetters;
+        }
+        
+        // Hàm tìm sản phẩm cho một chữ cái cụ thể
+        function findProductForLetter(products, letter, alreadyFoundProducts) {
+            // Lọc ra các sản phẩm chưa được tìm thấy
+            const availableProducts = products.filter(product => 
+                !alreadyFoundProducts.some(found => found.name === product.name)
+            );
+            
+            // Tìm sản phẩm có chứa chữ cái cần tìm
+            for (const product of availableProducts) {
+                if (product.lastLetters.includes(letter)) {
+                    return product;
+                }
+            }
+            
+            return null;
+        }
+        
+        // Hàm hiển thị sản phẩm đã tìm thấy
+        function displayProduct(product, letter) {
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item found';
+            
+            // Tạo nội dung hiển thị
+            const lastLettersWithHighlight = product.lastLetters
+                .map(l => l === letter ? `<span class="highlight">${l.toUpperCase()}</span>` : l.toUpperCase())
+                .join(', ');
+            
+            resultItem.innerHTML = `
+                <div class="result-header">
+                    <div class="product-name">${product.name}</div>
+                    <div class="result-letter">${letter.toUpperCase()}</div>
+                </div>
+                <div class="result-details">
+                    <p><strong>Giá bán:</strong> ${product.price}</p>
+                    <p><strong>Tỷ lệ hoa hồng:</strong> ${product.commission}</p>
+                    <p><strong>Chữ cái cuối các từ:</strong> ${lastLettersWithHighlight}</p>
+                </div>
+            `;
+            
+            resultsContainer.appendChild(resultItem);
+        }
+        
+        // Khởi tạo ứng dụng
+        document.addEventListener('DOMContentLoaded', function() {
+            // Thêm sự kiện Enter để tìm kiếm
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            
+            // Hiển thị thông báo khởi động
+            updateStatus('empty', 'Chưa bắt đầu tìm kiếm. Hãy nhập chữ cái và nhấn nút "Tìm kiếm chữ cái".');
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

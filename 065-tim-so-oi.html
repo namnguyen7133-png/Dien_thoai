@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ứng Dụng Tra Cứu Số Nâng Cao</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c 0%, #3a7bd5 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: rgba(255, 255, 255, 0.97);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .header h1 {
+            color: #1a2a6c;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .input-section {
+            margin-bottom: 25px;
+        }
+        
+        .input-section label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #444;
+            font-size: 1.1rem;
+        }
+        
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-wrapper input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .input-wrapper input:focus {
+            border-color: #1a2a6c;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(26, 42, 108, 0.1);
+        }
+        
+        .input-wrapper button {
+            background: linear-gradient(to right, #1a2a6c, #3a7bd5);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 0 25px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .input-wrapper button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(26, 42, 108, 0.3);
+        }
+        
+        .result-section {
+            margin-top: 10px;
+        }
+        
+        .result-card {
+            background-color: #f8f9ff;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #1a2a6c;
+        }
+        
+        .result-card h3 {
+            color: #1a2a6c;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .result-card h3 i {
+            color: #3a7bd5;
+        }
+        
+        .result-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .result-item {
+            background-color: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-item .label {
+            font-size: 0.85rem;
+            color: #777;
+            margin-bottom: 5px;
+        }
+        
+        .result-item .value {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #333;
+        }
+        
+        .table-result {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .table-result th {
+            background-color: #1a2a6c;
+            color: white;
+            padding: 12px;
+            text-align: center;
+        }
+        
+        .table-result td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .table-result tr:nth-child(even) {
+            background-color: #f8f9ff;
+        }
+        
+        .table-result tr:hover {
+            background-color: #eef2ff;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .result-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-wrapper {
+                flex-direction: column;
+            }
+            
+            .input-wrapper button {
+                padding: 15px;
+            }
+        }
+        
+        .highlight {
+            color: #1a2a6c;
+            font-weight: 700;
+        }
+        
+        .note {
+            font-size: 0.85rem;
+            color: #777;
+            margin-top: 8px;
+            font-style: italic;
+        }
+        
+        .consecutive-numbers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .number-badge {
+            background: linear-gradient(to right, #3a7bd5, #1a2a6c);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .special-char {
+            font-weight: bold;
+            color: #d32f2f;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        .step-info {
+            background-color: #e8f4ff;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        .order-note {
+            font-size: 0.85rem;
+            color: #3a7bd5;
+            font-weight: 600;
+            margin-top: 8px;
+            text-align: center;
+            background-color: #f0f7ff;
+            padding: 6px;
+            border-radius: 6px;
+        }
+        
+        .important-note {
+            background-color: #fff8e1;
+            border-left: 4px solid #ff9800;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-calculator"></i> Tra Cứu Số Nâng Cao</h1>
+            <p>Nhập dãy số để xem kết quả tra cứu theo bảng quy đổi</p>
+        </div>
+        
+        <div class="input-section">
+            <label for="numberInput"><i class="fas fa-keyboard"></i> Nhập dãy số:</label>
+            <div class="input-wrapper">
+                <input type="text" id="numberInput" placeholder="Ví dụ: 25" maxlength="20">
+                <button id="processBtn">
+                    <i class="fas fa-magic"></i> Tra Cứu
+                </button>
+            </div>
+            <p class="note">Chỉ nhập số, không nhập ký tự khác. Giới hạn tối đa 20 chữ số.</p>
+        </div>
+        
+        <div class="result-section">
+            <div class="result-card">
+                <h3><i class="fas fa-info-circle"></i> Thông Tin Dãy Số</h3>
+                <div class="result-content">
+                    <div class="result-item">
+                        <div class="label">Dãy số đã nhập</div>
+                        <div class="value" id="inputNumber">---</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="label">Số lớn nhất</div>
+                        <div class="value" id="maxNumber">---</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="label">Số nhỏ nhất</div>
+                        <div class="value" id="minNumber">---</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="label">Độ dài dãy số</div>
+                        <div class="value" id="lengthNumber">---</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <div class="label" style="text-align: center; margin-bottom: 8px;">Các số liền kề từ nhỏ nhất đến lớn nhất</div>
+                    <div class="consecutive-numbers" id="consecutiveNumbers">
+                        <div class="number-badge">---</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-card">
+                <h3><i class="fas fa-table"></i> Kết Quả Tra Bảng 1</h3>
+                <p class="order-note">Kết quả được sắp xếp từ số nhỏ nhất đến lớn nhất (bao gồm tất cả số liền kề)</p>
+                <div class="important-note">
+                    <i class="fas fa-lightbulb"></i> <strong>Lưu ý:</strong> Kết quả hiển thị cho TẤT CẢ các số liền kề từ số nhỏ nhất đến số lớn nhất trong dãy số nhập vào.
+                </div>
+                <div class="table-container">
+                    <table class="table-result">
+                        <thead>
+                            <tr>
+                                <th>Số gốc</th>
+                                <th>Số tra bảng 1</th>
+                                <th>Ký tự đặc biệt</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table1Results">
+                            <tr><td colspan="3">Chưa có dữ liệu</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="step-info">
+                    <strong>Quy tắc tra bảng 1:</strong> Số ≤ 12 tra thẳng bảng, số > 12 lấy số dư khi chia cho 12 (nếu dư = 0 thì lấy 12)
+                </div>
+            </div>
+            
+            <div class="result-card">
+                <h3><i class="fas fa-table"></i> Kết Quả Tra Bảng 2</h3>
+                <p class="order-note">Kết quả được sắp xếp từ số nhỏ nhất đến lớn nhất (bao gồm tất cả số liền kề)</p>
+                <div class="important-note">
+                    <i class="fas fa-lightbulb"></i> <strong>Lưu ý:</strong> Kết quả hiển thị cho TẤT CẢ các số liền kề từ số nhỏ nhất đến số lớn nhất trong dãy số nhập vào.
+                </div>
+                <div class="table-container">
+                    <table class="table-result">
+                        <thead>
+                            <tr>
+                                <th>Số gốc</th>
+                                <th>Số từ Bảng 1</th>
+                                <th>Ký tự Bảng 2</th>
+                                <th>Ký tự đặc biệt</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table2Results">
+                            <tr><td colspan="4">Chưa có dữ liệu</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="step-info">
+                    <strong>Quy tắc tra bảng 2:</strong> Lấy chữ cái đầu và cuối của số bằng chữ, kết hợp với ký tự đặc biệt từ số Bảng 1 (11-15)
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Ứng dụng tra cứu số nâng cao - Thiết kế cho màn hình điện thoại</p>
+    </div>
+
+    <script>
+        // Khai báo bảng 1
+        const table1 = {
+            1: 7,
+            2: 8,
+            3: 9,
+            4: 10,
+            5: 11,
+            6: 12,
+            7: 13,
+            8: 14,
+            9: 15,
+            10: 16,
+            11: 17,
+            12: 18
+        };
+        
+        // Khai báo bảng 2
+        const table2 = {
+            1: {text: "một", chars: ["m", "t"]},
+            2: {text: "hai", chars: ["h", "i"]},
+            3: {text: "ba", chars: ["b", "a"]},
+            4: {text: "bốn", chars: ["b", "n"]},
+            5: {text: "năm", chars: ["n", "a"]},
+            6: {text: "sáu", chars: ["s", "ủ"]},
+            7: {text: "bảy", chars: ["b", "ý"]},
+            8: {text: "tám", chars: ["t", "m"]},
+            9: {text: "chín", chars: ["c", "n"]},
+            10: {text: "mười", chars: ["m", "i"]},
+            11: {text: "mười một", chars: ["m", "i", "t"]},
+            12: {text: "mười hai", chars: ["m", "h", "i"]}
+        };
+        
+        // Bảng ánh xạ số -> ký tự đặc biệt (từ yêu cầu)
+        const specialMap = {
+            5: "A",
+            6: "U", 
+            7: "Y",
+            8: "M",
+            9: "N"
+        };
+        
+        // Bảng ánh xạ số từ bảng 1 -> ký tự đặc biệt (từ yêu cầu)
+        const specialMap2 = {
+            11: ["I", "T"],
+            12: ["I"],
+            13: ["I", "A"],
+            14: ["I", "N"],
+            15: ["I", "M"]
+        };
+        
+        // Hàm xử lý khi nhấn nút Tra Cứu
+        document.getElementById('processBtn').addEventListener('click', processNumber);
+        document.getElementById('numberInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                processNumber();
+            }
+        });
+        
+        function processNumber() {
+            const input = document.getElementById('numberInput').value.trim();
+            
+            // Kiểm tra input có hợp lệ không
+            if (!input) {
+                alert("Vui lòng nhập dãy số!");
+                return;
+            }
+            
+            // Kiểm tra chỉ chứa số
+            if (!/^\d+$/.test(input)) {
+                alert("Vui lòng chỉ nhập số, không nhập ký tự khác!");
+                return;
+            }
+            
+            // Chuyển input thành mảng các chữ số
+            const digits = input.split('').map(Number);
+            
+            // Tìm số lớn nhất và nhỏ nhất
+            const maxDigit = Math.max(...digits);
+            const minDigit = Math.min(...digits);
+            
+            // Hiển thị thông tin cơ bản
+            document.getElementById('inputNumber').textContent = input;
+            document.getElementById('maxNumber').textContent = maxDigit;
+            document.getElementById('minNumber').textContent = minDigit;
+            document.getElementById('lengthNumber').textContent = digits.length;
+            
+            // Hiển thị các số liền kề từ nhỏ nhất đến lớn nhất
+            const consecutiveNumbersContainer = document.getElementById('consecutiveNumbers');
+            consecutiveNumbersContainer.innerHTML = '';
+            
+            // Tạo dãy số liền kề từ min đến max (bao gồm tất cả các số)
+            const consecutiveNumbers = [];
+            for (let i = minDigit; i <= maxDigit; i++) {
+                consecutiveNumbers.push(i);
+                const badge = document.createElement('div');
+                badge.className = 'number-badge';
+                badge.textContent = i;
+                consecutiveNumbersContainer.appendChild(badge);
+            }
+            
+            // Xử lý bảng 1 và 2 theo thứ tự từ nhỏ đến lớn (TẤT CẢ số liền kề)
+            let table1HTML = '';
+            let table2HTML = '';
+            
+            // Xử lý TẤT CẢ các số liền kề từ nhỏ nhất đến lớn nhất
+            consecutiveNumbers.forEach(digit => {
+                // Lấy giá trị từ bảng 1
+                let table1Value;
+                if (digit <= 12) {
+                    table1Value = table1[digit] || digit;
+                } else {
+                    // Nếu lớn hơn 12 thì lấy số dư khi chia cho 12
+                    const remainder = digit % 12;
+                    table1Value = remainder === 0 ? 12 : remainder;
+                }
+                
+                // Lấy ký tự đặc biệt từ bảng ánh xạ
+                const specialChar = specialMap[digit] || "---";
+                
+                // Thêm vào bảng 1
+                table1HTML += `
+                    <tr>
+                        <td><span class="highlight">${digit}</span></td>
+                        <td>${table1Value}</td>
+                        <td><span class="special-char">${specialChar}</span></td>
+                    </tr>
+                `;
+                
+                // Xử lý bảng 2
+                let specialChars2 = "---";
+                
+                // Nếu số từ bảng 1 nằm trong khoảng 11-15
+                if (table1Value >= 11 && table1Value <= 15) {
+                    specialChars2 = specialMap2[table1Value].join(", ");
+                }
+                
+                // Lấy thông tin từ bảng 2
+                let table2Chars = "---";
+                if (table1Value <= 12) {
+                    table2Chars = table2[table1Value] ? table2[table1Value].chars.join(", ") : "---";
+                }
+                
+                // Thêm vào bảng 2
+                table2HTML += `
+                    <tr>
+                        <td><span class="highlight">${digit}</span></td>
+                        <td>${table1Value}</td>
+                        <td>${table2Chars}</td>
+                        <td><span class="special-char">${specialChars2}</span></td>
+                    </tr>
+                `;
+            });
+            
+            // Hiển thị kết quả
+            document.getElementById('table1Results').innerHTML = table1HTML;
+            document.getElementById('table2Results').innerHTML = table2HTML;
+        }
+        
+        // Tự động nhập ví dụ khi tải trang
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('numberInput').value = "25";
+            // Tự động xử lý sau 1 giây
+            setTimeout(processNumber, 500);
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

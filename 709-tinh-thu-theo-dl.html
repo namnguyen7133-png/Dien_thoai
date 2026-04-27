@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tính thứ – cộng trừ ngày & giờ</title>
+
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 25px;
+    font-size: 20px;
+    line-height: 1.6;
+  }
+
+  h3 {
+    font-size: 26px;
+    color: #003366;
+  }
+
+  label {
+    font-weight: bold;
+  }
+
+  input, select {
+    font-size: 20px;
+    padding: 10px;
+    margin: 8px 0;
+    width: 360px;
+  }
+
+  .result {
+    margin-top: 12px;
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  #result { color: blue; }
+  #resultOffset { color: green; }
+  #resultHours { color: darkred; }
+</style>
+</head>
+
+<body>
+
+<h3>TÍNH THỨ – CỘNG / TRỪ NGÀY & GIỜ DƯƠNG LỊCH</h3>
+
+<label>1. Nhập ngày (dd/mm/yyyy):</label><br>
+<input type="text" id="dateInput" placeholder="VD: 03/03/1971" oninput="calculateAll()">
+
+<label>2. Nhập GIỜ SINH (0–23):</label><br>
+<input type="number" id="birthHour" value="0" min="0" max="23" oninput="calculateAll()">
+
+<label>3. Chọn theo danh sách:</label><br>
+  <select id="dateList" onchange="selectDate()">
+  <option value="">-- Chọn --</option>
+  <option value="04/06/1944">1. NGUYENKHACNANG – 04/06/1944</option>
+  <option value="29/08/1948">2. TOTHIHA – 29/08/1948</option>
+  <option value="03/03/1971">3. NGUYENMINHNAM – 03/03/1971</option>
+  <option value="23/09/1981">4. THANTHIKIMANH – 23/09/1981</option>
+  <option value="28/09/2014">5. NGUYENTONGANAN – 28/09/2014</option>
+  <option value="25/07/2016">6. NGUYENTOMINHCHAU – 25/07/2016</option>
+  <option value="05/02/2020">7. NGUYENTOBICHNGOC – 05/02/2020</option>
+  <option value="07/01/1974">8. NGUYENTHIMINHHANG – 07/01/1974</option>
+  <option value="23/05/1973">9. NGOQUYCUONG – 23/05/1973</option>
+  <option value="12/10/2000">10. NGOGIABACH – 12/10/2000</option>
+  <option value="05/04/2005">11. NGOGIALINH – 05/04/2005</option>
+  <option value="06/11/1978">12. NGUYENTHIMINHPHUONG – 06/11/1978</option>
+  <option value="21/09/1978">13. HOANGANHDUNG – 21/09/1978</option>
+  <option value="03/06/2010">14. HOANGHAIVINH – 03/06/2010</option>
+  <option value="14/11/2015">15. HOANGTHIENBACHANH – 14/11/2015</option>
+  <option value="09/08/1960">16. TÔ KIM HUỆ – 09/08/1960</option>
+  <option value="23/10/1983">17. NGUYỄN TUẤN ANH – 23/10/1983</option>
+  <option value="24/03/2001">18. NGUYỄN THẾ ANH – 24/03/2001</option>
+  <option value="12/12/1948">19. NGÔ THỊ MAI – 12/12/1948</option>
+  <option value="17/06/1996">20. TÔ VIỆT HƯNG – 17/06/1996</option>
+  <option value="10/10/1964">21. TÔ THỊ HỒNG – 10/10/1964</option>
+  <option value="24/04/1974">22. VŨ VĂN HIỆP – 24/04/1974</option>
+  <option value="08/02/1946">23. NGUYỄN THỊ CHI – 08/02/1946</option>
+  <option value="30/11/1957">24. NGUYỄN TẤN BẮC – 30/11/1957</option>
+  <option value="08/08/1954">25. NGUYỄN THỊ TÂM – 08/08/1954</option>
+</select>
+
+</select>
+
+<label>4. Nhập số ngày cộng (+) hoặc trừ (−):</label><br>
+<input type="number" id="dayOffset" value="-285" oninput="calculateAll()">
+
+<label>5. Nhập GIỜ của NGÀY KẾT QUẢ (0–23):</label><br>
+<input type="number" id="resultHour" value="0" min="0" max="23" oninput="calculateAll()">
+
+<div class="result" id="result"></div>
+<div class="result" id="resultOffset"></div>
+<div class="result" id="resultHours"></div>
+
+<script>
+function calculateAll() {
+  const dateStr = document.getElementById("dateInput").value;
+  const birthHour = parseInt(document.getElementById("birthHour").value);
+  const offset = parseInt(document.getElementById("dayOffset").value);
+  const resultHour = parseInt(document.getElementById("resultHour").value);
+
+  if (!dateStr) return;
+
+  const parts = dateStr.split("/");
+  if (parts.length !== 3) {
+    document.getElementById("result").innerText = "❌ Sai định dạng ngày!";
+    document.getElementById("resultOffset").innerText = "";
+    document.getElementById("resultHours").innerText = "";
+    return;
+  }
+
+  const d = parseInt(parts[0]);
+  const m = parseInt(parts[1]) - 1;
+  const y = parseInt(parts[2]);
+
+  const baseDateTime = new Date(y, m, d, birthHour, 0, 0);
+  if (isNaN(baseDateTime.getTime())) {
+    document.getElementById("result").innerText = "❌ Ngày / giờ không hợp lệ!";
+    return;
+  }
+
+  const weekdays = [
+    "Chủ nhật", "Thứ Hai", "Thứ Ba",
+    "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"
+  ];
+
+  document.getElementById("result").innerText =
+    `📅 Ngày gốc: ${dateStr} – ${birthHour}h (${weekdays[baseDateTime.getDay()]})`;
+
+  const resultDateTime = new Date(baseDateTime);
+  resultDateTime.setDate(resultDateTime.getDate() + offset);
+  resultDateTime.setHours(resultHour);
+
+  const dd = String(resultDateTime.getDate()).padStart(2, '0');
+  const mm = String(resultDateTime.getMonth() + 1).padStart(2, '0');
+  const yy = resultDateTime.getFullYear();
+
+  const text = offset >= 0 ? `➕ Cộng ${offset}` : `➖ Trừ ${Math.abs(offset)}`;
+
+  document.getElementById("resultOffset").innerText =
+    `${text} ngày → ${dd}/${mm}/${yy} – ${resultHour}h (${weekdays[resultDateTime.getDay()]})`;
+
+  const diffMs = resultDateTime - baseDateTime;
+  const diffHours = diffMs / (1000 * 60 * 60);
+
+  document.getElementById("resultHours").innerText =
+    `⏱ Tổng số giờ chênh lệch: ${diffHours.toLocaleString()} giờ`;
+}
+
+function selectDate() {
+  const selected = document.getElementById("dateList").value;
+  document.getElementById("dateInput").value = selected;
+  calculateAll();
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Can Chi Ngày Tháng Năm</title>
+
+<style>
+body{
+    font-family: system-ui, Arial;
+    background:#eef2ff;
+    margin:0;
+    padding:15px;
+}
+h1{
+    text-align:center;
+    font-size:26px;
+    color:#243bff;
+}
+.card{
+    background:#fff;
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 6px 15px rgba(0,0,0,.1);
+}
+label{
+    font-size:18px;
+    font-weight:600;
+    margin-top:15px;
+    display:block;
+}
+select,input{
+    width:100%;
+    font-size:20px;
+    padding:12px;
+    margin-top:8px;
+    border-radius:12px;
+    border:1px solid #ccc;
+}
+.result{
+    margin-top:20px;
+    background:#e7edff;
+    border-radius:15px;
+    padding:15px;
+    font-size:22px;
+    text-align:center;
+    font-weight:700;
+    color:#1d2cff;
+}
+.big{
+    font-size:28px;
+    display:block;
+    margin-top:8px;
+}
+</style>
+</head>
+
+<body>
+
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

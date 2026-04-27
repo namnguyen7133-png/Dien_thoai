@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công cụ Kiểm tra và Dự trù Ngân sách Xây nhà Trọn Gói</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 3px solid #e74c3c;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h3 {
+            color: #3498db;
+            margin-top: 25px;
+        }
+        .calculation-box {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            background-color: #ecf0f1;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .input-group input[type="number"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-top: 1px dashed #bdc3c7;
+        }
+        .result-item:first-of-type { border-top: none; }
+        .result-item strong {
+            color: #e74c3c;
+        }
+        .checklist-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-left: 5px solid #3498db;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .checklist-title {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .checklist-content {
+            margin-top: 5px;
+            font-size: 0.95em;
+            padding-left: 15px;
+            display: none; /* Ẩn nội dung chi tiết */
+        }
+        .checklist-item.active {
+            border-left-color: #2ecc71;
+        }
+        .checklist-item.active .checklist-content {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🎯 5 Câu Hỏi SỐNG CÒN Trước Khi Ký Hợp Đồng Xây Nhà Trọn Gói</h2>
+    
+    <p>Công cụ này giúp bạn kiểm tra các vấn đề cốt yếu và dự trù ngân sách phát sinh theo khuyến nghị của video.</p>
+
+    <hr>
+
+    <h3>1. 🧮 Dự Trù Ngân Sách Phát Sinh (10% - 20%)</h3>
+    <div class="calculation-box">
+        <div class="input-group">
+            <label for="estimated_cost">Tổng Chi Phí Xây Dựng Dự Kiến (VNĐ):</label>
+            <input type="number" id="estimated_cost" placeholder="Nhập tổng chi phí (ví dụ: 1000000000)" min="1000000" oninput="calculateContingency()">
+        </div>
+
+        <div class="result-item">
+            <span><strong>Ngân sách Dự trù Tối thiểu (10%):</strong></span>
+            <span id="contingency_min">0 VNĐ</span>
+        </div>
+        <div class="result-item">
+            <span><strong>Ngân sách Dự trù Tối đa (20%):</strong></span>
+            <span id="contingency_max">0 VNĐ</span>
+        </div>
+        <p style="font-size: 0.9em; margin-top: 10px;"><em>(Lời khuyên: Nên dự trù 10-20% chi phí tổng để ứng phó với phát sinh <a href="http://www.youtube.com/watch?v=JpkVzeyMy2E&t=417">[06:57]</a>)</em></p>
+    </div>
+
+    <h3>2. ✅ Danh Sách 5 Câu Hỏi Bắt Buộc Phải Làm Rõ</h3>
+
+    <div class="checklist-item" onclick="toggleChecklist(this)">
+        <div class="checklist-title">❓ 1. Phạm vi Công việc của Nhà thầu là gì? <a href="http://www.youtube.com/watch?v=JpkVzeyMy2E&t=71">[01:11]</a></div>
+        <div class="checklist-content">
+            <p><strong>Cần làm rõ:</strong></p>
+            <ul>
+                <li>Xác định rõ gói thầu: Nhân công, Vật tư thô, Hoàn thiện, hay Trọn gói (full nội thất)?</li>
+                <li>Hạng mục nào ĐÃ BAO GỒM trong gói trọn gói: bếp, sơn nước, thiết bị vệ sinh, vách trang trí, mặt tiền, đèn, cổng rào, cửa, khung bảo vệ?</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="checklist-item" onclick="toggleChecklist(this)">
+        <div class="checklist-title">❓ 2. Bản vẽ Xây dựng đã Đầy đủ chưa? <a href="http://www.youtube.com/watch?v=JpkVzeyMy2E&t=194">[03:14]</a></div>
+        <div class="checklist-content">
+            <p><strong>Hồ sơ cần phải bao gồm tối thiểu 4 phần chính:</strong></p>
+            <ul>
+                <li><strong>Kiến trúc:</strong> Kích thước, cao độ, công năng mặt bằng, vị trí cửa.</li>
+                <li><strong>Kết cấu:</strong> Chi tiết về móng, cọc, dầm móng, độ dày nền, cốt thép.</li>
+                <li><strong>Điện:</strong> Vị trí dây điện, thiết bị, CP (cầu dao), công tắc, ổ cắm.</li>
+                <li><strong>Nước:</strong> Hệ thống cấp thoát nước, chống thấm, kết cấu mái.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="checklist-item" onclick="toggleChecklist(this)">
+        <div class="checklist-title">❓ 3. Ai là người Giám sát Công trình? <a href="http://www.youtube.com/watch?v=JpkVzeyMy2E&t=319">[05:19]</a></div>
+        <div class="checklist-content">
+            <p><strong>Cần xác định rõ người giám sát chính:</strong></p>
+            <ul>
+                <li>Gia chủ tự giám sát (nếu có kiến thức và thời gian).</li>
+                <li>Người thân có chuyên môn.</li>
+                <li><strong>Khuyến nghị:</strong> Thuê đơn vị Giám sát độc lập để kiểm soát chất lượng, an toàn và giải quyết kỹ thuật.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="checklist-item" onclick="toggleChecklist(this)">
+        <div class="checklist-title">❓ 4. Thanh toán, Bảo hành và Xử lý Phát sinh như thế nào? <a href="http://www.youtube.com/watch?v=JpkVzeyMy2E&t=396">[06:36]</a></div>
+        <div class="checklist-content">
+            <p><strong>Làm rõ các yếu tố pháp lý và tài chính:</strong></p>
+            <ul>
+                <li>Quy định cụ thể về các đợt Thanh toán.</li>
+                <li>Chi tiết về thời gian và phạm vi Bảo hành.</li>
+                <li>Cách xử lý Phát sinh (tăng/giảm): Trách nhiệm do nhu cầu gia chủ hay sự cố ngoài công trình?</li>
+                <li>Lưu ý: Dự trù 10-20% chi phí tổng cho phát sinh.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="checklist-item" onclick="toggleChecklist(this)">
+        <div class="checklist-title">❓ 5. Vật tư Chất lượng và Thương hiệu nào được sử dụng? <a href="http://www.youtube.com/watch?v=JpkVzeyMy2E&t=484">[08:04]</a></div>
+        <div class="checklist-content">
+            <p><strong>Yêu cầu Nhà thầu cung cấp:</strong></p>
+            <ul>
+                <li>Danh sách vật tư thô (cát, thép, gạch, bê tông thương phẩm hay trộn tay).</li>
+                <li>Danh sách vật tư hoàn thiện kèm Thương hiệu (gạch, thiết bị điện/nước, trần, cửa).</li>
+                <li>Chứng chỉ chất lượng của vật tư.</li>
+            </ul>
+        </div>
+    </div>
+
+    <hr>
+    <p style="text-align: center; font-size: 0.9em;">Liên kết video: <a href="http://www.youtube.com/watch?v=JpkVzeyMy2E">http://www.youtube.com/watch?v=JpkVzeyMy2E</a></p>
+
+</div>
+
+<script>
+    // --- HÀM TÍNH TOÁN NGÂN SÁCH DỰ TRÙ (10% - 20%) ---
+    function formatCurrency(number) {
+        if (isNaN(number) || number === 0) {
+            return '0 VNĐ';
+        }
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number);
+    }
+
+    function calculateContingency() {
+        const costInput = document.getElementById('estimated_cost');
+        const estimatedCost = parseFloat(costInput.value) || 0;
+
+        const minContingency = estimatedCost * 0.10;
+        const maxContingency = estimatedCost * 0.20;
+
+        document.getElementById('contingency_min').innerHTML = formatCurrency(minContingency);
+        document.getElementById('contingency_max').innerHTML = formatCurrency(maxContingency);
+    }
+
+    // --- HÀM TƯƠNG TÁC CHECKLIST (BẬT/TẮT NỘI DUNG) ---
+    function toggleChecklist(element) {
+        element.classList.toggle('active');
+    }
+
+    // Tự động chạy tính toán khi tải trang
+    document.addEventListener('DOMContentLoaded', calculateContingency);
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

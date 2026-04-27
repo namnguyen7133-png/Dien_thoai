@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bảng 23 chữ + Giải mã ngày giờ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+    font-family:Segoe UI,Tahoma,Arial;
+    background:linear-gradient(135deg,#1e3c72,#2a5298);
+    padding:20px;
+}
+.container{
+    max-width:1000px;
+    margin:auto;
+    background:#fff;
+    border-radius:20px;
+    padding:30px;
+}
+h2{text-align:center;color:#1e3c72}
+.box{
+    background:#f4f6ff;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
+}
+input,select,textarea,button{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:2px solid #ccd6ff;
+    margin-top:8px;
+}
+button{
+    background:#4a69bd;
+    color:#fff;
+    border:none;
+    cursor:pointer;
+}
+button:hover{opacity:.9}
+textarea{
+    height:140px;
+    font-family:Consolas,monospace;
+}
+.result{
+    background:#e9ecff;
+    padding:10px;
+    border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h2>🔐 MÃ HÓA – GIẢI MÃ NGÀY GIỜ</h2>
+
+<!-- BƯỚC 1 -->
+<div class="box">
+<b>🔹 Bước 1: Nhập ngày & giờ gốc</b>
+<input id="dateInput" type="date">
+<input id="hourInput" type="number" min="0" max="23" placeholder="Giờ (0–23)">
+<button onclick="calcBaseSeconds()">Tính T₀</button>
+<div class="result">T₀: <span id="baseSeconds">Chưa tính</span></div>
+</div>
+
+<!-- BẢNG 23 -->
+<div class="box">
+<b>🔹 Chuyển chữ → số (BẢNG 23)</b>
+
+<input id="textInput" placeholder="Ví dụ: Nguyễn Văn A">
+
+<select id="mode">
+    <option value="forward">Bảng xuôi</option>
+    <option value="reverse">Bảng ngược</option>
+</select>
+
+<button onclick="convert23()">Chuyển chữ → số</button>
+<div class="result" id="output">Chưa có kết quả</div>
+</div>
+
+<!-- BƯỚC 2 -->
+<div class="box">
+<b>🔹 Bước 2: Nhập chuỗi số</b>
+<input id="permInput" placeholder="Chuỗi số sẽ tự động đổ vào đây">
+</div>
+
+<!-- BƯỚC 3 -->
+<div class="box">
+<b>🔹 Bước 3: Hoán vị</b>
+<button onclick="generatePermutations()">Tạo hoán vị</button>
+<textarea id="permResult"></textarea>
+</div>
+
+<!-- BƯỚC 4 -->
+<div class="box">
+<b>🔹 Bước 4: Ghép số</b>
+<button onclick="mergeNumbers()">Ghép</button>
+<textarea id="mergeResult"></textarea>
+</div>
+
+<!-- BƯỚC 5 -->
+<div class="box">
+<b>🔹 Bước 5: Giải mã & lọc theo giờ</b>
+<input id="filterHour" type="number" min="0" max="23"
+       placeholder="Lọc theo giờ (bỏ trống = tất cả)">
+<button onclick="decodeToDate()">Giải mã</button>
+<textarea id="dateResult"></textarea>
+</div>
+
+</div>
+
+<script>
+// ===== BẢNG 23 XUÔI =====
+const mapForward={
+a:1,à:1,á:1,ả:1,ã:1,ạ:1,ă:1,â:1,
+b:2,c:3,d:4,đ:5,
+e:6,è:6,é:6,ê:6,
+g:7,h:8,
+i:9,ì:9,í:9,
+k:1,l:2,m:3,
+n:1,
+o:2,ò:2,ó:2,ô:2,ơ:2,
+p:3,q:4,r:5,s:6,t:7,
+u:8,ù:8,ú:8,ư:8,
+v:9,
+x:1,
+y:2,ỳ:2,ý:2
+};
+
+// ===== BẢNG 23 NGƯỢC =====
+const mapReverse={
+a:3,à:3,á:3,ả:3,ã:3,ạ:3,ă:3,â:3,
+b:2,c:1,d:9,đ:8,
+e:7,è:7,é:7,ê:7,
+g:6,h:5,
+i:4,ì:4,í:4,
+k:3,l:2,m:1,
+n:2,
+o:1,ò:1,ó:1,ô:1,ơ:1,
+p:9,q:8,r:7,s:6,t:5,
+u:4,ù:4,ú:4,ư:4,
+v:3,
+x:2,
+y:1,ỳ:1,ý:1
+};
+
+// ===== CHUYỂN CHỮ → ĐỔ VÀO BƯỚC 2 =====
+function convert23(){
+    const text=document.getElementById("textInput").value.toLowerCase();
+    const mode=document.getElementById("mode").value;
+    const map=mode==="forward"?mapForward:mapReverse;
+
+    let nums=[];
+    for(let c of text){
+        if(map[c]!==undefined) nums.push(map[c]);
+    }
+
+    if(nums.length){
+        const result=nums.join('');
+        document.getElementById("output").innerText="Chuỗi số: "+result;
+        document.getElementById("permInput").value=result;
+    }else{
+        document.getElementById("output").innerText="Không tìm thấy chữ hợp lệ";
+    }
+}
+
+// ===== LOGIC GIẢI MÃ NGÀY GIỜ (GIỮ NGUYÊN) =====
+let T0=0n, merged=[];
+
+function calcBaseSeconds(){
+    const d=document.getElementById("dateInput").value;
+    const h=document.getElementById("hourInput").value;
+    if(!d||h===""){alert("Nhập đủ ngày & giờ");return;}
+    const date=new Date(d+"T00:00:00Z");
+    date.setHours(h);
+    const base=new Date("1900-01-01T00:00:00Z");
+    T0=BigInt(Math.floor((date-base)/1000));
+    document.getElementById("baseSeconds").innerText=T0;
+}
+
+function generatePermutations(){
+    const s=document.getElementById("permInput").value;
+    let set=new Set();
+    function p(str,l){
+        if(l===str.length-1){set.add(str);return;}
+        for(let i=l;i<str.length;i++){
+            let a=str.split('');
+            [a[l],a[i]]=[a[i],a[l]];
+            p(a.join(''),l+1);
+        }
+    }
+    p(s,0);
+    document.getElementById("permResult").value=[...set].join("\n");
+}
+
+function mergeNumbers(){
+    merged=[];
+    const perms=document.getElementById("permResult").value.split("\n");
+    const T=T0.toString();
+    perms.forEach(p=>{
+        let pos=T.length-(p.length+1);
+        if(pos<0)return;
+        let d=(parseInt(T[pos])+1)%10;
+        let t=T.substring(0,pos)+d+T.substring(pos+1);
+        merged.push(t.substring(0,t.length-p.length)+p);
+    });
+    document.getElementById("mergeResult").value=merged.join("\n");
+}
+
+function decodeToDate(){
+    const base=new Date("1900-01-01T00:00:00Z");
+    const filter=document.getElementById("filterHour").value;
+    let out=[];
+    merged.forEach(n=>{
+        const d=new Date(base.getTime()+Number(BigInt(n))*1000);
+        if(filter===""||d.getHours()==filter){
+            out.push(n+" → "+d.toLocaleString("vi-VN"));
+        }
+    });
+    document.getElementById("dateResult").value=out.join("\n");
+}
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

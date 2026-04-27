@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tìm kiếm và phân tích từ trong văn bản</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 30px;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        label {
+            display: block;
+            margin-top: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        textarea, input, select {
+            width: 100%;
+            margin-top: 8px;
+            padding: 14px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            transition: border 0.3s;
+            background-color: #fff;
+        }
+        
+        textarea:focus, input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        textarea {
+            height: 180px;
+            resize: vertical;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        button {
+            padding: 14px 28px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s;
+            min-height: 60px;
+        }
+        
+        #searchBtn {
+            background-color: #3498db;
+            color: white;
+            flex-grow: 1;
+        }
+        
+        #searchBtn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        #clearBtn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        #clearBtn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        #highlightBtn {
+            background-color: #27ae60;
+            color: white;
+            flex-grow: 1;
+        }
+        
+        #highlightBtn:hover {
+            background-color: #219653;
+            transform: translateY(-2px);
+        }
+        
+        #calculateBtn {
+            background-color: #9b59b6;
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        #calculateBtn:hover {
+            background-color: #8e44ad;
+            transform: translateY(-2px);
+        }
+        
+        #result {
+            margin-top: 30px;
+            padding: 25px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            min-height: 100px;
+            font-size: 17px;
+        }
+        
+        .result-section {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px dashed #ddd;
+        }
+        
+        .result-section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .highlight {
+            background-color: #ffeb3b;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .found-item {
+            padding: 12px;
+            margin: 8px 0;
+            background-color: white;
+            border-left: 5px solid #3498db;
+            border-radius: 6px;
+            font-size: 17px;
+        }
+        
+        .word-count {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 16px;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+            margin: 5px 10px;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .stat-label {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .no-results {
+            color: #7f8c8d;
+            font-style: italic;
+            text-align: center;
+            padding: 25px;
+            font-size: 18px;
+        }
+        
+        .priority-high {
+            border-left-color: #e74c3c !important;
+            background-color: #ffeaea;
+        }
+        
+        .priority-medium {
+            border-left-color: #f39c12 !important;
+            background-color: #fff8e1;
+        }
+        
+        .priority-low {
+            border-left-color: #27ae60 !important;
+            background-color: #e8f6ef;
+        }
+        
+        .person-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            background-color: #f9f9f9;
+            font-size: 16px;
+        }
+        
+        .person-item {
+            padding: 12px;
+            margin: 8px 0;
+            border-left: 4px solid #3498db;
+            background-color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .person-item:hover {
+            background-color: #f0f8ff;
+            transform: translateX(5px);
+        }
+        
+        .selected-person {
+            background-color: #e3f2fd !important;
+            border-left-color: #e74c3c !important;
+            border-left-width: 6px !important;
+        }
+        
+        .calculation-result {
+            background-color: #e8f6ef;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 6px solid #27ae60;
+            font-size: 17px;
+        }
+        
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .info-text {
+            font-size: 15px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .output-box {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @media (max-width: 900px) {
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .stats {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .stat-item {
+                margin: 10px 0;
+            }
+            
+            body {
+                margin: 15px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+        }
+        
+        .large-text {
+            font-size: 18px !important;
+        }
+        
+        .clear-font {
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+        
+        .last-letters-display {
+            background-color: #e1f5fe;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 5px solid #0288d1;
+        }
+        
+        .letter-box {
+            display: inline-block;
+            background-color: #0288d1;
+            color: white;
+            padding: 8px 15px;
+            margin: 0 5px;
+            border-radius: 6px;
+            font-size: 24px;
+            font-weight: bold;
+            min-width: 40px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Tìm kiếm và phân tích từ trong văn bản</h2>
+    
+    <div class="two-columns">
+        <div>
+            <label>Danh sách người (tự động chọn người theo ngày hiện tại)</label>
+            <div class="info-text">Nhấn vào tên người để chọn tự động</div>
+            <div class="person-list" id="personList">
+                <!-- Danh sách sẽ được tạo bằng JavaScript -->
+            </div>
+            
+            <label>Ô 1: Nhập ngày hiện tại (DD/MM/YYYY)</label>
+            <input type="text" id="currentDateInput" placeholder="DD/MM/YYYY" value="">
+            <div class="info-text">Để trống để sử dụng ngày hôm nay</div>
+            <button id="calculateBtn" onclick="calculateAndSelectPerson()">Tính toán và chọn người</button>
+            
+            <div id="calculationResult" class="calculation-result"></div>
+        </div>
+        
+        <div>
+            <label>Ô 2: Nhập văn bản (copy từ ảnh, email, tài liệu...)</label>
+            <textarea id="textInput" placeholder="Ví dụ: Công ty ABC đang tìm kiếm nhân viên kinh doanh tại Hà Nội và TP.HCM. Ưu tiên ứng viên có kinh nghiệm từ 2 năm trở lên." class="large-text clear-font"></textarea>
+            <div id="textStats" class="info-text"></div>
+            
+            <label>Ô 3: Nhập từ/cụm từ muốn tìm (tự động điền tên người được chọn)</label>
+            <input type="text" id="searchInput" placeholder="Tên người sẽ tự động điền vào đây" class="large-text clear-font">
+            <div class="info-text">Tên người sẽ tự động điền khi bạn chọn từ danh sách</div>
+            
+            <div class="last-letters-display">
+                <div class="section-title">Chữ cái cuối cùng của mỗi từ trong tên:</div>
+                <div id="lastLettersContainer"></div>
+            </div>
+            
+            <div class="output-box" id="outputBox">
+                Kết quả sẽ hiển thị ở đây
+            </div>
+            
+            <div class="button-group">
+                <button id="searchBtn" onclick="analyzeText()">Tìm kiếm</button>
+                <button id="highlightBtn" onclick="highlightText()">Đánh dấu trong văn bản</button>
+                <button id="clearBtn" onclick="clearSearch()">Xoá kết quả</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="result"></div>
+</div>
+
+<script>
+// Danh sách người với tên đầy đủ dấu
+const personList = [
+    { id: 1, name: "NGUYỄN KHẮC NĂNG", birthDate: "04/06/1944" },
+    { id: 2, name: "TÔ THỊ HÀ", birthDate: "29/08/1948" },
+    { id: 3, name: "NGUYỄN MINH NAM", birthDate: "03/03/1971" },
+    { id: 4, name: "THÂN THỊ KIM ANH", birthDate: "23/09/1981" },
+    { id: 5, name: "NGUYỄN TÔ NGÂN AN", birthDate: "28/09/2014" },
+    { id: 6, name: "NGUYỄN TÔ MINH CHÂU", birthDate: "25/07/2016" },
+    { id: 7, name: "NGUYỄN TÔ BÍCH NGỌC", birthDate: "05/02/2020" },
+    { id: 8, name: "NGUYỄN THỊ MINH HẰNG", birthDate: "07/01/1974" },
+    { id: 9, name: "NGÔ QUÝ CƯỜNG", birthDate: "23/05/1973" },
+    { id: 10, name: "NGÔ GIA BÁCH", birthDate: "12/10/2000" },
+    { id: 11, name: "NGÔ GIA LINH", birthDate: "05/04/2005" },
+    { id: 12, name: "NGUYỄN THỊ MINH PHƯƠNG", birthDate: "06/11/1978" },
+    { id: 13, name: "HOÀNG ANH DŨNG", birthDate: "21/09/1978" },
+    { id: 14, name: "HOÀNG HẢI VINH", birthDate: "03/06/2010" },
+    { id: 15, name: "HOÀNG THIÊN BẠCH ANH", birthDate: "14/11/2015" },
+    { id: 16, name: "TÔ KIM HUỆ", birthDate: "09/08/1960" },
+    { id: 17, name: "NGUYỄN TUẤN ANH", birthDate: "23/10/1983" },
+    { id: 18, name: "NGUYỄN THẾ ANH", birthDate: "24/03/2001" },
+    { id: 19, name: "NGÔ THỊ MAI", birthDate: "12/12/1948" },
+    { id: 20, name: "TÔ VIỆT HƯNG", birthDate: "17/06/1996" },
+    { id: 21, name: "TÔ THỊ HỒNG", birthDate: "10/10/1964" },
+    { id: 22, name: "VŨ VĂN HIỆP", birthDate: "24/04/1974" },
+    { id: 23, name: "NGUYỄN THỊ CHI", birthDate: "08/02/1946" },
+    { id: 24, name: "NGUYỄN TẤN BẮC", birthDate: "30/11/1957" },
+    { id: 25, name: "NGUYỄN THỊ TÂM", birthDate: "08/08/1954" }
+];
+
+let selectedPersonIndex = -1;
+
+// Hàm để hiển thị danh sách người
+function displayPersonList() {
+    const personListDiv = document.getElementById("personList");
+    personListDiv.innerHTML = '';
+    
+    personList.forEach((person, index) => {
+        const personDiv = document.createElement("div");
+        personDiv.className = "person-item";
+        personDiv.id = `person-${index}`;
+        personDiv.innerHTML = `
+            <strong style="font-size: 18px;">${person.id}. ${person.name}</strong>
+            <div style="font-size: 16px; color: #666;">Ngày sinh: ${person.birthDate}</div>
+        `;
+        
+        personDiv.addEventListener("click", () => {
+            selectPerson(index);
+        });
+        
+        personListDiv.appendChild(personDiv);
+    });
+}
+
+// Hàm lấy chữ cái cuối cùng của mỗi từ trong tên
+function getLastLettersOfName(fullName) {
+    // Tách tên thành các từ
+    const words = fullName.split(' ');
+    // Lọc bỏ các từ trống
+    const nonEmptyWords = words.filter(word => word.trim().length > 0);
+    // Lấy chữ cái cuối cùng của mỗi từ
+    const lastLetters = nonEmptyWords.map(word => {
+        // Lấy ký tự cuối cùng
+        const lastChar = word.charAt(word.length - 1);
+        return lastChar;
+    });
+    
+    return lastLetters;
+}
+
+// Hàm hiển thị chữ cái cuối cùng
+function displayLastLetters(fullName) {
+    const lastLetters = getLastLettersOfName(fullName);
+    const container = document.getElementById("lastLettersContainer");
+    
+    let html = '<div style="margin: 10px 0;">';
+    
+    // Hiển thị giải thích
+    html += `<div style="margin-bottom: 10px; font-size: 16px;">Tên: <strong>${fullName}</strong></div>`;
+    html += '<div style="margin-bottom: 10px;">Chữ cái cuối cùng của mỗi từ:</div>';
+    
+    // Hiển thị từng chữ cái trong box
+    lastLetters.forEach((letter, index) => {
+        html += `<span class="letter-box">${letter}</span>`;
+    });
+    
+    // Hiển thị kết quả gộp
+    if (lastLetters.length > 0) {
+        const combinedLetters = lastLetters.join('');
+        html += `<div style="margin-top: 15px; font-size: 18px; font-weight: bold;">Kết quả: <span style="color: #e74c3c;">${combinedLetters}</span></div>`;
+        
+        // Cập nhật ô output box
+        document.getElementById("outputBox").innerHTML = `Kết quả: <span style="font-size: 36px; color: #e74c3c;">${combinedLetters}</span>`;
+    }
+    
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// Hàm để chọn người từ danh sách
+function selectPerson(index) {
+    // Bỏ chọn người cũ
+    if (selectedPersonIndex >= 0) {
+        const oldPersonDiv = document.getElementById(`person-${selectedPersonIndex}`);
+        oldPersonDiv.classList.remove("selected-person");
+    }
+    
+    // Chọn người mới
+    selectedPersonIndex = index;
+    const newPersonDiv = document.getElementById(`person-${index}`);
+    newPersonDiv.classList.add("selected-person");
+    
+    // Lấy tên người đầy đủ
+    const personName = personList[index].name;
+    
+    // Điền tên vào ô tìm kiếm (có thể chuẩn hóa hoặc không)
+    document.getElementById("searchInput").value = personName;
+    
+    // Hiển thị chữ cái cuối cùng
+    displayLastLetters(personName);
+    
+    // Cuộn đến người được chọn
+    newPersonDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+// Hàm chuẩn hóa văn bản: viết thường và bỏ dấu
+function normalizeText(text) {
+    return text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/đ/g, "d")
+        .replace(/Đ/g, "d");
+}
+
+// Hàm tính toán và chọn người theo ngày hiện tại
+function calculateAndSelectPerson() {
+    const dateInput = document.getElementById("currentDateInput").value.trim();
+    let currentDate;
+    
+    // Nếu không nhập ngày, sử dụng ngày hiện tại
+    if (!dateInput) {
+        currentDate = new Date();
+    } else {
+        // Phân tích ngày nhập vào
+        const parts = dateInput.split('/');
+        if (parts.length !== 3) {
+            alert("Vui lòng nhập ngày theo định dạng DD/MM/YYYY");
+            return;
+        }
+        
+        const day = parseInt(parts[0]);
+        const month = parseInt(parts[1]) - 1; // Tháng bắt đầu từ 0
+        const year = parseInt(parts[2]);
+        
+        if (isNaN(day) || isNaN(month) || isNaN(year)) {
+            alert("Ngày tháng năm không hợp lệ");
+            return;
+        }
+        
+        currentDate = new Date(year, month, day);
+        if (isNaN(currentDate.getTime())) {
+            alert("Ngày tháng năm không hợp lệ");
+            return;
+        }
+    }
+    
+    // Tính số ngày từ 1/1/1900 đến ngày hiện tại
+    const baseDate = new Date(1900, 0, 1); // 1/1/1900
+    const timeDiff = currentDate.getTime() - baseDate.getTime();
+    const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+    
+    // Tính số dư khi chia cho tổng số người
+    const totalPeople = personList.length;
+    let remainder = daysDiff % totalPeople;
+    
+    // Nếu số dư là 0, lấy đúng số chia (tổng số người)
+    if (remainder === 0) {
+        remainder = totalPeople;
+    }
+    
+    // Chọn người (index bắt đầu từ 0)
+    const selectedIndex = remainder - 1;
+    
+    // Hiển thị kết quả tính toán
+    const calculationResultDiv = document.getElementById("calculationResult");
+    calculationResultDiv.innerHTML = `
+        <strong style="font-size: 18px;">Kết quả tính toán:</strong><br><br>
+        - Ngày hiện tại: ${formatDate(currentDate)}<br>
+        - Số ngày từ 1/1/1900: ${daysDiff} ngày<br>
+        - Tổng số người trong danh sách: ${totalPeople}<br>
+        - Phép tính: ${daysDiff} % ${totalPeople} = ${remainder}<br>
+        - <strong style="font-size: 18px; color: #e74c3c;">Người được chọn: ${remainder}. ${personList[selectedIndex].name}</strong>
+    `;
+    
+    // Chọn người trong danh sách
+    selectPerson(selectedIndex);
+}
+
+// Hàm định dạng ngày
+function formatDate(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
+// Khởi tạo ngày hiện tại trong ô nhập
+function initializeCurrentDate() {
+    const today = new Date();
+    const formattedDate = formatDate(today);
+    document.getElementById("currentDateInput").value = formattedDate;
+    
+    // Tính toán và chọn người tự động khi trang được tải
+    calculateAndSelectPerson();
+}
+
+// Các hàm tìm kiếm và phân tích văn bản
+function analyzeText() {
+    const text = document.getElementById("textInput").value;
+    const search = document.getElementById("searchInput").value.trim();
+    const resultDiv = document.getElementById("result");
+    
+    if (!text) {
+        resultDiv.innerHTML = '<div class="no-results">Vui lòng nhập văn bản cần tìm kiếm.</div>';
+        return;
+    }
+    
+    if (!search) {
+        resultDiv.innerHTML = '<div class="no-results">Vui lòng nhập từ/cụm từ cần tìm.</div>';
+        return;
+    }
+    
+    // Chuẩn hóa từ tìm kiếm
+    const normalizedSearch = normalizeText(search);
+    const searchTerms = normalizedSearch.split(/[,;\s]+/).filter(term => term.length > 0);
+    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    const words = text.split(/\s+/).filter(w => w.length > 0);
+    
+    let resultHTML = '';
+    let totalMatches = 0;
+    let exactPhraseMatches = [];
+    let allTermsMatches = [];
+    let partialMatches = [];
+    
+    // Tìm kiếm cụm từ chính xác (toàn bộ cụm từ tìm kiếm)
+    const exactPhrase = search.trim();
+    if (exactPhrase.length > 0) {
+        // Tìm cả phiên bản có dấu và không dấu
+        const exactRegex = new RegExp(`\\b${escapeRegExp(exactPhrase)}\\b`, 'gi');
+        const exactMatches = text.match(exactRegex);
+        
+        if (exactMatches) {
+            exactPhraseMatches = exactMatches;
+            totalMatches += exactMatches.length;
+        }
+        
+        // Tìm phiên bản đã chuẩn hóa
+        const normalizedExactPhrase = normalizeText(exactPhrase);
+        const normalizedTextForSearch = normalizeText(text);
+        const normalizedExactRegex = new RegExp(`\\b${escapeRegExp(normalizedExactPhrase)}\\b`, 'gi');
+        const normalizedExactMatches = normalizedTextForSearch.match(normalizedExactRegex);
+        
+        if (normalizedExactMatches && normalizedExactMatches.length > exactPhraseMatches.length) {
+            totalMatches += (normalizedExactMatches.length - exactPhraseMatches.length);
+            exactPhraseMatches = [...new Set([...exactPhraseMatches, ...normalizedExactMatches])];
+        }
+    }
+    
+    // Tìm kiếm các từ trong cùng một câu (ưu tiên cao)
+    for (let i = 0; i < sentences.length; i++) {
+        const sentence = sentences[i].trim();
+        const normalizedSentence = normalizeText(sentence);
+        let sentenceHasAllTerms = true;
+        
+        // Kiểm tra xem câu có chứa tất cả các từ tìm kiếm không
+        for (let term of searchTerms) {
+            const termRegex = new RegExp(`\\b${escapeRegExp(term)}\\b`, 'i');
+            if (!termRegex.test(normalizedSentence)) {
+                sentenceHasAllTerms = false;
+                break;
+            }
+        }
+        
+        if (sentenceHasAllTerms && searchTerms.length > 1) {
+            allTermsMatches.push({
+                sentence: sentence,
+                normalizedSentence: normalizedSentence,
+                index: i + 1
+            });
+            totalMatches++;
+        }
+    }
+    
+    // Tìm kiếm từng từ riêng lẻ (ưu tiên thấp)
+    for (let term of searchTerms) {
+        if (term.length === 0) continue;
+        
+        const normalizedTextForSearch = normalizeText(text);
+        const termRegex = new RegExp(`\\b${escapeRegExp(term)}\\b`, 'gi');
+        const termMatches = normalizedTextForSearch.match(termRegex);
+        
+        if (termMatches) {
+            partialMatches.push({
+                term: term,
+                count: termMatches.length,
+                matches: termMatches
+            });
+            totalMatches += termMatches.length;
+        }
+    }
+    
+    // Xây dựng kết quả HTML
+    resultHTML += '<div class="stats">';
+    resultHTML += `<div class="stat-item"><div class="stat-value">${totalMatches}</div><div class="stat-label">Tổng kết quả</div></div>`;
+    resultHTML += `<div class="stat-item"><div class="stat-value">${exactPhraseMatches.length}</div><div class="stat-label">Cụm chính xác</div></div>`;
+    resultHTML += `<div class="stat-item"><div class="stat-value">${allTermsMatches.length}</div><div class="stat-label">Câu có đủ từ</div></div>`;
+    resultHTML += `<div class="stat-item"><div class="stat-value">${searchTerms.length}</div><div class="stat-label">Từ cần tìm</div></div>`;
+    resultHTML += '</div>';
+    
+    // Hiển thị kết quả cụm từ chính xác
+    if (exactPhraseMatches.length > 0) {
+        resultHTML += '<div class="result-section">';
+        resultHTML += '<div class="section-title">🎯 Tìm thấy cụm từ chính xác:</div>';
+        resultHTML += `<div class="found-item priority-high">"<span class="highlight">${exactPhrase}</span>" xuất hiện <span class="word-count">${exactPhraseMatches.length} lần</span></div>`;
+        
+        // Hiển thị các ngữ cảnh
+        const contextRegex = new RegExp(`([^.!?]*?\\b${escapeRegExp(exactPhrase)}\\b[^.!?]*[.!?])`, 'gi');
+        const contexts = text.match(contextRegex) || [];
+        
+        contexts.slice(0, 5).forEach(context => {
+            const highlightedContext = context.replace(
+                new RegExp(`(${escapeRegExp(exactPhrase)})`, 'gi'), 
+                '<span class="highlight">$1</span>'
+            );
+            resultHTML += `<div class="found-item priority-medium">${highlightedContext}</div>`;
+        });
+        
+        if (contexts.length > 5) {
+            resultHTML += `<div class="found-item">... và ${contexts.length - 5} ngữ cảnh khác</div>`;
+        }
+        
+        resultHTML += '</div>';
+    }
+    
+    // Hiển thị kết quả câu có đầy đủ các từ tìm kiếm
+    if (allTermsMatches.length > 0) {
+        resultHTML += '<div class="result-section">';
+        resultHTML += `<div class="section-title">✅ Tìm thấy ${allTermsMatches.length} câu chứa đầy đủ các từ: "${searchTerms.join(', ')}"</div>`;
+        
+        allTermsMatches.forEach(match => {
+            let highlightedSentence = match.sentence;
+            // Đánh dấu từng từ trong câu
+            searchTerms.forEach(term => {
+                const termRegex = new RegExp(`\\b(${escapeRegExp(term)})\\b`, 'gi');
+                // Tìm từ trong câu đã chuẩn hóa để biết vị trí
+                const normalizedSentence = match.normalizedSentence;
+                const termMatch = normalizedSentence.match(termRegex);
+                if (termMatch) {
+                    // Đánh dấu trong câu gốc
+                    const wordsInSentence = match.sentence.split(/\s+/);
+                    for (let i = 0; i < wordsInSentence.length; i++) {
+                        const normalizedWord = normalizeText(wordsInSentence[i]);
+                        if (normalizedWord === term.toLowerCase()) {
+                            wordsInSentence[i] = `<span class="highlight">${wordsInSentence[i]}</span>`;
+                        }
+                    }
+                    highlightedSentence = wordsInSentence.join(' ');
+                }
+            });
+            resultHTML += `<div class="found-item priority-high">Câu ${match.index}: ${highlightedSentence}</div>`;
+        });
+        
+        resultHTML += '</div>';
+    }
+    
+    // Hiển thị kết quả từng từ riêng lẻ
+    if (partialMatches.length > 0 && (exactPhraseMatches.length === 0 || searchTerms.length > 1)) {
+        resultHTML += '<div class="result-section">';
+        resultHTML += '<div class="section-title">📊 Kết quả tìm kiếm từng từ riêng lẻ:</div>';
+        
+        partialMatches.forEach(match => {
+            resultHTML += `<div class="found-item priority-low">Từ "<span class="highlight">${match.term}</span>" xuất hiện <span class="word-count">${match.count} lần</span></div>`;
+        });
+        
+        resultHTML += '</div>';
+    }
+    
+    // Thông báo nếu không tìm thấy kết quả
+    if (exactPhraseMatches.length === 0 && allTermsMatches.length === 0 && partialMatches.length === 0) {
+        resultHTML += '<div class="no-results">Không tìm thấy kết quả phù hợp với từ tìm kiếm.</div>';
+    }
+    
+    resultDiv.innerHTML = resultHTML;
+}
+
+function highlightText() {
+    const text = document.getElementById("textInput").value;
+    const search = document.getElementById("searchInput").value.trim();
+    
+    if (!text || !search) {
+        alert("Vui lòng nhập đầy đủ văn bản và từ tìm kiếm.");
+        return;
+    }
+    
+    const searchTerms = search.split(/[,;\s]+/).filter(term => term.length > 0);
+    let highlightedText = text;
+    
+    // Đánh dấu cụm từ chính xác trước
+    const exactPhrase = search.trim();
+    if (exactPhrase.length > 0) {
+        const exactRegex = new RegExp(`\\b(${escapeRegExp(exactPhrase)})\\b`, 'gi');
+        highlightedText = highlightedText.replace(exactRegex, '<mark style="background-color: #ffeb3b; font-weight: bold; padding: 2px 4px; border-radius: 3px;">$1</mark>');
+    }
+    
+    // Đánh dấu các từ riêng lẻ (nếu không có cụm từ chính xác)
+    if (exactPhrase.length === 0 || searchTerms.length > 1) {
+        searchTerms.forEach(term => {
+            if (term.length === 0) return;
+            // Tìm và đánh dấu cả phiên bản có dấu và không dấu
+            const words = text.split(/\s+/);
+            words.forEach(word => {
+                const normalizedWord = normalizeText(word);
+                if (normalizedWord.includes(term) || term.includes(normalizedWord)) {
+                    const wordRegex = new RegExp(`\\b${escapeRegExp(word)}\\b`, 'g');
+                    highlightedText = highlightedText.replace(wordRegex, `<mark style="background-color: #a8e6cf; padding: 2px 4px; border-radius: 3px; font-weight: bold;">${word}</mark>`);
+                }
+            });
+        });
+    }
+    
+    // Hiển thị văn bản đã đánh dấu trong một cửa sổ mới
+    const newWindow = window.open();
+    newWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Văn bản đã đánh dấu</title>
+            <style>
+                body { 
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                    margin: 30px; 
+                    line-height: 1.8; 
+                    font-size: 18px;
+                    color: #333;
+                    background-color: #f5f7fa;
+                }
+                .header { 
+                    background-color: #2c3e50; 
+                    color: white; 
+                    padding: 25px; 
+                    margin-bottom: 25px; 
+                    border-radius: 8px;
+                }
+                .content { 
+                    padding: 25px; 
+                    background-color: white; 
+                    border-radius: 8px; 
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                    line-height: 1.8;
+                    font-size: 18px;
+                }
+                mark { 
+                    border-radius: 4px; 
+                    padding: 3px 6px;
+                    font-weight: 600;
+                }
+                h2 {
+                    font-size: 24px;
+                    margin-bottom: 10px;
+                }
+                p {
+                    font-size: 17px;
+                    margin: 8px 0;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h2>Văn bản đã đánh dấu từ tìm kiếm: "${search}"</h2>
+                <p>Từ được đánh dấu màu vàng: cụm từ chính xác | Từ được đánh dấu màu xanh: từ riêng lẻ</p>
+                <p>Người tìm kiếm: ${selectedPersonIndex >= 0 ? personList[selectedPersonIndex].name : "Chưa chọn"}</p>
+                <p>Chữ cái cuối cùng: ${selectedPersonIndex >= 0 ? getLastLettersOfName(personList[selectedPersonIndex].name).join('') : ""}</p>
+                <p>Ngày: ${new Date().toLocaleDateString('vi-VN')}</p>
+            </div>
+            <div class="content">${highlightedText}</div>
+        
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+        </html>
+    `);
+    newWindow.document.close();
+}
+
+function clearSearch() {
+    if (selectedPersonIndex >= 0) {
+        document.getElementById("searchInput").value = personList[selectedPersonIndex].name;
+        displayLastLetters(personList[selectedPersonIndex].name);
+    } else {
+        document.getElementById("searchInput").value = "";
+        document.getElementById("lastLettersContainer").innerHTML = "";
+        document.getElementById("outputBox").innerHTML = "Kết quả sẽ hiển thị ở đây";
+    }
+    document.getElementById("result").innerHTML = "";
+}
+
+// Hàm hỗ trợ: escape ký tự đặc biệt trong regex
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Thêm sự kiện Enter để tìm kiếm
+document.getElementById("searchInput").addEventListener("keyup", function(event) {
+    if (event.key === "Enter") {
+        analyzeText();
+    }
+});
+
+// Thêm sự kiện cho textarea
+document.getElementById("textInput").addEventListener("input", function() {
+    const charCount = this.value.length;
+    const wordCount = this.value.split(/\s+/).filter(w => w.length > 0).length;
+    
+    // Hiển thị thống kê
+    document.getElementById("textStats").textContent = `Ký tự: ${charCount} | Từ: ${wordCount}`;
+});
+
+// Khởi tạo khi trang được tải
+window.onload = function() {
+    displayPersonList();
+    initializeCurrentDate();
+};
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

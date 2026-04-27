@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🦖 T-Rex AI - Deep Q-Learning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #f6d365, #fda085);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #f6d365;
+        }
+
+        .instructions h3 {
+            color: #f6d365;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .instructions ul {
+            list-style: none;
+            padding-left: 10px;
+        }
+
+        .instructions li {
+            margin: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .instructions li:before {
+            content: "•";
+            color: #f6d365;
+            font-size: 1.5rem;
+            position: absolute;
+            left: 0;
+            top: -3px;
+        }
+
+        .game-container {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        canvas {
+            display: block;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            border: 3px solid #fff;
+            max-width: 100%;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+        }
+
+        button {
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 180px;
+        }
+
+        .train-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+        }
+
+        .play-btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            color: white;
+        }
+
+        .reset-btn {
+            background: linear-gradient(45deg, #ffd166, #ffb347);
+            color: white;
+        }
+
+        .stop-btn {
+            background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(-1px);
+        }
+
+        .stats-panel {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #f6d365;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: none;
+            animation: slideIn 0.5s ease;
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification h3 {
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .notification .time {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .notification .stats {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        .ai-learning-indicator {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 107, 107, 0.9);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: none;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .training-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+        }
+
+        .training-timer {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin: 5px 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🦖 T-Rex AI</h1>
+            <div class="subtitle">Deep Q-Learning Reinforcement Learning</div>
+        </div>
+
+        <div class="instructions">
+            <h3>📚 HƯỚNG DẪN SỬ DỤNG</h3>
+            <ul>
+                <li><strong>🤖 Huấn luyện AI:</strong> Bấm nút "Huấn luyện AI" - AI sẽ học trong <strong>30 giây</strong>. Bạn có thể tắt máy sau khi thông báo hoàn tất hiện lên.</li>
+                <li><strong>▶ Xem AI chơi:</strong> Sau khi huấn luyện, bấm nút này để xem AI tự chơi với kiến thức đã học.</li>
+                <li><strong>⏹ Dừng huấn luyện:</strong> Bấm để dừng huấn luyện sớm nếu muốn.</li>
+                <li><strong>🔄 Đặt lại:</strong> Reset game về trạng thái ban đầu.</li>
+                <li><strong>🎮 Chơi thủ công:</strong> Nhấn Phím CÁCH (Space) để nhảy.</li>
+            </ul>
+        </div>
+
+        <div class="game-container">
+            <div class="ai-learning-indicator" id="learningIndicator">
+                <span>🤖</span> AI đang học... <span id="timeRemaining">30s</span>
+            </div>
+            <canvas id="game" width="600" height="200"></canvas>
+        </div>
+
+        <div class="training-info" id="trainingStatus">
+            <div>🕒 <strong>Thời gian huấn luyện:</strong> <span id="trainingTimer">0s</span>/30s</div>
+            <div class="training-timer" id="countdown">Bắt đầu huấn luyện để xem đếm ngược!</div>
+        </div>
+
+        <div class="controls">
+            <button class="train-btn" onclick="trainAI()">
+                <span>🤖</span> Huấn luyện AI (30s)
+            </button>
+            <button class="play-btn" onclick="playAI()">
+                <span>▶</span> Xem AI tự chơi
+            </button>
+            <button class="stop-btn" onclick="stopTraining()">
+                <span>⏹</span> Dừng huấn luyện
+            </button>
+            <button class="reset-btn" onclick="resetGame()">
+                <span>🔄</span> Đặt lại
+            </button>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="scoreDisplay">0</div>
+                    <div class="stat-label">ĐIỂM SỐ</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="epsilonDisplay">1.00</div>
+                    <div class="stat-label">EXPLORATION (ε)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="stateCount">0</div>
+                    <div class="stat-label">TRẠNG THÁI HỌC</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="speedDisplay">6.0</div>
+                    <div class="stat-label">TỐC ĐỘ</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            💡 <strong>Mẹo:</strong> Huấn luyện ít nhất 30 giây để AI học đủ trước khi xem nó tự chơi!
+        </div>
+    </div>
+
+    <div class="notification" id="trainingComplete">
+        <h3>🎉 Huấn luyện Hoàn tất!</h3>
+        <div class="time">Thời gian: <span id="trainingTime">0s</span></div>
+        <div class="stats">
+            Số trạng thái học: <span id="finalStates">0</span><br>
+            Điểm cao nhất: <span id="highScore">0</span><br>
+            <strong>Bây giờ hãy bấm "Xem AI tự chơi"!</strong>
+        </div>
+    </div>
+
+    <div class="notification" id="trainingStopped">
+        <h3>⏸ Huấn luyện Đã Dừng</h3>
+        <div class="time">Đã học: <span id="stoppedTime">0s</span></div>
+        <div class="stats">
+            Số trạng thái học: <span id="stoppedStates">0</span><br>
+            Bạn có thể tiếp tục huấn luyện hoặc xem AI chơi với kiến thức hiện có.
+        </div>
+    </div>
+
+    <script>
+        // =================== GAME ===================
+        const canvas = document.getElementById("game");
+        const ctx = canvas.getContext("2d");
+        const scoreDisplay = document.getElementById("scoreDisplay");
+        const epsilonDisplay = document.getElementById("epsilonDisplay");
+        const stateCount = document.getElementById("stateCount");
+        const speedDisplay = document.getElementById("speedDisplay");
+        const learningIndicator = document.getElementById("learningIndicator");
+        const trainingComplete = document.getElementById("trainingComplete");
+        const trainingStopped = document.getElementById("trainingStopped");
+        const trainingTime = document.getElementById("trainingTime");
+        const finalStates = document.getElementById("finalStates");
+        const highScore = document.getElementById("highScore");
+        const stoppedTime = document.getElementById("stoppedTime");
+        const stoppedStates = document.getElementById("stoppedStates");
+        const trainingTimer = document.getElementById("trainingTimer");
+        const countdown = document.getElementById("countdown");
+        const timeRemaining = document.getElementById("timeRemaining");
+        const trainingStatus = document.getElementById("trainingStatus");
+
+        let trex = { x: 50, y: 150, w: 20, h: 40, vy: 0, jump: false };
+        let cactus = { x: 600, y: 160, w: 20, h: 30 };
+        let gravity = 0.8;
+        let speed = 6;
+        let score = 0;
+        let gameOver = false;
+        let mode = "human";
+        let trainingStartTime = null;
+        let maxScore = 0;
+        let highScoreRecord = 0;
+        let trainingInterval = null;
+        let countdownInterval = null;
+        let trainingDuration = 30; // 30 seconds training
+
+        // Initialize training status display
+        trainingStatus.style.display = 'none';
+
+        function drawTrex() {
+            ctx.fillStyle = '#2ecc71';
+            ctx.fillRect(trex.x, trex.y, trex.w, trex.h);
+            
+            ctx.fillStyle = '#27ae60';
+            ctx.fillRect(trex.x, trex.y, trex.w, 10);
+            ctx.fillRect(trex.x + trex.w - 5, trex.y + 10, 5, 15);
+            ctx.fillRect(trex.x + trex.w - 5, trex.y + trex.h - 15, 5, 15);
+            
+            ctx.fillStyle = 'white';
+            ctx.fillRect(trex.x + 12, trex.y + 5, 4, 4);
+            ctx.fillStyle = 'black';
+            ctx.fillRect(trex.x + 13, trex.y + 6, 2, 2);
+        }
+
+        function drawCactus() {
+            ctx.fillStyle = '#e74c3c';
+            ctx.fillRect(cactus.x, cactus.y, cactus.w, cactus.h);
+            
+            ctx.fillStyle = '#c0392b';
+            ctx.fillRect(cactus.x + 5, cactus.y - 10, 5, 10);
+            ctx.fillRect(cactus.x + 5, cactus.y + cactus.h, 5, 10);
+            ctx.fillRect(cactus.x - 5, trex.y + 10, 5, 10);
+        }
+
+        function drawBackground() {
+            ctx.fillStyle = '#87CEEB';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#8B4513';
+            ctx.fillRect(0, 170, canvas.width, 30);
+            
+            ctx.fillStyle = '#A0522D';
+            for(let i = 0; i < canvas.width; i += 20) {
+                ctx.fillRect(i, 170, 10, 3);
+            }
+            
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.beginPath();
+            ctx.arc(100, 40, 15, 0, Math.PI * 2);
+            ctx.arc(120, 40, 20, 0, Math.PI * 2);
+            ctx.arc(140, 40, 15, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(300, 60, 20, 0, Math.PI * 2);
+            ctx.arc(320, 60, 25, 0, Math.PI * 2);
+            ctx.arc(340, 60, 20, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function resetGame() {
+            trex.y = 150;
+            trex.vy = 0;
+            trex.jump = false;
+            cactus.x = 600;
+            score = 0;
+            gameOver = false;
+            speed = 6;
+            scoreDisplay.textContent = score;
+            speedDisplay.textContent = speed.toFixed(1);
+        }
+
+        function update() {
+            if (gameOver) return;
+
+            cactus.x -= speed;
+            if (cactus.x < -20) {
+                cactus.x = 600;
+                speed += 0.1;
+                speedDisplay.textContent = speed.toFixed(1);
+            }
+
+            trex.y += trex.vy;
+            trex.vy += gravity;
+
+            if (trex.y >= 150) {
+                trex.y = 150;
+                trex.vy = 0;
+                trex.jump = false;
+            }
+
+            if (trex.x < cactus.x + cactus.w &&
+                trex.x + trex.w > cactus.x &&
+                trex.y < cactus.y + cactus.h) {
+                gameOver = true;
+                if (score > highScoreRecord) {
+                    highScoreRecord = score;
+                }
+            }
+
+            score++;
+            if (score > maxScore) maxScore = score;
+            scoreDisplay.textContent = score;
+        }
+
+        function draw() {
+            drawBackground();
+            drawTrex();
+            drawCactus();
+            
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 20px Arial';
+            ctx.fillText(`ĐIỂM: ${score}`, 20, 30);
+            ctx.fillText(`CAO NHẤT: ${highScoreRecord}`, 20, 60);
+            
+            // Display current mode
+            ctx.fillStyle = mode === "train" ? '#ff6b6b' : 
+                           mode === "ai" ? '#4ecdc4' : '#f6d365';
+            ctx.font = 'bold 16px Arial';
+            ctx.fillText(`CHẾ ĐỘ: ${getModeText()}`, 20, 90);
+            
+            if (gameOver) {
+                ctx.fillStyle = 'rgba(231, 76, 60, 0.8)';
+                ctx.font = 'bold 40px Arial';
+                ctx.fillText('THUA RỒI!', canvas.width / 2 - 100, canvas.height / 2);
+            }
+        }
+
+        function getModeText() {
+            switch(mode) {
+                case "train": return "AI ĐANG HỌC";
+                case "ai": return "AI TỰ CHƠI";
+                default: return "CHƠI THỦ CÔNG";
+            }
+        }
+
+        function loop() {
+            update();
+            draw();
+            if (mode !== "human") aiStep();
+            requestAnimationFrame(loop);
+        }
+        loop();
+
+        // =================== AI ===================
+        let Q = {};
+        let alpha = 0.1;
+        let gamma = 0.9;
+        let epsilon = 1;
+
+        function getState() {
+            let dist = cactus.x - trex.x;
+            return Math.floor(dist / 20) + "_" + Math.floor(trex.y / 10);
+        }
+
+        function chooseAction(state) {
+            if (Math.random() < epsilon) return Math.random() < 0.5 ? 0 : 1;
+            return Q[state]?.[1] > Q[state]?.[0] ? 1 : 0;
+        }
+
+        function aiStep() {
+            if (gameOver) {
+                epsilon *= 0.995;
+                epsilonDisplay.textContent = epsilon.toFixed(2);
+                stateCount.textContent = Object.keys(Q).length;
+                resetGame();
+                return;
+            }
+
+            let state = getState();
+            Q[state] = Q[state] || [0, 0];
+
+            let action = chooseAction(state);
+
+            if (action === 1 && !trex.jump) {
+                trex.vy = -12;
+                trex.jump = true;
+            }
+
+            let reward = gameOver ? -100 : 1;
+            let nextState = getState();
+            Q[nextState] = Q[nextState] || [0, 0];
+
+            Q[state][action] += alpha * (reward + gamma * Math.max(...Q[nextState]) - Q[state][action]);
+        }
+
+        // =================== BUTTON FUNCTIONS ===================
+        function trainAI() {
+            if (mode === "train") {
+                alert("AI đang học rồi! Đợi hoàn tất hoặc bấm Dừng huấn luyện.");
+                return;
+            }
+            
+            mode = "train";
+            trainingStartTime = Date.now();
+            learningIndicator.style.display = 'block';
+            trainingStatus.style.display = 'block';
+            
+            // Clear any existing intervals
+            stopAllIntervals();
+            
+            // Start countdown timer
+            let timeLeft = trainingDuration;
+            countdown.textContent = `Còn lại: ${timeLeft}s`;
+            timeRemaining.textContent = `${timeLeft}s`;
+            
+            countdownInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft >= 0) {
+                    countdown.textContent = `Còn lại: ${timeLeft}s`;
+                    timeRemaining.textContent = `${timeLeft}s`;
+                }
+            }, 1000);
+            
+            // Start training timer
+            trainingInterval = setInterval(() => {
+                if (mode === "train") {
+                    let elapsed = Math.floor((Date.now() - trainingStartTime) / 1000);
+                    trainingTimer.textContent = elapsed + "s";
+                    epsilonDisplay.textContent = epsilon.toFixed(2);
+                    stateCount.textContent = Object.keys(Q).length;
+                    
+                    // Stop training after trainingDuration seconds
+                    if (elapsed >= trainingDuration) {
+                        clearInterval(trainingInterval);
+                        clearInterval(countdownInterval);
+                        showTrainingComplete();
+                    }
+                } else {
+                    clearInterval(trainingInterval);
+                    clearInterval(countdownInterval);
+                    learningIndicator.style.display = 'none';
+                    trainingStatus.style.display = 'none';
+                }
+            }, 100);
+        }
+
+        function playAI() {
+            if (Object.keys(Q).length === 0) {
+                alert("🤖 AI chưa học gì cả! Hãy bấm 'Huấn luyện AI' ít nhất 30 giây trước.");
+                return;
+            }
+            
+            mode = "ai";
+            epsilon = 0;
+            learningIndicator.style.display = 'none';
+            trainingStatus.style.display = 'none';
+            epsilonDisplay.textContent = "0.00";
+            stopAllIntervals();
+            
+            // Show notification
+            showNotification("AI đang tự chơi với kiến thức đã học!", "#4ecdc4");
+        }
+
+        function stopTraining() {
+            if (mode === "train") {
+                let elapsed = Math.floor((Date.now() - trainingStartTime) / 1000);
+                stoppedTime.textContent = elapsed + "s";
+                stoppedStates.textContent = Object.keys(Q).length;
+                
+                mode = "human";
+                learningIndicator.style.display = 'none';
+                trainingStatus.style.display = 'none';
+                stopAllIntervals();
+                
+                // Show stopped notification
+                trainingStopped.style.display = 'block';
+                setTimeout(() => {
+                    trainingStopped.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        function stopAllIntervals() {
+            if (trainingInterval) clearInterval(trainingInterval);
+            if (countdownInterval) clearInterval(countdownInterval);
+        }
+
+        function showTrainingComplete() {
+            mode = "human";
+            learningIndicator.style.display = 'none';
+            trainingStatus.style.display = 'none';
+            
+            let elapsed = Math.floor((Date.now() - trainingStartTime) / 1000);
+            trainingTime.textContent = elapsed + "s";
+            finalStates.textContent = Object.keys(Q).length;
+            highScore.textContent = maxScore;
+            
+            trainingComplete.style.display = 'block';
+            
+            // Auto hide notification after 8 seconds
+            setTimeout(() => {
+                trainingComplete.style.display = 'none';
+            }, 8000);
+        }
+
+        function showNotification(message, color) {
+            // Create temporary notification
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.style.background = color;
+            notification.style.position = 'fixed';
+            notification.style.top = '80px';
+            notification.style.right = '20px';
+            notification.style.zIndex = '1000';
+            notification.innerHTML = `<h3>${message}</h3>`;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Keyboard controls for manual play
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' && !trex.jump) {
+                if (mode === "train") {
+                    stopTraining();
+                }
+                trex.vy = -12;
+                trex.jump = true;
+                mode = "human";
+            }
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

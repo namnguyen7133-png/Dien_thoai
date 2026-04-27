@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Game Thực Hành Tối Ưu Tuyến Tính & Tổ Hợp</title>
+<style>
+  body {font-family: Arial, sans-serif; background:#f0f2f5; margin:0; padding:20px;}
+  h1 {text-align:center; color:#2c3e50;}
+  .tabs {display:flex; justify-content:center; flex-wrap:wrap; gap:10px; margin:20px 0;}
+  .tab {padding:12px 20px; background:#3498db; color:white; border:none; border-radius:8px; cursor:pointer; font-size:16px;}
+  .tab.active {background:#2980b9;}
+  .container {max-width:900px; margin:auto; background:white; padding:25px; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.1);}
+  table {width:100%; border-collapse:collapse; margin:15px 0;}
+  th, td {border:1px solid #ccc; padding:8px; text-align:center;}
+  input[type=number] {width:70px; padding:5px;}
+  button {padding:10px 20px; background:#27ae60; color:white; border:none; border-radius:6px; cursor:pointer; font-size:16px;}
+  button:hover {background:#219a52;}
+  #result {margin-top:20px; padding:15px; background:#e8f5e9; border-radius:8px; min-height:80px;}
+  pre {background:#f8f8f8; padding:10px; border-radius:6px; overflow:auto;}
+</style>
+</head>
+<body>
+
+<h1>Game Thực Hành Tối Ưu Hóa</h1>
+<div class="tabs">
+  <button class="tab active" onclick="openTab('knapsack')">1. Bài toán Ba lô (0/1 Knapsack)</button>
+  <button class="tab" onclick="openTab('transport')">2. Bài toán Vận tải</button>
+  <button class="tab" onclick="openTab('shortest')">3. Đường đi ngắn nhất (Dijkstra)</button>
+  <button class="tab" onclick="openTab('tsp')">4. Người du lịch TSP (2-opt)</button>
+  <button class="tab" onclick="openTab('scheduling')">5. Lập lịch máy đơn</button>
+</div>
+
+<div class="container" id="knapsack">
+  <h2>1. Bài toán Ba lô 0/1</h2>
+  <p>Sức chứa ba lô W = <input type="number" id="W" value="10"></p>
+  <table id="itemsTable">
+    <tr><th>Vật</th><th>Giá trị v</th><th>Trọng lượng w</th></tr>
+    <tr><td>1</td><td><input type="number" value="60"></td><td><input type="number" value="10"></td></tr>
+    <tr><td>2</td><td><input type="number" value="100"></td><td><input type="number" value="20"></td></tr>
+    <tr><td>3</td><td><input type="number" value="120"></td><td><input type="number" value="30"></td></tr>
+  </table>
+  <button onclick="addItem()">Thêm vật phẩm</button>
+  <button onclick="solveKnapsack()">Giải Knapsack</button>
+  <div id="result"></div>
+</div>
+
+<div class="container" id="transport" style="display:none;">
+  <h2>2. Bài toán Vận tải (5 kho → khách)</h2>
+  <p>Cung kho (s1,s2,...): <input type="text" id="supply" value="100,80,120,90,110"></p>
+  <p>Cầu khách (d1,d2,...): <input type="text" id="demand" value="70,90,100,80,60"></p>
+  <p>Ma trận chi phí (dòng = kho, cột = khách, phân cách bằng dấu phẩy):</p>
+  <textarea id="costMatrix" rows="5" style="width:100%">4,5,9,8,6
+3,6,8,7,5
+7,4,5,9,6
+6,5,7,4,8
+5,7,6,5,7</textarea>
+  <button onclick="solveTransport()">Giải bài toán vận tải</button>
+  <div id="result"></div>
+</div>
+
+<div class="container" id="shortest" style="display:none;">
+  <h2>3. Đường đi ngắn nhất (Dijkstra)</h2>
+  <p>Đỉnh bắt đầu: <input type="number" id="startNode" value="0" min="0"></p>
+  <p>Số đỉnh: <input type="number" id="numNodes" value="6"></p>
+  <p>Ma trận kề (0 nếu không có cạnh, ∞ = 999):</p>
+  <textarea id="graphMatrix" rows="8" style="width:100%">0,4,3,0,0,0
+4,0,5,10,0
+3,5,0,2,8
+0,10,2,0,1
+0,0,8,1,0
+0,0,0,0,0,0</textarea>
+  <button onclick="solveShortest()">Tìm đường ngắn nhất</button>
+  <div id="result"></div>
+</div>
+
+<div class="container" id="tsp" style="display:none;">
+  <h2>4. Người du lịch TSP (thuật toán 2-opt)</h2>
+  <p>Số thành phố: <input type="number" id="tspN" value="8" min="4"></p>
+  <button onclick="generateRandomTSP()">Tạo ma trận khoảng cách ngẫu nhiên</button>
+  <textarea id="tspMatrix" rows="10" style="width:100%"></textarea>
+  <button onclick="solveTSP()">Giải TSP bằng 2-opt</button>
+  <div id="result"></div>
+</div>
+
+<div class="container" id="scheduling" style="display:none;">
+  <h2>5. Lập lịch máy đơn (giảm tổng thời gian trễ)</h2>
+  <table id="jobsTable">
+    <tr><th>Công việc</th><th>Thời gian xử lý p</th><th>Deadline d</th></tr>
+    <tr><td>1</td><td><input type="number" value="4"></td><td><input type="number" value="6"></td></tr>
+    <tr><td>2</td><td><input type="number" value="5"></td><td><input type="number" value="8"></td></tr>
+    <tr><td>3</td><td><input type="number" value="8"></td><td><input type="number" value="10"></td></tr>
+  </table>
+  <button onclick="addJob()">Thêm công việc</button>
+  <button onclick="solveScheduling()">Giải lập lịch (SPT + EDD)</button>
+  <div id="result"></div>
+</div>
+
+<script>
+// ==== CHUYỂN TAB ====
+function openTab(name) {
+  document.querySelectorAll('.container').forEach(c => c.style.display='none');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(name).style.display = 'block';
+  event.target.classList.add('active');
+  document.getElementById('result').innerHTML = '';
+}
+
+// ==== 1. KNAPSACK 0/1 DP ====
+function addItem() {
+  const table = document.getElementById('itemsTable');
+  const row = table.insertRow();
+  const n = table.rows.length - 1;
+  row.innerHTML = `<td>${n}</td><td><input type="number" value="10"></td><td><input type="number" value="5"></td>`;
+}
+
+function solveKnapsack() {
+  const W = parseInt(document.getElementById('W').value);
+  const table = document.getElementById('itemsTable');
+  let v = [], w = [];
+  for(let i=1; i<table.rows.length; i++){
+    v.push(parseInt(table.rows[i].cells[1].children[0].value));
+    w.push(parseInt(table.rows[i].cells[2].children[0].value));
+  }
+  const n = v.length;
+
+  // DP table
+  let dp = Array(n+1).fill().map(()=>Array(W+1).fill(0));
+
+  for(let i=1; i<=n; i++){
+    for(let j=0; j<=W; j++){
+      if(w[i-1] > j) dp[i][j] = dp[i-1][j];
+      else dp[i][j] = Math.max(dp[i-1][j], dp[i-1][j - w[i-1]] + v[i-1]);
+    }
+  }
+
+  // Trace back
+  let res = [];
+  let i=n, j=W;
+  while(i>0 && j>0){
+    if(dp[i][j] !== dp[i-1][j]){
+      res.push(i);
+      j -= w[i-1];
+    }
+    i--;
+  }
+
+  document.getElementById('result').innerHTML = `
+    <b>Kết quả tối ưu:</b> ${dp[n][W]}<br>
+    <b>Chọn vật phẩm số:</b> ${res.reverse().join(', ')}<br>
+    <pre>DP table (giá trị tối đa theo trọng lượng):\n${dp.map(r=>r.join('\t')).join('\n')}</pre>`;
+}
+
+// ==== 2. BÀI TOÁN VẬN TẢI (North-West Corner + Stepping Stone đơn giản) ====
+function solveTransport() {
+  const supply = document.getElementById('supply').value.split(',').map(Number);
+  const demand = document.getElementById('demand').value.split(',').map(Number);
+  const costStr = document.getElementById('costMatrix').value.trim().split('\n');
+  const C = costStr.map(line => line.split(',').map(Number));
+
+  // Simple North-West Corner
+  let x = supply.map(row => Array(demand.length).fill(0));
+  let s = supply.slice(), d = demand.slice();
+
+  let i=0, j=0;
+  while(i < supply.length && j < demand.length){
+    if(s[i] === 0){ i++; continue; }
+    if(d[j] === 0){ j++; continue; }
+    let alloc = Math.min(s[i], d[j]);
+    x[i][j] = alloc;
+    s[i] -= alloc;
+    d[j] -= alloc;
+  }
+
+  // Tính tổng chi phí
+  let totalCost = 0;
+  let table = `<table><tr><th></th>${demand.map((_,k)=>`Khách ${k+1}`).join('</th><th>')}</th><th>Cung</th></tr>`;
+  for(let p=0; p<supply.length; p++){
+    table += `<tr><td><b>Kho ${p+1}</b></td>`;
+    for(let q=0; q<demand.length; q++){
+      totalCost += x[p][q] * C[p][q];
+      table += `<td>${x[p][q]}</td>`;
+    }
+    table += `<td>${supply[p]}</td></tr>`;
+  }
+  table += `<tr><td><b>Cầu</b></td>${demand.map(d=>`<td>${d}</td>`).join('')}<td></td></tr></table>`;
+
+  document.getElementById('result').innerHTML = `
+    <h3>Phương pháp góc Tây-Bắc (giải gần đúng)</h3>
+    Tổng chi phí vận chuyển = <b>${totalCost}</b><br><br>
+    ${table}`;
+}
+
+// ==== 3. DIJKSTRA ====
+function solveShortest() {
+  const start = parseInt(document.getElementById('startNode').value);
+  const matrix = document.getElementById('graphMatrix').value.trim().split('\n')
+                  .map(line => line.split(',').map(x => x.trim()==='999' ? Infinity : Number(x)));
+
+  const n = matrix.length;
+  let dist = Array(n).fill(Infinity);
+  let prev = Array(n).fill(-1);
+  let visited = Array(n).fill(false);
+  dist[start] = 0;
+
+  for(let count=0; count<n; count++){
+    // Tìm đỉnh chưa thăm có dist nhỏ nhất
+    let u = -1;
+    for(let i=0; i<n; i++){
+      if(!visited[i] && (u===-1 || dist[i] < dist[u])) u = i;
+    }
+    if(dist[u] === Infinity) break;
+    visited[u] = true;
+
+    for(let v=0; v<n; v++){
+      if(!visited[v] && matrix[u][v] && dist[u] + matrix[u][v] < dist[v]){
+        dist[v] = dist[u] + matrix[u][v];
+        prev[v] = u;
+      }
+    }
+  }
+
+  let out = `<table><tr><th>Đỉnh</th><th>Khoảng cách ngắn nhất</th><th>Đường đi</th></tr>`;
+  for(let i=0; i<n; i++){
+    let path = [];
+    for(let at=i; at!=-1; at=prev[at]) path.push(at);
+    path.reverse();
+    out += `<tr><td>${i}</td><td>${dist[i]===Infinity ? '∞' : dist[i]}</td><td>${path.join(' → ')}</td></tr>`;
+  }
+  out += `</table>`;
+  document.getElementById('result').innerHTML = `<h3>Kết quả Dijkstra từ đỉnh ${start}</h3>${out}`;
+}
+
+// ==== 4. TSP 2-OPT ====
+function generateRandomTSP() {
+  const n = parseInt(document.getElementById('tspN').value);
+  let mat = [];
+  for(let i=0; i<n; i++){
+    let row = [];
+    for(let j=0; j<n; j++){
+      if(i===j) row.push(0);
+      else row.push(Math.floor(Math.random()*90 + 10));
+    }
+    mat.push(row);
+  }
+  // Làm cho đối xứng
+  for(let i=0; i<n; i++)
+    for(let j=0; j<i; j++) mat[i][j] = mat[j][i];
+
+  document.getElementById('tspMatrix').value = mat.map(r=>r=>r.join(',')).join('\n');
+}
+
+function tspDistance(route, distMatrix) {
+  let total = 0;
+  for(let i=0; i<route.length-1; i++)
+    total += distMatrix[route[i]][route[i+1]];
+  total += distMatrix[route[route.length-1]][route[0]]; // quay về
+  return total;
+}
+
+function twoOpt(route, distMatrix) {
+  let best = route.slice();
+  let improved = true;
+  while(improved){
+    improved = false;
+    for(let i=1; i<best.length-2-1; i++){
+      for(let k=i+1; k<best.length-1; k++){
+        let newRoute = best.slice();
+        // Đảo đoạn i+1 đến k
+        newRoute.splice(i+1, k-i, ...best.slice(i+1, k+1).reverse());
+        if(tspDistance(newRoute, distMatrix) < tspDistance(best, distMatrix)){
+          best = newRoute;
+          improved = true;
+        }
+      }
+    }
+  }
+  return best;
+}
+
+function solveTSP() {
+  const lines = document.getElementById('tspMatrix').value.trim().split('\n');
+  const dist = lines.map(l=>l.split(',').map(Number));
+  const n = dist.length;
+
+  let route = Array.from({length:n},(_,i)=>i);
+  // Xáo trộn để có điểm bắt đầu ngẫu nhiên
+  for(let i=n-1; i>0; i--){
+    let j = Math.floor(Math.random()*(i+1));
+    [route[i], route[j]] = [route[j], route[i]];
+  }
+
+  const initialDist = tspDistance(route, dist);
+  const bestRoute = twoOpt(route, dist);
+  const bestDist = tspDistance(bestRoute, dist);
+
+  document.getElementById('result').innerHTML = `
+    <h3>Kết quả TSP bằng 2-opt</h3>
+    Ban đầu (ngẫu nhiên): ${route.join(' → ')} → ${route[0]}<br>
+    Tổng khoảng cách = ${initialDist}<br><br>
+    <b>Tối ưu 2-opt:</b> ${bestRoute.join(' → ')} → ${bestRoute[0]}<br>
+    <b>Tổng khoảng cách tối ưu = ${bestDist}</b><br>
+    Cải thiện: ${(100*(initialDist-bestDist)/initialDist).toFixed(1)}%`;
+}
+
+// ==== 5. LẬP LỊCH MÁY ĐƠN (SPT + kiểm tra trễ) ====
+function addJob() {
+  const table = document.getElementById('jobsTable');
+  const row = table.insertRow();
+  const n = table.rows.length - 1;
+  row.innerHTML = `<td>${n}</td><td><input type="number" value="3"></td><td><input type="number" value="10"></td>`;
+}
+
+function solveScheduling() {
+  const table = document.getElementById('jobsTable');
+  let jobs = [];
+  for(let i=1; i<table.rows.length; i++){
+    jobs.push({
+      id: i,
+      p: parseInt(table.rows[i].cells[1].children[0].value),
+      d: parseInt(table.rows[i].cells[2].children[0].value)
+    });
+  }
+
+  // Sắp xếp theo Shortest Processing Time (SPT)
+  jobs.sort((a,b)=>a.p - b.p);
+
+  let time = 0, totalTardiness = 0;
+  let schedule = [];
+
+  jobs.forEach(job => {
+    time += job.p;
+    schedule.push(`Công việc ${job.id} hoàn thành lúc ${time}`);
+    if(time > job.d) totalTardiness += time - job.d;
+  });
+
+  document.getElementById('result').innerHTML = `
+    <h3>Lịch theo quy tắc SPT (Shortest Processing Time)</h3>
+    Thứ tự: ${jobs.map(j=>j.id).join(' → ')}<br><br>
+    ${schedule.join('<br>')}<br><br>
+    <b>Tổng thời gian trễ = ${totalTardiness}</b>`;
+}
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

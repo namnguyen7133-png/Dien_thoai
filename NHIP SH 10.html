@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phan tich ngay y khoa</title>
+
+<style>
+body{
+  font-family:Arial;
+  padding:10px;
+  max-width:100%;
+  overflow-x:hidden;
+}
+input,select,button{
+  padding:10px;
+  margin:6px 0;
+  width:100%;
+  font-size:16px;
+}
+button{font-weight:bold}
+
+table{
+  border-collapse:collapse;
+  width:100%;
+  margin-top:15px;
+  font-size:12px;
+}
+th,td{
+  border:1px solid #666;
+  padding:5px;
+  text-align:center;
+}
+th{background:#eee}
+
+.big-alert{
+  font-size:2.2em;   /* ~ gấp 10 chữ thường */
+  color:#b30000;
+  font-weight:bold;
+  border:3px solid #b30000;
+  padding:10px;
+  margin:10px 0;
+  border-radius:10px;
+  word-wrap:break-word;
+}
+.warn{color:red;font-weight:bold}
+</style>
+</head>
+
+<body>
+
+<h2>PHÂN TÍCH NGÀY THEO BẢNG 2</h2>
+
+<label>Ngày hiện tại</label>
+<input type="date" id="today">
+
+<label>Chọn tên</label>
+<select id="name"></select>
+
+<label>Ngày sinh</label>
+<input type="date" id="birth" readonly>
+
+<button onclick="calcOne()">🔵 TÍNH 1 NGƯỜI</button>
+<button onclick="calcAll()">🟢 TÍNH TẤT CẢ MỌI NGƯỜI</button>
+<button onclick="resetAll()">🔴 XÓA / NHẬP LẠI</button>
+
+<div id="alerts"></div>
+<div id="out"></div>
+
+<script>
+// ================= BẢNG 1 =================
+const people=[
+["NGUYENKHACNANG","1944-06-04"],["TOTHIHA","1948-08-29"],
+["NGUYENMINHNAM","1971-03-03"],["THANTHIKIMANH","1981-09-23"],
+["NGUYENTONGANAN","2014-09-28"],["NGUYENTOMINHCHAU","2016-07-25"],
+["NGUYENTOBICHNGOC","2020-02-05"],["NGUYENTHIMINHHANG","1974-01-07"],
+["NGOQUYCUONG","1973-05-23"],["NGOGIABACH","2000-10-12"],
+["NGOGIALINH","2005-04-05"],["NGUYENTHIMINHPHUONG","1978-11-06"],
+["HOANGANHDUNG","1978-09-21"],["HOANGHAIVINH","2010-06-03"],
+["HOANGTHIENBACHANH","2015-11-14"],["TOKIMHUE","1960-08-09"],
+["NGUYENTUANANH","1983-10-23"],["NGUYENTHEANH","2001-03-24"],
+["NGOTHIMAI","1948-12-12"],["TOVIETHUNG","1996-06-17"],
+["TOTHIHONG","1964-10-10"],["VUVANHIEP","1974-04-24"],
+["NGUYENTHICHI","1946-02-08"],["NGUYENTANBAC","1957-11-30"],
+["NGUYENTHITAM","1954-08-08"]
+];
+
+// ================= BẢNG 2 =================
+const divisors=[
+23,28,33,38,43,53,
+108,285,298,318,
+644,759,874,924,989,
+1064,1204,1219,1254,
+1419,1484,1634,1690,
+1749,1911,2014,2279,
+4850,21252,24472,27692,
+34132,35112,39732,
+48972,53922,66462,86602
+];
+
+// ================= CỘT 10 =================
+const col10Msg={
+23:"Cần nghỉ ngơi, không leo trèo, làm nặng 6 giờ tiếp theo",
+28:"Hãy nghe nhạc, xem phim tâm lý, đi dạo ngoài trời 12 giờ tiếp theo",
+33:"Không học hành nghiên cứu sâu 18 giờ tiếp theo",
+43:"Không bình luận, chỉ xem trình diễn thời trang 24 giờ tiếp theo",
+53:"Không đến nơi ầm ĩ, giữ tĩnh lặng 28 giờ tiếp theo"
+};
+
+// ================= KHỞI TẠO =================
+window.onload=()=>{
+  let s=document.getElementById("name");
+  s.innerHTML="<option value=''>-- chọn --</option>";
+  people.forEach(p=>{
+    let o=document.createElement("option");
+    o.value=p[1]; o.text=p[0];
+    s.appendChild(o);
+  });
+  s.onchange=()=>birth.value=s.value;
+  today.value=new Date().toISOString().split("T")[0];
+};
+
+// ================= CORE =================
+function runCalc(personName,birth){
+  let todayD=new Date(today.value);
+  let diff=Math.floor((todayD-new Date(birth))/86400000);
+  let alerts=[];
+
+  let html=`<h3>${personName}</h3>
+  <table>
+<tr>
+<th>STT</th><th>Số chia</th><th>Thương</th><th>Dư</th>
+<th>Thương 2</th><th>Hiệu</th><th>Ngày mới</th>
+<th>Dư&lt;7</th><th>TB chính</th><th>TB cột 10</th>
+</tr>`;
+
+  divisors.forEach((d,i)=>{
+    let thuong=Math.floor(diff/d);
+    let du=diff%d;
+    let lan2=Math.floor(thuong/d);
+    let hieu=d-du;
+
+    let nd=new Date(todayD);
+    nd.setDate(nd.getDate()+hieu);
+    let nds=nd.toISOString().split("T")[0];
+
+    let warn=du<7?"⚠":"";
+    let msg="",msg10="";
+
+    if(lan2===0){
+      if(d<100 && du===0) msg="Có số 0 – cần theo dõi";
+      else if(d>=100 && thuong.toString().includes("0")){
+        if(d>=10000) msg="Nghỉ 5 ngày theo bác sĩ";
+        else if(d>=1000) msg="Nghỉ 4 ngày theo bác sĩ";
+        else msg="Nghỉ 3 ngày theo bác sĩ";
+      }
+    }
+
+    if(hieu===0 && col10Msg[d]) msg10=col10Msg[d];
+
+    if(warn||msg||msg10){
+      alerts.push(`Số ${d}: ${msg||""} ${msg10||""}`);
+    }
+
+    html+=`<tr>
+<td>${i+1}</td><td>${d}</td><td>${thuong}</td><td>${du}</td>
+<td>${lan2}</td><td>${hieu}</td><td>${nds}</td>
+<td class="warn">${warn}</td>
+<td class="warn">${msg}</td>
+<td class="warn">${msg10}</td>
+</tr>`;
+  });
+
+  html+="</table>";
+  return {html,alerts};
+}
+
+// ================= NÚT =================
+function calcOne(){
+  if(!birth.value)return alert("Chưa chọn người");
+  let r=runCalc(name.options[name.selectedIndex].text,birth.value);
+  out.innerHTML=r.html;
+  showAlerts(r.alerts);
+}
+
+function calcAll(){
+  let allHTML="",allAlerts=[];
+  people.forEach(p=>{
+    let r=runCalc(p[0],p[1]);
+    allHTML+=r.html;
+    allAlerts=allAlerts.concat(r.alerts);
+  });
+  out.innerHTML=allHTML;
+  showAlerts(allAlerts);
+}
+
+function showAlerts(arr){
+  alerts.innerHTML=arr.length
+    ? arr.map(a=>`<div class="big-alert">${a}</div>`).join("")
+    : "";
+}
+
+function resetAll(){
+  out.innerHTML="";
+  alerts.innerHTML="";
+  name.value="";
+  birth.value="";
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

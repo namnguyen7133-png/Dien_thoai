@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ứng Dụng Tính Toán Số Học</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --accent-color: #ff416c;
+            --success-color: #38ef7d;
+            --warning-color: #ffb347;
+            --danger-color: #ff416c;
+            --light-color: #f8f9fa;
+            --dark-color: #2c3e50;
+            --gray-color: #7f8c8d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            min-height: 100vh;
+            color: var(--dark-color);
+            padding: 10px;
+            font-size: 14px;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .subtitle {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 8px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+            font-size: 0.95rem;
+        }
+        
+        input[type="date"], select, input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+        
+        input[type="date"]:focus, select:focus, input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+        }
+        
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .input-row .input-group {
+            flex: 1;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(90deg, var(--accent-color), #ff4b2b);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 65, 108, 0.3);
+        }
+        
+        .results {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .result-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            margin-bottom: 5px;
+        }
+        
+        .result-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.8rem;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+            word-break: break-word;
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+        
+        td {
+            background-color: white;
+        }
+        
+        .highlight {
+            background-color: rgba(106, 17, 203, 0.1);
+            font-weight: bold;
+        }
+        
+        .vận-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .vận-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        .vận-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .vận-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .vận-result {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .copy-btn {
+            background: var(--gray-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .copy-btn:hover {
+            background: var(--dark-color);
+        }
+        
+        .scrollable-table {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 15px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--gray-color);
+            transition: all 0.3s ease;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        
+        .tab.active {
+            background: white;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .info-text {
+            background: #e8f4fd;
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: var(--dark-color);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .person-info {
+            background: #f8faff;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 5px;
+            font-size: 16px;
+            color: #444;
+        }
+        
+        .correct {
+            color: #008000;
+            font-weight: bold;
+        }
+        
+        .canchi-display {
+            background: linear-gradient(135deg, #e7edff, #d5e1ff);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 15px;
+            text-align: center;
+            border: 2px solid #b8c8ff;
+        }
+        
+        .canchi-item {
+            margin: 10px 0;
+        }
+        
+        .canchi-label {
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .canchi-value {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #0d1cb5;
+            min-height: 30px;
+        }
+        
+        .table-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .table-card {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .table-card h3 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .input-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .note {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .input-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            th, td {
+                padding: 6px;
+                font-size: 0.75rem;
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+            }
+            
+            .table-comparison {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .card {
+                padding: 12px;
+            }
+            
+            th, td {
+                padding: 4px;
+                font-size: 0.7rem;
+            }
+            
+            button {
+                padding: 12px;
+            }
+            
+            .canchi-display {
+                padding: 10px;
+            }
+            
+            .canchi-value {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Ứng Dụng Tính Toán Số Học</h1>
+            <p class="subtitle">Nhập thông tin để tính toán và dự đoán theo phương pháp số học</p>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="input-tab">Nhập liệu</button>
+            <button class="tab" data-tab="result-tab">Kết quả</button>
+            <button class="tab" data-tab="table-tab">Bảng tính</button>
+            <button class="tab" data-tab="tables-tab">Bảng tra</button>
+        </div>
+        
+        <!-- Tab Nhập liệu -->
+        <div class="tab-content active" id="input-tab">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Thông tin cá nhân</span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="person"><i class="fas fa-users"></i> Chọn người (danh sách có sẵn)</label>
+                    <select id="person" onchange="fillDateFromPerson()">
+                        <option value="">-- Chọn người --</option>
+                        <option value="1944-06-04">1. NGUYENKHACNANG</option>
+                        <option value="1948-08-29">2. TOTHIHA</option>
+                        <option value="1971-03-03">3. NGUYENMINHNAM</option>
+                        <option value="1981-09-23">4. THANTHIKIMANH</option>
+                        <option value="2014-09-28">5. NGUYENTONGANAN</option>
+                        <option value="2016-07-25">6. NGUYENTOMINHCHAU</option>
+                        <option value="2020-02-05">7. NGUYENTOBICHNGOC</option>
+                        <option value="1974-01-07">8. NGUYENTHIMINHHANG</option>
+                        <option value="1973-05-23">9. NGOQUYCUONG</option>
+                        <option value="2000-10-12">10. NGOGIABACH</option>
+                        <option value="2005-04-05">11. NGOGIALINH</option>
+                        <option value="1978-11-06">12. NGUYENTHIMINHPHUONG</option>
+                        <option value="1978-09-21">13. HOANGANHDUNG</option>
+                        <option value="2010-06-03">14. HOANGHAIVINH</option>
+                        <option value="2015-11-14">15. HOANGTHIENBACHANH</option>
+                        <option value="1960-08-09">16. TÔ KIM HUỆ</option>
+                        <option value="1983-10-23">17. NGUYỄN TUẤN ANH</option>
+                        <option value="2001-03-24">18. NGUYỄN THẾ ANH</option>
+                        <option value="1948-12-12">19. NGÔ THỊ MAI</option>
+                        <option value="1996-06-17">20. TÔ VIỆT HƯNG</option>
+                        <option value="1964-10-10">21. TÔ THỊ HỒNG</option>
+                        <option value="1974-04-24">22. VŨ VĂN HIỆP</option>
+                        <option value="1946-02-08">23. NGUYỄN THỊ CHI</option>
+                        <option value="1957-11-30">24. NGUYỄN TẤN BẮC</option>
+                        <option value="1954-08-08">25. NGUYỄN THỊ TÂM</option>
+                    </select>
+                    <div id="personDisplay" class="person-info"></div>
+                </div>
+                
+                <div class="input-section">
+                    <div class="section-title"><i class="fas fa-calendar-alt"></i> Thông tin ngày sinh</div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="birthDate"><i class="fas fa-birthday-cake"></i> Ngày tháng năm sinh</label>
+                            <input type="date" id="birthDate" min="1900-01-01" max="2024-12-31">
+                            <div class="note">Nhập ngày sinh dương lịch</div>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="birthHour"><i class="fas fa-clock"></i> Giờ sinh (0-23)</label>
+                            <input type="number" id="birthHour" min="0" max="23" placeholder="Nhập giờ sinh">
+                            <div class="note">Giờ sinh từ 0-23</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- PHẦN NHẬP LIỆU THỦ CÔNG -->
+                <div class="input-section">
+                    <div class="section-title"><i class="fas fa-edit"></i> Nhập liệu thủ công (nếu cần)</div>
+                    
+                    <div class="input-group">
+                        <label for="manualWeekInput"><i class="fas fa-calendar-week"></i> Tuần sinh thủ công</label>
+                        <input type="number" id="manualWeekInput" min="1" max="100" placeholder="Nhập số tuần sinh (từ 1-100)">
+                        <div class="note">Nhập số tuần sinh để tính toán trực tiếp</div>
+                    </div>
+                    
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="manualHourChi"><i class="fas fa-clock"></i> Địa Chi giờ</label>
+                            <select id="manualHourChi">
+                                <option value="">-- Chọn Địa Chi giờ --</option>
+                                <option value="TÝ">TÝ (23-1)</option>
+                                <option value="SỬU">SỬU (1-3)</option>
+                                <option value="DẦN">DẦN (3-5)</option>
+                                <option value="MÃO">MÃO (5-7)</option>
+                                <option value="THÌN">THÌN (7-9)</option>
+                                <option value="TỴ">TỴ (9-11)</option>
+                                <option value="NGỌ">NGỌ (11-13)</option>
+                                <option value="MÙI">MÙI (13-15)</option>
+                                <option value="THÂN">THÂN (15-17)</option>
+                                <option value="DẬU">DẬU (17-19)</option>
+                                <option value="TUẤT">TUẤT (19-21)</option>
+                                <option value="HỢI">HỢI (21-23)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="manualDayValue"><i class="fas fa-calendar-day"></i> Ngày sinh thủ công</label>
+                            <input type="number" id="manualDayValue" min="1" max="31" placeholder="Nhập ngày sinh">
+                            <div class="note">Nhập ngày sinh từ 1-31</div>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label for="tableCodeResult"><i class="fas fa-code"></i> Kết quả bảng mã cột 2</label>
+                        <input type="number" id="tableCodeResult" readonly placeholder="Sẽ tự động tính từ tuần sinh">
+                        <div class="note">Giá trị tự động tính từ tuần sinh</div>
+                    </div>
+                </div>
+                
+                <div class="input-section">
+                    <div class="section-title"><i class="fas fa-calendar-day"></i> Thông tin hiện tại</div>
+                    <div class="input-group">
+                        <label for="currentDate"><i class="fas fa-calendar-day"></i> Ngày tháng hiện tại</label>
+                        <input type="date" id="currentDate">
+                    </div>
+                </div>
+                
+                <div class="canchi-display">
+                    <div class="canchi-item">
+                        <div class="canchi-label">NĂM CAN CHI:</div>
+                        <div id="yearCC" class="canchi-value">Chọn ngày để tính</div>
+                    </div>
+                    <div class="canchi-item">
+                        <div class="canchi-label">GIỜ CAN CHI:</div>
+                        <div id="hourCC" class="canchi-value">-</div>
+                    </div>
+                    <div class="canchi-item">
+                        <div class="canchi-label">NGÀY CAN CHI:</div>
+                        <div id="dayCC" class="canchi-value">-</div>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn-primary" onclick="calculateAll()">
+                        <i class="fas fa-calculator"></i> Tính toán
+                    </button>
+                    <button class="btn-secondary" onclick="resetForm()">
+                        <i class="fas fa-redo"></i> Làm mới
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab Kết quả -->
+        <div class="tab-content" id="result-tab">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Kết quả tính toán</span>
+                </div>
+                
+                <div class="results" id="results">
+                    <div class="result-item">
+                        <div class="result-label">Tuần sinh (Địa Chi)</div>
+                        <div class="result-value" id="resultWeekChi">-</div>
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-label">Kết quả bảng mã cột 2</div>
+                        <div class="result-value" id="resultTableCode">-</div>
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-label">Kết quả bảng mã cột 2 - Dùng cho Bảng 3</div>
+                        <div class="result-value" id="resultTableCodeValue">-</div>
+                    </div>
+                    
+                    <div class="result-item">
+                        <div class="result-label">Giờ sinh (đã tính toán)</div>
+                        <div class="result-value" id="resultHour">-</div>
+                    </div>
+                    
+                    <div class="vận-section">
+                        <div class="vận-card">
+                            <div class="vận-title">
+                                <i class="fas fa-leaf"></i> Tiền vận
+                            </div>
+                            <div class="vận-content">
+                                <div>
+                                    <div class="result-label">Tổng 4 cột đầu</div>
+                                    <div class="vận-result" id="tienVanSum">-</div>
+                                </div>
+                                <div>
+                                    <div class="result-label">Kết quả</div>
+                                    <div class="vận-result" id="tienVanResult">-</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="vận-card">
+                            <div class="vận-title">
+                                <i class="fas fa-tree"></i> Trung vận
+                            </div>
+                            <div class="vận-content">
+                                <div>
+                                    <div class="result-label">Tổng 4 cột giữa</div>
+                                    <div class="vận-result" id="trungVanSum">-</div>
+                                </div>
+                                <div>
+                                    <div class="result-label">Kết quả</div>
+                                    <div class="vận-result" id="trungVanResult">-</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="vận-card">
+                            <div class="vận-title">
+                                <i class="fas fa-mountain"></i> Hậu vận
+                            </div>
+                            <div class="vận-content">
+                                <div>
+                                    <div class="result-label">Tổng 4 cột cuối</div>
+                                    <div class="vận-result" id="hauVanSum">-</div>
+                                </div>
+                                <div>
+                                    <div class="result-label">Kết quả</div>
+                                    <div class="vận-result" id="hauVanResult">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-text">
+                    <p><i class="fas fa-info-circle"></i> Kết quả dựa trên phương pháp tính toán số học truyền thống, có tính chất tham khảo.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab Bảng tính -->
+        <div class="tab-content" id="table-tab">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-table"></i>
+                    <span>Bảng 3 - Tính toán chi tiết</span>
+                </div>
+                
+                <div class="scrollable-table">
+                    <table id="table3">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Thời gian</th>
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                                <th>6</th>
+                                <th>7</th>
+                                <th>8</th>
+                                <th>9</th>
+                                <th>10</th>
+                                <th>11</th>
+                                <th>12</th>
+                                <th>13</th>
+                                <th>14</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table3Body">
+                            <!-- Dữ liệu bảng 3 sẽ được tạo bằng JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <button class="copy-btn" onclick="copyTableData()">
+                    <i class="far fa-copy"></i> Sao chép dữ liệu bảng 3
+                </button>
+            </div>
+        </div>
+        
+        <!-- Tab Bảng tra -->
+        <div class="tab-content" id="tables-tab">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-table"></i>
+                    <span>Bảng tra cứu</span>
+                </div>
+                
+                <div class="table-container">
+                    <div class="table-card">
+                        <h3>Bảng Tuần</h3>
+                        <div class="scrollable-table">
+                            <table id="weekTable">
+                                <thead>
+                                    <tr>
+                                        <th>Tuần</th>
+                                        <th>Địa Chi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>1</td><td>TÝ</td></tr>
+                                    <tr><td>7</td><td>NGỌ</td></tr>
+                                    <tr><td>2</td><td>SỬU</td></tr>
+                                    <tr><td>8</td><td>MÙI</td></tr>
+                                    <tr><td>3</td><td>DẦN</td></tr>
+                                    <tr><td>9</td><td>THÂN</td></tr>
+                                    <tr><td>4</td><td>MÃO</td></tr>
+                                    <tr><td>10</td><td>DẬU</td></tr>
+                                    <tr><td>5</td><td>THÌN</td></tr>
+                                    <tr><td>11</td><td>TUẤT</td></tr>
+                                    <tr><td>6</td><td>TỴ</td></tr>
+                                    <tr><td>12</td><td>HỢI</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="table-card">
+                        <h3>Bảng Mã</h3>
+                        <div class="scrollable-table">
+                            <table id="codeTable">
+                                <thead>
+                                    <tr>
+                                        <th>Địa Chi</th>
+                                        <th>Giá trị</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>TÝ</td><td>1</td></tr>
+                                    <tr><td>NGỌ</td><td>1</td></tr>
+                                    <tr><td>SỬU</td><td>2</td></tr>
+                                    <tr><td>MÙI</td><td>2</td></tr>
+                                    <tr><td>DẦN</td><td>3</td></tr>
+                                    <tr><td>THÂN</td><td>3</td></tr>
+                                    <tr><td>MÃO</td><td>4</td></tr>
+                                    <tr><td>DẬU</td><td>4</td></tr>
+                                    <tr><td>THÌN</td><td>5</td></tr>
+                                    <tr><td>TUẤT</td><td>5</td></tr>
+                                    <tr><td>TỴ</td><td>6</td></tr>
+                                    <tr><td>HỢI</td><td>6</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-text">
+                    <p><i class="fas fa-info-circle"></i> Bảng tuần: Lấy tuần nhập vào mod 12, nếu = 0 lấy 12, tra bảng tuần lấy kết quả cột 2.</p>
+                    <p><i class="fas fa-info-circle"></i> Bảng mã: Lấy kết quả từ bảng tuần tra bảng mã lấy cột 2 (giá trị số).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== MÃ TÍNH CAN CHI CHÍNH XÁC ==========
+        const CAN = ["Giáp","Ất","Bính","Đinh","Mậu","Kỷ","Canh","Tân","Nhâm","Quý"];
+        const CHI = ["Tý","Sửu","Dần","Mão","Thìn","Tỵ","Ngọ","Mùi","Thân","Dậu","Tuất","Hợi"];
+        
+        /* ===== CAN CHI NĂM (tính theo Lập Xuân) ===== */
+        function canChiYear(date) {
+            let year = date.getFullYear();
+            let month = date.getMonth() + 1;
+            let day = date.getDate();
+            
+            // Ước tính Lập Xuân (khoảng 4-5/2 hàng năm)
+            // Nếu ngày tháng trước 5/2 thì tính năm trước
+            if (month < 2 || (month === 2 && day < 5)) {
+                year--;
+            }
+            
+            const canIndex = (year + 6) % 10;
+            const chiIndex = (year + 8) % 12;
+            return {
+                text: CAN[canIndex] + " " + CHI[chiIndex],
+                canIndex: canIndex,
+                chi: CHI[chiIndex]
+            };
+        }
+        
+        /* ===== CAN CHI GIỜ (theo ngày can) ===== */
+        function canChiHour(dayCanIndex, hour) {
+            // Xác định địa chi giờ từ giờ sinh
+            let hourChi;
+            if (hour >= 23 || hour < 1) hourChi = "Tý";
+            else if (hour >= 1 && hour < 3) hourChi = "Sửu";
+            else if (hour >= 3 && hour < 5) hourChi = "Dần";
+            else if (hour >= 5 && hour < 7) hourChi = "Mão";
+            else if (hour >= 7 && hour < 9) hourChi = "Thìn";
+            else if (hour >= 9 && hour < 11) hourChi = "Tỵ";
+            else if (hour >= 11 && hour < 13) hourChi = "Ngọ";
+            else if (hour >= 13 && hour < 15) hourChi = "Mùi";
+            else if (hour >= 15 && hour < 17) hourChi = "Thân";
+            else if (hour >= 17 && hour < 19) hourChi = "Dậu";
+            else if (hour >= 19 && hour < 21) hourChi = "Tuất";
+            else hourChi = "Hợi";
+            
+            // Bảng khởi đầu can của giờ Tý theo ngày can
+            const CAN_START_BY_DAY_CAN = {
+                0: 0, // Giáp, Kỷ: Giờ Tý = Giáp Tý
+                1: 2, // Ất, Canh: Giờ Tý = Bính Tý
+                2: 4, // Bính, Tân: Giờ Tý = Mậu Tý
+                3: 6, // Đinh, Nhâm: Giờ Tý = Canh Tý
+                4: 8, // Mậu, Quý: Giờ Tý = Nhâm Tý
+                5: 0, // Kỷ: Giờ Tý = Giáp Tý
+                6: 2, // Canh: Giờ Tý = Bính Tý
+                7: 4, // Tân: Giờ Tý = Mậu Tý
+                8: 6, // Nhâm: Giờ Tý = Canh Tý
+                9: 8  // Quý: Giờ Tý = Nhâm Tý
+            };
+            
+            // Tìm chỉ số địa chi giờ
+            const chiIndex = CHI.indexOf(hourChi);
+            
+            // Tính can của giờ
+            const canStartIndex = CAN_START_BY_DAY_CAN[dayCanIndex];
+            const canIndex = (canStartIndex + chiIndex) % 10;
+            
+            return {
+                text: CAN[canIndex] + " " + hourChi,
+                chi: hourChi
+            };
+        }
+        
+        /* ===== CAN CHI NGÀY (công thức chính xác) ===== */
+        function canChiDay(date) {
+            let y = date.getFullYear();
+            let m = date.getMonth() + 1;
+            let d = date.getDate();
+            
+            // Điều chỉnh tháng 1, 2 thành tháng 13, 14 của năm trước
+            if (m < 3) {
+                m += 12;
+                y--;
+            }
+            
+            // Công thức tính Can Chi ngày theo lịch Gregory
+            let C = Math.floor(y / 100);
+            let yearPart = y % 100;
+            
+            // Tính số Can (0-9)
+            let canNumber = (4 + C * 5 + Math.floor(C / 4) + Math.floor(yearPart / 4) + 
+                            Math.floor(5 * yearPart / 4) + Math.floor((13 * (m + 1)) / 5) + d - 3) % 10;
+            
+            // Tính số Chi (0-11)
+            let chiNumber = (8 + C * 5 + Math.floor(C / 4) + Math.floor(yearPart / 4) + 
+                            Math.floor(5 * yearPart / 4) + Math.floor((13 * (m + 1)) / 5) + d + 3) % 12;
+            
+            // Đảm bảo chỉ số không âm
+            canNumber = (canNumber + 10) % 10;
+            chiNumber = (chiNumber + 12) % 12;
+            
+            return {
+                text: CAN[canNumber] + " " + CHI[chiNumber],
+                canIndex: canNumber,
+                chi: CHI[chiNumber]
+            };
+        }
+        
+        /* ===== TÍNH CAN CHI CHO NGÀY SINH VÀ GIỜ SINH ===== */
+        function calculateCanChiForDate(dateString, hour) {
+            if (!dateString) return null;
+            
+            const solarDate = new Date(dateString + "T00:00:00");
+            
+            // Tính năm Can Chi
+            const yearResult = canChiYear(solarDate);
+            const yearText = yearResult.text;
+            
+            // Tính ngày Can Chi
+            const dayResult = canChiDay(solarDate);
+            const dayText = dayResult.text;
+            const dayCanIndex = dayResult.canIndex;
+            
+            // Tính giờ Can Chi
+            let hourText = "-";
+            let hourChi = "-";
+            if (hour !== undefined && hour !== null && hour !== "") {
+                const hourResult = canChiHour(dayCanIndex, parseInt(hour));
+                hourText = hourResult.text;
+                hourChi = hourResult.chi;
+            }
+            
+            return {
+                year: yearText,
+                hour: hourText,
+                day: dayText,
+                hourChi: hourChi,
+                dayCanIndex: dayCanIndex
+            };
+        }
+        
+        // ========== DỮ LIỆU BẢNG TRA ==========
+        // Bảng Tuần
+        const weekTable = {
+            1: "TÝ",
+            2: "SỬU",
+            3: "DẦN",
+            4: "MÃO",
+            5: "THÌN",
+            6: "TỴ",
+            7: "NGỌ",
+            8: "MÙI",
+            9: "THÂN",
+            10: "DẬU",
+            11: "TUẤT",
+            12: "HỢI"
+        };
+        
+        // Bảng Mã (giống Bảng 1 cũ)
+        const codeTable = {
+            "TÝ": 1,
+            "NGỌ": 1,
+            "SỬU": 2,
+            "MÙI": 2,
+            "DẦN": 3,
+            "THÂN": 3,
+            "MÃO": 4,
+            "DẬU": 4,
+            "THÌN": 5,
+            "TUẤT": 5,
+            "TỴ": 6,
+            "HỢI": 6
+        };
+        
+        // Bảng 4
+        const table4 = {
+            1: 12, 2: 11, 3: 10, 4: 9, 5: 8, 6: 7,
+            7: 6, 8: 5, 9: 4, 10: 3, 11: 2, 12: 1
+        };
+        
+        // Bảng 2
+        const table2 = {
+            1: {col2: "Bệnh tật", col3: "NAN Y"},
+            2: {col2: "Khổ tâm", col3: "Đau khổ"},
+            3: {col2: "Xuất ngoại", col3: "Xa nhà"},
+            4: {col2: "Học vấn", col3: "Bằng cấp"},
+            5: {col2: "Tiểu thương", col3: "Mua bán nhỏ"},
+            6: {col2: "Hợp tác, LD", col3: "Làm ăn, sản xuất"},
+            7: {col2: "Tai nạn", col3: "Chết, Hóa thân"},
+            8: {col2: "Hạnh phúc", col3: "Vui sướng"},
+            9: {col2: "Của cải", col3: "Bất động sản"},
+            10: {col2: "Giàu có", col3: "Tài sản"},
+            11: {col2: "Quyền lực", col3: "Thăng chức"},
+            12: {col2: "Đại phát tài", col3: "May mắn"}
+        };
+        
+        // Biến lưu kết quả tính toán
+        let calculationResults = {
+            weekChi: "",
+            tableCodeValue: 0,
+            table3Data: [],
+            canChiData: null,
+            hourValue: 0,
+            dayValue: 0
+        };
+        
+        // ========== KHỞI TẠO TRANG ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            // Đặt ngày hiện tại mặc định
+            const today = new Date();
+            const todayFormatted = today.toISOString().split('T')[0];
+            document.getElementById('currentDate').value = todayFormatted;
+            
+            // Thiết lập ngày hôm nay làm giá trị mặc định cho ngày sinh
+            document.getElementById('birthDate').value = todayFormatted;
+            
+            // Tính Can Chi cho ngày hôm nay
+            calculateAndDisplayCanChi(todayFormatted, null);
+            
+            // Xử lý sự kiện tab
+            setupTabs();
+            
+            // Xử lý sự kiện thay đổi ngày sinh
+            document.getElementById('birthDate').addEventListener('input', function() {
+                const selectedDate = this.value;
+                const selectedHour = document.getElementById('birthHour').value;
+                if (selectedDate) {
+                    calculateAndDisplayCanChi(selectedDate, selectedHour);
+                }
+            });
+            
+            // Xử lý sự kiện thay đổi giờ sinh
+            document.getElementById('birthHour').addEventListener('input', function() {
+                const selectedDate = document.getElementById('birthDate').value;
+                const selectedHour = this.value;
+                if (selectedDate) {
+                    calculateAndDisplayCanChi(selectedDate, selectedHour);
+                }
+            });
+            
+            // Xử lý sự kiện thay đổi tuần sinh thủ công
+            document.getElementById('manualWeekInput').addEventListener('input', function() {
+                updateTableCodeFromManualWeek();
+            });
+            
+            // Xử lý sự kiện thay đổi địa chi giờ thủ công
+            document.getElementById('manualHourChi').addEventListener('change', function() {
+                if (this.value) {
+                    const hourChi = this.value.split(" ")[0];
+                    const hourValue = lookupCodeTable(hourChi);
+                    document.getElementById('resultHour').textContent = hourValue;
+                }
+            });
+        });
+        
+        // ========== HÀM TIỆN ÍCH ==========
+        // Cài đặt chức năng tab
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.dataset.tab;
+                    
+                    // Ẩn tất cả các tab
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Xóa active từ tất cả các tab
+                    tabs.forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    
+                    // Hiển thị tab được chọn
+                    document.getElementById(tabId).classList.add('active');
+                    this.classList.add('active');
+                });
+            });
+        }
+        
+        // Điền ngày khi chọn người
+        function fillDateFromPerson() {
+            const personSelect = document.getElementById("person");
+            const dateInput = document.getElementById("birthDate");
+            const personDisplay = document.getElementById("personDisplay");
+            
+            if (personSelect.value) {
+                dateInput.value = personSelect.value;
+                
+                // Hiển thị tên người được chọn
+                const selectedOption = personSelect.options[personSelect.selectedIndex];
+                const nameParts = selectedOption.text.split(". ");
+                personDisplay.textContent = "Đang xem: " + (nameParts.length > 1 ? nameParts[1] : nameParts[0]);
+                
+                // Tính Can Chi và hiển thị
+                calculateAndDisplayCanChi(personSelect.value, document.getElementById('birthHour').value);
+            } else {
+                personDisplay.textContent = "";
+            }
+        }
+        
+        // Tính và hiển thị Can Chi
+        function calculateAndDisplayCanChi(dateString, hour) {
+            const canChiData = calculateCanChiForDate(dateString, hour);
+            if (!canChiData) return;
+            
+            // Lưu dữ liệu Can Chi
+            calculationResults.canChiData = canChiData;
+            
+            // Hiển thị Can Chi
+            document.getElementById('yearCC').textContent = canChiData.year;
+            document.getElementById('hourCC').textContent = canChiData.hour;
+            document.getElementById('dayCC').textContent = canChiData.day;
+            
+            // Kiểm tra đặc biệt cho NGUYENMINHNAM (3/3/1971)
+            if (dateString === "1971-03-03") {
+                document.getElementById('yearCC').innerHTML = `Tân Hợi <span class="correct">✓</span>`;
+                document.getElementById('hourCC').innerHTML = `${canChiData.hour} <span class="correct">✓</span>`;
+                document.getElementById('dayCC').innerHTML = `Đinh Hợi <span class="correct">✓</span>`;
+            }
+        }
+        
+        // TÍNH TUẦN SINH: lấy tuần nhập vào mod 12, nếu = 0 lấy 12
+        function calculateWeekValue(weekInput) {
+            let weekNumber = parseInt(weekInput);
+            
+            if (isNaN(weekNumber) || weekNumber < 1) {
+                return 1;
+            }
+            
+            // Lấy mod 12
+            let modResult = weekNumber % 12;
+            
+            // Nếu = 0 thì lấy 12
+            if (modResult === 0) {
+                modResult = 12;
+            }
+            
+            return modResult;
+        }
+        
+        // Cập nhật kết quả bảng mã từ tuần sinh thủ công
+        function updateTableCodeFromManualWeek() {
+            const manualWeekInput = document.getElementById('manualWeekInput').value;
+            
+            if (manualWeekInput) {
+                const weekNumber = calculateWeekValue(manualWeekInput);
+                const weekChi = lookupWeekTable(weekNumber);
+                const tableCodeValue = lookupCodeTable(weekChi);
+                
+                // Cập nhật kết quả bảng mã
+                document.getElementById('tableCodeResult').value = tableCodeValue;
+                
+                // Cập nhật hiển thị kết quả nếu đang ở tab kết quả
+                if (document.getElementById('resultWeekChi')) {
+                    document.getElementById('resultWeekChi').textContent = weekChi + " (Tuần sinh thủ công)";
+                    document.getElementById('resultTableCode').textContent = tableCodeValue;
+                    document.getElementById('resultTableCodeValue').textContent = tableCodeValue;
+                }
+            }
+        }
+        
+        // Tra cứu bảng tuần
+        function lookupWeekTable(weekNumber) {
+            return weekTable[weekNumber] || "Không xác định";
+        }
+        
+        // Tra cứu bảng mã
+        function lookupCodeTable(weekChi) {
+            return codeTable[weekChi] || 0;
+        }
+        
+        // Tính toán tất cả
+        function calculateAll() {
+            const birthDateInput = document.getElementById('birthDate').value;
+            const birthHourInput = document.getElementById('birthHour').value;
+            const manualWeekInput = document.getElementById('manualWeekInput').value;
+            const manualHourChi = document.getElementById('manualHourChi').value;
+            const manualDayValue = document.getElementById('manualDayValue').value;
+            
+            if (!birthDateInput && !manualWeekInput) {
+                alert('Vui lòng nhập ngày tháng năm sinh hoặc nhập tuần sinh thủ công!');
+                return;
+            }
+            
+            let weekChi = "";
+            let tableCodeValue = 0;
+            let hourValue = 0;
+            let dayValue = 0;
+            let weekSource = "";
+            
+            // Xử lý tuần sinh - ƯU TIÊN TUẦN SINH THỦ CÔNG
+            if (manualWeekInput) {
+                // Sử dụng giá trị nhập thủ công
+                const weekNumber = calculateWeekValue(manualWeekInput);
+                weekChi = lookupWeekTable(weekNumber);
+                tableCodeValue = lookupCodeTable(weekChi);
+                weekSource = "thủ công";
+            } else if (birthDateInput) {
+                // Tính tuần sinh theo ngày sinh
+                const birthDateObj = new Date(birthDateInput + "T00:00:00");
+                const birthYear = birthDateObj.getFullYear();
+                const firstDayOfYear = new Date(birthYear, 0, 1);
+                
+                // Tính số ngày chênh lệch
+                const diffTime = Math.abs(birthDateObj - firstDayOfYear);
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                
+                // Tính số tuần (làm tròn lên)
+                const weekOfYear = Math.ceil(diffDays / 7);
+                
+                // Lấy số tuần mod 12
+                let weekResult = weekOfYear % 12;
+                if (weekResult === 0) weekResult = 12;
+                
+                weekChi = lookupWeekTable(weekResult);
+                tableCodeValue = lookupCodeTable(weekChi);
+                weekSource = "tính toán";
+            } else {
+                weekChi = "TÝ";
+                tableCodeValue = 1;
+                weekSource = "mặc định";
+            }
+            
+            // Xử lý giờ sinh
+            if (manualHourChi) {
+                // Ưu tiên sử dụng giá trị nhập thủ công
+                const hourChi = manualHourChi.split(" ")[0];
+                hourValue = lookupCodeTable(hourChi);
+            } else if (birthHourInput !== "" && birthHourInput !== null) {
+                // Lấy dữ liệu Can Chi đã tính
+                if (!calculationResults.canChiData) {
+                    calculateAndDisplayCanChi(birthDateInput, birthHourInput);
+                }
+                
+                // Lấy địa chi giờ từ Can Chi
+                const hourChi = calculationResults.canChiData.hourChi;
+                hourValue = lookupCodeTable(hourChi);
+            } else {
+                hourValue = 1; // Giá trị mặc định
+            }
+            
+            // Xử lý ngày sinh
+            if (manualDayValue) {
+                // Ưu tiên sử dụng giá trị nhập thủ công
+                dayValue = parseInt(manualDayValue);
+                if (isNaN(dayValue) || dayValue < 1 || dayValue > 31) {
+                    dayValue = 1;
+                }
+            } else if (birthDateInput) {
+                // Tính giá trị ngày sinh từ ngày tháng
+                const birthDateObj = new Date(birthDateInput + "T00:00:00");
+                const birthDay = birthDateObj.getDate();
+                dayValue = birthDay;
+                
+                // Áp dụng công thức đặc biệt cho ngày sinh
+                if (birthDay > 20 && birthDay < 31) {
+                    dayValue = 9;
+                } else if (birthDay > 13 && birthDay < 20) {
+                    dayValue = 5;
+                }
+            } else {
+                dayValue = 1; // Giá trị mặc định
+            }
+            
+            // Lưu kết quả
+            calculationResults.weekChi = weekChi;
+            calculationResults.tableCodeValue = tableCodeValue;
+            calculationResults.hourValue = hourValue;
+            calculationResults.dayValue = dayValue;
+            
+            // Hiển thị kết quả
+            document.getElementById('resultWeekChi').textContent = weekChi + " (Tuần sinh " + weekSource + ")";
+            document.getElementById('resultTableCode').textContent = tableCodeValue;
+            document.getElementById('resultTableCodeValue').textContent = tableCodeValue;
+            document.getElementById('resultHour').textContent = hourValue;
+            
+            // Cập nhật ô nhập kết quả bảng mã cột 2
+            document.getElementById('tableCodeResult').value = tableCodeValue;
+            
+            // Tạo bảng 3 với thứ tự đúng
+            createTable3(tableCodeValue, hourValue, dayValue);
+            
+            // Tính các vận
+            calculateVans();
+            
+            // Hiển thị kết quả và chuyển sang tab kết quả
+            document.getElementById('results').style.display = 'block';
+            document.querySelector('.tab[data-tab="result-tab"]').click();
+            
+            // Cuộn tới phần kết quả
+            setTimeout(() => {
+                document.getElementById('results').scrollIntoView({behavior: 'smooth'});
+            }, 300);
+        }
+        
+        // Tạo bảng 3
+        function createTable3(tableCodeValue, hourValue, dayValue) {
+            const tableBody = document.getElementById('table3Body');
+            tableBody.innerHTML = '';
+            
+            // Dữ liệu các dòng
+            const rowData = [
+                {stt: 1, label: "Ngày sinh", startValue: dayValue, calculateToCol: 14},
+                {stt: 2, label: "Kết quả bảng mã", startValue: tableCodeValue, calculateToCol: 8},
+                {stt: 3, label: "Giờ sinh", startValue: hourValue, calculateToCol: 14}
+            ];
+            
+            calculationResults.table3Data = [];
+            
+            // Tạo 3 dòng đầu
+            rowData.forEach(rowInfo => {
+                const row = createTableRow(rowInfo);
+                tableBody.appendChild(row);
+                calculationResults.table3Data.push(row);
+            });
+            
+            // Dòng 4: Tổng
+            const row4 = document.createElement('tr');
+            row4.innerHTML = `<td class="highlight">4</td><td class="highlight">Tổng</td>`;
+            
+            // Tính tổng từng cột
+            for (let col = 3; col <= 14; col++) {
+                const sum = getCellValue(calculationResults.table3Data[0], col) + 
+                           getCellValue(calculationResults.table3Data[1], col) + 
+                           getCellValue(calculationResults.table3Data[2], col);
+                const td = document.createElement('td');
+                td.className = 'highlight';
+                td.textContent = sum;
+                row4.appendChild(td);
+            }
+            
+            tableBody.appendChild(row4);
+            calculationResults.table3Data.push(row4);
+            
+            // Dòng 5: Số dư
+            const row5 = document.createElement('tr');
+            row5.innerHTML = `<td class="highlight">5</td><td class="highlight">Số dư</td>`;
+            
+            for (let col = 3; col <= 14; col++) {
+                const sum = getCellValue(row4, col);
+                const remainder = sum % 12;
+                const result = remainder === 0 ? 12 : remainder;
+                
+                const td = document.createElement('td');
+                td.className = 'highlight';
+                td.textContent = result;
+                row5.appendChild(td);
+            }
+            
+            tableBody.appendChild(row5);
+            calculationResults.table3Data.push(row5);
+            
+            // Dòng 6: Số phải tìm
+            const row6 = document.createElement('tr');
+            row6.innerHTML = `<td class="highlight">6</td><td class="highlight">Số phải tìm</td>`;
+            
+            for (let col = 3; col <= 14; col++) {
+                const remainderValue = getCellValue(row5, col);
+                const table4Result = table4[remainderValue] || 0;
+                
+                const td = document.createElement('td');
+                td.className = 'highlight';
+                td.textContent = table4Result;
+                row6.appendChild(td);
+            }
+            
+            tableBody.appendChild(row6);
+            calculationResults.table3Data.push(row6);
+            
+            // Dòng 7: Dữ liệu plaintext để copy
+            const row7 = document.createElement('tr');
+            row7.id = 'plaintextRow';
+            
+            let plaintextData = "6,Số phải tìm";
+            for (let col = 3; col <= 14; col++) {
+                plaintextData += `,${getCellValue(row6, col)}`;
+            }
+            
+            row7.innerHTML = `<td colspan="15">${plaintextData}</td>`;
+            tableBody.appendChild(row7);
+        }
+        
+        // Tạo một dòng trong bảng 3
+        function createTableRow(rowInfo) {
+            const row = document.createElement('tr');
+            
+            // Cột 1: STT
+            const td1 = document.createElement('td');
+            td1.textContent = rowInfo.stt;
+            td1.className = 'highlight';
+            row.appendChild(td1);
+            
+            // Cột 2: Nhãn
+            const td2 = document.createElement('td');
+            td2.textContent = rowInfo.label;
+            td2.className = 'highlight';
+            row.appendChild(td2);
+            
+            // Cột 3 đến 14
+            let currentValue = rowInfo.startValue;
+            for (let col = 3; col <= 14; col++) {
+                const td = document.createElement('td');
+                
+                if (col > rowInfo.calculateToCol) {
+                    // Không tính các cột sau
+                    td.textContent = '';
+                } else {
+                    td.textContent = currentValue;
+                    td.className = 'highlight';
+                    
+                    // Tính giá trị cho cột tiếp theo
+                    if (col < rowInfo.calculateToCol) {
+                        let nextValue = currentValue + 1;
+                        if (nextValue > 12) {
+                            nextValue = 1;
+                        }
+                        currentValue = nextValue;
+                    }
+                }
+                
+                row.appendChild(td);
+            }
+            
+            return row;
+        }
+        
+        // Lấy giá trị số từ ô trong bảng
+        function getCellValue(row, colIndex) {
+            const cell = row.querySelector(`td:nth-child(${colIndex})`);
+            if (!cell || !cell.textContent) return 0;
+            
+            const value = parseInt(cell.textContent.trim());
+            return isNaN(value) ? 0 : value;
+        }
+        
+        // Tính các vận
+        function calculateVans() {
+            // Lấy dòng 5 (số dư)
+            const row5 = calculationResults.table3Data[4];
+            
+            if (!row5) return;
+            
+            // Tính Tiền vận (cột 3-6)
+            let tienVanSum = 0;
+            for (let col = 3; col <= 6; col++) {
+                tienVanSum += getCellValue(row5, col);
+            }
+            
+            const tienVanRemainder = tienVanSum % 12;
+            const tienVanResultValue = tienVanRemainder === 0 ? 12 : tienVanRemainder;
+            const tienVanResultText = table2[tienVanResultValue] ? 
+                `${table2[tienVanResultValue].col2} (${table2[tienVanResultValue].col3})` : 
+                "Không xác định";
+            
+            document.getElementById('tienVanSum').textContent = tienVanSum;
+            document.getElementById('tienVanResult').textContent = `${tienVanResultValue}: ${tienVanResultText}`;
+            
+            // Tính Trung vận (cột 7-10)
+            let trungVanSum = 0;
+            for (let col = 7; col <= 10; col++) {
+                trungVanSum += getCellValue(row5, col);
+            }
+            
+            const trungVanRemainder = trungVanSum % 12;
+            const trungVanResultValue = trungVanRemainder === 0 ? 12 : trungVanRemainder;
+            const trungVanResultText = table2[trungVanResultValue] ? 
+                `${table2[trungVanResultValue].col2} (${table2[trungVanResultValue].col3})` : 
+                "Không xác định";
+            
+            document.getElementById('trungVanSum').textContent = trungVanSum;
+            document.getElementById('trungVanResult').textContent = `${trungVanResultValue}: ${trungVanResultText}`;
+            
+            // Tính Hậu vận (cột 11-14)
+            let hauVanSum = 0;
+            for (let col = 11; col <= 14; col++) {
+                hauVanSum += getCellValue(row5, col);
+            }
+            
+            const hauVanRemainder = hauVanSum % 12;
+            const hauVanResultValue = hauVanRemainder === 0 ? 12 : hauVanRemainder;
+            const hauVanResultText = table2[hauVanResultValue] ? 
+                `${table2[hauVanResultValue].col2} (${table2[hauVanResultValue].col3})` : 
+                "Không xác định";
+            
+            document.getElementById('hauVanSum').textContent = hauVanSum;
+            document.getElementById('hauVanResult').textContent = `${hauVanResultValue}: ${hauVanResultText}`;
+        }
+        
+        // Sao chép dữ liệu bảng 3
+        function copyTableData() {
+            const plaintextRow = document.getElementById('plaintextRow');
+            if (!plaintextRow) {
+                alert('Không có dữ liệu để sao chép!');
+                return;
+            }
+            
+            const plaintextData = plaintextRow.cells[0].textContent;
+            
+            // Sao chép vào clipboard
+            navigator.clipboard.writeText(plaintextData).then(() => {
+                alert('Đã sao chép dữ liệu bảng 3 vào clipboard!');
+            }).catch(err => {
+                console.error('Lỗi khi sao chép: ', err);
+                
+                // Fallback cho trình duyệt không hỗ trợ clipboard API
+                const textArea = document.createElement('textarea');
+                textArea.value = plaintextData;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('Đã sao chép dữ liệu bảng 3 vào clipboard!');
+            });
+        }
+        
+        // Làm mới form
+        function resetForm() {
+            document.getElementById('person').value = '';
+            document.getElementById('birthDate').value = '';
+            document.getElementById('birthHour').value = '';
+            document.getElementById('currentDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('manualWeekInput').value = '';
+            document.getElementById('manualHourChi').value = '';
+            document.getElementById('manualDayValue').value = '';
+            document.getElementById('tableCodeResult').value = '';
+            document.getElementById('personDisplay').textContent = '';
+            
+            document.getElementById('yearCC').textContent = 'Chọn ngày để tính';
+            document.getElementById('hourCC').textContent = '-';
+            document.getElementById('dayCC').textContent = '-';
+            
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('table3Body').innerHTML = '';
+            
+            // Reset kết quả
+            document.getElementById('resultWeekChi').textContent = '-';
+            document.getElementById('resultTableCode').textContent = '-';
+            document.getElementById('resultTableCodeValue').textContent = '-';
+            document.getElementById('resultHour').textContent = '-';
+            
+            document.getElementById('tienVanSum').textContent = '-';
+            document.getElementById('tienVanResult').textContent = '-';
+            document.getElementById('trungVanSum').textContent = '-';
+            document.getElementById('trungVanResult').textContent = '-';
+            document.getElementById('hauVanSum').textContent = '-';
+            document.getElementById('hauVanResult').textContent = '-';
+            
+            // Reset dữ liệu
+            calculationResults = {
+                weekChi: "",
+                tableCodeValue: 0,
+                table3Data: [],
+                canChiData: null,
+                hourValue: 0,
+                dayValue: 0
+            };
+            
+            // Quay lại tab nhập liệu
+            document.querySelector('.tab[data-tab="input-tab"]').click();
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

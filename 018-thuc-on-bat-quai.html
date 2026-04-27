@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Game Bữa ăn 2 ngày - Âm Dương & Bát quái</title>
+<style>
+  body{margin:0;font-family:Arial, sans-serif;background:#071028;color:#e6eef6;display:flex;justify-content:center;padding:10px}
+  .phone{width:360px;background:#0b1220;border-radius:28px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.03)}
+  header{padding:14px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.02)}
+  h1{margin:0;font-size:16px}
+  .sub{font-size:12px;color:#9fb0c8;margin-top:4px}
+  .content{padding:12px}
+  .meal{background:rgba(255,255,255,0.02);padding:8px;margin-bottom:8px;border-radius:12px}
+  .meal h3{margin:0 0 6px 0;font-size:14px}
+  .food{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed rgba(255,255,255,0.03);font-size:14px}
+  .yin{color:#60a5fa}
+  .yang{color:#fb7185}
+  .neutral{color:#f59e0b}
+  .summary{margin-top:8px;border-top:1px dashed rgba(255,255,255,0.03);padding-top:6px;font-size:12px}
+  .bq{display:flex;flex-wrap:wrap;margin-top:6px}
+  .bq div{flex:0 0 25%;text-align:center;padding:4px;font-size:12px;border:1px solid rgba(255,255,255,0.03);margin:2px;border-radius:6px}
+  button{margin-top:8px;padding:8px;border-radius:8px;border:none;background:linear-gradient(90deg,#10b981,#06b6d4);color:#012;font-weight:700;cursor:pointer}
+  .note{font-size:12px;color:#fbbf24;margin-left:4px}
+</style>
+</head>
+<body>
+<div class="phone">
+  <header>
+    <h1>Game Bữa ăn 2 ngày</h1>
+    <div class="sub">3 bữa/ngày: 08:00,12:00,16:00 - Âm/Dương & Bát quái</div>
+  </header>
+  <div class="content" id="content"></div>
+  <div class="content">
+    <button id="calcBtn">Tính tổng nấu & mua cả 2 ngày</button>
+    <div id="summary" class="summary"></div>
+  </div>
+</div>
+<script>
+const portion={rau:150, ngugcoc:180, dau:80, thit:100, giavi:5};
+const priceMap={'Cải chíp':20000,'Rau cải ngọt':18000,'Su hào':16000,'Củ cải':15000,'Cải xoăn':35000,'Rau bina':30000,'Mướp đắng':18000,'Mồng tơi':15000,'Đu đủ':14000,'Đậu bắp':16000,'Bí xanh':12000,'Bí đỏ':20000,'Khoai lang':18000,'Súp lơ':35000,'Cà rốt':22000,'Rong biển':50000,'Tảo biển':60000,'Cơm trắng':20000,'Mì tôm':18000,'Đậu phụ':25000,'Trứng gà':35000,'Trứng vịt':40000,'Vịt lộn':45000,'Giò lụa':180000,'Chả quế':200000,'Thịt gà':140000,'Thịt vịt':160000,'Thịt bò':220000,'Muối':10000,'Đường trắng':15000,'Đường vàng':15000,'Mì chính':20000};
+const yinYang={'Cải chíp':'yin','Rau cải ngọt':'yin','Su hào':'yang','Củ cải':'yang','Cải xoăn':'yin','Rau bina':'yin','Đậu phụ':'yin','Cơm trắng':'neutral','Mì tôm':'yang','Trứng gà':'yang','Trứng vịt':'yang','Vịt lộn':'yang','Thịt gà':'yang','Giò lụa':'yang','Thịt bò':'yang','Muối':'yang','Đường trắng':'neutral','Mì chính':'neutral'};
+
+const bqNotes={'☰':'Dương, Thịt & Ngũ cốc', '☱':'Âm, Rau & Đậu','☲':'Dương, Thịt','☳':'Âm, Rau','☴':'Dương, Ngũ cốc','☵':'Âm, Đậu','☶':'Dương, Thịt & Gia vị','☷':'Âm, Rau & Đậu'};
+
+const days=[
+  // Day 1
+  [
+    {time:'08:00', rau:['Cải chíp','Rau cải ngọt'], ngugcoc:['Cơm trắng'], dau:['Đậu phụ'], thit:['Trứng gà'], giavi:['Muối','Đường trắng']},
+    {time:'12:00', rau:['Su hào','Củ cải'], ngugcoc:['Mì tôm'], dau:['Đậu phụ'], thit:['Thịt gà','Vịt lộn'], giavi:['Muối','Mì chính']},
+    {time:'16:00', rau:['Cải xoăn','Rau bina'], ngugcoc:['Cơm trắng'], dau:['Đậu phụ'], thit:['Giò lụa','Thịt bò'], giavi:['Muối','Đường trắng']}
+  ],
+  // Day 2
+  [
+    {time:'08:00', rau:['Mướp đắng','Mồng tơi'], ngugcoc:['Cơm trắng'], dau:['Đậu phụ'], thit:['Trứng vịt'], giavi:['Muối','Đường vàng']},
+    {time:'12:00', rau:['Đu đủ','Đậu bắp'], ngugcoc:['Mì tôm'], dau:['Đậu phụ'], thit:['Thịt gà','Thịt bò'], giavi:['Muối','Mì chính']},
+    {time:'16:00', rau:['Bí xanh','Bí đỏ'], ngugcoc:['Cơm trắng'], dau:['Đậu phụ'], thit:['Giò lụa','Thịt vịt'], giavi:['Muối','Đường vàng']}
+  ]
+];
+
+const content=document.getElementById('content');
+function renderMeals(){
+  content.innerHTML='';
+  days.forEach((day,di)=>{
+    const ddiv=document.createElement('div'); ddiv.innerHTML=`<h3>Ngày ${di+1}</h3>`; content.appendChild(ddiv);
+    day.forEach(m=>{
+      const mealDiv=document.createElement('div'); mealDiv.className='meal';
+      const h3=document.createElement('h3'); h3.textContent=`Bữa ${m.time}`; mealDiv.appendChild(h3);
+      ['rau','ngugcoc','dau','thit','giavi'].forEach(cat=>{
+        m[cat].forEach(f=>{
+          const div=document.createElement('div'); div.className='food';
+          div.innerHTML=`<div>${f} (${portion[cat]} g)</div><div class='${yinYang[f]}'>${yinYang[f]==='yin'?'Âm':(yinYang[f]==='yang'?'Dương':'Trung')}</div>`;
+          mealDiv.appendChild(div);
+        });
+      });
+      // Bát quái với ghi chú thực phẩm ứng với quẻ
+      const bqDiv=document.createElement('div'); bqDiv.className='bq';
+      Object.keys(bqNotes).forEach(q=>{
+        const d=document.createElement('div');
+        d.innerHTML=`${q}<div class='note'>${bqNotes[q]}</div>`;
+        bqDiv.appendChild(d);
+      });
+      mealDiv.appendChild(bqDiv);
+      content.appendChild(mealDiv);
+    });
+  });
+}
+
+function calcTotals(){
+  const totals={};
+  days.forEach(day=>{
+    day.forEach(m=>{
+      ['rau','ngugcoc','dau','thit','giavi'].forEach(cat=>{
+        m[cat].forEach(f=>{
+          if(!totals[f]) totals[f]=0;
+          totals[f]+=portion[cat];
+        });
+      });
+    });
+  });
+  let html='<h4>Tổng nấu & mua cả 2 ngày</h4>';
+  let grandTotal=0;
+  Object.keys(totals).forEach(f=>{
+    const g=totals[f];
+    const kg=Math.ceil((g/1000)*100)/100;
+    const price=priceMap[f]||30000;
+    const cost=Math.round(kg*price);
+    grandTotal+=cost;
+    html+=`<div class='food'><div>${f}: ${g} g (mua ~${kg} kg)</div><div>${cost.toLocaleString('vi-VN')} ₫</div></div>`;
+  });
+  html+=`<div class='food'><strong>Tổng ước tính:</strong> <strong>${grandTotal.toLocaleString('vi-VN')} ₫</strong></div>`;
+  document.getElementById('summary').innerHTML=html;
+}
+
+renderMeals();
+document.getElementById('calcBtn').addEventListener('click',calcTotals);
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tool Thần Số Học Toàn Diện – Tư vấn & Huấn luyện</title>
+
+<style>
+body{font-family:Arial;background:#f2f2f2;padding:20px}
+.container{max-width:1200px;background:#fff;padding:25px;border-radius:10px;margin:auto}
+h1,h2,h3{color:#7a4a00}
+input,button{padding:10px;width:100%;margin:8px 0}
+button{background:#c99700;color:#fff;border:none;border-radius:5px;font-size:16px}
+.result{background:#fafafa;border-left:5px solid #c99700;padding:20px;margin-top:20px}
+.block{margin-top:25px}
+.note{background:#fff8e6;padding:15px;border-left:5px solid #ffcc00;margin-top:20px}
+ul{padding-left:20px}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>TOOL THẦN SỐ HỌC TOÀN DIỆN</h1>
+
+<input id="name" placeholder="Họ và tên">
+<input id="dob" placeholder="Ngày sinh (dd/mm/yyyy)">
+
+<button onclick="analyze()">Xem phân tích</button>
+
+<div id="output" class="result"></div>
+
+</div>
+
+<script>
+/* =========================
+   DỮ LIỆU
+========================= */
+
+const soChuDaoInfo = {
+1:"Lãnh đạo, khởi đầu, độc lập",
+2:"Hòa hợp, kết nối, ngoại giao",
+3:"Sáng tạo, giao tiếp, biểu đạt",
+4:"Kỷ luật, xây dựng, bền vững",
+5:"Tự do, linh hoạt, trải nghiệm",
+6:"Gia đình, trách nhiệm, chăm sóc",
+7:"Nội tâm, trí tuệ, tâm linh",
+8:"Tài chính, quyền lực, thành tựu",
+9:"Nhân văn, cho đi, lý tưởng",
+11:"Trực giác cao, truyền cảm hứng",
+22:"Kiến tạo lớn, xây hệ thống",
+33:"Yêu thương vô điều kiện, chữa lành"
+};
+
+const nhomSo = {
+1:"Trí não",3:"Trí não",5:"Trí não",
+2:"Cảm xúc",4:"Cảm xúc",6:"Cảm xúc",
+7:"Tinh thần",8:"Tinh thần",9:"Tinh thần"
+};
+
+const chotBaoHiem = {
+1:"Giữ quyền chủ động trước rủi ro.",
+2:"Bảo vệ cảm xúc để lo cho người khác.",
+3:"Nền an tâm cho tự do sáng tạo.",
+4:"Bảo hiểm là quản trị rủi ro.",
+5:"Tự do hơn khi không sợ biến cố.",
+6:"Yêu gia đình là có kế hoạch.",
+7:"Bình thản trước vô thường.",
+8:"Bảo toàn tài sản.",
+9:"Cho đi bền vững."
+};
+
+const noiNhe = {
+1:"Anh/chị là người tự quyết, thích chủ động.",
+2:"Anh/chị sống tình cảm, hay nghĩ cho người khác.",
+3:"Anh/chị giao tiếp tốt, dễ tạo thiện cảm.",
+4:"Anh/chị làm việc chắc chắn, cẩn trọng.",
+5:"Anh/chị thích tự do, linh hoạt.",
+6:"Anh/chị có trách nhiệm với gia đình.",
+7:"Anh/chị suy nghĩ sâu, nội tâm.",
+8:"Anh/chị chịu áp lực thành công lớn.",
+9:"Anh/chị sống vì giá trị cộng đồng."
+};
+
+const noiSau = {
+1:"Người gánh nhiều nhất thường là người ít được bảo vệ.",
+2:"Nếu mình mệt trước thì không ai thay mình lo được.",
+3:"Tự do thật sự là không lo lắng phía sau.",
+4:"Chuẩn bị để yên tâm bước tiếp.",
+5:"Có nền vững thì tự do mới bền.",
+6:"Bảo vệ mình là yêu gia đình.",
+7:"Hiểu vô thường để sống an nhiên.",
+8:"Giữ tiền khó hơn kiếm tiền.",
+9:"Cho đi lâu dài cần bảo vệ bản thân."
+};
+
+const banDoDongTien=[
+"Thu nhập chủ động",
+"Hoa hồng tái tục",
+"Đội nhóm – hệ thống",
+"Đầu tư an toàn",
+"Tự do tài chính"
+];
+
+/* =========================
+   HÀM TÍNH
+========================= */
+
+function reduceNumber(n){
+while(n>9 && ![11,22,33].includes(n)){
+n=n.toString().split('').reduce((a,b)=>a+Number(b),0)
+}
+return n
+}
+
+function tinhSoChuDao(dob){
+const nums=dob.replace(/\D/g,'')
+if(nums.length<8) return null
+return reduceNumber(nums.split('').reduce((a,b)=>a+Number(b),0))
+}
+
+function soThieu(dob){
+const nums=dob.replace(/\D/g,'').split('')
+let miss=[]
+for(let i=1;i<=9;i++){
+if(!nums.includes(String(i))) miss.push(i)
+}
+return miss
+}
+
+/* =========================
+   HIỂN THỊ
+========================= */
+
+function analyze(){
+const name=document.getElementById("name").value
+const dob=document.getElementById("dob").value
+if(!name||!dob){alert("Nhập đủ thông tin");return}
+
+const so=tinhSoChuDao(dob)
+if(!so){alert("Ngày sinh không hợp lệ");return}
+
+const thieu=soThieu(dob)
+
+document.getElementById("output").innerHTML=`
+<h2>${name}</h2>
+
+<div class="block">
+<h3>🔢 Số chủ đạo: ${so}</h3>
+<p>${soChuDaoInfo[so]}</p>
+<p><strong>Nhóm:</strong> ${nhomSo[so]}</p>
+</div>
+
+<div class="block">
+<h3>🧩 Số thiếu</h3>
+<p>${thieu.length?thieu.join(", "):"Không thiếu số nào"}</p>
+</div>
+
+<div class="block">
+<h3>🗣 Kịch bản nói chuyện</h3>
+<p><strong>Nói nhẹ:</strong> ${noiNhe[so]}</p>
+<p><strong>Nói sâu:</strong> ${noiSau[so]}</p>
+</div>
+
+<div class="block">
+<h3>💼 Chốt bảo hiểm</h3>
+<p>${chotBaoHiem[so]}</p>
+</div>
+
+<div class="block">
+<h3>💰 Bản đồ dòng tiền</h3>
+<ul>${banDoDongTien.map(i=>`<li>${i}</li>`).join("")}</ul>
+</div>
+
+<div class="block">
+<h3>🔄 Chu kỳ cuộc đời</h3>
+<ul>
+<li>0–27 tuổi: Học & trải nghiệm</li>
+<li>28–54 tuổi: Xây dựng & bứt phá</li>
+<li>55+: Thu hoạch & truyền lại</li>
+</ul>
+</div>
+
+<div class="note">
+📌 Dùng DƯƠNG lịch – Trước Tết gieo quan hệ, sau Tết mở việc.<br>
+Không khởi 2 việc quan trọng cùng ngày.
+</div>
+`
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

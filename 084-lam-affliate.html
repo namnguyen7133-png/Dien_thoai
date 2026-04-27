@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang='vi'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Công Cụ Phân Tích & Chọn Sản Phẩm - Shoppe Affiliate</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --primary: #4361ee; --secondary: #3a0ca3; --success: #4cc9f0; --danger: #f72585; --light: #f8f9fa; --dark: #212529; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); color: #333; line-height: 1.6; padding: 20px; min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow: hidden; }
+        header { background: linear-gradient(90deg, var(--primary), var(--secondary)); color: white; padding: 25px 30px; text-align: center; }
+        h1 { font-size: 2.2rem; margin-bottom: 10px; }
+        .subtitle { font-size: 1.1rem; opacity: 0.9; }
+        main { padding: 30px; }
+        .section { margin-bottom: 35px; }
+        h2 { color: var(--secondary); border-left: 5px solid var(--success); padding-left: 15px; margin-bottom: 20px; font-size: 1.8rem; }
+        .control-panel { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 25px; }
+        button { padding: 14px 28px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.3s ease; font-size: 1rem; }
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-primary:hover { background-color: var(--secondary); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(58, 12, 163, 0.2); }
+        .btn-success { background-color: #2ecc71; color: white; }
+        .btn-success:hover { background-color: #27ae60; transform: translateY(-3px); }
+        .btn-danger { background-color: var(--danger); color: white; }
+        .btn-danger:hover { background-color: #e01e5a; }
+        #productTable { width: 100%; border-collapse: collapse; margin-top: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-radius: 10px; overflow: hidden; }
+        #productTable thead { background-color: var(--primary); color: white; }
+        #productTable th, #productTable td { padding: 16px 15px; text-align: left; border-bottom: 1px solid #eee; }
+        #productTable tbody tr:nth-child(even) { background-color: #f9f9f9; }
+        #productTable tbody tr:hover { background-color: #e3f2fd; }
+        .input-row { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 12px; align-items: center; padding: 15px; background: #f1f8ff; border-radius: 10px; margin-bottom: 15px; }
+        .input-row input { padding: 14px; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; transition: border 0.3s; }
+        .input-row input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1); }
+        .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-top: 25px; }
+        .stat-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); border-top: 6px solid; }
+        .stat-card h3 { display: flex; align-items: center; gap: 10px; color: var(--dark); margin-bottom: 20px; font-size: 1.4rem; }
+        .stat-value { font-size: 2.2rem; font-weight: bold; margin: 10px 0; color: var(--secondary); }
+        .stat-detail { color: #666; margin-top: 10px; font-size: 0.95rem; }
+        .recommendation-box { background: linear-gradient(135deg, #e3f2fd, #f3e5f5); border-left: 6px solid var(--success); padding: 25px; border-radius: 15px; margin-top: 30px; }
+        .product-score { display: inline-block; background: var(--success); color: white; padding: 8px 20px; border-radius: 50px; font-weight: bold; margin-top: 10px; }
+        footer { text-align: center; padding: 20px; color: #777; font-size: 0.9rem; border-top: 1px solid #eee; margin-top: 30px; }
+        @media (max-width: 992px) { .input-row { grid-template-columns: 1fr; } #productTable { font-size: 0.9rem; } #productTable th, #productTable td { padding: 12px 8px; } }
+        @media (max-width: 768px) { .control-panel { flex-direction: column; } .stats-container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-chart-bar"></i> Công Cụ Phân Tích Sản Phẩm Shoppe Affiliate</h1>
+            <p class="subtitle">Nhập dữ liệu sản phẩm để tính toán chỉ số và nhận đề xuất mặt hàng tiếp thị tối ưu</p>
+        </header>
+
+        <main>
+            <section class="section">
+                <h2><i class="fas fa-edit"></i> Nhập Dữ Liệu Sản Phẩm</h2>
+                <p>Thêm thông tin từng sản phẩm bạn tìm được trên Shoppe Affiliate. Nhấn "Thêm Sản Phẩm" để mở rộng danh sách.</p>
+
+                <div class="control-panel">
+                    <button class="btn-primary" onclick="addProductRow()"><i class="fas fa-plus-circle"></i> Thêm Dòng Nhập</button>
+                    <button class="btn-success" onclick="calculateAll()"><i class="fas fa-calculator"></i> Tính Toán & Phân Tích</button>
+                    <button class="btn-danger" onclick="clearAll()"><i class="fas fa-trash-alt"></i> Xóa Tất Cả</button>
+                </div>
+
+                <div id="inputContainer">
+                    <!-- Các dòng nhập liệu sẽ được thêm vào đây bằng JavaScript -->
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table id="productTable">
+                        <thead>
+                            <tr>
+                                <th width="35%">Tên Sản Phẩm</th>
+                                <th width="20%">Giá (VNĐ)</th>
+                                <th width="15%">Hoa Hồng (%)</th>
+                                <th width="15%">Lượng Đã Bán</th>
+                                <th width="15%">Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Dữ liệu sản phẩm sẽ được thêm vào đây -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2><i class="fas fa-chart-pie"></i> Kết Quả Phân Tích & Đề Xuất</h2>
+                <p>Các chỉ số dưới đây được tính toán dựa trên dữ liệu bạn đã nhập. Sản phẩm được đề xuất dựa trên <strong>điểm số kết hợp giữa Hoa hồng và Lượng bán</strong>.</p>
+
+                <div class="stats-container">
+                    <!-- Thẻ thống kê về GIÁ -->
+                    <div class="stat-card" style="border-top-color: #4361ee;">
+                        <h3><i class="fas fa-tag"></i> Thống Kê Giá</h3>
+                        <div class="stat-value" id="avgPrice">0 đ</div>
+                        <div class="stat-detail">
+                            <strong>Cao nhất:</strong> <span id="maxPrice">0 đ</span><br>
+                            <strong>Thấp nhất:</strong> <span id="minPrice">0 đ</span><br>
+                            <em>Giá trung bình = (Cao nhất + Thấp nhất) / 2</em>
+                        </div>
+                    </div>
+
+                    <!-- Thẻ thống kê về HOA HỒNG -->
+                    <div class="stat-card" style="border-top-color: #f72585;">
+                        <h3><i class="fas fa-percentage"></i> Thống Kê Hoa Hồng</h3>
+                        <div class="stat-value" id="avgCommission">0%</div>
+                        <div class="stat-detail">
+                            <strong>Cao nhất:</strong> <span id="maxCommission">0%</span><br>
+                            <strong>Thấp nhất:</strong> <span id="minCommission">0%</span><br>
+                            <em>Tỷ lệ trung bình = (Cao nhất + Thấp nhất) / 2</em>
+                        </div>
+                    </div>
+
+                    <!-- Thẻ thống kê về LƯỢNG BÁN -->
+                    <div class="stat-card" style="border-top-color: #4cc9f0;">
+                        <h3><i class="fas fa-chart-line"></i> Thống Kê Lượng Bán</h3>
+                        <div class="stat-value" id="avgSales">0</div>
+                        <div class="stat-detail">
+                            <strong>Cao nhất:</strong> <span id="maxSales">0</span><br>
+                            <strong>Thấp nhất:</strong> <span id="minSales">0</span><br>
+                            <em>Lượng bán trung bình = (Cao nhất + Thấp nhất) / 2</em>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Khu vực ĐỀ XUẤT -->
+                <div class="recommendation-box">
+                    <h3><i class="fas fa-award"></i> Sản Phẩm Được Đề Xuất Tiếp Thị</h3>
+                    <p id="recommendationText">Vui lòng nhập dữ liệu và nhấn "Tính Toán & Phân Tích" để nhận đề xuất.</p>
+                    <div id="recommendedProduct" style="display: none;">
+                        <h4><span id="recName">Tên sản phẩm</span></h4>
+                        <p><strong>Giá:</strong> <span id="recPrice">0 đ</span> | <strong>Hoa hồng:</strong> <span id="recCommission">0%</span> | <strong>Đã bán:</strong> <span id="recSales">0</span></p>
+                        <p><strong>Điểm đề xuất:</strong> <span class="product-score" id="recScore">0.0</span></p>
+                        <p><em>Điểm số được tính: (Hoa hồng / Hoa hồng cao nhất) * 60% + (Lượng bán / Lượng bán cao nhất) * 40%</em></p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Công cụ phân tích và đề xuất sản phẩm Shoppe Affiliate | Phiên bản 2.0</p>
+        </footer>
+    </div>
+
+    <script>
+        // Mảng lưu trữ tất cả sản phẩm
+        let products = [];
+
+        // Hàm thêm một dòng nhập liệu mới
+        function addProductRow() {
+            const container = document.getElementById('inputContainer');
+            const rowId = 'input_' + Date.now();
+
+            const rowHTML = `
+                <div class="input-row" id="${rowId}">
+                    <input type="text" placeholder="Tên sản phẩm (Ví dụ: Áo thun nam vải cotton)" class="product-name">
+                    <input type="number" placeholder="Giá (VNĐ)" min="0" step="1000" class="product-price">
+                    <input type="number" placeholder="Hoa hồng (%)" min="0" max="100" step="0.1" class="product-commission">
+                    <input type="number" placeholder="Lượng đã bán" min="0" step="1" class="product-sales">
+                    <button type="button" onclick="removeInputRow('${rowId}')" class="btn-danger" style="padding: 10px;"><i class="fas fa-times"></i></button>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', rowHTML);
+        }
+
+        // Hàm xóa một dòng nhập
+        function removeInputRow(rowId) {
+            const row = document.getElementById(rowId);
+            if (row) row.remove();
+        }
+
+        // Hàm xóa tất cả dữ liệu
+        function clearAll() {
+            if (confirm('Bạn có chắc chắn muốn xóa tất cả dữ liệu không?')) {
+                document.getElementById('inputContainer').innerHTML = '';
+                document.getElementById('tableBody').innerHTML = '';
+                products = [];
+                resetStatistics();
+            }
+        }
+
+        // Hàm đặt lại tất cả thống kê về 0
+        function resetStatistics() {
+            const ids = ['avgPrice', 'maxPrice', 'minPrice', 'avgCommission', 'maxCommission', 'minCommission', 'avgSales', 'maxSales', 'minSales'];
+            ids.forEach(id => {
+                const element = document.getElementById(id);
+                if (id.includes('Price')) element.textContent = '0 đ';
+                else if (id.includes('Commission')) element.textContent = '0%';
+                else element.textContent = '0';
+            });
+            document.getElementById('recommendationText').textContent = 'Vui lòng nhập dữ liệu và nhấn "Tính Toán & Phân Tích" để nhận đề xuất.';
+            document.getElementById('recommendedProduct').style.display = 'none';
+        }
+
+        // HÀM CHÍNH: Thu thập dữ liệu và tính toán
+        function calculateAll() {
+            // 1. Thu thập dữ liệu từ các dòng nhập
+            collectDataFromInputs();
+
+            if (products.length === 0) {
+                alert('Vui lòng nhập ít nhất một sản phẩm trước khi tính toán.');
+                return;
+            }
+
+            // 2. Cập nhật bảng hiển thị
+            updateProductTable();
+
+            // 3. Tính toán các chỉ số thống kê
+            calculateStatistics();
+
+            // 4. Đề xuất sản phẩm tối ưu
+            recommendProduct();
+        }
+
+        // Thu thập dữ liệu từ các ô input
+        function collectDataFromInputs() {
+            products = [];
+            const inputRows = document.querySelectorAll('.input-row');
+
+            inputRows.forEach(row => {
+                const name = row.querySelector('.product-name').value.trim();
+                const price = parseInt(row.querySelector('.product-price').value) || 0;
+                const commission = parseFloat(row.querySelector('.product-commission').value) || 0;
+                const sales = parseInt(row.querySelector('.product-sales').value) || 0;
+
+                if (name) {
+                    products.push({
+                        name: name,
+                        price: price,
+                        commission: commission,
+                        sales: sales,
+                        score: 0 // Sẽ được tính sau
+                    });
+                }
+            });
+        }
+
+        // Cập nhật bảng hiển thị sản phẩm
+        function updateProductTable() {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+
+            products.forEach((product, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${product.name}</td>
+                    <td>${product.price.toLocaleString('vi-VN')} đ</td>
+                    <td>${product.commission.toFixed(1)}%</td>
+                    <td>${product.sales.toLocaleString('vi-VN')}</td>
+                    <td><button onclick="removeProductFromTable(${index})" class="btn-danger" style="padding: 8px 12px; font-size: 0.9rem;"><i class="fas fa-trash"></i></button></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Xóa sản phẩm khỏi bảng và mảng
+        function removeProductFromTable(index) {
+            if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+                products.splice(index, 1);
+                updateProductTable();
+                if (products.length > 0) {
+                    calculateStatistics();
+                    recommendProduct();
+                } else {
+                    resetStatistics();
+                }
+            }
+        }
+
+        // Tính toán các chỉ số thống kê: Max, Min, Avg
+        function calculateStatistics() {
+            if (products.length === 0) return;
+
+            // Tách các mảng giá trị
+            const prices = products.map(p => p.price).filter(p => p > 0);
+            const commissions = products.map(p => p.commission).filter(c => c > 0);
+            const sales = products.map(p => p.sales).filter(s => s > 0);
+
+            // Tính cho GIÁ
+            const maxPrice = prices.length > 0 ? Math.max(...prices) : 0;
+            const minPrice = prices.length > 0 ? Math.min(...prices) : 0;
+            const avgPrice = (maxPrice + minPrice) / 2;
+
+            // Tính cho HOA HỒNG
+            const maxCommission = commissions.length > 0 ? Math.max(...commissions) : 0;
+            const minCommission = commissions.length > 0 ? Math.min(...commissions) : 0;
+            const avgCommission = (maxCommission + minCommission) / 2;
+
+            // Tính cho LƯỢNG BÁN
+            const maxSales = sales.length > 0 ? Math.max(...sales) : 0;
+            const minSales = sales.length > 0 ? Math.min(...sales) : 0;
+            const avgSales = (maxSales + minSales) / 2;
+
+            // Cập nhật lên giao diện
+            document.getElementById('maxPrice').textContent = maxPrice.toLocaleString('vi-VN') + ' đ';
+            document.getElementById('minPrice').textContent = minPrice.toLocaleString('vi-VN') + ' đ';
+            document.getElementById('avgPrice').textContent = avgPrice.toLocaleString('vi-VN') + ' đ';
+
+            document.getElementById('maxCommission').textContent = maxCommission.toFixed(1) + '%';
+            document.getElementById('minCommission').textContent = minCommission.toFixed(1) + '%';
+            document.getElementById('avgCommission').textContent = avgCommission.toFixed(1) + '%';
+
+            document.getElementById('maxSales').textContent = maxSales.toLocaleString('vi-VN');
+            document.getElementById('minSales').textContent = minSales.toLocaleString('vi-VN');
+            document.getElementById('avgSales').textContent = Math.round(avgSales).toLocaleString('vi-VN');
+        }
+
+        // Đề xuất sản phẩm dựa trên điểm số kết hợp
+        function recommendProduct() {
+            if (products.length === 0) return;
+
+            // Tìm giá trị cao nhất để chuẩn hóa
+            const maxCommission = Math.max(...products.map(p => p.commission));
+            const maxSales = Math.max(...products.map(p => p.sales));
+
+            // Tính điểm cho từng sản phẩm (60% hoa hồng + 40% lượng bán)
+            products.forEach(product => {
+                const normCommission = maxCommission > 0 ? product.commission / maxCommission : 0;
+                const normSales = maxSales > 0 ? product.sales / maxSales : 0;
+                product.score = (normCommission * 0.6) + (normSales * 0.4);
+            });
+
+            // Tìm sản phẩm có điểm cao nhất
+            const recommended = products.reduce((prev, current) => 
+                (prev.score > current.score) ? prev : current
+            );
+
+            // Hiển thị kết quả đề xuất
+            document.getElementById('recommendationText').innerHTML = `<strong>Dựa trên phân tích ${products.length} sản phẩm, đây là lựa chọn tối ưu:</strong>`;
+            
+            document.getElementById('recName').textContent = recommended.name;
+            document.getElementById('recPrice').textContent = recommended.price.toLocaleString('vi-VN') + ' đ';
+            document.getElementById('recCommission').textContent = recommended.commission.toFixed(1) + '%';
+            document.getElementById('recSales').textContent = recommended.sales.toLocaleString('vi-VN');
+            document.getElementById('recScore').textContent = recommended.score.toFixed(2);
+            
+            document.getElementById('recommendedProduct').style.display = 'block';
+        }
+
+        // Tự động thêm một dòng nhập liệu mặc định khi trang được tải
+        window.onload = function() {
+            addProductRow();
+            addProductRow(); // Thêm 2 dòng mặc định
+        };
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

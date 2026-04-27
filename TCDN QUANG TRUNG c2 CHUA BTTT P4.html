@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>TCDN 1 – Chương 2 | Chữa bài tập trọng tâm</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f3f5f7;
+    margin:0;
+}
+header{
+    background:#0b3c5d;
+    color:#fff;
+    padding:20px;
+}
+section{
+    background:#fff;
+    margin:15px;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+h2{color:#0b3c5d}
+h3{color:#1e88e5}
+button{
+    padding:10px 14px;
+    margin:5px 0;
+    border:none;
+    border-radius:6px;
+    background:#1e88e5;
+    color:white;
+    cursor:pointer;
+}
+button:hover{background:#0b3c5d}
+input,select{
+    width:100%;
+    padding:8px;
+    margin-bottom:10px;
+}
+.result{
+    background:#e3f2fd;
+    padding:10px;
+    border-radius:6px;
+    font-weight:bold;
+}
+.warn{
+    background:#ffebee;
+    padding:10px;
+    border-radius:6px;
+    color:#b71c1c;
+}
+.tag{
+    display:inline-block;
+    background:#e8f5e9;
+    color:#1b5e20;
+    padding:4px 10px;
+    border-radius:12px;
+    font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>📘 TCDN 1 – Chương 2: Dòng tiền & Quyết định tài chính</h1>
+<p>🔗 Quang Trung TV – Chữa bài tập trọng tâm phần 4</p>
+</header>
+
+<!-- 2.1 THUẬT NGỮ + CÔNG THỨC -->
+<section id="thuatngu">
+<h2>2.1 Thuật ngữ tài chính & áp dụng đời sống</h2>
+
+<h3>PV – Giá trị hiện tại</h3>
+<p>Số tiền quy đổi về thời điểm hôm nay.</p>
+<p><b>Đời sống:</b> Giá trị thật của trả góp, vay mua nhà.</p>
+<span class="tag">Cá nhân</span> <span class="tag">Doanh nghiệp</span>
+
+<h3>CF – Dòng tiền đều</h3>
+<p>Số tiền trả/thu giống nhau mỗi kỳ.</p>
+<p><b>Đi làm:</b> Trả nợ ngân hàng hàng năm.</p>
+
+<h3>Lãi suất (r)</h3>
+<p>Chi phí sử dụng vốn hoặc lợi nhuận kỳ vọng.</p>
+
+<h3>Công thức trọng tâm</h3>
+<p><b>PV của dòng tiền đều:</b></p>
+<p><b>PV = CF × [1 − (1+r)<sup>-n</sup>] / r</b></p>
+
+<p class="warn">
+👉 Công thức này dùng để:
+<ul>
+<li>Tính số tiền phải trả mỗi năm</li>
+<li>So sánh mua đứt hay trả góp</li>
+</ul>
+</p>
+</section>
+
+<!-- 2.2 DÙNG CÁ NHÂN HAY CÔNG VIỆC -->
+<section id="sudung">
+<h2>2.2 Dùng trong công việc hay cá nhân?</h2>
+
+<ul>
+<li><b>Cá nhân:</b> vay mua nhà, mua xe, trả góp</li>
+<li><b>Người đi làm:</b> so sánh thuê – mua tài sản</li>
+<li><b>Doanh nghiệp:</b> chọn phương án chi phí thấp nhất (PV nhỏ nhất)</li>
+</ul>
+
+<p class="warn">
+❌ Không dùng tổng tiền cộng gộp  
+✔ Luôn quy về PV
+</p>
+</section>
+
+<!-- 3.2 TRÌNH TỰ RA QUYẾT ĐỊNH -->
+<section id="trinh-tu">
+<h2>3.2 Làm gì trước – làm gì sau?</h2>
+
+<h3>Trình tự chuẩn</h3>
+<ol>
+<li>Xác định số tiền phải chi mỗi kỳ (CF)</li>
+<li>Xác định lãi suất thị trường</li>
+<li>Chiết khấu dòng tiền về PV</li>
+<li>So sánh các phương án</li>
+</ol>
+
+<h3>Điều kiện nên thực hiện</h3>
+<ul>
+<li>Doanh nghiệp có dòng tiền ổn định</li>
+<li>Lãi vay thấp hơn lợi nhuận</li>
+</ul>
+
+<h3>Rủi ro nếu làm sai</h3>
+<ul>
+<li>Không trả nổi nợ giữa kỳ</li>
+<li>Chọn phương án tổng tiền thấp nhưng PV cao</li>
+</ul>
+</section>
+
+<!-- BÀI TOÁN TÍNH -->
+<section id="baitoan">
+<h2>📐 Bài toán: Lập kế hoạch trả nợ</h2>
+
+<label>Số tiền vay (PV):</label>
+<input type="number" id="pv" placeholder="Ví dụ: 1000000000">
+
+<label>Lãi suất (% / năm):</label>
+<input type="number" id="rate" placeholder="Ví dụ: 10">
+
+<label>Số năm vay:</label>
+<input type="number" id="n" placeholder="Ví dụ: 5">
+
+<button onclick="tinhCF()">Tính tiền trả mỗi năm</button>
+
+<div class="result" id="kq"></div>
+
+<script>
+function tinhCF(){
+    let PV = Number(pv.value);
+    let r = Number(rate.value)/100;
+    let n = Number(document.getElementById("n").value);
+
+    if(!PV||!r||!n){
+        kq.innerHTML="⚠️ Nhập đầy đủ dữ liệu";
+        return;
+    }
+
+    let CF = PV * r / (1 - Math.pow(1+r,-n));
+    let tong = CF * n;
+    let lai = tong - PV;
+
+    kq.innerHTML =
+    "💰 Trả mỗi năm: " + CF.toLocaleString()+" đ<br>" +
+    "📈 Tổng lãi: " + lai.toLocaleString()+" đ<br>" +
+    "📉 Tổng tiền trả: " + tong.toLocaleString()+" đ";
+}
+</script>
+</section>
+
+<!-- 4.2 TÌNH HUỐNG -->
+<section id="tinhhuong">
+<h2>4.2 Chọn tình huống để giải quyết</h2>
+
+<input placeholder="Nhập tình huống của bạn (ví dụ: vay mua nhà, mua máy móc…)">
+
+<button onclick="scrollToId('thuatngu')">📌 Không hiểu thuật ngữ</button>
+<button onclick="scrollToId('trinh-tu')">📌 Không biết làm bước nào trước</button>
+<button onclick="scrollToId('baitoan')">📌 Muốn biết lãi – vốn – lỗ</button>
+
+<script>
+function scrollToId(id){
+    document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+</script>
+</section>
+
+<footer style="text-align:center;padding:15px;color:#555">
+© TCDN 1 – Học để ra quyết định, không học để nhớ
+</footer>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>100 Tình Huống & Bài Toán Cuộc Sống</title>
+<style>
+  /* Tổng thể */
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #e0f7fa, #ffffff);
+    margin: 0;
+    padding: 20px;
+  }
+  h1 {
+    text-align: center;
+    color: #00796b;
+    font-size: 2.5em;
+    margin-bottom: 40px;
+  }
+
+  /* Accordion */
+  .accordion {
+    background-color: #ffffff;
+    color: #004d40;
+    cursor: pointer;
+    padding: 20px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    font-size: 1.2em;
+  }
+  .accordion:hover {
+    background-color: #b2dfdb;
+  }
+  .accordion.active {
+    background-color: #80cbc4;
+    color: #ffffff;
+  }
+
+  /* Nội dung mở rộng */
+  .panel {
+    padding: 0 20px;
+    display: none;
+    background-color: #e0f2f1;
+    overflow: hidden;
+    border-left: 5px solid #00796b;
+    border-radius: 0 0 12px 12px;
+    font-size: 1.1em;
+    line-height: 1.6em;
+  }
+  .panel p {
+    padding: 15px 0;
+    margin: 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    h1 { font-size: 2em; }
+    .accordion { font-size: 1em; padding: 15px; }
+    .panel { font-size: 0.95em; padding: 0 15px; }
+  }
+</style>
+</head>
+<body>
+
+<h1>100 Tình Huống & Bài Toán Cuộc Sống</h1>
+
+<div id="accordion-container"></div>
+
+<script>
+const examples = [
+  // 1-10: Xây dựng & Nhà ở
+  "Tính toán chi phí xây dựng nhà 100m² tại thành phố lớn.",
+  "Dự toán chi phí điện nước khi xây nhà mới.",
+  "Thiết kế nội thất theo độ tuổi và nhu cầu của gia đình.",
+  "Lập kế hoạch mua sắm đồ nội thất theo ngân sách.",
+  "Tính chi phí bảo trì, sửa chữa định kỳ của ngôi nhà.",
+  "Lựa chọn vật liệu xây dựng vừa bền vừa tiết kiệm.",
+  "Tối ưu hóa không gian sống cho căn hộ 50m².",
+  "Lập kế hoạch dự phòng chi phí phát sinh khi xây nhà.",
+  "Tính toán chi phí lắp đặt hệ thống năng lượng mặt trời.",
+  "So sánh giá thuê thợ xây và tự làm để tối ưu chi phí.",
+
+  // 11-20: Giao thông & Phương tiện
+  "Tính chi phí mua xe hơi phù hợp ngân sách gia đình.",
+  "Lập kế hoạch chi tiêu cho xe máy và xe đạp.",
+  "Tối ưu tuyến đường đi làm hàng ngày để tiết kiệm xăng.",
+  "Lập kế hoạch bảo dưỡng xe theo năm.",
+  "So sánh chi phí đi xe công cộng và đi xe cá nhân.",
+  "Dự toán chi phí xăng dầu khi đi du lịch dài ngày.",
+  "Lựa chọn xe phù hợp với nhu cầu gia đình 4 người.",
+  "Tính toán bảo hiểm xe và các phụ phí liên quan.",
+  "Phân tích chi phí xe điện so với xe xăng.",
+  "Lập bảng chi phí khấu hao xe theo năm.",
+
+  // 21-30: Sự kiện & Tiệc tùng
+  "Lập kế hoạch tổ chức đám cưới ngân sách vừa phải.",
+  "Dự toán chi phí đám ma của người thân.",
+  "Tính chi phí xây mộ cho các cụ theo phong tục.",
+  "Lập danh sách khách mời và ước lượng chi phí tiệc.",
+  "Tối ưu hóa chi phí thuê địa điểm tổ chức sự kiện.",
+  "Lập kế hoạch mua sắm thực phẩm cho tiệc 100 người.",
+  "Tính chi phí trang trí theo chủ đề sự kiện.",
+  "Lên lịch trình tổ chức sự kiện tiết kiệm thời gian.",
+  "So sánh chi phí các dịch vụ tổ chức tiệc cưới.",
+  "Tính toán chi phí in ấn thiệp mời và quà lưu niệm.",
+
+  // 31-40: Tài chính cá nhân
+  "Lập kế hoạch chi tiêu cá nhân hàng tháng.",
+  "Tính toán tiết kiệm mua nhà sau 5 năm.",
+  "Lập kế hoạch trả nợ tín dụng hiệu quả.",
+  "Tối ưu hóa chi tiêu gia đình theo từng nhóm.",
+  "Phân tích lợi nhuận và chi phí đầu tư nhỏ.",
+  "Tính toán quỹ hưu trí theo tuổi nghỉ hưu mong muốn.",
+  "Đánh giá rủi ro đầu tư chứng khoán.",
+  "Lập kế hoạch mua sắm lớn theo ưu tiên.",
+  "Dự toán chi phí du lịch dài ngày.",
+  "Tính toán quỹ khẩn cấp cho các tình huống bất ngờ.",
+
+  // 41-50: Tài chính doanh nghiệp
+  "Lập dự toán ngân sách doanh nghiệp năm đầu.",
+  "Tối ưu hóa quỹ tiền mặt dự trữ khẩn cấp công ty.",
+  "Phân tích dòng tiền hàng tháng của doanh nghiệp.",
+  "Tính lợi nhuận biên sản phẩm theo từng tháng.",
+  "Dự đoán chi phí nhân sự và vận hành công ty.",
+  "Tính toán chi phí marketing và quảng cáo hiệu quả.",
+  "Lập báo cáo tài chính định kỳ cho sếp và cổ đông.",
+  "Tính toán quỹ dự phòng rủi ro cho công ty.",
+  "So sánh chi phí thuê văn phòng và tự xây dựng.",
+  "Lập kế hoạch thanh toán nhà cung cấp và công nợ khách hàng.",
+
+  // 51-70: Thuật toán & Công nghệ
+  "Áp dụng thuật toán cái ba lô để tối ưu ngân sách mua sắm.",
+  "Sử dụng thuật toán quay lui để sắp xếp lịch trình hợp lý.",
+  "Tìm đường đi ngắn nhất giữa nhà và công ty.",
+  "Tối ưu hóa lịch trình giao hàng vận tải hàng ngày.",
+  "Sử dụng thuật toán Dijkstra cho mạng giao thông.",
+  "Áp dụng thuật toán Floyd-Warshall cho lộ trình đi lại.",
+  "Tính toán tối ưu hóa tồn kho bằng thuật toán lập trình tuyến tính.",
+  "Sử dụng thuật toán phân loại để chọn nhà thầu xây dựng.",
+  "Tìm lộ trình tiết kiệm xăng nhất bằng thuật toán đồ thị.",
+  "Sử dụng thuật toán Monte Carlo để dự đoán chi phí dự án.",
+  "Áp dụng thuật toán tìm kiếm nhánh cận để lựa chọn đầu tư.",
+  "Sử dụng thuật toán greedy cho việc sắp xếp lịch trình công việc.",
+  "Tối ưu hóa chi phí logistic bằng thuật toán di truyền.",
+  "Áp dụng thuật toán học máy để dự đoán nhu cầu thị trường.",
+  "Tối ưu hóa lịch học và dự án sinh viên bằng thuật toán lập lịch.",
+  "Sử dụng thuật toán dynamic programming cho bài toán chi phí tối ưu.",
+  "Lập mô hình toán học cho dự toán chi phí xây dựng.",
+  "Sử dụng thuật toán heuristic để lên kế hoạch đám cưới.",
+  "Áp dụng thuật toán cây quyết định để chọn thiết kế nội thất.",
+  "Tối ưu hóa quỹ chi tiêu cá nhân bằng thuật toán tối ưu hóa đa mục tiêu.",
+
+  // 71-100: Đại học & Nghiên cứu
+  "Tính toán chi phí nghiên cứu khoa học áp dụng thuật toán thống kê.",
+  "Phân tích dữ liệu lớn trong dự án kinh doanh bằng Python.",
+  "Sử dụng thuật toán mạng nơ-ron để dự đoán chi phí xây dựng.",
+  "Lập mô hình dự đoán khách hàng tiềm năng bằng machine learning.",
+  "Áp dụng thuật toán clustering để phân loại khách hàng.",
+  "Dự đoán nhu cầu thực phẩm cho nhà hàng bằng thuật toán thời gian thực.",
+  "Tối ưu hóa việc sử dụng năng lượng trong tòa nhà thông minh.",
+  "Sử dụng mô phỏng Monte Carlo để dự báo chi phí vận tải.",
+  "Áp dụng lý thuyết đồ thị cho quản lý mạng lưới giao thông.",
+  "Lập mô hình toán học dự đoán lượng điện tiêu thụ.",
+  "Tối ưu hóa chuỗi cung ứng bằng thuật toán heuristic.",
+  "Sử dụng thuật toán fuzzy logic để ra quyết định khó khăn.",
+  "Dự báo thị trường bất động sản bằng phân tích thống kê.",
+  "Áp dụng lý thuyết xác suất trong quản lý rủi ro dự án.",
+  "Tối ưu hóa lịch trình bệnh viện bằng thuật toán lập lịch.",
+  "Sử dụng thuật toán phân loại để chọn nhà cung cấp tốt nhất.",
+  "Dự đoán chi phí bảo trì máy móc công nghiệp.",
+  "Tối ưu hóa chi phí nhân lực trong dự án công ty.",
+  "Lập mô hình toán học chi phí sản xuất và lợi nhuận.",
+  "Sử dụng thuật toán tìm kiếm cục bộ để cải thiện quy trình.",
+  "Áp dụng lý thuyết trò chơi trong thương lượng hợp đồng.",
+  "Dự đoán nhu cầu nước và điện cho đô thị thông minh.",
+  "Tối ưu hóa chi phí marketing bằng phân tích dữ liệu.",
+  "Sử dụng thuật toán gradient descent để tối ưu hóa giá thành.",
+  "Lập mô hình rủi ro tài chính cho ngân hàng.",
+  "Áp dụng thuật toán phân cụm để quản lý kho hàng.",
+  "Tối ưu hóa lịch trình lớp học đại học bằng thuật toán lập lịch.",
+  "Sử dụng mô phỏng để dự đoán chi phí xây dựng đường cao tốc.",
+  "Áp dụng thuật toán di truyền trong thiết kế sản phẩm mới."
+];
+
+// Tạo các mục accordion
+const container = document.getElementById('accordion-container');
+examples.forEach((item, index) => {
+  const button = document.createElement('button');
+  button.className = 'accordion';
+  button.textContent = `Ví dụ #${index + 1}`;
+
+  const panel = document.createElement('div');
+  panel.className = 'panel';
+  panel.innerHTML = `<p>${item}</p>`;
+
+  container.appendChild(button);
+  container.appendChild(panel);
+});
+
+// Accordion mở/đóng
+const accordions = document.getElementsByClassName('accordion');
+for (let i = 0; i < accordions.length; i++) {
+  accordions[i].addEventListener('click', function() {
+    this.classList.toggle('active');
+    const panel = this.nextElementSibling;
+    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+  });
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

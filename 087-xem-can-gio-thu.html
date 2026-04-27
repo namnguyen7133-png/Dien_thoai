@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Toán 14 Ngày Từ Mốc 1/1/1900</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f8ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            overflow: hidden;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .control-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            align-items: flex-end;
+        }
+        
+        .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            min-width: 150px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .info-box {
+            background-color: #e8f4fc;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .info-box h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            min-width: 1200px;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            text-align: center;
+            padding: 15px 10px;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        
+        td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f0f7ff;
+        }
+        
+        .day-number {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        
+        .weekday {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .sunday {
+            color: #e74c3c;
+        }
+        
+        .saturday {
+            color: #3498db;
+        }
+        
+        .can-chi {
+            font-weight: bold;
+            color: #27ae60;
+        }
+        
+        .cycle-count {
+            font-weight: bold;
+            color: #9b59b6;
+        }
+        
+        .hour-cell {
+            font-size: 0.9em;
+            padding: 8px 5px;
+        }
+        
+        .hour-header {
+            font-size: 0.85em;
+            padding: 10px 5px;
+        }
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .control-section {
+                flex-direction: column;
+            }
+            
+            .input-group {
+                width: 100%;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            th, td {
+                padding: 8px 5px;
+                font-size: 0.9em;
+            }
+            
+            .hour-cell {
+                font-size: 0.8em;
+                padding: 5px 2px;
+            }
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .reference-info {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed #ddd;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tính Toán 14 Ngày Từ Mốc 1/1/1900</h1>
+        <p class="subtitle">Hiển thị thông tin 14 ngày liên tiếp với chu kỳ tính từ ngày 1/1/1900 (Chủ Nhật)</p>
+        
+        <div class="info-box">
+            <h3>Thông tin mốc chuẩn</h3>
+            <p><strong>Ngày mốc:</strong> 1/1/1900 (Chủ Nhật) - Ngày Giáp Tuất, tháng Đinh Sửu, năm Kỷ Hợi</p>
+            <p><strong>Tính toán:</strong> 14 ngày liên tiếp từ ngày bắt đầu, bao gồm thứ, số ngày từ mốc 1/1/1900, can chi ngày, và can giờ từ 1-24h.</p>
+        </div>
+        
+        <div class="control-section">
+            <div class="input-group">
+                <label for="startDate">Ngày bắt đầu:</label>
+                <input type="date" id="startDate">
+            </div>
+            
+            <button id="calculateBtn">Tính Toán 14 Ngày</button>
+        </div>
+        
+        <div class="loading" id="loadingIndicator">Đang tính toán...</div>
+        
+        <div class="table-container">
+            <table id="resultsTable">
+                <thead>
+                    <tr>
+                        <th rowspan="2">STT</th>
+                        <th rowspan="2">Ngày</th>
+                        <th rowspan="2">Thứ</th>
+                        <th rowspan="2">Số ngày từ 1/1/1900</th>
+                        <th rowspan="2">Can chi ngày</th>
+                        <th colspan="24">Can giờ (1-24 giờ)</th>
+                    </tr>
+                    <tr id="hourHeaders">
+                        <!-- Header giờ sẽ được tạo bằng JavaScript -->
+                    </tr>
+                </thead>
+                <tbody id="resultsBody">
+                    <!-- Dữ liệu sẽ được thêm vào đây -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #fffacd;"></div>
+                <span>Ngày được chọn làm mốc tính toán</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #ffebee;"></div>
+                <span>Chủ Nhật (màu đỏ)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #e8f4fc;"></div>
+                <span>Thứ Bảy (màu xanh)</span>
+            </div>
+        </div>
+        
+        <div class="reference-info">
+            <p><strong>Ghi chú:</strong> Số ngày được tính từ ngày 1/1/1900 (ngày thứ 0). Can giờ được tính dựa trên can ngày và chu kỳ 60 hoa giáp.</p>
+            <p>Mỗi ngày được chia thành 12 canh giờ (mỗi canh 2 giờ), bắt đầu từ giờ Tý (23h-1h) đến giờ Hợi (21h-23h).</p>
+        </div>
+    </div>
+
+    <script>
+        // Mốc chuẩn: 1/1/1900 là Chủ Nhật, ngày Giáp Tuất
+        const REFERENCE_DATE = new Date(1900, 0, 1); // 1/1/1900
+        const REFERENCE_WEEKDAY = 0; // Chủ Nhật (0 = Chủ Nhật, 1 = Thứ Hai, ..., 6 = Thứ Bảy)
+        
+        // Bảng 60 hoa giáp
+        const hoaGiap = [
+            "Giáp Tý", "Ất Sửu", "Bính Dần", "Đinh Mão", "Mậu Thìn", "Kỷ Tỵ", 
+            "Canh Ngọ", "Tân Mùi", "Nhâm Thân", "Quý Dậu", "Giáp Tuất", "Ất Hợi",
+            "Bính Tý", "Đinh Sửu", "Mậu Dần", "Kỷ Mão", "Canh Thìn", "Tân Tỵ",
+            "Nhâm Ngọ", "Quý Mùi", "Giáp Thân", "Ất Dậu", "Bính Tuất", "Đinh Hợi",
+            "Mậu Tý", "Kỷ Sửu", "Canh Dần", "Tân Mão", "Nhâm Thìn", "Quý Tỵ",
+            "Giáp Ngọ", "Ất Mùi", "Bính Thân", "Đinh Dậu", "Mậu Tuất", "Kỷ Hợi",
+            "Canh Tý", "Tân Sửu", "Nhâm Dần", "Quý Mão", "Giáp Thìn", "Ất Tỵ",
+            "Bính Ngọ", "Đinh Mùi", "Mậu Thân", "Kỷ Dậu", "Canh Tuất", "Tân Hợi",
+            "Nhâm Tý", "Quý Sửu", "Giáp Dần", "Ất Mão", "Bính Thìn", "Đinh Tỵ",
+            "Mậu Ngọ", "Kỷ Mùi", "Canh Thân", "Tân Dậu", "Nhâm Tuất", "Quý Hợi"
+        ];
+        
+        // Chỉ số của ngày Giáp Tuất trong bảng hoa giáp (ngày 1/1/1900)
+        const REFERENCE_HOA_GIAP_INDEX = 10; // Giáp Tuất là phần tử thứ 11 (index 10)
+        
+        // Bảng thiên can
+        const thienCan = ["Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ", "Canh", "Tân", "Nhâm", "Quý"];
+        
+        // Bảng địa chi
+        const diaChi = ["Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi", "Thân", "Dậu", "Tuất", "Hợi"];
+        
+        // Bảng giờ và canh giờ tương ứng (truyền thống: 12 canh giờ, mỗi canh 2 giờ)
+        const gioTruyenThong = [
+            { gioBatDau: 23, gioKetThuc: 1, ten: "Tý", chiIndex: 0 },
+            { gioBatDau: 1, gioKetThuc: 3, ten: "Sửu", chiIndex: 1 },
+            { gioBatDau: 3, gioKetThuc: 5, ten: "Dần", chiIndex: 2 },
+            { gioBatDau: 5, gioKetThuc: 7, ten: "Mão", chiIndex: 3 },
+            { gioBatDau: 7, gioKetThuc: 9, ten: "Thìn", chiIndex: 4 },
+            { gioBatDau: 9, gioKetThuc: 11, ten: "Tỵ", chiIndex: 5 },
+            { gioBatDau: 11, gioKetThuc: 13, ten: "Ngọ", chiIndex: 6 },
+            { gioBatDau: 13, gioKetThuc: 15, ten: "Mùi", chiIndex: 7 },
+            { gioBatDau: 15, gioKetThuc: 17, ten: "Thân", chiIndex: 8 },
+            { gioBatDau: 17, gioKetThuc: 19, ten: "Dậu", chiIndex: 9 },
+            { gioBatDau: 19, gioKetThuc: 21, ten: "Tuất", chiIndex: 10 },
+            { gioBatDau: 21, gioKetThuc: 23, ten: "Hợi", chiIndex: 11 }
+        ];
+        
+        // Tên thứ trong tuần
+        const thuTrongTuan = [
+            "Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"
+        ];
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Thiết lập ngày hôm nay làm giá trị mặc định
+            const today = new Date();
+            const todayFormatted = formatDateForInput(today);
+            document.getElementById('startDate').value = todayFormatted;
+            
+            // Tạo header cho các giờ (1-24)
+            createHourHeaders();
+            
+            // Tính toán ngay khi tải trang
+            calculate14Days();
+            
+            // Gán sự kiện cho nút tính toán
+            document.getElementById('calculateBtn').addEventListener('click', calculate14Days);
+        });
+        
+        function formatDateForInput(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        
+        function formatDateDisplay(date) {
+            const day = date.getDate();
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+        
+        function createHourHeaders() {
+            const hourHeaders = document.getElementById('hourHeaders');
+            hourHeaders.innerHTML = '';
+            
+            // Tạo header cho 24 giờ
+            for (let i = 1; i <= 24; i++) {
+                const th = document.createElement('th');
+                th.className = 'hour-header';
+                th.textContent = i;
+                hourHeaders.appendChild(th);
+            }
+        }
+        
+        function calculate14Days() {
+            // Hiển thị loading
+            document.getElementById('loadingIndicator').classList.add('active');
+            
+            // Lấy ngày bắt đầu từ input
+            const startDateInput = document.getElementById('startDate').value;
+            const startDate = new Date(startDateInput);
+            
+            // Xác nhận ngày hợp lệ
+            if (isNaN(startDate.getTime())) {
+                alert('Vui lòng chọn ngày hợp lệ');
+                document.getElementById('loadingIndicator').classList.remove('active');
+                return;
+            }
+            
+            // Tính toán và hiển thị sau một khoảng thời gian nhỏ để tránh block UI
+            setTimeout(() => {
+                const resultsBody = document.getElementById('resultsBody');
+                resultsBody.innerHTML = '';
+                
+                // Tạo 14 ngày liên tiếp
+                for (let i = 0; i < 14; i++) {
+                    const currentDate = new Date(startDate);
+                    currentDate.setDate(startDate.getDate() + i);
+                    
+                    // Tính toán các thông tin cho ngày này
+                    const dayInfo = calculateDayInfo(currentDate, i === 0);
+                    
+                    // Tạo hàng trong bảng
+                    const row = createTableRow(dayInfo, i + 1);
+                    resultsBody.appendChild(row);
+                }
+                
+                // Ẩn loading
+                document.getElementById('loadingIndicator').classList.remove('active');
+            }, 100);
+        }
+        
+        function calculateDayInfo(date, isStartDate) {
+            // Tính số ngày từ 1/1/1900 đến ngày này
+            const diffTime = date - REFERENCE_DATE;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            // Tính thứ trong tuần
+            // Ngày 1/1/1900 là Chủ Nhật (0)
+            const weekdayIndex = (REFERENCE_WEEKDAY + diffDays) % 7;
+            const weekday = thuTrongTuan[weekdayIndex];
+            
+            // Tính can chi ngày
+            // Ngày 1/1/1900 là Giáp Tuất (index 10 trong hoa giáp)
+            const hoaGiapIndex = (REFERENCE_HOA_GIAP_INDEX + diffDays) % 60;
+            const adjustedIndex = hoaGiapIndex < 0 ? hoaGiapIndex + 60 : hoaGiapIndex;
+            const canChiDay = hoaGiap[adjustedIndex];
+            
+            // Tính can chi cho từng giờ (1-24)
+            const hourCanChi = calculateHourCanChi(canChiDay);
+            
+            return {
+                date: date,
+                dateFormatted: formatDateDisplay(date),
+                weekday: weekday,
+                weekdayIndex: weekdayIndex,
+                daysFromReference: diffDays,
+                cycles: Math.floor(diffDays / 60),
+                remainder: diffDays % 60,
+                canChiDay: canChiDay,
+                hourCanChi: hourCanChi,
+                isStartDate: isStartDate
+            };
+        }
+        
+        function calculateHourCanChi(canChiDay) {
+            // Lấy can của ngày từ can chi ngày
+            const dayCan = canChiDay.split(' ')[0];
+            const dayCanIndex = thienCan.indexOf(dayCan);
+            
+            // Tạo mảng chứa can chi của 24 giờ
+            const hourCanChi = [];
+            
+            for (let hour = 1; hour <= 24; hour++) {
+                // Xác định canh giờ truyền thống cho giờ này
+                // Chuyển đổi giờ 24h sang giờ truyền thống (1-12)
+                let traditionalHour = hour;
+                
+                // Xác định địa chi của giờ
+                let chiIndex;
+                if (hour >= 23 || hour < 1) {
+                    chiIndex = 0; // Tý
+                } else if (hour >= 1 && hour < 3) {
+                    chiIndex = 1; // Sửu
+                } else if (hour >= 3 && hour < 5) {
+                    chiIndex = 2; // Dần
+                } else if (hour >= 5 && hour < 7) {
+                    chiIndex = 3; // Mão
+                } else if (hour >= 7 && hour < 9) {
+                    chiIndex = 4; // Thìn
+                } else if (hour >= 9 && hour < 11) {
+                    chiIndex = 5; // Tỵ
+                } else if (hour >= 11 && hour < 13) {
+                    chiIndex = 6; // Ngọ
+                } else if (hour >= 13 && hour < 15) {
+                    chiIndex = 7; // Mùi
+                } else if (hour >= 15 && hour < 17) {
+                    chiIndex = 8; // Thân
+                } else if (hour >= 17 && hour < 19) {
+                    chiIndex = 9; // Dậu
+                } else if (hour >= 19 && hour < 21) {
+                    chiIndex = 10; // Tuất
+                } else {
+                    chiIndex = 11; // Hợi
+                }
+                
+                // Tính can của giờ: Can giờ = (Can ngày * 2 + Chi giờ) % 10
+                const hourCanIndex = (dayCanIndex * 2 + chiIndex) % 10;
+                const hourCan = thienCan[hourCanIndex];
+                const hourChi = diaChi[chiIndex];
+                
+                hourCanChi.push(`${hourCan} ${hourChi}`);
+            }
+            
+            return hourCanChi;
+        }
+        
+        function createTableRow(dayInfo, index) {
+            const row = document.createElement('tr');
+            
+            // Thêm class đặc biệt nếu là ngày bắt đầu
+            if (dayInfo.isStartDate) {
+                row.classList.add('highlight');
+            }
+            
+            // Thêm class cho Chủ Nhật và Thứ Bảy
+            if (dayInfo.weekdayIndex === 0) { // Chủ Nhật
+                row.classList.add('sunday');
+            } else if (dayInfo.weekdayIndex === 6) { // Thứ Bảy
+                row.classList.add('saturday');
+            }
+            
+            // STT
+            const cellIndex = document.createElement('td');
+            cellIndex.className = 'day-number';
+            cellIndex.textContent = index;
+            row.appendChild(cellIndex);
+            
+            // Ngày
+            const cellDate = document.createElement('td');
+            cellDate.textContent = dayInfo.dateFormatted;
+            row.appendChild(cellDate);
+            
+            // Thứ
+            const cellWeekday = document.createElement('td');
+            cellWeekday.className = 'weekday';
+            cellWeekday.textContent = dayInfo.weekday;
+            row.appendChild(cellWeekday);
+            
+            // Số ngày từ 1/1/1900
+            const cellDaysFromRef = document.createElement('td');
+            cellDaysFromRef.innerHTML = `
+                <div>${dayInfo.daysFromReference}</div>
+                <div style="font-size:0.8em; color:#7f8c8d;">
+                    ${dayInfo.cycles} chu kỳ + ${dayInfo.remainder} ngày
+                </div>
+            `;
+            row.appendChild(cellDaysFromRef);
+            
+            // Can chi ngày
+            const cellCanChiDay = document.createElement('td');
+            cellCanChiDay.className = 'can-chi';
+            cellCanChiDay.textContent = dayInfo.canChiDay;
+            row.appendChild(cellCanChiDay);
+            
+            // Can chi giờ (1-24)
+            for (let i = 0; i < 24; i++) {
+                const cellHour = document.createElement('td');
+                cellHour.className = 'hour-cell';
+                cellHour.textContent = dayInfo.hourCanChi[i];
+                row.appendChild(cellHour);
+            }
+            
+            return row;
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

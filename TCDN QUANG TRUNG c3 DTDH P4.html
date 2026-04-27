@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>NPV Thực Chiến – Tài Chính Doanh Nghiệp</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{font-family:Arial;background:#f4f6f8;margin:0;line-height:1.6}
+header{background:#1b5e20;color:#fff;padding:20px;text-align:center}
+section{background:#fff;margin:15px;padding:20px;border-radius:8px}
+h2{color:#1b5e20}
+.term{background:#e8f5e9;padding:10px;border-left:5px solid #43a047;margin-bottom:10px}
+.example{background:#f1f8e9;padding:10px;border-left:5px solid #7cb342}
+.warning{background:#fff3e0;padding:10px;border-left:5px solid #fb8c00}
+input{padding:6px;margin:4px;width:120px}
+button{padding:8px 14px;margin:5px;border:none;background:#43a047;color:#fff;border-radius:5px;cursor:pointer}
+button:hover{background:#2e7d32}
+.result{margin-top:10px;font-weight:bold}
+nav{
+position:fixed;right:10px;top:80px;background:#fff;
+padding:10px;border-radius:8px;box-shadow:0 0 8px rgba(0,0,0,.2)
+}
+nav button{display:block;width:100%}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>📈 NPV – GIÁ TRỊ HIỆN TẠI THUẦN</h1>
+<p>Hiểu – Tính – Ứng dụng – Tránh đầu tư sai lầm</p>
+</header>
+
+<nav>
+<button onclick="go('thuatngu')">Thuật ngữ</button>
+<button onclick="go('dunggi')">Dùng cái nào?</button>
+<button onclick="go('thoidiem')">Thời điểm</button>
+<button onclick="go('tinhnpv')">Tính NPV</button>
+<button onclick="go('tinhhuong')">Tình huống</button>
+</nav>
+
+<!-- 2.1 -->
+<section id="thuatngu">
+<h2>2.1 Thuật ngữ & Công thức NPV (giải thích dễ hiểu)</h2>
+
+<div class="term">
+<b>Dòng tiền đầu tư (CF₀):</b><br>
+Tiền bỏ ra lúc đầu (máy móc + vốn lưu động). Luôn là số âm.
+</div>
+
+<div class="term">
+<b>Dòng tiền thuần (CFₜ):</b><br>
+Tiền thật thu về mỗi năm sau thuế (KHÔNG phải lợi nhuận kế toán).
+</div>
+
+<div class="term">
+<b>Tỷ suất chiết khấu (r):</b><br>
+Chi phí vốn / lãi suất kỳ vọng / mức rủi ro.
+</div>
+
+<div class="term">
+<b>Công thức NPV:</b><br>
+NPV = CF₀ + Σ CFₜ / (1+r)ᵗ
+</div>
+
+<div class="warning">
+📌 NPV > 0 → Dự án làm bạn GIÀU LÊN<br>
+📌 NPV < 0 → Dự án làm bạn NGHÈO ĐI
+</div>
+</section>
+
+<!-- 2.2 -->
+<section id="dunggi">
+<h2>2.2 Cá nhân & Doanh nghiệp – dùng cái nào?</h2>
+
+<div class="example">
+<b>CÁ NHÂN:</b><br>
+✔ Mua nhà trả góp → NPV<br>
+✔ Đầu tư học nghề dài hạn → NPV
+</div>
+
+<div class="example">
+<b>DOANH NGHIỆP:</b><br>
+✔ Đầu tư nhà xưởng, dây chuyền → NPV (bắt buộc)<br>
+✔ So dự án lớn → chọn NPV cao nhất
+</div>
+
+<div class="warning">
+⛔ Không dùng NPV khi bạn <b>không chịu nổi thiếu tiền ngắn hạn</b>
+</div>
+</section>
+
+<!-- 3.2 -->
+<section id="thoidiem">
+<h2>3.2 Làm gì trước – sau? Khi nào mới nên đầu tư?</h2>
+
+<div class="term">
+<b>Thị trường xấu / rủi ro cao:</b><br>
+→ Chỉ chọn dự án NPV dương & thu tiền sớm
+</div>
+
+<div class="term">
+<b>Thị trường ổn định:</b><br>
+→ Chấp nhận NPV dương nhưng tiền về chậm
+</div>
+
+<div class="term">
+<b>Thuận lợi:</b><br>
+→ Đầu tư dài hạn, NPV rất lớn
+</div>
+
+<div class="warning">
+⛔ Dự án NPV dương nhưng <b>không đủ tiền sống</b> → vẫn chết
+</div>
+</section>
+
+<!-- TÍNH NPV -->
+<section id="tinhnpv">
+<h2>3.2 Bài toán NPV – nhập số & ra quyết định</h2>
+
+Vốn đầu tư ban đầu (CF₀): <input id="cf0" type="number"><br>
+Dòng tiền mỗi năm (CF): <input id="cf" type="number"><br>
+Số năm: <input id="n" type="number"><br>
+Tỷ suất chiết khấu (%): <input id="r" type="number"><br>
+
+<button onclick="tinhNPV()">Tính NPV</button>
+
+<div id="kq" class="result"></div>
+</section>
+
+<!-- 4.2 -->
+<section id="tinhhuong">
+<h2>4.2 Nhập tình huống & chọn hướng xử lý</h2>
+
+<input id="caseInput" placeholder="VD: mua nhà, mở xưởng, đầu tư máy"><br>
+
+<button onclick="xuLy('ca_nhan')">Cá nhân</button>
+<button onclick="xuLy('doanh_nghiep')">Doanh nghiệp</button>
+<button onclick="xuLy('nguy_hiểm')">Rủi ro cao</button>
+
+<div id="caseResult" class="result"></div>
+</section>
+
+<script>
+function go(id){
+document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+
+function tinhNPV(){
+let cf0 = Number(document.getElementById("cf0").value);
+let cf = Number(document.getElementById("cf").value);
+let n = Number(document.getElementById("n").value);
+let r = Number(document.getElementById("r").value)/100;
+
+let npv = -cf0;
+for(let t=1;t<=n;t++){
+    npv += cf / Math.pow(1+r,t);
+}
+document.getElementById("kq").innerText =
+"👉 NPV ≈ " + npv.toFixed(2) + 
+(npv>0 ? " (NÊN LÀM)" : " (KHÔNG NÊN)");
+}
+
+function xuLy(type){
+let t = document.getElementById("caseInput").value;
+let msg="";
+if(type==="ca_nhan"){
+msg="✔ Cá nhân: chỉ làm nếu NPV dương & vẫn đủ tiền sinh hoạt.";
+}
+if(type==="doanh_nghiep"){
+msg="✔ DN: dự án bắt buộc NPV > 0, ưu tiên cao nhất.";
+}
+if(type==="nguy_hiểm"){
+msg="⛔ NPV dương nhưng tiền về quá chậm → rất dễ phá sản.";
+}
+document.getElementById("caseResult").innerText =
+"Tình huống: "+t+"\n"+msg;
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

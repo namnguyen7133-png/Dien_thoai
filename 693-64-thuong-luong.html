@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>64 Quẻ Kinh Dịch & Nước Cờ Thương Lượng</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+      color: #333;
+      line-height: 1.6;
+      padding: 15px;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      position: relative;
+      display: inline-block;
+      padding-bottom: 10px;
+    }
+    
+    h1:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: linear-gradient(to right, #e74c3c, #3498db);
+      border-radius: 3px;
+    }
+    
+    .subtitle {
+      color: #7f8c8d;
+      font-size: 1rem;
+      margin-top: 5px;
+    }
+    
+    .section {
+      margin-bottom: 35px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 10px;
+      border-left: 4px solid #3498db;
+    }
+    
+    h2 {
+      color: #2c3e50;
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    h2 i {
+      color: #e74c3c;
+    }
+    
+    .input-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 15px 0;
+      align-items: center;
+    }
+    
+    input, select, textarea {
+      padding: 12px 15px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s;
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      border-color: #3498db;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+    
+    button {
+      padding: 12px 20px;
+      background: linear-gradient(to right, #3498db, #2c3e50);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    
+    button:hover {
+      background: linear-gradient(to right, #2980b9, #1a252f);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    .result {
+      margin-top: 20px;
+      padding: 20px;
+      border-radius: 10px;
+      background: white;
+      border-left: 5px solid #2ecc71;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .label {
+      font-weight: bold;
+      color: #2c3e50;
+      display: inline-block;
+      min-width: 120px;
+    }
+    
+    .result p {
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .result p:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    
+    .que-name {
+      color: #e74c3c;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    
+    .warning {
+      color: #e74c3c;
+      font-weight: bold;
+      text-align: center;
+      padding: 10px;
+      background: #ffeaea;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    
+    textarea {
+      width: 100%;
+      resize: vertical;
+      min-height: 100px;
+      font-family: inherit;
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      color: #7f8c8d;
+      font-size: 0.9rem;
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px 15px;
+      }
+      
+      h1 {
+        font-size: 1.5rem;
+      }
+      
+      h2 {
+        font-size: 1.2rem;
+      }
+      
+      .input-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      input, select, textarea, button {
+        width: 100%;
+        min-width: unset;
+      }
+      
+      .label {
+        min-width: 90px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+      
+      .container {
+        padding: 15px 12px;
+        border-radius: 10px;
+      }
+      
+      .section {
+        padding: 15px;
+      }
+      
+      h1 {
+        font-size: 1.3rem;
+      }
+      
+      h1:after {
+        width: 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>64 Quẻ Kinh Dịch & Nước Cờ Thương Lượng</h1>
+    <p class="subtitle">Công cụ tra cứu và ứng dụng quẻ Kinh Dịch trong lãnh đạo, đàm phán và ra quyết định</p>
+  </header>
+  
+  <div class="section">
+    <h2><i class="fas fa-search"></i> Tra cứu Quẻ Kinh Dịch</h2>
+    <p>Nhập số từ <b>1–64</b> để tra cứu quẻ:</p>
+    <div class="input-group">
+      <input type="number" id="num" min="1" max="64" placeholder="Ví dụ: 15" value="1" />
+      <button onclick="lookup()"><i class="fas fa-book-open"></i> Tra cứu</button>
+    </div>
+    <div id="output" class="result"></div>
+  </div>
+  
+  <div class="section">
+    <h2><i class="fas fa-lightbulb"></i> Công cụ ra quyết định nhanh</h2>
+    <p>Chọn bối cảnh để nhận gợi ý quyết định:</p>
+    <div class="input-group">
+      <select id="context">
+        <option value="kinhdoanh">Kinh doanh</option>
+        <option value="quyenluc">Quyền lực / chính trị nội bộ</option>
+        <option value="nhansu">Nhân sự / lãnh đạo</option>
+      </select>
+      <button onclick="decision()"><i class="fas fa-clipboard-check"></i> Gợi ý quyết định</button>
+    </div>
+    <div id="decisionOutput" class="result"></div>
+  </div>
+  
+  <div class="section">
+    <h2><i class="fas fa-user-graduate"></i> Công cụ huấn luyện lãnh đạo / đàm phán</h2>
+    <p>Nhập tình huống để nhận bài học huấn luyện:</p>
+    <textarea id="scenario" rows="3" placeholder="Mô tả tình huống của bạn...">Làm thế nào để thương lượng với đối tác khó tính?</textarea>
+    <div class="input-group" style="margin-top: 15px;">
+      <button onclick="training()" style="flex: 1;"><i class="fas fa-chalkboard-teacher"></i> Huấn luyện</button>
+    </div>
+    <div id="trainingOutput" class="result"></div>
+  </div>
+  
+  <div class="footer">
+    <p>Ứng dụng Kinh Dịch trong lãnh đạo và đàm phán • Nhập số từ 1 đến 64 để khám phá</p>
+  </div>
+</div>
+
+<script>
+const data = {
+  1:{que:"Càn 乾 – Trời", y:"Sáng tạo, lãnh đạo", co:"Chủ động dẫn dắt, ra quyết định mạnh mẽ"},
+  2:{que:"Khôn 坤 – Đất", y:"Nhu thuận, nâng đỡ", co:"Đứng sau hỗ trợ, xây nền cho tổ chức"},
+  3:{que:"Truân 屯", y:"Khởi đầu gian nan", co:"Kiên nhẫn xây hệ thống, không ép tăng trưởng"},
+  4:{que:"Mông 蒙", y:"Non dại, học hỏi", co:"Đào tạo nhân sự, dẫn dắt bằng kỷ luật"},
+  5:{que:"Nhu 需", y:"Chờ thời", co:"Tạm hoãn quyết định lớn, quan sát thị trường"},
+  6:{que:"Tụng 訟", y:"Tranh chấp", co:"Ưu tiên hòa giải, tránh leo thang quyền lực"},
+  7:{que:"Sư 師", y:"Tổ chức, kỷ luật", co:"Dùng cấu trúc và mệnh lệnh rõ ràng"},
+  8:{que:"Tỷ 比", y:"Liên minh", co:"Xây quan hệ – đồng minh chiến lược"},
+  9:{que:"Tiểu Súc 小畜", y:"Tích lũy nhỏ", co:"Giữ nguồn lực, chưa bung toàn lực"},
+  10:{que:"Lý 履", y:"Cẩn trọng", co:"Đi đúng quy trình, tránh vượt quyền"},
+  11:{que:"Thái 泰", y:"Thịnh vượng", co:"Mở rộng, trao quyền, tăng hợp tác"},
+  12:{que:"Bĩ 否", y:"Bế tắc", co:"Thu mình, bảo toàn lực lượng"},
+  13:{que:"Đồng Nhân 同人", y:"Đồng chí", co:"Xây văn hóa chung, mục tiêu chung"},
+  14:{que:"Đại Hữu 大有", y:"Thành tựu lớn", co:"Quản trị quyền lực và tài nguyên"},
+  15:{que:"Khiêm 謙", y:"Khiêm tốn", co:"Hạ mình để giữ người, giữ ghế"},
+  16:{que:"Dự 豫", y:"Hân hoan", co:"Tạo động lực, tinh thần đội nhóm"},
+  17:{que:"Tùy 隨", y:"Thuận theo", co:"Linh hoạt theo xu thế, không đối đầu"},
+  18:{que:"Cổ 蠱", y:"Sửa sai", co:"Cải tổ nhân sự, xử lý tồn đọng"},
+  19:{que:"Lâm 臨", y:"Tiếp cận", co:"Lãnh đạo gần nhân viên"},
+  20:{que:"Quán 觀", y:"Quan sát", co:"Đánh giá hệ thống trước khi hành động"},
+  21:{que:"Phệ Hạp 噬嗑", y:"Trừng phạt", co:"Xử lý nghiêm vi phạm để giữ kỷ cương"},
+  22:{que:"Bí 賁", y:"Hình thức", co:"Đầu tư hình ảnh, thương hiệu"},
+  23:{que:"Bác 剝", y:"Suy tàn", co:"Cắt lỗ, rút lui khỏi dự án xấu"},
+  24:{que:"Phục 復", y:"Trở lại", co:"Tái cấu trúc, khởi động lại"},
+  25:{que:"Vô Vọng 無妄", y:"Chân thành", co:"Minh bạch – tạo niềm tin"},
+  26:{que:"Đại Súc 大畜", y:"Tích lớn", co:"Nuôi người tài, đầu tư dài hạn"},
+  27:{que:"Di 頤", y:"Nuôi dưỡng", co:"Quản trị lời nói, truyền thông nội bộ"},
+  28:{que:"Đại Quá 大過", y:"Quá tải", co:"Giảm gánh nặng, phân quyền"},
+  29:{que:"Khảm 坎", y:"Nguy hiểm", co:"Quản trị rủi ro, phòng thủ"},
+  30:{que:"Ly 離", y:"Sáng suốt", co:"Dùng tri thức, công nghệ"},
+  31:{que:"Hàm 咸", y:"Cảm ứng", co:"Tạo ảnh hưởng mềm"},
+  32:{que:"Hằng 恆", y:"Bền lâu", co:"Xây chính sách ổn định"},
+  33:{que:"Độn 遯", y:"Rút lui", co:"Thoái lui chiến lược"},
+  34:{que:"Đại Tráng 大壯", y:"Mạnh", co:"Dùng lực nhưng không lạm quyền"},
+  35:{que:"Tấn 晉", y:"Tiến", co:"Thăng chức, mở rộng ảnh hưởng"},
+  36:{que:"Minh Di 明夷", y:"Ẩn sáng", co:"Giữ mình khi chính trị phức tạp"},
+  37:{que:"Gia Nhân 家人", y:"Trật tự", co:"Quản trị vai trò, trách nhiệm"},
+  38:{que:"Khuê 睽", y:"Bất đồng", co:"Quản lý xung đột nội bộ"},
+  39:{que:"Kiển 蹇", y:"Trở ngại", co:"Tìm người hỗ trợ"},
+  40:{que:"Giải 解", y:"Giải thoát", co:"Tháo nút thắt quyền lợi"},
+  41:{que:"Tổn 損", y:"Giảm", co:"Hy sinh ngắn hạn"},
+  42:{que:"Ích 益", y:"Tăng", co:"Thưởng – đãi ngộ"},
+  43:{que:"Quải 夬", y:"Quyết", co:"Ra quyết định dứt khoát"},
+  44:{que:"Cấu 姤", y:"Gặp", co:"Cẩn trọng với cám dỗ quyền lực"},
+  45:{que:"Tụy 萃", y:"Tập hợp", co:"Quy tụ nhân tài"},
+  46:{que:"Thăng 升", y:"Đi lên", co:"Thăng tiến bền bỉ"},
+  47:{que:"Khốn 困", y:"Khốn", co:"Giữ đạo đức khi bị ép"},
+  48:{que:"Tỉnh 井", y:"Nguồn chung", co:"Chia sẻ tài nguyên"},
+  49:{que:"Cách 革", y:"Cải cách", co:"Đổi mới mô hình"},
+  50:{que:"Đỉnh 鼎", y:"Quyền lực", co:"Chuyển giao – kế thừa"},
+  51:{que:"Chấn 震", y:"Chấn động", co:"Hành động gây thức tỉnh"},
+  52:{que:"Cấn 艮", y:"Dừng", co:"Ngưng đúng lúc"},
+  53:{que:"Tiệm 漸", y:"Tiến dần", co:"Phát triển nhân sự"},
+  54:{que:"Quy Muội 歸妹", y:"Lệch vai", co:"Cẩn trọng quan hệ không chính danh"},
+  55:{que:"Phong 豐", y:"Cực thịnh", co:"Quản trị đỉnh cao quyền lực"},
+  56:{que:"Lữ 旅", y:"Lưu động", co:"Quản lý người tạm thời"},
+  57:{que:"Tốn 巽", y:"Mềm", co:"Thuyết phục – ảnh hưởng"},
+  58:{que:"Đoài 兌", y:"Vui", co:"Đàm phán bằng cảm xúc tích cực"},
+  59:{que:"Hoán 渙", y:"Phân tán", co:"Tái tổ chức"},
+  60:{que:"Tiết 節", y:"Tiết chế", co:"Kỷ luật – quy định"},
+  61:{que:"Trung Phu 中孚", y:"Tin", co:"Xây uy tín lãnh đạo"},
+  62:{que:"Tiểu Quá 小過", y:"Việc nhỏ", co:"Chú ý chi tiết"},
+  63:{que:"Ký Tế 既濟", y:"Hoàn thành", co:"Giữ ổn định sau thành công"},
+  64:{que:"Vị Tế 未濟", y:"Chưa xong", co:"Chuẩn bị vòng mới"}
+};
+
+// Tự động hiển thị quẻ 1 khi trang tải
+window.onload = function() {
+  lookup();
+};
+
+function lookup(){
+  const n = document.getElementById('num').value;
+  const o = document.getElementById('output');
+  
+  if(!n || !data[n]){
+    o.style.display='block';
+    o.innerHTML='<div class="warning"><i class="fas fa-exclamation-triangle"></i> Vui lòng nhập số từ 1 đến 64</div>';
+    return;
+  }
+  
+  const d = data[n];
+  o.style.display='block';
+  o.innerHTML = `
+    <p><span class="label">Quẻ số ${n}:</span> <span class="que-name">${d.que}</span></p>
+    <p><span class="label">Ý nghĩa:</span> ${d.y}</p>
+    <p><span class="label">Nước cờ thương lượng:</span> ${d.co}</p>
+  `;
+}
+
+function decision(){
+  const n = document.getElementById('num').value;
+  const ctx = document.getElementById('context').value;
+  const out = document.getElementById('decisionOutput');
+  
+  if(!n || !data[n]){
+    out.style.display='block';
+    out.innerHTML='<div class="warning"><i class="fas fa-exclamation-triangle"></i> Hãy nhập số quẻ từ 1 đến 64 trước</div>';
+    return;
+  }
+  
+  const d = data[n];
+  let advice = '';
+  let contextName = '';
+  
+  if(ctx==='kinhdoanh') {
+    advice = 'Ưu tiên lợi ích dài hạn, quản trị rủi ro và dòng tiền. Tập trung vào giá trị khách hàng và lợi thế cạnh tranh bền vững.';
+    contextName = 'Kinh doanh';
+  }
+  if(ctx==='quyenluc') {
+    advice = 'Cân bằng ảnh hưởng, tránh đối đầu trực diện, giữ vị thế. Xây dựng liên minh chiến lược và quản lý cấp dưới hiệu quả.';
+    contextName = 'Quyền lực / Chính trị nội bộ';
+  }
+  if(ctx==='nhansu') {
+    advice = 'Tập trung con người, vai trò, động lực và kỷ luật. Phát triển năng lực đội ngũ và xây dựng văn hóa tổ chức lành mạnh.';
+    contextName = 'Nhân sự / Lãnh đạo';
+  }
+  
+  out.style.display='block';
+  out.innerHTML = `
+    <p><span class="label">Quẻ áp dụng:</span> <span class="que-name">${d.que}</span></p>
+    <p><span class="label">Bối cảnh:</span> ${contextName}</p>
+    <p><span class="label">Định hướng quyết định:</span> ${d.co}</p>
+    <p><span class="label">Khuyến nghị chiến lược:</span> ${advice}</p>
+  `;
+}
+
+function training(){
+  const n = document.getElementById('num').value;
+  const sc = document.getElementById('scenario').value;
+  const out = document.getElementById('trainingOutput');
+  
+  if(!n || !data[n]){
+    out.style.display='block';
+    out.innerHTML='<div class="warning"><i class="fas fa-exclamation-triangle"></i> Hãy nhập số quẻ từ 1 đến 64 trước</div>';
+    return;
+  }
+  
+  const d = data[n];
+  out.style.display='block';
+  out.innerHTML = `
+    <p><span class="label">Tình huống:</span> ${sc || 'Chưa mô tả tình huống'}</p>
+    <p><span class="label">Quẻ dẫn đạo (${n}):</span> <span class="que-name">${d.que}</span></p>
+    <p><span class="label">Bài học lãnh đạo:</span> ${d.y}</p>
+    <p><span class="label">Chiến thuật đàm phán:</span> ${d.co}</p>
+    <p><span class="label">Câu hỏi huấn luyện:</span> 
+      1. Dựa trên quẻ này, bạn đang nên tiến, giữ hay lui?<br>
+      2. Ai là người cần được thuyết phục trong tình huống này?<br>
+      3. Làm thế nào để áp dụng nguyên lý "${d.y}" vào thực tế?
+    </p>
+  `;
+}
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

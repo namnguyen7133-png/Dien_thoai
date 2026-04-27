@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCDN Chương 1 – Trò chơi tài chính thực tế</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f4f6f8 0%, #e3e9f7 100%);
+            line-height: 1.6;
+            padding: 20px;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1, h2, h3 {
+            color: #0b5394;
+            margin-top: 0;
+        }
+        
+        h1 {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            border-bottom: 5px solid #0b5394;
+        }
+        
+        .box {
+            background: #fff;
+            border-left: 6px solid #0b5394;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .box:hover {
+            transform: translateY(-5px);
+        }
+        
+        .menu {
+            background: #fff;
+            padding: 15px;
+            border: 2px solid #0b5394;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .menu h3 {
+            margin-top: 0;
+            text-align: center;
+        }
+        
+        .menu-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 8px;
+        }
+        
+        .menu button {
+            padding: 10px;
+            cursor: pointer;
+            background: #e8f0fe;
+            border: 1px solid #0b5394;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .menu button:hover {
+            background: #0b5394;
+            color: white;
+            transform: scale(1.02);
+        }
+        
+        .good {
+            color: green;
+            font-weight: bold;
+        }
+        
+        .bad {
+            color: red;
+            font-weight: bold;
+        }
+        
+        .game {
+            background: #e8f0fe;
+            border: 2px dashed #0b5394;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .situation-input {
+            margin: 25px 0;
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .situation-input h3 {
+            margin-top: 0;
+            color: #0b5394;
+        }
+        
+        .situation-input input {
+            width: 80%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #0b5394;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .situation-input button {
+            margin: 5px;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #0b5394;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .situation-input button:hover {
+            background: #073b6d;
+            transform: scale(1.05);
+        }
+        
+        .quick-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .quick-buttons button {
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+        
+        .scenario {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #0b5394;
+        }
+        
+        .scenario h4 {
+            margin-top: 0;
+            color: #0b5394;
+        }
+        
+        .example-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .example-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .example-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .example-number {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            background: #0b5394;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .decision-point {
+            background: #fff8e1;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ff9800;
+        }
+        
+        .decision-point h4 {
+            color: #ff9800;
+            margin-top: 0;
+        }
+        
+        .interactive-quiz {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .quiz-question {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2e7d32;
+        }
+        
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .quiz-option {
+            padding: 12px;
+            background: white;
+            border: 1px solid #c8e6c9;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .quiz-option:hover {
+            background: #c8e6c9;
+            transform: translateX(5px);
+        }
+        
+        .quiz-result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .real-life-story {
+            background: #f3e5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #9c27b0;
+        }
+        
+        .real-life-story h4 {
+            color: #9c27b0;
+            margin-top: 0;
+        }
+        
+        .key-takeaway {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            font-weight: bold;
+            border-left: 4px solid #2196f3;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .situation-input input {
+                width: 95%;
+            }
+            
+            .quick-buttons {
+                flex-direction: column;
+            }
+            
+            .quick-buttons button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h1>🎮 TCDN CHƯƠNG 1 – TRÒ CHƠI TÀI CHÍNH THỰC TẾ</h1>
+
+<!-- GHI CHÚ: Tôi đã thêm ô nhập tình huống thông minh với khả năng phân tích từ khóa -->
+<div class="situation-input">
+    <h3>🔍 NHẬP TÌNH HUỐNG TÀI CHÍNH CỦA BẠN</h3>
+    <p>Mô tả tình hình hiện tại của bạn để nhận chiến lược phù hợp:</p>
+    <input type="text" id="situation" placeholder="Ví dụ: Tôi đang nợ 50 triệu, mất việc, không có thu nhập..." />
+    <br>
+    <button onclick="analyzeSituation()">Phân tích tình huống & Đề xuất</button>
+    
+    <div class="quick-buttons">
+        <button onclick="go('von0')">Vốn = 0 / Đang nợ nần</button>
+        <button onclick="go('canhan')">Cá nhân có thu nhập ổn định</button>
+        <button onclick="go('dn-nho')">Doanh nghiệp nhỏ / Startup</button>
+        <button onclick="go('dn-lon')">Doanh nghiệp lớn / Có quy mô</button>
+        <button onclick="go('thuatngu')">Giải thích thuật ngữ tài chính</button>
+    </div>
+    
+    <!-- GHI CHÚ: Khu vực hiển thị kết quả phân tích tình huống -->
+    <div id="analysis-result" style="display:none; margin-top:20px; padding:15px; background:#e8f0fe; border-radius:8px;">
+        <h4>📊 PHÂN TÍCH TÌNH HUỐNG CỦA BẠN</h4>
+        <div id="result-content"></div>
+        <button onclick="goToRecommendedSection()" style="margin-top:10px;">Đi đến phần đề xuất chiến lược</button>
+    </div>
+</div>
+
+<!-- GHI CHÚ: Menu điều hướng cố định với thiết kế cải tiến -->
+<div class="menu">
+    <h3>📌 MENU NHANH - CHỌN TÌNH HUỐNG CỦA BẠN</h3>
+    <div class="menu-buttons">
+        <button onclick="go('von0')">💰 Vốn = 0 / Đang khó khăn</button>
+        <button onclick="go('canhan')">👤 Cá nhân có thu nhập</button>
+        <button onclick="go('dn-nho')">🏪 Doanh nghiệp nhỏ</button>
+        <button onclick="go('dn-lon')">🏢 Doanh nghiệp lớn</button>
+        <button onclick="go('thuatngu')">📘 Thuật ngữ đời thường</button>
+        <button onclick="go('tracnghiem')">🧠 Trắc nghiệm tài chính</button>
+    </div>
+</div>
+
+<!-- THUẬT NGỮ -->
+<div class="box" id="thuatngu">
+    <h2>📘 THUẬT NGỮ TÀI CHÍNH → ĐỜI THƯỜNG</h2>
+    <p>Hiểu đúng để ra quyết định đúng:</p>
+    <ul>
+        <li><b>Vốn:</b> Tiền bạn có thể dùng mà không chết đói</li>
+        <li><b>Rủi ro:</b> Khả năng mất tiền</li>
+        <li><b>Lợi nhuận:</b> Tiền lời sau khi trừ hết chi phí</li>
+        <li><b>Dòng tiền:</b> Tiền vào – tiền ra mỗi tháng</li>
+        <li><b>Vốn vay:</b> Tiền mượn → phải trả</li>
+        <li><b>Vốn chủ:</b> Tiền của mình → không áp lực</li>
+        <li><b>Giá trị DN:</b> Người khác sẵn sàng mua DN bạn giá bao nhiêu</li>
+        <li><b>Tài sản:</b> Thứ tạo ra tiền cho bạn</li>
+        <li><b>Nợ phải trả:</b> Tiền bạn nợ người khác</li>
+        <li><b>Thanh khoản:</b> Khả năng chuyển thành tiền mặt nhanh</li>
+    </ul>
+    
+    <!-- GHI CHÚ: Thêm ví dụ thực tế về thuật ngữ -->
+    <div class="scenario">
+        <h4>Ví dụ thực tế:</h4>
+        <p><b>Tình huống:</b> Anh A có 50 triệu, mượn thêm 100 triệu để mở quán cà phê.</p>
+        <p><b>Phân tích:</b> Vốn chủ = 50 triệu, vốn vay = 100 triệu, tổng vốn = 150 triệu. Rủi ro cao vì nếu kinh doanh thất bại, anh A mất 50 triệu của mình và vẫn nợ 100 triệu.</p>
+    </div>
+</div>
+
+<!-- VỐN 0 -->
+<div class="game" id="von0">
+    <h2>🎯 TRẠNG THÁI: VỐN = 0 / ĐANG NỢ / KHÓ KHĂN TÀI CHÍNH</h2>
+    
+    <div class="decision-point">
+        <h4>QUYẾT ĐỊNH QUAN TRỌNG NHẤT LÚC NÀY:</h4>
+        <p>Khi không có vốn, mọi quyết định đầu tư đều có rủi ro cực cao. Ưu tiên số 1 là tạo dòng tiền và giảm nợ.</p>
+    </div>
+    
+    <h3>Chiến lược ÍT RỦI RO NHẤT</h3>
+    <ul>
+        <li class="good">✔ Không đầu tư bằng tiền (chỉ đầu tư bằng thời gian và công sức)</li>
+        <li class="good">✔ Đầu tư kiến thức, kỹ năng có thể kiếm tiền ngay</li>
+        <li class="bad">✘ Tuyệt đối không vay để đầu tư, chơi chứng khoán, coin</li>
+        <li class="good">✔ Tìm việc làm ngay, bất kỳ việc gì có thu nhập</li>
+    </ul>
+    
+    <h3>Ví dụ thực tế (1–10)</h3>
+    <ul class="example-list">
+        <li><span class="example-number">1</span> Đi làm thuê (giao đồ ăn, phục vụ, bán hàng) để có dòng tiền ngay</li>
+        <li><span class="example-number">2</span> Học kỹ năng bán hàng online (miễn phí trên YouTube)</li>
+        <li><span class="example-number">3</span> Không mở quán khi chưa có tiền, chưa có kinh nghiệm</li>
+        <li><span class="example-number">4</span> Không chơi coin, chứng khoán, forex với hy vọng "đổi đời"</li>
+        <li><span class="example-number">5</span> Bán sức lao động trước, tích lũy sau</li>
+        <li><span class="example-number">6</span> Tích lũy quỹ dự phòng (3-6 tháng chi tiêu cơ bản)</li>
+        <li><span class="example-number">7</span> Trả nợ lãi cao trước (vay tín dụng, vay nóng)</li>
+        <li><span class="example-number">8</span> Nhận thêm việc phụ (làm online, part-time)</li>
+        <li><span class="example-number">9</span> Không góp vốn làm ăn với người khác khi không có tiền</li>
+        <li><span class="example-number">10</span> Tập quản lý chi tiêu bằng ứng dụng (Money Lover, Misa)</li>
+    </ul>
+    
+    <!-- GHI CHÚ: Thêm câu chuyện thực tế -->
+    <div class="real-life-story">
+        <h4>Câu chuyện thực tế: Từ nợ nần đến ổn định</h4>
+        <p><b>Hoàn cảnh:</b> Chị B mất việc, nợ 30 triệu thẻ tín dụng, không có tiền tiết kiệm.</p>
+        <p><b>Hành động:</b> Chấp nhận làm 2 công việc: bán hàng online buổi tối và phụ quán cà phê ban ngày. Cắt giảm mọi chi tiêu không cần thiết. Trả hết nợ thẻ tín dụng trong 8 tháng.</p>
+        <p><b>Kết quả:</b> Sau 1 năm, có 10 triệu tiết kiệm và kỹ năng bán hàng thành thạo.</p>
+        <div class="key-takeaway">📌 Bài học: Khi không có vốn, bán thời gian và sức lao động là cách an toàn nhất để tạo dòng tiền.</div>
+    </div>
+</div>
+
+<!-- CÁ NHÂN -->
+<div class="box" id="canhan">
+    <h2>👤 CÁ NHÂN CÓ THU NHẬP ỔN ĐỊNH</h2>
+    
+    <h3>Lộ trình tài chính an toàn</h3>
+    <ol>
+        <li><b>Giai đoạn 1:</b> Có thu nhập ổn định, tiền dư mỗi tháng</li>
+        <li><b>Giai đoạn 2:</b> Xây dựng quỹ dự phòng (6-12 tháng chi tiêu)</li>
+        <li><b>Giai đoạn 3:</b> Hiểu rõ rủi ro của từng kênh đầu tư</li>
+        <li><b>Giai đoạn 4:</b> Bắt đầu đầu tư với số tiền nhỏ để học hỏi</li>
+        <li><b>Giai đoạn 5:</b> Đa dạng hóa đầu tư khi có kinh nghiệm</li>
+    </ol>
+    
+    <h3>Ví dụ thực tế (11–20)</h3>
+    <ul class="example-list">
+        <li><span class="example-number">11</span> Gửi tiết kiệm ngân hàng (kỳ hạn 6-12 tháng) trước khi đầu tư</li>
+        <li><span class="example-number">12</span> Không vay tiêu dùng mua điện thoại, xe máy trả góp lãi cao</li>
+        <li><span class="example-number">13</span> Đầu tư nhỏ 1-2 triệu vào chứng khoán để học, không kỳ vọng lời lớn</li>
+        <li><span class="example-number">14</span> Không all-in (dồn hết tiền) vào một kênh đầu tư duy nhất</li>
+        <li><span class="example-number">15</span> Chấp nhận lãi thấp (6-8%/năm) nhưng an toàn thay vì lãi cao rủi ro lớn</li>
+        <li><span class="example-number">16</span> Không vay đầu tư khi thu nhập bấp bênh hoặc chưa ổn định</li>
+        <li><span class="example-number">17</span> Chỉ dùng tiền nhàn rỗi (sau khi trừ chi tiêu, dự phòng) để đầu tư</li>
+        <li><span class="example-number">18</span> Chấp nhận lời ít, an toàn thay vì tham lời cao</li>
+        <li><span class="example-number">19</span> Rút lui ngay khi thấy dấu hiệu lỗ, không cố "gỡ gạc"</li>
+        <li><span class="example-number">20</span> Ưu tiên ổn định tài chính cá nhân trước khi nghĩ đến làm giàu nhanh</li>
+    </ul>
+    
+    <!-- GHI CHÚ: Thêm tình huống quyết định -->
+    <div class="decision-point">
+        <h4>TÌNH HUỐNG QUYẾT ĐỊNH:</h4>
+        <p>Bạn có 50 triệu tiền nhàn rỗi, thu nhập 15 triệu/tháng ổn định. Bạn nên:</p>
+        <ul>
+            <li class="good">✔ Gửi 30 triệu tiết kiệm (an toàn, thanh khoản cao)</li>
+            <li class="good">✔ Đầu tư 10 triệu vào chứng khoán (để học hỏi)</li>
+            <li class="good">✔ Đầu tư 10 triệu vào bản thân (học thêm kỹ năng)</li>
+            <li class="bad">✘ Đầu tư hết 50 triệu vào một dự án "hot" bạn không hiểu rõ</li>
+        </ul>
+    </div>
+</div>
+
+<!-- DN NHỎ -->
+<div class="box" id="dn-nho">
+    <h2>🏪 DOANH NGHIỆP NHỎ / STARTUP</h2>
+    
+    <h3>Nguyên tắc sống còn</h3>
+    <ul>
+        <li>Dòng tiền là mạch máu - phải quản lý chặt chẽ hàng ngày</li>
+        <li>Không mở rộng quy mô khi chưa có lợi nhuận ổn định ít nhất 6 tháng</li>
+        <li>Vay ít, vay ngắn hạn, quay vòng vốn nhanh</li>
+        <li>Ưu tiên khách hàng trả tiền trước, trả tiền ngay</li>
+    </ul>
+    
+    <h3>Ví dụ thực tế (21–30)</h3>
+    <ul class="example-list">
+        <li><span class="example-number">21</span> Mở quán nhỏ, địa điểm bình dân trước khi thuê mặt bằng đắt tiền</li>
+        <li><span class="example-number">22</span> Không thuê mặt bằng lớn, đẹp khi chưa có đủ khách hàng ổn định</li>
+        <li><span class="example-number">23</span> Ưu tiên khách hàng thanh toán ngay, giảm giá cho khách trả tiền mặt</li>
+        <li><span class="example-number">24</span> Tránh tồn kho lớn, chỉ nhập hàng khi có đơn đặt trước</li>
+        <li><span class="example-number">25</span> Không vay dài hạn khi chưa chắc chắn về dòng tiền tương lai</li>
+        <li><span class="example-number">26</span> Tái đầu tư ít nhất 50% lợi nhuận vào phát triển kinh doanh</li>
+        <li><span class="example-number">27</span> Không chia hết tiền lời, giữ lại quỹ dự phòng cho doanh nghiệp</li>
+        <li><span class="example-number">28</span> Cắt lỗ sớm với sản phẩm/dịch vụ không bán được sau 3 tháng</li>
+        <li><span class="example-number">29</span> Không mở thêm chi nhánh khi chưa có hệ thống quản lý bài bản</li>
+        <li><span class="example-number">30</span> Ưu tiên sống sót qua khủng hoảng thay vì tăng trưởng nhanh</li>
+    </ul>
+    
+    <!-- GHI CHÚ: Thêm kịch bản kinh doanh -->
+    <div class="scenario">
+        <h4>Kịch bản kinh doanh thực tế:</h4>
+        <p><b>Tình huống:</b> Quán cà phê nhỏ có doanh thu 30 triệu/tháng, lợi nhuận 8 triệu/tháng.</p>
+        <p><b>Quyết định sai:</b> Vay 200 triệu mở chi nhánh mới tại vị trí đắt đỏ.</p>
+        <p><b>Rủi ro:</b> Chi nhánh mới cần 50 khách/ngày mới hòa vốn, nhưng chỉ đạt 20 khách/ngày. Lỗ 15 triệu/tháng, đe dọa cả quán gốc.</p>
+        <p><b>Quyết định đúng:</b> Tối ưu quán hiện tại, tăng lợi nhuận lên 10-12 triệu/tháng. Sau 1-2 năm tích lũy, mở chi nhánh nhỏ hơn với vốn tự có.</p>
+    </div>
+</div>
+
+<!-- DN LỚN -->
+<div class="box" id="dn-lon">
+    <h2>🏢 DOANH NGHIỆP LỚN / CÓ QUY MÔ</h2>
+    
+    <h3>Chiến lược theo chu kỳ kinh tế</h3>
+    <ul>
+        <li><b>Thị trường tăng trưởng:</b> Mở rộng, đầu tư, vay vốn với lãi suất cố định</li>
+        <li><b>Thị trường ổn định:</b> Củng cố thị phần, tối ưu chi phí</li>
+        <li><b>Thị trường suy thoái:</b> Giữ tiền mặt, mua lại đối thủ gặp khó khăn</li>
+        <li><b>Khủng hoảng:</b> Sống còn là ưu tiên, cắt giảm mọi chi phí không cần thiết</li>
+    </ul>
+    
+    <h3>Ví dụ thực tế (31–40)</h3>
+    <ul class="example-list">
+        <li><span class="example-number">31</span> Phát hành trái phiếu doanh nghiệp khi lãi suất thấp để có vốn dài hạn</li>
+        <li><span class="example-number">32</span> Dùng lá chắn thuế hợp pháp (đầu tư vào nghiên cứu, phát triển)</li>
+        <li><span class="example-number">33</span> Đa dạng hóa đầu tư vào nhiều ngành, giảm rủi ro tập trung</li>
+        <li><span class="example-number">34</span> Không phụ thuộc vào 1 thị trường, 1 nhà cung cấp, 1 khách hàng lớn</li>
+        <li><span class="example-number">35</span> Mua lại doanh nghiệp cùng ngành khi họ gặp khó khăn (giá thấp)</li>
+        <li><span class="example-number">36</span> Giữ tỷ lệ tiền mặt cao khi thấy dấu hiệu khủng hoảng kinh tế</li>
+        <li><span class="example-number">37</span> Không vay quá 60% tổng tài sản, duy trì hệ số nợ an toàn</li>
+        <li><span class="example-number">38</span> So sánh chi phí vốn vay và chi phí vốn chủ trước khi quyết định huy động vốn</li>
+        <li><span class="example-number">39</span> Đánh giá rủi ro quốc gia, rủi ro ngành trước khi đầu tư lớn</li>
+        <li><span class="example-number">40</span> Tối đa hóa giá trị doanh nghiệp trong dài hạn thay vì lợi nhuận ngắn hạn</li>
+    </ul>
+    
+    <!-- GHI CHÚ: Thêm case study doanh nghiệp lớn -->
+    <div class="real-life-story">
+        <h4>Case study: Chiến lược của doanh nghiệp lớn trong khủng hoảng</h4>
+        <p><b>Tình huống 2020:</b> Đại dịch COVID-19, nhiều doanh nghiệp đóng cửa, thiếu tiền mặt.</p>
+        <p><b>Chiến lược doanh nghiệp thông minh:</b></p>
+        <ol>
+            <li>Cắt giảm ngay 30% chi phí không thiết yếu</li>
+            <li>Đàm phán gia hạn nợ với ngân hàng</li>
+            <li>Tận dụng chính sách hỗ trợ của Nhà nước</li>
+            <li>Chuyển đổi mô hình kinh doanh (offline → online)</li>
+            <li>Mua lại đối thủ yếu thế với giá bằng 30-50% giá trị thực</li>
+        </ol>
+        <p><b>Kết quả:</b> Khi kinh tế phục hồi, doanh nghiệp này có thị phần lớn hơn, mạnh hơn trước khủng hoảng.</p>
+    </div>
+</div>
+
+<!-- GHI CHÚ: Thêm phần trắc nghiệm tương tác -->
+<div class="interactive-quiz" id="tracnghiem">
+    <h3>🧠 TRẮC NGHIỆM TÀI CHÍNH THỰC TẾ</h3>
+    
+    <div class="quiz-question">Câu 1: Bạn đang nợ 20 triệu thẻ tín dụng, không có việc làm. Bạn nên:</div>
+    <div class="quiz-options">
+        <div class="quiz-option" onclick="checkAnswer(1, 'A')">A. Vay thêm 50 triệu để đầu tư chứng khoán hy vọng gỡ gạc</div>
+        <div class="quiz-option" onclick="checkAnswer(1, 'B')">B. Tìm ngay việc làm bất kỳ, cắt giảm chi tiêu tối đa, trả nợ trước</div>
+        <div class="quiz-option" onclick="checkAnswer(1, 'C')">C. Mở quán ăn nhỏ với số tiền vay từ người thân</div>
+    </div>
+    <div id="quiz-result-1" class="quiz-result"></div>
+    
+    <div class="quiz-question" style="margin-top:20px;">Câu 2: Bạn có thu nhập ổn định 20 triệu/tháng, tiết kiệm được 100 triệu. Bạn nên:</div>
+    <div class="quiz-options">
+        <div class="quiz-option" onclick="checkAnswer(2, 'A')">A. Đầu tư hết 100 triệu vào một dự án bất động sản "hot"</div>
+        <div class="quiz-option" onclick="checkAnswer(2, 'B')">B. Gửi tiết kiệm 50 triệu, đầu tư 30 triệu vào chứng khoán, 20 triệu để dự phòng</div>
+        <div class="quiz-option" onclick="checkAnswer(2, 'C')">C. Mua xe ô tô 800 triệu trả góp để đi làm cho oai</div>
+    </div>
+    <div id="quiz-result-2" class="quiz-result"></div>
+    
+    <div class="quiz-question" style="margin-top:20px;">Câu 3: Doanh nghiệp nhỏ của bạn đang có lợi nhuận 15 triệu/tháng. Bạn nên:</div>
+    <div class="quiz-options">
+        <div class="quiz-option" onclick="checkAnswer(3, 'A')">A. Vay 500 triệu mở rộng sang lĩnh vực mới bạn chưa có kinh nghiệm</div>
+        <div class="quiz-option" onclick="checkAnswer(3, 'B')">B. Giữ nguyên quy mô, tối ưu hóa hoạt động, tích lũy vốn ít nhất 1 năm</div>
+        <div class="quiz-option" onclick="checkAnswer(3, 'C')">C. Rút hết lợi nhuận để mua nhà, xe cho cá nhân</div>
+    </div>
+    <div id="quiz-result-3" class="quiz-result"></div>
+    
+    <button onclick="resetQuiz()" style="margin-top:20px; padding:10px 20px;">Làm lại trắc nghiệm</button>
+</div>
+
+<footer>
+    <p>🎯 TCDN Chương 1 - 40 ví dụ thực tế & Chiến lược ít rủi ro</p>
+    <p>Áp dụng kiến thức tài chính phù hợp với tình hình thực tế của bạn</p>
+    <p>💡 Lưu ý: Đây là tài liệu tham khảo, hãy cân nhắc kỹ trước mọi quyết định tài chính</p>
+</footer>
+
+<script>
+    // Hàm cuộn đến phần tử với hiệu ứng mượt
+    function go(id) {
+        document.getElementById(id).scrollIntoView({behavior: 'smooth'});
+    }
+    
+    // GHI CHÚ: Hàm phân tích tình huống thông minh với từ khóa
+    function analyzeSituation() {
+        const input = document.getElementById('situation').value.toLowerCase().trim();
+        const resultDiv = document.getElementById('analysis-result');
+        const resultContent = document.getElementById('result-content');
+        
+        if (!input) {
+            alert("Vui lòng nhập tình huống của bạn!");
+            return;
+        }
+        
+        let analysis = "<p><b>Tình huống của bạn:</b> " + document.getElementById('situation').value + "</p>";
+        let recommendation = "";
+        let targetSection = "thuatngu";
+        
+        // Phân tích từ khóa
+        if (input.includes('không có tiền') || input.includes('vốn 0') || input.includes('nợ') || 
+            input.includes('khó khăn') || input.includes('mất việc') || input.includes('thất nghiệp') ||
+            input.includes('phá sản') || input.includes('túng thiếu')) {
+            
+            analysis += "<p><b>Phân tích:</b> Bạn đang trong tình trạng tài chính khó khăn, cần ưu tiên tạo dòng tiền và giảm nợ.</p>";
+            recommendation = "Chiến lược phù hợp: <b>Vốn = 0 / Đang nợ</b> - Tập trung vào tạo thu nhập ngay, không đầu tư rủi ro.";
+            targetSection = "von0";
+            
+        } else if (input.includes('lương') || input.includes('thu nhập') || input.includes('ổn định') || 
+                   input.includes('tiết kiệm') || input.includes('có tiền dư') || input.includes('nhàn rỗi') ||
+                   input.includes('công chức') || input.includes('viên chức') || input.includes('nhân viên')) {
+            
+            analysis += "<p><b>Phân tích:</b> Bạn có thu nhập ổn định, có khả năng tích lũy và đầu tư.</p>";
+            recommendation = "Chiến lược phù hợp: <b>Cá nhân có thu nhập</b> - Xây dựng lộ trình đầu tư an toàn, đa dạng hóa.";
+            targetSection = "canhan";
+            
+        } else if (input.includes('doanh nghiệp nhỏ') || input.includes('quán') || input.includes('shop') || 
+                   input.includes('bán hàng') || input.includes('startup') || input.includes('khởi nghiệp') ||
+                   input.includes('cửa hàng') || input.includes('kinh doanh nhỏ')) {
+            
+            analysis += "<p><b>Phân tích:</b> Bạn đang điều hành doanh nghiệp nhỏ, cần quản lý dòng tiền chặt chẽ.</p>";
+            recommendation = "Chiến lược phù hợp: <b>Doanh nghiệp nhỏ</b> - Ưu tiên sống sót, quản lý dòng tiền, không mở rộng vội.";
+            targetSection = "dn-nho";
+            
+        } else if (input.includes('doanh nghiệp lớn') || input.includes('công ty lớn') || input.includes('tập đoàn') || 
+                   input.includes('nhiều nhân viên') || input.includes('quy mô') || input.includes('chi nhánh') ||
+                   input.includes('công ty cổ phần')) {
+            
+            analysis += "<p><b>Phân tích:</b> Bạn điều hành doanh nghiệp có quy mô, cần chiến lược dài hạn và quản trị rủi ro.</p>";
+            recommendation = "Chiến lược phù hợp: <b>Doanh nghiệp lớn</b> - Đa dạng hóa, tối ưu cơ cấu vốn, chiến lược theo chu kỳ kinh tế.";
+            targetSection = "dn-lon";
+            
+        } else {
+            analysis += "<p><b>Phân tích:</b> Tình huống của bạn cần hiểu rõ các khái niệm tài chính cơ bản trước khi ra quyết định.</p>";
+            recommendation = "Bắt đầu với: <b>Giải thích thuật ngữ</b> - Hiểu đúng ngôn ngữ tài chính để ra quyết định đúng.";
+            targetSection = "thuatngu";
+        }
+        
+        analysis += "<p><b>Đề xuất:</b> " + recommendation + "</p>";
+        resultContent.innerHTML = analysis;
+        resultDiv.style.display = 'block';
+        
+        // Lưu section được đề xuất để điều hướng
+        window.recommendedSection = targetSection;
+        
+        // Cuộn đến kết quả phân tích
+        resultDiv.scrollIntoView({behavior: 'smooth'});
+    }
+    
+    // Điều hướng đến phần được đề xuất
+    function goToRecommendedSection() {
+        if (window.recommendedSection) {
+            go(window.recommendedSection);
+        }
+    }
+    
+    // GHI CHÚ: Xử lý trắc nghiệm tương tác
+    function checkAnswer(questionNumber, selectedOption) {
+        const correctAnswers = {
+            1: 'B',
+            2: 'B', 
+            3: 'B'
+        };
+        
+        const explanations = {
+            1: {
+                'A': 'SAI - Vay thêm để đầu tư rủi ro khi đang nợ và không có thu nhập là cực kỳ nguy hiểm, có thể khiến bạn nợ chồng nợ.',
+                'B': 'ĐÚNG - Khi không có vốn và đang nợ, ưu tiên số 1 là tạo thu nhập và trả nợ. Đây là chiến lược ít rủi ro nhất.',
+                'C': 'SAI - Mở quán ăn cần vốn, kinh nghiệm và thời gian. Khi đang nợ và không có thu nhập, đây là rủi ro rất cao.'
+            },
+            2: {
+                'A': 'SAI - Đầu tư hết tiền vào một dự án là rủi ro cao. "Đừng bỏ tất cả trứng vào một giỏ".',
+                'B': 'ĐÚNG - Đây là chiến lược phân bổ vốn hợp lý: an toàn (tiết kiệm), đầu tư (chứng khoán), và dự phòng.',
+                'C': 'SAI - Mua xe đắt tiền trả góp là tiêu sản (tốn tiền), không phải tài sản (tạo ra tiền).'
+            },
+            3: {
+                'A': 'SAI - Mở rộng sang lĩnh vực mới với số vốn vay lớn khi chưa có kinh nghiệm là rủi ro cực cao.',
+                'B': 'ĐÚNG - Với doanh nghiệp nhỏ, tích lũy vốn và tối ưu hóa hoạt động hiện tại là chiến lược ít rủi ro và bền vững.',
+                'C': 'SAI - Rút hết lợi nhuận làm mất vốn phát triển doanh nghiệp, khiến doanh nghiệp dễ bị tổn thương khi có khủng hoảng.'
+            }
+        };
+        
+        const resultDiv = document.getElementById(`quiz-result-${questionNumber}`);
+        const isCorrect = selectedOption === correctAnswers[questionNumber];
+        
+        resultDiv.innerHTML = `<p><b>${isCorrect ? '✅ ĐÚNG!' : '❌ SAI!'}</b> ${explanations[questionNumber][selectedOption]}</p>`;
+        resultDiv.className = `quiz-result ${isCorrect ? 'correct' : 'incorrect'}`;
+        resultDiv.style.display = 'block';
+    }
+    
+    // Làm lại trắc nghiệm
+    function resetQuiz() {
+        for (let i = 1; i <= 3; i++) {
+            document.getElementById(`quiz-result-${i}`).style.display = 'none';
+        }
+    }
+    
+    // GHI CHÚ: Thêm chức năng phím tắt
+    document.addEventListener('keydown', function(event) {
+        // Alt + 1 đến Alt + 5 để điều hướng nhanh
+        if (event.altKey) {
+            switch(event.key) {
+                case '1': go('von0'); break;
+                case '2': go('canhan'); break;
+                case '3': go('dn-nho'); break;
+                case '4': go('dn-lon'); break;
+                case '5': go('thuatngu'); break;
+                case '6': go('tracnghiem'); break;
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

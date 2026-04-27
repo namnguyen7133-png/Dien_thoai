@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HỆ THỐNG THEO DÕI VẬN HẠN QUAN TRỌNG</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --success: #27ae60;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --spring: #2ecc71;
+            --summer: #f1c40f;
+            --autumn: #d35400;
+            --winter: #3498db;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 100%;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary), #1a252f);
+            color: white;
+            padding: 25px 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.1;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .logo i {
+            font-size: 3rem;
+            color: var(--secondary);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .logo p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .backup-controls {
+            position: relative;
+            z-index: 2;
+            margin-top: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 10px;
+        }
+        
+        .btn-primary {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        /* Stats */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            padding: 20px 30px;
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+        }
+        
+        .stat-card.total::before { background: var(--secondary); }
+        .stat-card.upcoming::before { background: var(--warning); }
+        .stat-card.danger::before { background: var(--danger); }
+        .stat-card.safe::before { background: var(--success); }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 10px 0;
+            color: var(--dark);
+        }
+        
+        /* Filters */
+        .filter-section {
+            padding: 25px 30px;
+            background: white;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .filter-group {
+            position: relative;
+        }
+        
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+        
+        select, input[type="date"] {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            transition: all 0.3s;
+        }
+        
+        select:focus, input[type="date"]:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        /* Danger Alert */
+        .danger-alert {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 15px 30px;
+            margin: 20px 30px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: dangerPulse 2s infinite;
+        }
+        
+        @keyframes dangerPulse {
+            0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        }
+        
+        /* Table */
+        .table-container {
+            padding: 0 20px 20px;
+            overflow-x: auto;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1400px;
+        }
+        
+        .data-table th {
+            background: linear-gradient(to bottom, var(--primary), #34495e);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .data-table th:last-child {
+            border-right: none;
+        }
+        
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+        
+        .data-table tr {
+            transition: background 0.3s;
+        }
+        
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .data-table tr.danger-row {
+            background: #fff5f5 !important;
+            border-left: 4px solid var(--danger);
+        }
+        
+        .data-table tr.warning-row {
+            background: #fff9e6 !important;
+            border-left: 4px solid var(--warning);
+        }
+        
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        
+        .badge-date { background: #e3f2fd; color: #1976d2; }
+        .badge-time { background: #f3e5f5; color: #7b1fa2; }
+        .badge-sequence { background: #e8f5e9; color: #388e3c; }
+        .badge-name { background: #fff3e0; color: #f57c00; }
+        .badge-symptom { background: #ffebee; color: #d32f2f; }
+        .badge-food { background: #f1f8e9; color: #689f38; }
+        .badge-spring { background: #e8f6f3; color: var(--spring); }
+        .badge-summer { background: #fef9e7; color: var(--summer); }
+        .badge-autumn { background: #fbeee6; color: var(--autumn); }
+        .badge-winter { background: #eaf2f8; color: var(--winter); }
+        
+        .past-badge { background: #fff8e1; color: #ff8f00; }
+        .future-badge { background: #e8f5e9; color: #388e3c; }
+        .remaining-badge { font-weight: 700; padding: 4px 10px; border-radius: 5px; }
+        .remaining-danger { background: #ffebee; color: #d32f2f; }
+        .remaining-warning { background: #fff3e0; color: #f57c00; }
+        .remaining-safe { background: #e8f5e9; color: #388e3c; }
+        
+        /* Footer */
+        .footer {
+            background: var(--primary);
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .loading i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--secondary);
+            animation: spin 2s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .container {
+                border-radius: 10px;
+            }
+            
+            .header, .stats-container, .filter-section, .table-container {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-table {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <div>
+                    <h1>HỆ THỐNG THEO DÕI VẬN HẠN QUAN TRỌNG</h1>
+                    <p>Bảo vệ sức khỏe - Phòng tránh rủi ro - Dữ liệu 1 năm</p>
+                </div>
+            </div>
+            <div class="backup-controls">
+                <button class="btn btn-primary" id="saveDataBtn">
+                    <i class="fas fa-save"></i> Lưu dữ liệu
+                </button>
+                <button class="btn btn-success" id="loadDataBtn">
+                    <i class="fas fa-download"></i> Tải dữ liệu
+                </button>
+                <button class="btn btn-danger" id="printBtn">
+                    <i class="fas fa-print"></i> In báo cáo
+                </button>
+                <input type="file" id="importFile" accept=".json" style="display: none;">
+            </div>
+        </header>
+        
+        <!-- Stats -->
+        <section class="stats-container">
+            <div class="stat-card total">
+                <i class="fas fa-database fa-2x"></i>
+                <div class="stat-value" id="totalRecords">0</div>
+                <div class="stat-label">Tổng bản ghi</div>
+            </div>
+            <div class="stat-card upcoming">
+                <i class="fas fa-clock fa-2x"></i>
+                <div class="stat-value" id="upcomingCount">0</div>
+                <div class="stat-label">Sắp diễn ra (7 ngày)</div>
+            </div>
+            <div class="stat-card danger">
+                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                <div class="stat-value" id="dangerCount">0</div>
+                <div class="stat-label">Nguy hiểm (≤3 ngày)</div>
+            </div>
+            <div class="stat-card safe">
+                <i class="fas fa-check-circle fa-2x"></i>
+                <div class="stat-value" id="safeCount">0</div>
+                <div class="stat-label">Đã qua an toàn</div>
+            </div>
+        </section>
+        
+        <!-- Danger Alert -->
+        <div class="danger-alert" id="dangerAlert" style="display: none;">
+            <i class="fas fa-exclamation-circle fa-2x"></i>
+            <div>
+                <h3>CẢNH BÁO NGUY HIỂM!</h3>
+                <p id="alertMessage">Có sự kiện nguy hiểm sắp xảy ra</p>
+            </div>
+        </div>
+        
+        <!-- Filters -->
+        <section class="filter-section">
+            <h3 style="margin-bottom: 20px; color: var(--primary);">
+                <i class="fas fa-filter"></i> BỘ LỌC DỮ LIỆU
+            </h3>
+            
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label><i class="fas fa-user"></i> Tên người</label>
+                    <select id="filterName">
+                        <option value="">Tất cả tên</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label><i class="fas fa-leaf"></i> Mùa</label>
+                    <select id="filterSeason">
+                        <option value="">Tất cả mùa</option>
+                        <option value="Xuân">Xuân</option>
+                        <option value="Hạ">Hạ</option>
+                        <option value="Thu">Thu</option>
+                        <option value="Đông">Đông</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label><i class="fas fa-heartbeat"></i> Triệu chứng</label>
+                    <select id="filterSymptom">
+                        <option value="">Tất cả triệu chứng</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label><i class="fas fa-calendar"></i> Khoảng thời gian</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="date" id="startDate" placeholder="Từ ngày">
+                        <input type="date" id="endDate" placeholder="Đến ngày">
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button class="btn btn-primary" id="applyFilterBtn">
+                    <i class="fas fa-search"></i> Áp dụng bộ lọc
+                </button>
+                <button class="btn" id="resetFilterBtn" style="background: #95a5a6; color: white;">
+                    <i class="fas fa-redo"></i> Đặt lại
+                </button>
+                <button class="btn" id="addRecordBtn" style="background: #9b59b6; color: white;">
+                    <i class="fas fa-plus"></i> Thêm bản ghi mới
+                </button>
+            </div>
+        </section>
+        
+        <!-- Data Table -->
+        <section class="table-container">
+            <div class="loading" id="loading">
+                <i class="fas fa-spinner"></i>
+                <p>Đang tải dữ liệu...</p>
+            </div>
+            
+            <table class="data-table" id="dataTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th width="100">Ngày sinh</th>
+                        <th width="110">Ngày vận hạn</th>
+                        <th width="80">Ngày xấu</th>
+                        <th width="100">Ngày Âm</th>
+                        <th width="70">Mùa</th>
+                        <th width="70">Giờ</th>
+                        <th width="70">Số TT</th>
+                        <th width="120">Tên</th>
+                        <th width="150">Triệu chứng</th>
+                        <th width="90">Tiết khí</th>
+                        <th width="100">Ăn Đông</th>
+                        <th width="100">Ăn Tây</th>
+                        <th width="120">Ăn Nam Bắc</th>
+                        <th width="110">Trước đây (Ngày)</th>
+                        <th width="100">Trước đây (Giờ)</th>
+                        <th width="110">Sắp tới (Ngày)</th>
+                        <th width="100">Sắp tới (Giờ)</th>
+                        <th width="80">Còn ngày</th>
+                        <th width="80">Còn giờ</th>
+                        <th width="70">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="mainDataBody">
+                    <!-- Dữ liệu sẽ được thêm bằng JavaScript -->
+                </tbody>
+            </table>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2024 Hệ Thống Theo Dõi Vận Hạn Quan Trọng | Dữ liệu được bảo vệ và mã hóa</p>
+            <p>Lưu ý: Luôn sao lưu dữ liệu định kỳ để tránh mất mát</p>
+        </footer>
+    </div>
+
+    <!-- Modal for Add/Edit Record -->
+    <div id="recordModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; padding: 30px; border-radius: 10px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto;">
+            <h3 style="margin-bottom: 20px; color: var(--primary);" id="modalTitle">Thêm bản ghi mới</h3>
+            <div id="modalForm">
+                <!-- Form sẽ được thêm bằng JavaScript -->
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                <button class="btn btn-primary" id="saveRecordBtn">Lưu</button>
+                <button class="btn" id="cancelModalBtn" style="background: #95a5a6; color: white;">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ====================== HỆ THỐNG LƯU TRỮ DỮ LIỆU ======================
+        const STORAGE_KEY = 'vanhan_data_v2';
+        const BACKUP_KEY = 'vanhan_backup';
+        
+        // Dữ liệu mẫu ban đầu (nếu không có dữ liệu)
+        const defaultData = [
+            {
+                id: Date.now(),
+                birthDate: "15/05/1990",
+                eventDate: "22/03/2025",
+                badDate: "25/03/2025",
+                lunarDate: "22/02/2025",
+                season: "Xuân",
+                time: "06:49",
+                sequence: "409",
+                name: "Nguyễn Văn A",
+                symptom: "Sốt cao, đau đầu, mệt mỏi",
+                eatEast: "Cháo gà, hành tía tô",
+                eatWest: "Súp rau củ, canh bí đỏ",
+                eatNorthSouth: "Nước gừng ấm, trà hoa cúc",
+                notes: "Cần theo dõi nhiệt độ thường xuyên",
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            }
+        ];
+        
+        // Tải dữ liệu từ Local Storage
+        function loadData() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    console.log(`Đã tải ${data.length} bản ghi từ bộ nhớ`);
+                    return data;
+                }
+            } catch (e) {
+                console.error("Lỗi khi tải dữ liệu:", e);
+            }
+            return [...defaultData];
+        }
+        
+        // Lưu dữ liệu vào Local Storage
+        function saveData(data) {
+            try {
+                const dataWithTimestamp = data.map(item => ({
+                    ...item,
+                    updatedAt: new Date().toISOString()
+                }));
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(dataWithTimestamp));
+                localStorage.setItem(BACKUP_KEY, JSON.stringify(dataWithTimestamp)); // Backup thêm
+                console.log(`Đã lưu ${data.length} bản ghi`);
+                showMessage("success", "Đã lưu dữ liệu thành công!");
+                return true;
+            } catch (e) {
+                console.error("Lỗi khi lưu dữ liệu:", e);
+                showMessage("error", "Lỗi khi lưu dữ liệu!");
+                return false;
+            }
+        }
+        
+        // Xuất dữ liệu ra file
+        function exportData() {
+            const data = loadData();
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `vanhan_data_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showMessage("success", "Đã xuất dữ liệu thành công!");
+        }
+        
+        // Nhập dữ liệu từ file
+        function importData(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (Array.isArray(data)) {
+                        if (confirm(`Bạn có chắc muốn nhập ${data.length} bản ghi mới?\nDữ liệu cũ sẽ được sao lưu tự động.`)) {
+                            // Sao lưu dữ liệu cũ
+                            const oldData = loadData();
+                            localStorage.setItem(`backup_${Date.now()}`, JSON.stringify(oldData));
+                            
+                            // Lưu dữ liệu mới
+                            saveData(data);
+                            window.location.reload();
+                        }
+                    } else {
+                        showMessage("error", "File không đúng định dạng!");
+                    }
+                } catch (e) {
+                    showMessage("error", "Lỗi khi đọc file!");
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        // ====================== HÀM TÍNH TOÁN CHÍNH ======================
+        function parseDate(dateString) {
+            if (!dateString || dateString === "#N/A") return new Date();
+            try {
+                const [day, month, year] = dateString.split('/').map(Number);
+                return new Date(year, month - 1, day);
+            } catch (e) {
+                return new Date();
+            }
+        }
+        
+        function formatDate(date) {
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+        
+        // Tính toán với phép chia có dư
+        function calculatePastDate(eventDate, sequence) {
+            const date = parseDate(eventDate);
+            const sequenceNum = parseInt(sequence) || 0;
+            const remainder = sequenceNum % 365;
+            date.setDate(date.getDate() - remainder);
+            return formatDate(date);
+        }
+        
+        function calculatePastTime(eventTime, sequence) {
+            const [hours, minutes] = eventTime.split(':').map(Number);
+            const sequenceNum = parseInt(sequence) || 0;
+            const remainderMinutes = (2 * sequenceNum) % 1440;
+            
+            let totalMinutes = (hours * 60 + minutes) - remainderMinutes;
+            while (totalMinutes < 0) {
+                totalMinutes += 24 * 60;
+            }
+            
+            const newHours = Math.floor(totalMinutes / 60) % 24;
+            const newMinutes = totalMinutes % 60;
+            
+            return `${newHours.toString().padStart(2, '0')}:${newMinutes.toString().padStart(2, '0')}`;
+        }
+        
+        function calculateFutureDate(eventDate, sequence) {
+            const date = parseDate(eventDate);
+            const sequenceNum = parseInt(sequence) || 0;
+            const remainder = sequenceNum % 365;
+            date.setDate(date.getDate() + remainder);
+            return formatDate(date);
+        }
+        
+        function calculateFutureTime(eventTime, sequence) {
+            const [hours, minutes] = eventTime.split(':').map(Number);
+            const sequenceNum = parseInt(sequence) || 0;
+            const remainderMinutes = (2 * sequenceNum) % 1440;
+            
+            let totalMinutes = (hours * 60 + minutes) + remainderMinutes;
+            const newHours = Math.floor(totalMinutes / 60) % 24;
+            const newMinutes = totalMinutes % 60;
+            
+            return `${newHours.toString().padStart(2, '0')}:${newMinutes.toString().padStart(2, '0')}`;
+        }
+        
+        // Tính thời gian còn lại
+        function calculateRemainingTime(futureDateStr, futureTimeStr) {
+            const now = new Date();
+            const futureDate = parseDate(futureDateStr);
+            const [hours, minutes] = futureTimeStr.split(':').map(Number);
+            futureDate.setHours(hours, minutes, 0, 0);
+            
+            const diffMs = futureDate - now;
+            const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+            const diffHours = Math.ceil(diffMs / (1000 * 60 * 60));
+            
+            return {
+                days: diffDays > 0 ? diffDays : 0,
+                hours: diffHours > 0 ? diffHours : 0,
+                ms: diffMs
+            };
+        }
+        
+        // Lấy tiết khí
+        function getSolarTerm(date) {
+            const solarTerms = [
+                {name: "Lập xuân", date: "02-04"}, {name: "Vũ thủy", date: "02-19"},
+                {name: "Kinh trập", date: "03-05"}, {name: "Xuân phân", date: "03-20"},
+                {name: "Thanh minh", date: "04-04"}, {name: "Cốc vũ", date: "04-20"},
+                {name: "Lập hạ", date: "05-05"}, {name: "Tiểu mãn", date: "05-21"},
+                {name: "Mang chủng", date: "06-05"}, {name: "Hạ chí", date: "06-21"},
+                {name: "Tiểu thử", date: "07-07"}, {name: "Đại thử", date: "07-22"},
+                {name: "Lập thu", date: "08-07"}, {name: "Xử thử", date: "08-23"},
+                {name: "Bạch lộ", date: "09-07"}, {name: "Thu phân", date: "09-23"},
+                {name: "Hàn lộ", date: "10-08"}, {name: "Sương giáng", date: "10-23"},
+                {name: "Lập đông", date: "11-07"}, {name: "Tiểu tuyết", date: "11-22"},
+                {name: "Đại tuyết", date: "12-07"}, {name: "Đông chí", date: "12-22"},
+                {name: "Tiểu hàn", date: "01-05"}, {name: "Đại hàn", date: "01-20"}
+            ];
+            
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const dateStr = `${month.toString().padStart(2,'0')}-${day.toString().padStart(2,'0')}`;
+            
+            for (let i = solarTerms.length - 1; i >= 0; i--) {
+                if (dateStr >= solarTerms[i].date) {
+                    return solarTerms[i].name;
+                }
+            }
+            return solarTerms[solarTerms.length - 1].name;
+        }
+        
+        // ====================== HIỂN THỊ DỮ LIỆU ======================
+        function displayData(data) {
+            const tbody = document.getElementById('mainDataBody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="20" style="text-align: center; padding: 30px; color: #666;">
+                            <i class="fas fa-database" style="font-size: 3rem; margin-bottom: 15px; display: block; opacity: 0.3;"></i>
+                            Không có dữ liệu để hiển thị<br>
+                            <button class="btn btn-primary" onclick="showAddModal()" style="margin-top: 15px;">
+                                <i class="fas fa-plus"></i> Thêm bản ghi đầu tiên
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            // Sắp xếp theo ngày sắp tới gần nhất
+            data.sort((a, b) => {
+                const futureA = calculateRemainingTime(
+                    calculateFutureDate(a.eventDate, a.sequence),
+                    calculateFutureTime(a.time, a.sequence)
+                );
+                const futureB = calculateRemainingTime(
+                    calculateFutureDate(b.eventDate, b.sequence),
+                    calculateFutureTime(b.time, b.sequence)
+                );
+                return futureA.ms - futureB.ms;
+            });
+            
+            const now = new Date();
+            
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                
+                // Tính toán các giá trị
+                const pastDate = calculatePastDate(item.eventDate, item.sequence);
+                const pastTime = calculatePastTime(item.time, item.sequence);
+                const futureDate = calculateFutureDate(item.eventDate, item.sequence);
+                const futureTime = calculateFutureTime(item.time, item.sequence);
+                const remaining = calculateRemainingTime(futureDate, futureTime);
+                
+                // Lấy tiết khí
+                const solarTerm = getSolarTerm(parseDate(item.eventDate));
+                
+                // Xác định class cho hàng
+                let rowClass = '';
+                if (remaining.days <= 3 && remaining.days > 0) {
+                    rowClass = 'danger-row';
+                } else if (remaining.days <= 7 && remaining.days > 0) {
+                    rowClass = 'warning-row';
+                }
+                
+                // Xác định class badge cho mùa
+                const seasonClass = `badge-${item.season ? item.season.toLowerCase() : 'default'}`;
+                
+                // Tính toán chi tiết cho tooltip
+                const seqNum = parseInt(item.sequence) || 0;
+                const daysRemainder = seqNum % 365;
+                const minutesRemainder = (2 * seqNum) % 1440;
+                
+                row.className = rowClass;
+                row.innerHTML = `
+                    <td><span class="badge badge-date">${item.birthDate || ''}</span></td>
+                    <td><span class="badge badge-date">${item.eventDate || ''}</span></td>
+                    <td><span class="badge badge-date">${item.badDate || ''}</span></td>
+                    <td><span class="badge badge-date">${item.lunarDate || 'N/A'}</span></td>
+                    <td><span class="badge ${seasonClass}">${item.season || 'N/A'}</span></td>
+                    <td><span class="badge badge-time">${item.time || ''}</span></td>
+                    <td><span class="badge badge-sequence" title="Số TT: ${seqNum}\n${seqNum} mod 365 = ${daysRemainder} ngày\n(2×${seqNum}) mod 1440 = ${minutesRemainder} phút">${item.sequence || ''}</span></td>
+                    <td><span class="badge badge-name">${item.name || ''}</span></td>
+                    <td><span class="badge badge-symptom">${item.symptom || 'Không có'}</span></td>
+                    <td><span class="badge" style="

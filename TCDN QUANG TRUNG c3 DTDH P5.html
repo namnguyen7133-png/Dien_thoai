@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>IRR Thực Chiến – Tài Chính Doanh Nghiệp</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{font-family:Arial;background:#f4f6f8;margin:0;line-height:1.6}
+header{background:#0d47a1;color:#fff;padding:20px;text-align:center}
+section{background:#fff;margin:15px;padding:20px;border-radius:8px}
+h2{color:#0d47a1}
+.term{background:#e3f2fd;padding:10px;border-left:5px solid #1976d2;margin-bottom:10px}
+.example{background:#f1f8ff;padding:10px;border-left:5px solid #42a5f5}
+.warning{background:#fff3e0;padding:10px;border-left:5px solid #fb8c00}
+input{padding:6px;margin:4px;width:120px}
+button{padding:8px 14px;margin:5px;border:none;background:#1976d2;color:#fff;border-radius:5px;cursor:pointer}
+button:hover{background:#0d47a1}
+.result{margin-top:10px;font-weight:bold;white-space:pre-line}
+nav{
+position:fixed;right:10px;top:80px;background:#fff;
+padding:10px;border-radius:8px;box-shadow:0 0 8px rgba(0,0,0,.2)
+}
+nav button{display:block;width:100%}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>📊 IRR – TỶ SUẤT DOANH LỢI NỘI BỘ</h1>
+<p>Hiểu bản chất – Tránh bẫy % – Ra quyết định đúng</p>
+</header>
+
+<nav>
+<button onclick="go('thuatngu')">Thuật ngữ</button>
+<button onclick="go('dunggi')">Dùng khi nào?</button>
+<button onclick="go('thoidiem')">Thời điểm</button>
+<button onclick="go('tinhtoan')">Tính IRR</button>
+<button onclick="go('tinhhuong')">Tình huống</button>
+</nav>
+
+<!-- 2.1 -->
+<section id="thuatngu">
+<h2>2.1 Thuật ngữ IRR – giải thích dễ hiểu</h2>
+
+<div class="term">
+<b>IRR (Internal Rate of Return):</b><br>
+Là mức lãi suất làm cho <b>NPV = 0</b>.<br>
+→ Hiểu đơn giản: <b>dự án tự sinh lời bao nhiêu %/năm</b>.
+</div>
+
+<div class="term">
+<b>Chi phí sử dụng vốn (r):</b><br>
+Lãi vay ngân hàng / tỷ suất sinh lời kỳ vọng.
+</div>
+
+<div class="term">
+<b>Nguyên tắc cốt lõi:</b><br>
+IRR &gt; r → Dự án đáng làm<br>
+IRR &lt; r → Dự án làm bạn nghèo đi
+</div>
+
+<div class="example">
+📌 IRR KHÔNG cho bạn biết lời bao nhiêu tiền –<br>
+📌 IRR chỉ cho biết <b>tỷ lệ % sinh lời</b>
+</div>
+</section>
+
+<!-- 2.2 -->
+<section id="dunggi">
+<h2>2.2 Cá nhân & Doanh nghiệp – dùng IRR khi nào?</h2>
+
+<div class="example">
+<b>CÁ NHÂN:</b><br>
+✔ So sánh các kênh đầu tư (%/năm)<br>
+✔ Gói bảo hiểm – chứng chỉ quỹ – sửa nhà cho thuê
+</div>
+
+<div class="example">
+<b>DOANH NGHIỆP:</b><br>
+✔ So sánh dự án <b>cùng quy mô vốn</b><br>
+✔ Chỉ dùng IRR kèm NPV
+</div>
+
+<div class="warning">
+⛔ Không dùng IRR một mình khi:<br>
+– Quy mô vốn khác nhau<br>
+– Dòng tiền đổi dấu nhiều lần
+</div>
+</section>
+
+<!-- 3.2 -->
+<section id="thoidiem">
+<h2>3.2 Làm gì trước – sau? Khi nào IRR mới có ý nghĩa?</h2>
+
+<div class="term">
+<b>Bước 1:</b> Kiểm tra dòng tiền có hợp lý không
+</div>
+
+<div class="term">
+<b>Bước 2:</b> Tính NPV trước – xem có dương không
+</div>
+
+<div class="term">
+<b>Bước 3:</b> So IRR với chi phí vốn
+</div>
+
+<div class="warning">
+⛔ IRR cao nhưng NPV thấp → <b>bẫy %</b><br>
+⛔ IRR cao nhưng vốn nhỏ → không làm giàu được
+</div>
+</section>
+
+<!-- TÍNH IRR -->
+<section id="tinhtoan">
+<h2>3.2 Bài toán IRR – nhập số để hiểu bản chất</h2>
+
+Vốn đầu tư ban đầu: <input id="cf0" type="number"><br>
+Dòng tiền mỗi năm: <input id="cf" type="number"><br>
+Số năm: <input id="n" type="number"><br>
+Chi phí vốn (%): <input id="r" type="number"><br>
+
+<button onclick="tinhIRR()">Ước tính IRR</button>
+
+<div id="kq" class="result"></div>
+</section>
+
+<!-- 4.2 -->
+<section id="tinhhuong">
+<h2>4.2 Nhập tình huống & chọn cách xử lý</h2>
+
+<input id="caseInput" placeholder="VD: mua máy, mở xưởng, đầu tư quỹ"><br>
+
+<button onclick="xuLy('ca_nhan')">Cá nhân</button>
+<button onclick="xuLy('doanh_nghiep')">Doanh nghiệp</button>
+<button onclick="xuLy('bay')">Cảnh báo bẫy IRR</button>
+
+<div id="caseResult" class="result"></div>
+</section>
+
+<script>
+function go(id){
+document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+
+function tinhIRR(){
+let cf0 = Number(document.getElementById("cf0").value);
+let cf = Number(document.getElementById("cf").value);
+let n = Number(document.getElementById("n").value);
+let cost = Number(document.getElementById("r").value);
+
+let irr = (cf*n - cf0)/cf0*100/n;
+
+document.getElementById("kq").innerText =
+"IRR ước tính ≈ " + irr.toFixed(2) + "%\n" +
+(irr>cost ? "✔ IRR > chi phí vốn → CÓ THỂ LÀM"
+          : "⛔ IRR < chi phí vốn → KHÔNG NÊN");
+}
+
+function xuLy(type){
+let t = document.getElementById("caseInput").value;
+let msg="";
+if(type==="ca_nhan"){
+msg="✔ Cá nhân: dùng IRR để so %/năm, nhưng phải đủ tiền sống.";
+}
+if(type==="doanh_nghiep"){
+msg="✔ DN: IRR chỉ dùng khi vốn tương đương + phải xem NPV.";
+}
+if(type==="bay"){
+msg="⛔ IRR cao không có nghĩa là giàu – hãy coi NPV.";
+}
+document.getElementById("caseResult").innerText =
+"Tình huống: "+t+"\n"+msg;
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

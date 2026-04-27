@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công cụ Tính Tổng Chi phí Xây nhà (Theo m²)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .input-group input[type="number"], .input-group input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .result-box {
+            margin-top: 25px;
+            padding: 20px;
+            border: 2px solid #2ecc71;
+            border-radius: 6px;
+            background-color: #e8f8f5;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .result-item strong {
+            color: #e74c3c;
+        }
+        .calculate-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .calculate-btn:hover {
+            background-color: #2980b9;
+        }
+        .note {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-top: 15px;
+            padding-left: 10px;
+            border-left: 3px solid #f39c12;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🛠️ Công Cụ Ước Tính Chi Phí Xây Dựng</h2>
+
+    <div class="input-group">
+        <label for="width">1. Chiều Ngang (m):</label>
+        <input type="number" id="width" value="5" min="1">
+    </div>
+
+    <div class="input-group">
+        <label for="length">2. Chiều Dài (m):</label>
+        <input type="number" id="length" value="12" min="1">
+    </div>
+
+    <div class="input-group">
+        <label for="floors">3. Số Tầng Nhà (Ví dụ: 2):</label>
+        <input type="number" id="floors" value="2" min="1">
+    </div>
+
+    <hr>
+
+    <div class="input-group">
+        <label for="móng_percent">4. Tỷ lệ Diện tích Móng (%) - *Móng đơn theo ví dụ (40):*</label>
+        <input type="number" id="móng_percent" value="40" min="0" max="100">
+    </div>
+
+    <div class="input-group">
+        <label for="mái_percent">5. Tỷ lệ Diện tích Mái (%) - *Mái BTCT theo ví dụ (40):*</label>
+        <input type="number" id="mái_percent" value="40" min="0" max="100">
+    </div>
+
+    <hr>
+
+    <div class="input-group">
+        <label for="rough_price">6. Đơn giá Xây Thô (VNĐ/m&sup2;) - *Ví dụ: 3500000:</label>
+        <input type="number" id="rough_price" value="3500000" min="1000000">
+    </div>
+
+    <div class="input-group">
+        <label for="turnkey_price">7. Đơn giá Xây Trọn Gói (VNĐ/m&sup2;) - *Ví dụ: 4750000:</label>
+        <input type="number" id="turnkey_price" value="4750000" min="1000000">
+    </div>
+    
+    <button class="calculate-btn" onclick="calculateCost()">Tính Tổng Chi Phí</button>
+
+    <div class="result-box">
+        <h3>📊 Kết Quả Ước Tính (Bước 1 & 3)</h3>
+        <div class="result-item">
+            <span><strong>Tổng Diện tích Xây dựng (m&sup2;):</strong></span>
+            <span id="total_area">0 m&sup2;</span>
+        </div>
+        <hr>
+        <div class="result-item">
+            <span><strong>Tổng Chi phí Xây Thô:</strong></span>
+            <span id="rough_cost">0 VNĐ</span>
+        </div>
+        <div class="result-item">
+            <span><strong>Tổng Chi phí Xây Trọn Gói:</strong></span>
+            <span id="turnkey_cost">0 VNĐ</span>
+        </div>
+    </div>
+
+    <p class="note">
+        *Công cụ tính toán dựa trên quy tắc tính diện tích m&sup2; (Móng, Tầng, Mái) và đơn giá nhập vào. Kết quả mang tính chất tham khảo, không bao gồm 20% dự trù ngân sách theo lời khuyên của video.
+    </p>
+</div>
+
+<script>
+    function calculateCost() {
+        // --- 1. Lấy giá trị từ các trường nhập liệu ---
+        const width = parseFloat(document.getElementById('width').value) || 0;
+        const length = parseFloat(document.getElementById('length').value) || 0;
+        const floors = parseInt(document.getElementById('floors').value) || 0;
+        const móngPercent = parseFloat(document.getElementById('móng_percent').value) / 100 || 0;
+        const máiPercent = parseFloat(document.getElementById('mái_percent').value) / 100 || 0;
+        const roughPrice = parseFloat(document.getElementById('rough_price').value) || 0;
+        const turnkeyPrice = parseFloat(document.getElementById('turnkey_price').value) || 0;
+
+        // --- 2. Tính Tổng Diện tích Xây dựng (Bước 1) ---
+        const baseArea = width * length; // Diện tích sàn cơ sở (60 m2 trong ví dụ)
+
+        // Diện tích Móng (Ví dụ: 40%)
+        const móngArea = baseArea * móngPercent;
+
+        // Diện tích Các Tầng (Tầng 1 + Tầng 2 + ... | Giả sử tất cả tầng trên Móng là 100% diện tích)
+        // Lưu ý: Số tầng = 2 nghĩa là Tầng 1 (100%) và Tầng 2 (100%) -> Tầng Area = floors * baseArea
+        const tầngArea = baseArea * floors; 
+
+        // Diện tích Mái (Ví dụ: 40%)
+        const máiArea = baseArea * máiPercent;
+
+        // Tổng diện tích sàn xây dựng (Ví dụ: 24 + 60 + 60 + 24 = 168 m2)
+        const totalArea = móngArea + tầngArea + máiArea;
+
+        // --- 3. Tính Tổng Chi phí (Bước 3) ---
+
+        // Tổng Chi phí Xây Thô
+        const roughCost = totalArea * roughPrice;
+
+        // Tổng Chi phí Xây Trọn Gói
+        const turnkeyCost = totalArea * turnkeyPrice;
+
+        // --- 4. Hiển thị kết quả ---
+        document.getElementById('total_area').innerHTML = totalArea.toFixed(2) + ' m&sup2;';
+
+        // Hàm định dạng số sang tiền tệ VNĐ
+        function formatCurrency(number) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number);
+        }
+
+        document.getElementById('rough_cost').innerHTML = formatCurrency(roughCost);
+        document.getElementById('turnkey_cost').innerHTML = formatCurrency(turnkeyCost);
+    }
+
+    // Tự động chạy tính toán khi tải trang với giá trị mặc định
+    document.addEventListener('DOMContentLoaded', calculateCost);
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

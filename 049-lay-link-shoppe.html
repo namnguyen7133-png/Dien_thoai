@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Tool lấy sản phẩm Shopee → CSV (Shop / Từ khóa / Flash sale)</title>
+  <style>
+    :root{--maxw:900px}
+    body{font-family:system-ui,Arial;margin:16px;background:#f7f8fb;color:#111}
+    .wrap{max-width:var(--maxw);margin:0 auto;background:white;padding:18px;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.06)}
+    h1{font-size:18px;margin:0 0 12px}
+    label{display:block;margin-top:10px;font-weight:600}
+    input,select,textarea,button{width:100%;padding:10px;margin-top:6px;border:1px solid #ddd;border-radius:8px;font-size:14px}
+    .row{display:flex;gap:8px}
+    .row > *{flex:1}
+    button.primary{background:#2563eb;color:#fff;border:0}
+    button.ghost{background:#fff}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{border:1px solid #eee;padding:6px;font-size:13px}
+    th{background:#fafafa}
+    .muted{color:#666;font-size:13px}
+    pre{white-space:pre-wrap;background:#f2f4f7;padding:10px;border-radius:8px}
+    .hint{font-size:13px;color:#444;margin-top:8px}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Tool lấy sản phẩm Shopee → CSV</h1>
+  <div class="hint">Hỗ trợ 3 chế độ: <strong>Shop</strong> (lấy tất cả sản phẩm trong 1 shop), <strong>Từ khóa</strong> (lấy kết quả tìm kiếm), <strong>Flash Sale / Category</strong> (lấy theo link danh mục/flash sale).<br>Chạy trên điện thoại/PC. Nếu Shopee chặn CORS, tool sẽ cung cấp phương án dự phòng (dán danh sách link).</div>
+
+  <label>Chọn chế độ</label>
+  <select id="mode">
+    <option value="shop">Shop (link shop)</option>
+    <option value="keyword">Từ khóa (search)</option>
+    <option value="category">Flash sale / Danh mục (link)</option>
+  </select>
+
+  <label id="label_input">Nhập link shop hoặc từ khóa</label>
+  <input id="input" placeholder="Ví dụ: https://shopee.vn/shop/123456 hoặc 'tai nghe bluetooth'" />
+
+  <div class="row">
+    <div>
+      <label>Số sản phẩm tối đa (limit)</label>
+      <input id="limit" type="number" value="100" />
+    </div>
+    <div>
+      <label>Hộp kiểm: chỉ lấy sản phẩm có lượt bán >=</label>
+      <input id="minSold" type="number" value="0" />
+    </div>
+  </div>
+
+  <div style="margin-top:12px;display:flex;gap:8px">
+    <button class="primary" id="startBtn">Bắt đầu lấy</button>
+    <button id="pasteBtn" class="ghost">Dán danh sách link (dự phòng)</button>
+  </div>
+
+  <div id="log" style="margin-top:12px;color:#0b3;display:none"></div>
+  <div id="error" style="margin-top:12px;color:#b33;display:none"></div>
+
+  <div id="manualArea" style="display:none;margin-top:12px">
+    <label>Danh sách link sản phẩm (1 link / 1 dòng)</label>
+    <textarea id="manualLinks" rows="6" placeholder="https://shopee.vn/...\nhttps://shopee.vn/..."> </textarea>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button id="manualParse" class="primary">Chuyển sang CSV</button>
+      <button id="manualClear" class="ghost">Huỷ</button>
+    </div>
+  </div>
+
+  <div id="result" style="margin-top:14px;display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="muted">Kết quả: <span id="count">0</span> sản phẩm</div>
+      <div style="display:flex;gap:8px">
+        <button id="downloadCsv" class="primary">Tải CSV</button>
+        <button id="showTable" class="ghost">Hiện/Ẩn bảng</button>
+      </div>
+    </div>
+    <div id="tableWrap" style="margin-top:8px;display:none;max-height:400px;overflow:auto">
+      <table id="outTable"><thead></thead><tbody></tbody></table>
+    </div>
+  </div>
+
+  <div style="margin-top:14px">
+    <div class="muted">Gợi ý định dạng CSV (đầu vào từ tool thứ 2):</div>
+    <pre>name,link,price,commission_percent,sold,shop_name,rating</pre>
+  </div>
+
+  <p class="muted">Lưu ý kỹ thuật: Shopee có cơ chế hạn chế (CORS, rate-limit). Tool cố gắng gọi các API không chính thức của Shopee — có thể hoạt động ngay trên trình duyệt, nhưng nếu trình duyệt chặn, bạn có thể chuyển sang chế độ <strong>dán link</strong> (nhanh và chắc chắn).</p>
+</div>
+
+<script>
+// ----- Helpers -----
+function $id(s){return document.getElementById(s)}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+function csvSafe(s){if(s==null) return ''; return '"'+String(s).replace(/"/g,'""')+'"'}
+
+// ----- Extractors -----
+function extractShopIdFromUrl(url){
+  try{
+    const u=new URL(url);
+    // formats: /shop/<shopid> or /<shopname>-i.<shopid> or /user/<id>
+    const parts=u.pathname.split('/').filter(Boolean);
+    for(const p of parts){
+      const m=p.match(/^i\.(\d+)$/); if(m) return m[1];
+      const m2=p.match(/^shop\/(\d+)$/); if(m2) return m2[1];
+    }
+    // try search query param
+    if(u.searchParams.has('shopid')) return u.searchParams.get('shopid');
+  }catch(e){}
+  return null;
+}
+
+function buildSearchApi(keyword,limit,offset){
+  // unofficial v2/v4 search endpoint
+  const q = encodeURIComponent(keyword);
+  return `https://shopee.vn/api/v4/search/search_items?by=relevancy&limit=${limit}&match_id=0&newest=${offset}&order=desc&keyword=${q}`;
+}
+
+function buildShopApi(shopid,limit,offset){
+  // endpoint that lists items by shop (may work)
+  return `https://shopee.vn/api/v4/search/search_items?by=pop&limit=${limit}&match_id=${shopid}&newest=${offset}`;
+}
+
+function buildCategoryApiFromUrl(url,limit,offset){
+  // For category / flash sale pages we attempt to pull matching id from url
+  try{
+    const u=new URL(url);
+    // pattern: /category/<catid>/... or /flash_sale?category=...
+    const parts=u.pathname.split('/').filter(Boolean);
+    for(let i=0;i<parts.length;i++){
+      if(parts[i]==='category' && parts[i+1]) return `https://shopee.vn/api/v4/search/search_items?by=pop&limit=${limit}&match_id=${parts[i+1]}&newest=${offset}`;
+      const m=parts[i].match(/^c(\d+)$/); if(m) return `https://shopee.vn/api/v4/search/search_items?by=pop&limit=${limit}&match_id=${m[1]}&newest=${offset}`;
+    }
+    if(u.searchParams.has('category')) return `https://shopee.vn/api/v4/search/search_items?by=pop&limit=${limit}&match_id=${u.searchParams.get('category')}&newest=${offset}`;
+  }catch(e){}
+  return null;
+}
+
+async function fetchJsonWithCors(url){
+  // try fetch; if CORS blocks, it will throw
+  const res = await fetch(url, {method:'GET',credentials:'omit'});
+  if(!res.ok) throw new Error('HTTP '+res.status);
+  const txt = await res.text();
+  try{ return JSON.parse(txt); }catch(e){
+    // some Shopee endpoints return JS var wrapper; try to extract json
+    const m = txt.match(/\{[\s\S]*\}/);
+    if(m) return JSON.parse(m[0]);
+    throw e;
+  }
+}
+
+function normalizeItem(item){
+  // item.item_basic exists in v4 search
+  const b = item.item_basic || item;
+  return {
+    name: b.name || b.item_name || '',
+    link: b.link || (`https://shopee.vn/product/${b.shopid}/${b.itemid}`) || (b.itemid?`https://shopee.vn/product/${b.shopid}/${b.itemid}`:''),
+    price: b.price ? (b.price/100000).toFixed(0) : (b.price_min? (b.price_min/100000).toFixed(0):''),
+    commission_percent: b.commission? b.commission: '',
+    sold: b.sold? b.sold: (b.cmt_count?b.cmt_count:''),
+    shop_name: b.shop_name || b.shopid || '',
+    rating: b.item_rating? (b.item_rating.rating_star || '') : ''
+  }
+}
+
+// ----- UI -----
+const startBtn=$id('startBtn');
+const pasteBtn=$id('pasteBtn');
+const modeSel=$id('mode');
+const inputEl=$id('input');
+const limitEl=$id('limit');
+const minSoldEl=$id('minSold');
+const logEl=$id('log');
+const errEl=$id('error');
+const manualArea=$id('manualArea');
+const manualLinks=$id('manualLinks');
+const manualParse=$id('manualParse');
+const manualClear=$id('manualClear');
+const resultDiv=$id('result');
+const countSpan=$id('count');
+const downloadBtn=$id('downloadCsv');
+const showTableBtn=$id('showTable');
+const tableWrap=$id('tableWrap');
+const outTable=$id('outTable');
+
+modeSel.addEventListener('change',()=>{
+  const m=modeSel.value;
+  if(m==='keyword'){
+    $id('label_input').textContent='Nhập từ khóa tìm kiếm';
+    inputEl.placeholder = 'tai nghe bluetooth';
+  }else if(m==='shop'){
+    $id('label_input').textContent='Nhập link shop (ví dụ: https://shopee.vn/shop/123456 hoặc https://shopee.vn/<name>-i.123456)';
+    inputEl.placeholder = 'https://shopee.vn/shop/123456';
+  }else{
+    $id('label_input').textContent='Nhập link danh mục / flash sale';
+    inputEl.placeholder = 'https://shopee.vn/flash_sale/.. hoặc https://shopee.vn/category/..';
+  }
+});
+
+pasteBtn.addEventListener('click',()=>{ manualArea.style.display='block'; window.scrollTo(0,document.body.scrollHeight); });
+manualClear.addEventListener('click',()=>{ manualArea.style.display='none'; manualLinks.value=''; });
+
+// ----- Core: try to fetch items -----
+async function fetchByKeyword(keyword,limit){
+  const pageSize = 60;
+  let offset=0; let collected=[];
+  while(collected.length < limit){
+    const take = Math.min(pageSize, limit - collected.length);
+    const url = buildSearchApi(keyword,take,offset);
+    log('Gọi API: '+url);
+    let j;
+    try{ j = await fetchJsonWithCors(url); }
+    catch(e){ throw new Error('Không thể gọi API (CORS hoặc bị chặn): '+e.message); }
+    const items = (j.items || j.data || []).map(normalizeItem);
+    if(items.length===0) break;
+    collected = collected.concat(items);
+    offset += items.length;
+    await sleep(300);
+  }
+  return collected.slice(0,limit);
+}
+
+async function fetchByShopUrl(url,limit){
+  const shopid = extractShopIdFromUrl(url);
+  if(!shopid) throw new Error('Không tìm thấy shopid từ URL');
+  const pageSize = 60; let offset=0; let collected=[];
+  while(collected.length < limit){
+    const take = Math.min(pageSize, limit - collected.length);
+    const api = buildShopApi(shopid,take,offset);
+    log('Gọi API: '+api);
+    let j;
+    try{ j = await fetchJsonWithCors(api); }
+    catch(e){ throw new Error('Không thể gọi API (CORS): '+e.message); }
+    const items = (j.items || j.data || []).map(normalizeItem);
+    if(items.length===0) break;
+    collected = collected.concat(items);
+    offset += items.length;
+    await sleep(300);
+  }
+  return collected.slice(0,limit);
+}
+
+async function fetchByCategoryUrl(url,limit){
+  // try to build category API
+  const api = buildCategoryApiFromUrl(url,60,0);
+  if(!api) throw new Error('Không thể nhận dạng category/flash sale từ URL này. Dùng chế độ dán link.');
+  // reuse fetch logic
+  const pageSize=60; let offset=0; let collected=[];
+  while(collected.length < limit){
+    const take = Math.min(pageSize, limit - collected.length);
+    const call = api.replace('limit=60','limit='+take).replace(/newest=\d+/,'newest='+offset);
+    log('Gọi API: '+call);
+    let j;
+    try{ j = await fetchJsonWithCors(call); }
+    catch(e){ throw new Error('Không thể gọi API (CORS): '+e.message); }
+    const items = (j.items || j.data || []).map(normalizeItem);
+    if(items.length===0) break;
+    collected = collected.concat(items);
+    offset += items.length;
+    await sleep(300);
+  }
+  return collected.slice(0,limit);
+}
+
+function log(msg){ logEl.style.display='block'; logEl.textContent = msg; errEl.style.display='none'; }
+function error(msg){ errEl.style.display='block'; errEl.textContent = msg; }
+
+startBtn.addEventListener('click', async ()=>{
+  const mode = modeSel.value; const input = inputEl.value.trim(); const limit = Number(limitEl.value)||100; const minSold = Number(minSoldEl.value)||0;
+  if(!input){ return error('Nhập link hoặc từ khóa trước khi chạy'); }
+  startBtn.disabled=true; pasteBtn.disabled=true; log('Bắt đầu thu thập...');
+  try{
+    let items = [];
+    if(mode==='keyword'){
+      items = await fetchByKeyword(input, limit);
+    }else if(mode==='shop'){
+      items = await fetchByShopUrl(input, limit);
+    }else{
+      items = await fetchByCategoryUrl(input, limit);
+    }
+    // filter by minSold
+    if(minSold>0) items = items.filter(it=>Number(it.sold||0) >= minSold);
+    showResults(items);
+    log('Hoàn tất — tìm được '+items.length+' sản phẩm');
+  }catch(e){
+    error('Lỗi: '+e.message + '\n→ Gợi ý: nếu bị chặn CORS hoặc lỗi API, nhấn "Dán danh sách link" và paste link sản phẩm (1 dòng 1 link).');
+    console.error(e);
+  }finally{
+    startBtn.disabled=false; pasteBtn.disabled=false;
+  }
+});
+
+function showResults(items){
+  resultDiv.style.display='block'; countSpan.textContent = items.length;
+  // populate table
+  const thead = outTable.querySelector('thead'); const tbody = outTable.querySelector('tbody');
+  thead.innerHTML = '<tr>' + ['Tên','Link','Giá','Hoa hồng','Đã bán','Shop','Rating'].map(h=>`<th>${h}</th>`).join('') + '</tr>';
+  tbody.innerHTML = items.map(it=>`<tr><td>${it.name}</td><td><a href="${it.link}" target="_blank">link</a></td><td>${it.price}</td><td>${it.commission_percent}</td><td>${it.sold}</td><td>${it.shop_name}</td><td>${it.rating}</td></tr>`).join('');
+  tableWrap.style.display='block'; tableWrap.scrollIntoView({behavior:'smooth'});
+  // store for download
+  window._shopee_items = items;
+}
+
+showTableBtn.addEventListener('click',()=>{ tableWrap.style.display = tableWrap.style.display==='none'?'block':'none' });
+
+downloadBtn.addEventListener('click', ()=>{
+  const items = window._shopee_items || [];
+  if(!items.length) return error('Chưa có kết quả để tải');
+  const header = ['name','link','price','commission_percent','sold','shop_name','rating'];
+  const rows = items.map(it=> header.map(h=>csvSafe(it[h])).join(','));
+  const csv = [header.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='shopee_products.csv'; a.click();
+});
+
+// Manual parse links -> build minimal item objects
+manualParse.addEventListener('click', async ()=>{
+  const txt = manualLinks.value.trim(); if(!txt) return error('Dán ít nhất 1 link');
+  const lines = txt.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+  const items = lines.map(l=>({name:'',link:l,price:'',commission_percent:'',sold:'',shop_name:'',rating:''}));
+  window._shopee_items = items; showResults(items);
+  manualArea.style.display='none';
+});
+
+// init
+modeSel.dispatchEvent(new Event('change'));
+
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

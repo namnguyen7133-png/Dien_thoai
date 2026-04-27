@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quy Trình Sử Dụng 4 AI Thông Minh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            padding: 20px;
+            font-size: 18px; /* Tăng kích thước chữ cho dễ đọc */
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header styles */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.8rem; /* Tăng kích thước tiêu đề */
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.3rem; /* Tăng kích thước mô tả */
+            max-width: 900px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        /* Tóm tắt ngắn gọn */
+        .summary-section {
+            margin-bottom: 50px;
+        }
+        
+        .section-title {
+            font-size: 2.2rem; /* Tăng kích thước tiêu đề section */
+            color: #1a237e;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #3949ab;
+            font-weight: 700;
+        }
+        
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 10px;
+            overflow: hidden;
+            font-size: 1.1rem; /* Tăng kích thước chữ trong bảng */
+        }
+        
+        .summary-table th {
+            background-color: #3949ab;
+            color: white;
+            padding: 22px 15px; /* Tăng padding cho dễ đọc */
+            text-align: left;
+            font-size: 1.3rem; /* Tăng kích thước tiêu đề cột */
+        }
+        
+        .summary-table td {
+            padding: 20px 15px; /* Tăng padding cho dễ đọc */
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .summary-table tr:nth-child(even) {
+            background-color: #f5f7ff;
+        }
+        
+        .summary-table tr:hover {
+            background-color: #e8eaf6;
+        }
+        
+        /* Phần chi tiết AI */
+        .ai-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .ai-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 6px solid;
+            font-size: 1.1rem; /* Tăng kích thước chữ trong card */
+        }
+        
+        .ai-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .ai-card.chatgpt {
+            border-color: #10a37f;
+        }
+        
+        .ai-card.gemini {
+            border-color: #4285f4;
+        }
+        
+        .ai-card.grok {
+            border-color: #8a2be2;
+        }
+        
+        .ai-card.deepseek {
+            border-color: #ff6b00;
+        }
+        
+        .ai-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .ai-icon {
+            width: 70px; /* Tăng kích thước icon */
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 1.8rem; /* Tăng kích thước icon */
+            color: white;
+        }
+        
+        .ai-icon.chatgpt {
+            background-color: #10a37f;
+        }
+        
+        .ai-icon.gemini {
+            background-color: #4285f4;
+        }
+        
+        .ai-icon.grok {
+            background-color: #8a2be2;
+        }
+        
+        .ai-icon.deepseek {
+            background-color: #ff6b00;
+        }
+        
+        .ai-name {
+            font-size: 1.8rem; /* Tăng kích thước tên AI */
+            font-weight: 700;
+            color: #1a237e;
+        }
+        
+        .ai-tagline {
+            font-size: 1.2rem; /* Tăng kích thước tagline */
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .ai-usage-list {
+            list-style-type: none;
+            padding-left: 5px;
+        }
+        
+        .ai-usage-list li {
+            padding: 12px 0; /* Tăng padding cho dễ đọc */
+            border-bottom: 1px dashed #e0e0e0;
+            position: relative;
+            padding-left: 35px;
+            font-size: 1.1rem; /* Tăng kích thước chữ trong list */
+        }
+        
+        .ai-usage-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4caf50;
+            font-weight: bold;
+            font-size: 1.2rem; /* Tăng kích thước icon check */
+        }
+        
+        /* Quy trình workflow */
+        .workflow-section {
+            margin-bottom: 50px;
+        }
+        
+        .workflow-steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .workflow-step {
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+            background: white;
+            border-radius: 15px;
+            padding: 30px 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            position: relative;
+            font-size: 1.1rem; /* Tăng kích thước chữ trong step */
+        }
+        
+        .step-number {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px; /* Tăng kích thước số step */
+            height: 50px;
+            background-color: #3949ab;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem; /* Tăng kích thước số */
+            font-weight: bold;
+        }
+        
+        .step-ai {
+            font-size: 1.5rem; /* Tăng kích thước tên AI trong step */
+            font-weight: 700;
+            margin: 20px 0 15px;
+            color: #1a237e;
+        }
+        
+        .step-desc {
+            color: #555;
+            line-height: 1.7;
+        }
+        
+        .step-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem; /* Tăng kích thước mũi tên */
+            color: #3949ab;
+            margin: 0 10px;
+        }
+        
+        /* Ví dụ thực tế */
+        .example-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 35px;
+            margin-bottom: 50px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            font-size: 1.1rem; /* Tăng kích thước chữ trong ví dụ */
+        }
+        
+        .example-title {
+            font-size: 1.8rem; /* Tăng kích thước tiêu đề ví dụ */
+            color: #1a237e;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .example-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+        
+        .example-step {
+            padding: 25px;
+            border-radius: 10px;
+            background-color: #f8f9ff;
+            border-left: 5px solid;
+        }
+        
+        .example-step.gemini-ex {
+            border-left-color: #4285f4;
+        }
+        
+        .example-step.chatgpt-ex {
+            border-left-color: #10a37f;
+        }
+        
+        .example-step.grok-ex {
+            border-left-color: #8a2be2;
+        }
+        
+        .example-step.deepseek-ex {
+            border-left-color: #ff6b00;
+        }
+        
+        .example-ai {
+            font-weight: 700;
+            font-size: 1.3rem; /* Tăng kích thước tên AI trong ví dụ */
+            margin-bottom: 10px;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            background-color: #1a237e;
+            color: white;
+            border-radius: 15px;
+            margin-top: 40px;
+            font-size: 1.1rem; /* Tăng kích thước chữ footer */
+        }
+        
+        .footer p {
+            margin-bottom: 10px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .workflow-steps {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .workflow-step {
+                max-width: 100%;
+                width: 100%;
+            }
+            
+            .step-arrow {
+                transform: rotate(90deg);
+                margin: 10px 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px; /* Giữ kích thước chữ lớn trên mobile */
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .ai-name {
+                font-size: 1.6rem;
+            }
+            
+            .ai-card {
+                padding: 20px;
+            }
+            
+            .summary-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+        
+        /* High contrast mode for better readability */
+        @media (prefers-contrast: high) {
+            body {
+                color: #000;
+                background-color: #fff;
+            }
+            
+            .ai-card, .example-section, .workflow-step {
+                border: 2px solid #000;
+            }
+            
+            .summary-table th {
+                background-color: #000;
+                color: #fff;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-robot"></i> Quy Trình Sử Dụng 4 AI Thông Minh</h1>
+            <p>Hướng dẫn chi tiết sử dụng ChatGPT, Gemini, Grok và DeepSeek theo đúng điểm mạnh tự nhiên của từng mô hình</p>
+        </header>
+        
+        <section class="summary-section">
+            <h2 class="section-title"><i class="fas fa-bullseye"></i> I. TÓM TẮT NGẮN GỌN – DÙNG AI NÀO KHI NÀO?</h2>
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Tình huống</th>
+                        <th>AI phù hợp nhất</th>
+                        <th>Lý do</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Cần sáng tạo, viết nội dung đẹp, chỉnh sửa câu chữ, văn phong chuyên nghiệp</strong></td>
+                        <td><strong>ChatGPT</strong></td>
+                        <td>Mạnh nhất về ngôn ngữ, viết lách, cấu trúc, logic mạch lạc.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cần thông tin mới, thời sự nóng, phân tích liên quan thế giới thật</strong></td>
+                        <td><strong>Grok</strong></td>
+                        <td>Grok được huấn luyện sát thời gian thực, đặc biệt mạnh về dữ liệu mạng xã hội.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cần tổng hợp đa phương thức (hình ảnh, tài liệu, hiểu video), dữ liệu Google</strong></td>
+                        <td><strong>Gemini</strong></td>
+                        <td>Mạnh về xử lý đa phương tiện + tìm kiếm thông tin từ hệ sinh thái Google.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cần suy luận sâu, logic, phân tích kỹ thuật, lập trình, tính toán</strong></td>
+                        <td><strong>DeepSeek</strong></td>
+                        <td>Điểm mạnh vượt trội về reasoning, tính toán, phân tích chuyên sâu.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <section>
+            <h2 class="section-title"><i class="fas fa-tasks"></i> II. CHI TIẾT: NÊN DÙNG AI NÀO CHO MỖI LOẠI CÔNG VIỆC?</h2>
+            <div class="ai-details">
+                <!-- ChatGPT Card -->
+                <div class="ai-card chatgpt">
+                    <div class="ai-header">
+                        <div class="ai-icon chatgpt">
+                            <i class="fas fa-comment-dots"></i>
+                        </div>
+                        <div>
+                            <div class="ai-name">ChatGPT</div>
+                            <div class="ai-tagline">Bậc thầy ngôn ngữ & sáng tạo</div>
+                        </div>
+                    </div>
+                    <h3 style="margin-bottom: 15px; color: #10a37f;">Dùng khi:</h3>
+                    <ul class="ai-usage-list">
+                        <li>Viết nội dung marketing, thư, CV</li>
+                        <li>Chỉnh sửa văn phong, tối ưu câu chữ</li>
+                        <li>Viết báo cáo, tóm tắt khoa học</li>
+                        <li>Giải thích khái niệm dễ hiểu</li>
+                        <li>Ý tưởng sáng tạo, storytelling</li>
+                        <li>Viết code với chú thích rõ ràng</li>
+                    </ul>
+                    <p style="margin-top: 20px; font-style: italic; color: #555;">
+                        <strong>→ ChatGPT = AI mạnh nhất về ngôn ngữ + sáng tạo + viết lách + độ chính xác trình bày.</strong>
+                    </p>
+                </div>
+                
+                <!-- Gemini Card -->
+                <div class="ai-card gemini">
+                    <div class="ai-header">
+                        <div class="ai-icon gemini">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div>
+                            <div class="ai-name">Gemini</div>
+                            <div class="ai-tagline">Chuyên gia đa phương tiện</div>
+                        </div>
+                    </div>
+                    <h3 style="margin-bottom: 15px; color: #4285f4;">Dùng khi:</h3>
+                    <ul class="ai-usage-list">
+                        <li>Phân tích ảnh, video, tài liệu PDF</li>
+                        <li>Cần kiến thức thực tế từ hệ sinh thái Google</li>
+                        <li>Tổng hợp thông tin rộng, nhiều chiều</li>
+                        <li>Ý tưởng ban đầu cho dự án lớn</li>
+                        <li>Dịch thuật theo ngữ cảnh trực quan</li>
+                    </ul>
+                    <p style="margin-top: 20px; font-style: italic; color: #555;">
+                        <strong>→ Gemini = AI mạnh về đa phương thức + thông tin thực tế + nguồn dữ liệu Google.</strong>
+                    </p>
+                </div>
+                
+                <!-- Grok Card -->
+                <div class="ai-card grok">
+                    <div class="ai-header">
+                        <div class="ai-icon grok">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div>
+                            <div class="ai-name">Grok</div>
+                            <div class="ai-tagline">Chuyên gia thời sự & trend</div>
+                        </div>
+                    </div>
+                    <h3 style="margin-bottom: 15px; color: #8a2be2;">Dùng khi:</h3>
+                    <ul class="ai-usage-list">
+                        <li>Cần thông tin thời sự rất mới</li>
+                        <li>Phân tích xu hướng mạng xã hội</li>
+                        <li>Tạo nội dung hài hước, ngầu, đậm chất meme</li>
+                        <li>Gợi ý chiến lược truyền thông thời gian thực</li>
+                        <li>Sinh nội dung viral, dí dỏm</li>
+                    </ul>
+                    <p style="margin-top: 20px; font-style: italic; color: #555;">
+                        <strong>→ Grok = AI mạnh về tính thời sự + phong cách dí dỏm + đọc được tín hiệu xã hội mới.</strong>
+                    </p>
+                </div>
+                
+                <!-- DeepSeek Card -->
+                <div class="ai-card deepseek">
+                    <div class="ai-header">
+                        <div class="ai-icon deepseek">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div>
+                            <div class="ai-name">DeepSeek</div>
+                            <div class="ai-tagline">Chuyên gia logic & phân tích</div>
+                        </div>
+                    </div>
+                    <h3 style="margin-bottom: 15px; color: #ff6b00;">Dùng khi:</h3>
+                    <ul class="ai-usage-list">
+                        <li>Lập trình, phân tích code, tối ưu thuật toán</li>
+                        <li>Suy luận logic phức tạp</li>
+                        <li>Phân tích số liệu, tính toán, mô phỏng</li>
+                        <li>Chiến lược kinh doanh cần tính toán sâu</li>
+                        <li>Tìm lỗi lập luận trong tài liệu dài</li>
+                    </ul>
+                    <p style="margin-top: 20px; font-style: italic; color: #555;">
+                        <strong>→ DeepSeek = AI mạnh về phân tích, logic, reasoning, toán học, lập trình.</strong>
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="workflow-section">
+            <h2 class="section-title"><i class="fas fa-sitemap"></i> III. QUY TRÌNH 4 AI PHÙ HỢP NHẤT (BEST WORKFLOW)</h2>
+            <p style="font-size: 1.3rem; margin-bottom: 30px; color: #555; text-align: center;">
+                Quy trình chuẩn nhất dựa trên sức mạnh từng AI
+            </p>
+            
+            <div class="workflow-steps">
+                <!-- Bước 1 -->
+                <div class="workflow-step">
+                    <div class="step-number">1</div>
+                    <div class="step-ai" style="color: #4285f4;">Gemini</div>
+                    <div class="step-desc">
+                        <strong>Thu thập thông tin / nhận dạng / chuẩn bị dữ liệu</strong><br><br>
+                        • Phân tích tài liệu, ảnh, video<br>
+                        • Tổng hợp thông tin từ nhiều nguồn<br>
+                        • Tạo bản phác thảo ban đầu<br><br>
+                        <em>Kết quả: Một bản nháp đầy đủ thông tin.</em>
+                    </div>
+                </div>
+                
+                <div class="step-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <!-- Bước 2 -->
+                <div class="workflow-step">
+                    <div class="step-number">2</div>
+                    <div class="step-ai" style="color: #10a37f;">ChatGPT</div>
+                    <div class="step-desc">
+                        <strong>Viết lại & hoàn thiện nội dung</strong><br><br>
+                        • Làm mượt văn phong<br>
+                        • Sắp xếp ý tưởng logic<br>
+                        • Viết đầy đủ, chuyên nghiệp<br><br>
+                        <em>Kết quả: Một bản hoàn chỉnh, đọc tốt, hợp lý.</em>
+                    </div>
+                </div>
+                
+                <div class="step-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <!-- Bước 3 -->
+                <div class="workflow-step">
+                    <div class="step-number">3</div>
+                    <div class="step-ai" style="color: #8a2be2;">Grok</div>
+                    <div class="step-desc">
+                        <strong>Thêm tính thời sự hoặc phong cách mạnh</strong><br><br>
+                        • Thêm góc nhìn đời thật<br>
+                        • Thêm tính giải trí, dí dỏm, trend<br>
+                        • Điều chỉnh nội dung viral, bắt trend<br><br>
+                        <em>Kết quả: Bản nội dung hấp dẫn, hợp thời cuộc.</em>
+                    </div>
+                </div>
+                
+                <div class="step-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <!-- Bước 4 -->
+                <div class="workflow-step">
+                    <div class="step-number">4</div>
+                    <div class="step-ai" style="color: #ff6b00;">DeepSeek</div>
+                    <div class="step-desc">
+                        <strong>Kiểm tra logic & tối ưu kỹ thuật</strong><br><br>
+                        • Kiểm tra sai sót<br>
+                        • Phân tích sâu<br>
+                        • Tối ưu cấu trúc, thuật toán, số liệu<br><br>
+                        <em>Kết quả: Phần cuối cùng chính xác, mạnh về lập luận và kỹ thuật.</em>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="example-section">
+            <h2 class="example-title"><i class="fas fa-lightbulb"></i> IV. VÍ DỤ THỰC TẾ: PHÂN TÍCH THỊ TRƯỜNG & KẾ HOẠCH KINH DOANH</h2>
+            <p style="margin-bottom: 25px; font-size: 1.2rem;">
+                Giả sử bạn muốn làm <strong>bài phân tích thị trường + kế hoạch kinh doanh</strong> — bạn dùng 4 AI như sau:
+            </p>
+            
+            <div class="example-steps">
+                <div class="example-step gemini-ex">
+                    <div class="example-ai" style="color: #4285f4;">Gemini</div>
+                    <p>→ Thu thập thông tin thị trường, phân tích hình ảnh báo cáo, tóm tắt PDF từ các nguồn khác nhau.</p>
+                </div>
+                
+                <div class="example-step chatgpt-ex">
+                    <div class="example-ai" style="color: #10a37f;">ChatGPT</div>
+                    <p>→ Viết lại báo cáo thành văn bản chuyên nghiệp, cấu trúc logic, ngôn ngữ thuyết phục.</p>
+                </div>
+                
+                <div class="example-step grok-ex">
+                    <div class="example-ai" style="color: #8a2be2;">Grok</div>
+                    <p>→ Thêm phần dự đoán xu hướng mới, insight từ mạng xã hội, góc nhìn thời sự và viral.</p>
+                </div>
+                
+                <div class="example-step deepseek-ex">
+                    <div class="example-ai" style="color: #ff6b00;">DeepSeek</div>
+                    <p>→ Phân tích chi phí – lợi nhuận, mô hình kinh doanh, tính toán doanh thu, tối ưu chiến lược.</p>
+                </div>
+            </div>
+        </section>
+        
+        <footer class="footer">
+            <p><strong>Quy Trình Sử Dụng 4 AI Thông Minh</strong></p>
+            <p>Thiết kế với kích thước chữ lớn, độ tương phản cao để dễ đọc cho người cận thị</p>
+            <p style="margin-top: 20px; font-size: 1rem;">© 2023 - Trình bày chi tiết quy trình làm việc với 4 AI hàng đầu</p>
+        </footer>
+    </div>
+
+    <script>
+        // Thêm hiệu ứng khi cuộn trang
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hiệu ứng cho các card AI khi xuất hiện
+            const aiCards = document.querySelectorAll('.ai-card');
+            const workflowSteps = document.querySelectorAll('.workflow-step');
+            
+            // Tạo Intersection Observer để phát hiện khi phần tử vào viewport
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            // Thiết lập hiệu ứng ban đầu
+            aiCards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+            
+            workflowSteps.forEach(step => {
+                step.style.opacity = '0';
+                step.style.transform = 'translateY(20px)';
+                step.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(step);
+            });
+            
+            // Thêm hiệu ứng hover cho bảng
+            const tableRows = document.querySelectorAll('.summary-table tr');
+            tableRows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.01)';
+                    this.style.transition = 'transform 0.2s ease';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

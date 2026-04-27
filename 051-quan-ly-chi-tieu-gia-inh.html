@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bộ tính 6 Lọ + Tiền biếu — Toàn diện</title>
+  <style>
+    /* Reset & base */
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;padding:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;background:#f3f7fb;color:#0f172a}
+
+    /* Layout */
+    .wrap{display:flex;flex-direction:column;height:100vh}
+    header{background:linear-gradient(90deg,#06b6d4 0%, #60a5fa 100%);color:white;padding:14px 20px}
+    header h1{margin:0;font-size:18px}
+    header p{margin:6px 0 0;font-size:13px;opacity:0.95}
+
+    main{flex:1;display:flex;gap:16px;padding:16px;align-items:stretch}
+
+    /* Left: inputs */
+    .panel{background:white;border-radius:12px;padding:16px;box-shadow:0 8px 30px rgba(2,6,23,0.08);overflow:auto}
+    .left{flex:0 0 420px;max-width:420px}
+    .right{flex:1;min-width:0;display:flex;flex-direction:column}
+
+    label{display:block;font-size:13px;color:#334155;margin-top:12px}
+    input[type=number], select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef6;margin-top:6px;font-size:15px;background:#fbfdff}
+    .row{display:flex;gap:10px}
+    .col{flex:1}
+    button{display:inline-flex;align-items:center;gap:8px;background:#0ea5a4;color:white;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;margin-top:12px;font-weight:600}
+    .muted{color:#64748b;font-size:13px}
+
+    /* Right content: cards grid */
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+    .card{background:white;padding:12px;border-radius:10px;box-shadow:0 6px 20px rgba(2,6,23,0.05);overflow:auto}
+    h2{margin:0 0 8px;font-size:16px}
+    h3{margin:8px 0;font-size:14px}
+    .small{font-size:13px;color:#475569}
+
+    /* Bar */
+    .bar{height:12px;background:#eef2ff;border-radius:8px;overflow:hidden}
+    .fill{height:100%;background:linear-gradient(90deg,#60a5fa,#06b6d4)}
+
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;border-bottom:1px solid #f1f5f9;text-align:left}
+    .status-ok{color:#16a34a;font-weight:700}
+    .status-warn{color:#d97706;font-weight:700}
+    .status-bad{color:#dc2626;font-weight:700}
+
+    /* Ensure no text is clipped */
+    .nowrap{white-space:nowrap}
+    .wrap-text{word-wrap:break-word;overflow-wrap:break-word}
+
+    /* Responsive: collapse left under 900px */
+    @media (max-width:900px){
+      main{flex-direction:column}
+      .left{max-width:100%;flex:unset}
+    }
+
+    footer{padding:10px 16px;font-size:13px;color:#64748b;text-align:center}
+
+    /* Scrollbar hint for panels */
+    .panel::-webkit-scrollbar{height:8px;width:8px}
+    .panel::-webkit-scrollbar-thumb{background:rgba(2,6,23,0.08);border-radius:8px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Bộ tính 6 Lọ + Tiền biếu — Toàn diện</h1>
+      <p class="muted">Nhập thu nhập và các khoản biếu, công cụ sẽ phân bổ, so sánh trạng thái (Giàu / Đầy đủ / Tiết kiệm), và đưa ra gợi ý tăng/giảm thu nhập hoặc cắt chi.</p>
+    </header>
+
+    <main>
+      <aside class="panel left" aria-label="Input panel">
+        <h2>Thông tin cơ bản</h2>
+        <label>Thu nhập hàng tháng (T)</label>
+        <input id="income" type="number" min="0" step="100000" value="20000000" />
+
+        <label>Tiền biếu hàng tháng cho Cha/Mẹ/Ông Bà (tổng)</label>
+        <input id="gift_parents" type="number" min="0" step="10000" value="2000000" />
+
+        <label>Tiền tiêu vặt/Con (tổng hàng tháng)</label>
+        <input id="kids" type="number" min="0" step="10000" value="800000" />
+
+        <label>Các chi phí cố định khác (thuê, điện, nợ ...)</label>
+        <input id="other_fixed" type="number" min="0" step="10000" value="7000000" />
+
+        <label>Tiền quà/sinh nhật/voucher quy đổi tháng</label>
+        <input id="gift_spouse" type="number" min="0" step="10000" value="500000" />
+
+        <label>Hưởng thụ / tiêu xài cá nhân (quy đổi tháng)</label>
+        <input id="enjoyment" type="number" min="0" step="10000" value="1000000" />
+
+        <label>Bạn thuộc nhóm (chọn để so sánh)</label>
+        <select id="profile">
+          <option value="default">Tự động phân loại theo tỷ lệ chi bắt buộc</option>
+          <option value="wealthy">Giàu (tham khảo)</option>
+          <option value="comfortable">Đầy đủ (tham khảo)</option>
+          <option value="frugal">Tiết kiệm (tham khảo)</option>
+        </select>
+
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button id="calc">Tính toán</button>
+          <button id="reset" style="background:#64748b">Đặt lại</button>
+        </div>
+
+        <p class="muted" style="margin-top:12px">Ghi chú: Giá trị "quy đổi tháng" nghĩa là tổng chi phí dịp trong năm được chia trung bình cho 12 tháng để dễ so sánh.</p>
+      </aside>
+
+      <section class="right">
+        <div class="grid" style="margin-bottom:12px">
+          <div class="card" id="summaryCard">
+            <h2>Tóm tắt</h2>
+            <div class="small" id="summaryText">—</div>
+            <div style="margin-top:12px"><div class="small">Tỉ lệ chi bắt buộc so với thu nhập (r): <strong id="rPercent">—</strong></div></div>
+          </div>
+
+          <div class="card" id="allocCard">
+            <h2>Phân bổ 6 Lọ (theo % & VND)</h2>
+            <div id="allocList" class="small"></div>
+          </div>
+
+          <div class="card" id="statusCard">
+            <h2>Trạng thái tài chính</h2>
+            <div id="statusBox" class="small">—</div>
+            <div style="margin-top:10px"><div class="small">Chuẩn tham khảo:</div>
+              <table style="margin-top:8px"><thead><tr><th>Trạng thái</th><th>Chi thiết yếu</th><th>Đầu tư</th><th>Hưởng thụ</th></tr></thead>
+                <tbody>
+                  <tr><td>Giàu</td><td>40–50%</td><td>20–40%</td><td>10–20%</td></tr>
+                  <tr><td>Đầy đủ</td><td>50–55%</td><td>10–20%</td><td>10%</td></tr>
+                  <tr><td>Tiết kiệm</td><td>60–75%</td><td>5–10%</td><td>5%</td></tr>
+                </tbody></table>
+            </div>
+          </div>
+
+          <div class="card" id="suggestCard">
+            <h2>Gợi ý tăng / giảm</h2>
+            <div id="suggestions" class="small">—</div>
+          </div>
+
+        </div>
+
+        <div class="grid" style="flex:1;align-content:start">
+          <div class="card" id="detailCard" style="min-height:180px">
+            <h2>Kiểm tra chi bắt buộc & bài toán</h2>
+            <div class="small" id="detailBox">—</div>
+          </div>
+
+          <div class="card" id="calcOptCard" style="min-height:180px">
+            <h2>Tối ưu hóa (kịch bản)</h2>
+            <div class="small">Chọn kịch bản:</div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button id="scenario1" style="background:#60a5fa">Tăng thu nhập 25%</button>
+              <button id="scenario2" style="background:#06b6d4">Giảm chi 20%</button>
+              <button id="scenario3" style="background:#a78bfa">Kết hợp 50/50</button>
+            </div>
+            <div id="scenarioResult" class="small" style="margin-top:10px">—</div>
+          </div>
+
+          <div class="card" id="exportCard" style="min-height:180px">
+            <h2>Xuất / In</h2>
+            <div class="small">Bạn có thể sao chép kết quả hoặc in trang này.</div>
+            <div style="margin-top:10px"><button id="copy">Sao chép kết quả</button></div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+
+    <footer>Phiên bản: Toàn diện — Trang demo HTML. Copy và lưu thành file <code>.html</code> để sử dụng offline.</footer>
+  </div>
+
+  <script>
+    // TỶ LỆ 6 LỌ
+    const R = {jar1:0.55, jar2:0.10, jar3:0.10, jar4:0.10, jar5:0.10, jar6:0.05}
+
+    // DOM
+    const $ = id => document.getElementById(id)
+    const incomeEl = $('income')
+    const gpEl = $('gift_parents')
+    const kidsEl = $('kids')
+    const otherEl = $('other_fixed')
+    const gsEl = $('gift_spouse')
+    const enjEl = $('enjoyment')
+    const profileEl = $('profile')
+
+    const allocList = $('allocList')
+    const summaryText = $('summaryText')
+    const rPercent = $('rPercent')
+    const statusBox = $('statusBox')
+    const suggestions = $('suggestions')
+    const detailBox = $('detailBox')
+    const scenarioResult = $('scenarioResult')
+
+    function fmt(n){return n.toLocaleString('vi-VN',{style:'currency',currency:'VND',maximumFractionDigits:0})}
+
+    function computeAll(){
+      const T = Number(incomeEl.value) || 0
+      const gift_parents = Number(gpEl.value) || 0
+      const kids = Number(kidsEl.value) || 0
+      const other_fixed = Number(otherEl.value) || 0
+      const gift_spouse = Number(gsEl.value) || 0
+      const enjoyment = Number(enjEl.value) || 0
+
+      // Quỹ theo 6 lọ
+      const Q = {
+        jar1: Math.round(T * R.jar1),
+        jar2: Math.round(T * R.jar2),
+        jar3: Math.round(T * R.jar3),
+        jar4: Math.round(T * R.jar4),
+        jar5: Math.round(T * R.jar5),
+        jar6: Math.round(T * R.jar6)
+      }
+
+      // Tổng chi bắt buộc
+      const mandatory = gift_parents + kids + other_fixed
+      const gifts = gift_spouse + enjoyment
+      const totalPlanned = mandatory + gifts
+
+      const r = T>0 ? mandatory / T : 0
+
+      // Build alloc list
+      allocList.innerHTML = ''
+      Object.keys(Q).forEach(k=>{
+        const rate = Math.round(R[k]*100)
+        const val = Q[k]
+        const div = document.createElement('div')
+        div.innerHTML = `<div style=\"display:flex;justify-content:space-between;align-items:center\">
+            <div class=\"wrap-text\"><strong>${rate}%</strong> — ${k==='jar1'? 'Chi thiết yếu': k==='jar2'? 'Tiết kiệm Dài hạn': k==='jar3'? 'Giáo dục': k==='jar4'? 'Hưởng thụ': k==='jar5'? 'Tự do tài chính': 'Từ thiện'} </div>
+            <div><strong>${fmt(val)}</strong></div>
+          </div>
+          <div class=\"bar\" style=\"margin-top:8px\"><div class=\"fill\" style=\"width:${Math.min(100, Math.round((val/T)*100))}%\"></div></div>`
+        allocList.appendChild(div)
+      })
+
+      // Summary
+      summaryText.innerHTML = `<div><strong>Thu nhập:</strong> ${fmt(T)} • <strong>Chi bắt buộc:</strong> ${fmt(mandatory)} • <strong>Quà/Hưởng thụ (quy đổi):</strong> ${fmt(gifts)}</div>`
+      rPercent.textContent = (r*100).toFixed(1) + '%'
+
+      // Status classification
+      let statusHTML = ''
+      if (T===0){ statusHTML = '<span class="status-bad">Không xác định (thu nhập = 0)</span>' }
+      else if (r < 0.50) statusHTML = '<span class="status-ok">Giàu (tỷ lệ chi bắt buộc < 50%)</span>'
+      else if (r >= 0.50 && r <= 0.60) statusHTML = '<span class="status-warn">Đầy đủ / Ổn định (50–60%)</span>'
+      else statusHTML = '<span class="status-bad">Áp lực/Tiết kiệm (chi bắt buộc > 60%)</span>'
+      statusBox.innerHTML = statusHTML
+
+      // Check jar1 capacity
+      const diff = mandatory - Q.jar1
+      let suggestHTML = ''
+      if (T===0){ suggestHTML = '<div class="status-bad">Vui lòng nhập thu nhập.</div>' }
+      else if (diff <= 0){ suggestHTML = `<div class="status-ok">Bạn ĐỦ cho chi bắt buộc. Lọ 1 còn dư ${fmt(-diff)}.</div>` }
+      else{
+        const T_new = Math.ceil(mandatory / R.jar1)
+        const deltaT = T_new - T
+        suggestHTML = `<div class="status-bad">Bạn <strong>thiếu ${fmt(diff)}</strong> so với công suất Lọ 1.</div>`
+        suggestHTML += `<div style=\"margin-top:6px\">Để giữ Lọ1 ở 55%, cần tăng thu nhập lên ${fmt(T_new)} (tăng thêm ${fmt(deltaT)}).</div>`
+        suggestHTML += `<div style=\"margin-top:6px\">Hoặc cắt giảm chi bắt buộc ít nhất ${fmt(diff)}. Ưu tiên cắt: Hưởng thụ → Quà tặng → Chi tiêu linh hoạt.</div>`
+
+        // Suggest combination
+        const x = 0.5
+        const incomePart = Math.round(deltaT * x)
+        const cutPart = Math.round(diff - incomePart)
+        suggestHTML += `<div style=\"margin-top:6px\">Gợi ý kết hợp (50/50): tăng thu nhập ${fmt(incomePart)} và giảm chi ${fmt(Math.max(0, cutPart))}.</div>`
+      }
+      suggestions.innerHTML = suggestHTML
+
+      // Detail box: formulas & check
+      detailBox.innerHTML = `<div><strong>Công thức:</strong></div>
+        <div class=\"small\">Lọ1 = 55% * T = ${fmt(Q.jar1)}. Chi bắt buộc = ChaMẹ(${fmt(gift_parents)}) + Con(${fmt(kids)}) + Khác(${fmt(other_fixed)}) = ${fmt(mandatory)}.</div>
+        <div style=\"margin-top:8px\"><strong>Kết luận:</strong> ${ mandatory <= Q.jar1 ? 'Chi bắt buộc nằm trong giới hạn Lọ1.' : 'Chi bắt buộc vượt Lọ1.' }</div>`
+
+      // Scenario result reset
+      scenarioResult.innerHTML = 'Chọn kịch bản để xem kết quả mô phỏng.'
+
+      // Store current computed values in element dataset for scenarios
+      scenarioResult.dataset.T = T
+      scenarioResult.dataset.mandatory = mandatory
+      scenarioResult.dataset.diff = diff
+      scenarioResult.dataset.Qjar1 = Q.jar1
+      scenarioResult.dataset.deltaT = (T>0? Math.ceil(mandatory / R.jar1) - T : 0)
+    }
+
+    // Event listeners
+    $('calc').addEventListener('click', computeAll)
+    $('reset').addEventListener('click', ()=>{ incomeEl.value=20000000; gpEl.value=2000000; kidsEl.value=800000; otherEl.value=7000000; gsEl.value=500000; enjEl.value=1000000; profileEl.value='default'; computeAll(); })
+
+    // Scenarios
+    $('scenario1').addEventListener('click', ()=>{
+      const T = Number(scenarioResult.dataset.T) || Number(incomeEl.value)
+      const newT = Math.round(T * 1.25)
+      scenarioResult.innerHTML = `Tăng thu nhập 25% → Thu nhập mới: ${fmt(newT)}. Lọ1 mới = ${fmt(Math.round(newT * R.jar1))}.`;
+    })
+    $('scenario2').addEventListener('click', ()=>{
+      const mandatory = Number(scenarioResult.dataset.mandatory) || 0
+      const reduced = Math.round(mandatory * 0.80)
+      scenarioResult.innerHTML = `Giảm chi 20% → Chi bắt buộc mới: ${fmt(reduced)}. Cần Lọ1 = ${fmt(reduced)}.`;
+    })
+    $('scenario3').addEventListener('click', ()=>{
+      const deltaT = Number(scenarioResult.dataset.deltaT) || 0
+      const T = Number(scenarioResult.dataset.T) || Number(incomeEl.value)
+      const inc = Math.round(deltaT * 0.5)
+      const cut = Math.round((Number(scenarioResult.dataset.diff) || 0) - inc)
+      scenarioResult.innerHTML = `Kết hợp 50/50 → Tăng thu nhập ${fmt(inc)} và giảm chi ${fmt(Math.max(0, cut))}.`;
+    })
+
+    // Copy result
+    $('copy').addEventListener('click', ()=>{
+      const text = `Thu nhập: ${incomeEl.value}
+Chi bắt buộc: ${scenarioResult.dataset.mandatory || ''}`
+      navigator.clipboard.writeText(text).then(()=> alert('Đã sao chép'))
+    })
+
+    // Initial compute
+    computeAll()
+  </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

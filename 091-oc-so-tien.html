@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chuyển Số Tiền Thành Chữ Tiếng Việt</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #4a5568;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+        
+        .input-section {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 600;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 18px;
+            text-align: right;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .range-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .range-input span {
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        input[type="range"] {
+            flex: 1;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            outline: none;
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: opacity 0.3s;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-secondary {
+            background: #38a169;
+        }
+        
+        .btn-warning {
+            background: #e53e3e;
+        }
+        
+        .results-section {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .result-title {
+            font-size: 1.2rem;
+            color: #4a5568;
+            margin-bottom: 15px;
+        }
+        
+        .result-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            min-height: 100px;
+            font-size: 1.4rem;
+            line-height: 1.6;
+            text-align: center;
+            color: #2d3748;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            word-break: break-word;
+            text-transform: capitalize;
+        }
+        
+        .history-section {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .history-title {
+            font-size: 1.2rem;
+            color: #4a5568;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .history-container {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .history-number {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+        
+        .history-text {
+            color: #4a5568;
+            font-size: 1rem;
+            text-align: right;
+            flex: 1;
+            margin-left: 15px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+            max-width: 300px;
+        }
+        
+        .success {
+            border-left: 4px solid #38a169;
+        }
+        
+        .error {
+            border-left: 4px solid #e53e3e;
+        }
+        
+        .info-box {
+            background: #e6fffa;
+            border-left: 4px solid #38b2ac;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #234e52;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .input-section, .results-section, .history-section {
+                padding: 15px;
+            }
+            
+            .result-container {
+                font-size: 1.2rem;
+                padding: 15px;
+            }
+            
+            .buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 12px;
+            }
+            
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            .input-section, .results-section, .history-section {
+                padding: 12px;
+            }
+            
+            .result-container {
+                font-size: 1.1rem;
+                padding: 12px;
+            }
+            
+            .history-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .history-text {
+                margin-left: 0;
+                margin-top: 5px;
+                text-align: left;
+            }
+        }
+        
+        /* Custom scrollbar */
+        .history-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .history-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        
+        .history-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+        
+        .history-container::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+        
+        .number-display {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+            text-align: center;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chuyển Số Tiền Thành Chữ Tiếng Việt</h1>
+        
+        <div class="input-section">
+            <div class="form-group">
+                <label for="amountInput">Nhập số tiền (từ 10,000 đến 10,000,000):</label>
+                <div class="number-display" id="numberDisplay">10,000</div>
+                <input type="range" id="amountRange" min="10000" max="10000000" step="1000" value="10000">
+                <div class="range-input">
+                    <span>10,000</span>
+                    <input type="number" id="amountInput" min="10000" max="10000000" value="10000">
+                    <span>10,000,000</span>
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button onclick="convertAmount()">Chuyển thành chữ</button>
+                <button class="btn-secondary" onclick="generateRandom()">Số ngẫu nhiên</button>
+                <button class="btn-warning" onclick="clearHistory()">Xóa lịch sử</button>
+            </div>
+            
+            <div class="info-box">
+                <strong>Lưu ý:</strong> Ứng dụng hỗ trợ chuyển đổi số tiền từ 10,000 (mười nghìn) đến 10,000,000 (mười triệu) đồng.
+            </div>
+        </div>
+        
+        <div class="results-section">
+            <div class="result-title">Kết quả chuyển đổi</div>
+            <div class="result-container" id="resultContainer">
+                Nhập số tiền và nhấn "Chuyển thành chữ"
+            </div>
+        </div>
+        
+        <div class="history-section">
+            <div class="history-title">
+                <span>Lịch sử chuyển đổi</span>
+                <span id="historyCount">(0 mục)</span>
+            </div>
+            <div class="history-container" id="historyContainer">
+                <div style="text-align: center; padding: 20px; color: #718096;">
+                    Chưa có lịch sử chuyển đổi
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification"></div>
+    
+    <script>
+        // Lịch sử chuyển đổi
+        let conversionHistory = [];
+        
+        // Các đơn vị tiếng Việt
+        const units = ['', 'nghìn', 'triệu', 'tỷ', 'nghìn tỷ', 'triệu tỷ'];
+        const numbers = [
+            'không', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín'
+        ];
+        
+        // Các trường hợp đặc biệt
+        const specialCases = {
+            10: 'mười',
+            11: 'mười một',
+            12: 'mười hai',
+            13: 'mười ba',
+            14: 'mười bốn',
+            15: 'mười lăm',
+            16: 'mười sáu',
+            17: 'mười bảy',
+            18: 'mười tám',
+            19: 'mười chín'
+        };
+        
+        // Đồng bộ hóa input range và input number
+        function syncInputs() {
+            const rangeInput = document.getElementById('amountRange');
+            const numberInput = document.getElementById('amountInput');
+            const numberDisplay = document.getElementById('numberDisplay');
+            
+            // Định dạng số với dấu phẩy phân cách hàng nghìn
+            const formattedValue = parseInt(rangeInput.value).toLocaleString('vi-VN');
+            numberDisplay.textContent = formattedValue;
+            
+            // Đảm bảo giá trị luôn nằm trong khoảng cho phép
+            let value = parseInt(rangeInput.value);
+            if (value < 10000) value = 10000;
+            if (value > 10000000) value = 10000000;
+            
+            rangeInput.value = value;
+            numberInput.value = value;
+        }
+        
+        // Xử lý khi người dùng thay đổi giá trị trên range
+        document.getElementById('amountRange').addEventListener('input', function() {
+            syncInputs();
+        });
+        
+        // Xử lý khi người dùng thay đổi giá trị trên input number
+        document.getElementById('amountInput').addEventListener('input', function() {
+            const numberInput = document.getElementById('amountInput');
+            const rangeInput = document.getElementById('amountRange');
+            
+            let value = parseInt(numberInput.value) || 10000;
+            
+            // Đảm bảo giá trị nằm trong khoảng cho phép
+            if (value < 10000) value = 10000;
+            if (value > 10000000) value = 10000000;
+            
+            numberInput.value = value;
+            rangeInput.value = value;
+            syncInputs();
+        });
+        
+        // Chuyển đổi số thành chữ tiếng Việt
+        function convertAmount() {
+            const amount = parseInt(document.getElementById('amountInput').value);
+            
+            // Kiểm tra giá trị hợp lệ
+            if (isNaN(amount) || amount < 10000 || amount > 10000000) {
+                showNotification('Vui lòng nhập số từ 10,000 đến 10,000,000!', 'error');
+                return;
+            }
+            
+            // Chuyển đổi số thành chữ
+            const result = convertNumberToWords(amount);
+            
+            // Hiển thị kết quả
+            document.getElementById('resultContainer').textContent = result;
+            
+            // Lưu vào lịch sử
+            addToHistory(amount, result);
+            
+            showNotification('Đã chuyển đổi thành công!', 'success');
+        }
+        
+        // Hàm chuyển đổi số thành chữ
+        function convertNumberToWords(num) {
+            if (num === 0) return 'không đồng';
+            
+            // Định dạng số: thêm "đồng" ở cuối
+            const words = convertThreeDigitGroups(num);
+            return words.trim() + ' đồng';
+        }
+        
+        // Chia số thành các nhóm 3 chữ số và chuyển đổi
+        function convertThreeDigitGroups(num) {
+            if (num === 0) return '';
+            
+            let result = '';
+            let groupIndex = 0;
+            
+            // Xử lý các nhóm 3 chữ số từ phải sang trái
+            while (num > 0) {
+                const threeDigits = num % 1000;
+                
+                if (threeDigits > 0) {
+                    const groupWords = convertThreeDigits(threeDigits);
+                    
+                    // Thêm đơn vị (nghìn, triệu, tỷ...)
+                    if (groupIndex > 0) {
+                        result = groupWords + ' ' + units[groupIndex] + ' ' + result;
+                    } else {
+                        result = groupWords + ' ' + result;
+                    }
+                }
+                
+                num = Math.floor(num / 1000);
+                groupIndex++;
+            }
+            
+            return result.trim();
+        }
+        
+        // Chuyển đổi nhóm 3 chữ số
+        function convertThreeDigits(num) {
+            if (num === 0) return '';
+            
+            let result = '';
+            
+            // Hàng trăm
+            const hundreds = Math.floor(num / 100);
+            if (hundreds > 0) {
+                result += numbers[hundreds] + ' trăm ';
+            }
+            
+            // Hàng chục và đơn vị
+            const tensAndOnes = num % 100;
+            
+            if (tensAndOnes > 0) {
+                // Xử lý các trường hợp đặc biệt từ 10 đến 19
+                if (tensAndOnes >= 10 && tensAndOnes <= 19) {
+                    result += specialCases[tensAndOnes];
+                } else {
+                    const tens = Math.floor(tensAndOnes / 10);
+                    const ones = tensAndOnes % 10;
+                    
+                    if (tens > 0) {
+                        if (tens === 1) {
+                            result += 'mười ';
+                        } else {
+                            result += numbers[tens] + ' mươi ';
+                        }
+                    }
+                    
+                    if (ones > 0) {
+                        // Xử lý trường hợp đặc biệt của số 1 và 5
+                        if (ones === 1 && tens > 1) {
+                            result += 'mốt';
+                        } else if (ones === 5 && tens > 0) {
+                            result += 'lăm';
+                        } else {
+                            result += numbers[ones];
+                        }
+                    }
+                }
+            }
+            
+            return result.trim();
+        }
+        
+        // Thêm vào lịch sử
+        function addToHistory(amount, text) {
+            const historyItem = {
+                amount: amount,
+                text: text,
+                time: new Date().toLocaleTimeString('vi-VN')
+            };
+            
+            // Thêm vào đầu mảng
+            conversionHistory.unshift(historyItem);
+            
+            // Giới hạn lịch sử 10 mục
+            if (conversionHistory.length > 10) {
+                conversionHistory.pop();
+            }
+            
+            // Cập nhật hiển thị lịch sử
+            updateHistoryDisplay();
+        }
+        
+        // Cập nhật hiển thị lịch sử
+        function updateHistoryDisplay() {
+            const historyContainer = document.getElementById('historyContainer');
+            const historyCount = document.getElementById('historyCount');
+            
+            if (conversionHistory.length === 0) {
+                historyContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: #718096;">Chưa có lịch sử chuyển đổi</div>';
+                historyCount.textContent = '(0 mục)';
+                return;
+            }
+            
+            historyCount.textContent = `(${conversionHistory.length} mục)`;
+            
+            let historyHTML = '';
+            conversionHistory.forEach(item => {
+                const formattedAmount = item.amount.toLocaleString('vi-VN');
+                historyHTML += `
+                    <div class="history-item">
+                        <div class="history-number">${formattedAmount}</div>
+                        <div class="history-text">${item.text} (${item.time})</div>
+                    </div>
+                `;
+            });
+            
+            historyContainer.innerHTML = historyHTML;
+        }
+        
+        // Tạo số ngẫu nhiên
+        function generateRandom() {
+            // Tạo số ngẫu nhiên từ 10,000 đến 10,000,000
+            const min = 10000;
+            const max = 10000000;
+            const randomAmount = Math.floor(Math.random() * (max - min + 1)) + min;
+            
+            // Làm tròn đến hàng nghìn
+            const roundedAmount = Math.round(randomAmount / 1000) * 1000;
+            
+            // Cập nhật giá trị trên giao diện
+            document.getElementById('amountInput').value = roundedAmount;
+            document.getElementById('amountRange').value = roundedAmount;
+            syncInputs();
+            
+            // Tự động chuyển đổi
+            convertAmount();
+            
+            showNotification('Đã tạo số ngẫu nhiên!', 'success');
+        }
+        
+        // Xóa lịch sử
+        function clearHistory() {
+            if (conversionHistory.length === 0) {
+                showNotification('Không có lịch sử để xóa!', 'error');
+                return;
+            }
+            
+            if (confirm('Bạn có chắc chắn muốn xóa toàn bộ lịch sử?')) {
+                conversionHistory = [];
+                updateHistoryDisplay();
+                showNotification('Đã xóa toàn bộ lịch sử!', 'success');
+            }
+        }
+        
+        // Hiển thị thông báo
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Khởi tạo khi trang được tải
+        document.addEventListener('DOMContentLoaded', function() {
+            syncInputs();
+            
+            // Thêm một số ví dụ vào lịch sử
+            const examples = [
+                { amount: 10000, text: 'mười nghìn đồng' },
+                { amount: 25000, text: 'hai mươi lăm nghìn đồng' },
+                { amount: 100000, text: 'một trăm nghìn đồng' },
+                { amount: 1500000, text: 'một triệu năm trăm nghìn đồng' }
+            ];
+            
+            examples.forEach(example => {
+                addToHistory(example.amount, example.text);
+            });
+            
+            // Tự động chuyển đổi số mặc định
+            convertAmount();
+            
+            // Thêm sự kiện Enter để chuyển đổi
+            document.getElementById('amountInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    convertAmount();
+                }
+            });
+        });
+        
+        // Thêm các ví dụ phổ biến
+        function addCommonExample(amount) {
+            document.getElementById('amountInput').value = amount;
+            document.getElementById('amountRange').value = amount;
+            syncInputs();
+            convertAmount();
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

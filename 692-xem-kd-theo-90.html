@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tính Ngày Sinh và Vị Trí Bàn Cờ 90 Điểm</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 15px;
+            background-color: #f5f5f5;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-top: 0;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+            font-size: 1.5rem;
+        }
+        
+        .mobile-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+        
+        h2 {
+            color: #2980b9;
+            margin-top: 0;
+            font-size: 1.3rem;
+        }
+        
+        h3 {
+            color: #34495e;
+            margin-top: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.95rem;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .result-box {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            border-left: 4px solid #3498db;
+            font-size: 0.9rem;
+        }
+        
+        .result-item {
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #ddd;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .result-item:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .result-label {
+            font-weight: 600;
+            color: #2c3e50;
+            min-width: 150px;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+        
+        .board-container {
+            --cell-size: 35px; /* Kích thước ô cho điện thoại */
+            --line-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .chess-board {
+            display: grid;
+            grid-template-columns: repeat(9, var(--cell-size));
+            grid-template-rows: repeat(8, var(--cell-size));
+            border-top: 2px solid var(--line-color);
+            border-left: 2px solid var(--line-color);
+            background-color: #f0d9b5;
+            min-width: calc(var(--cell-size) * 9 + 4px);
+            position: relative;
+        }
+
+        .cell {
+            width: var(--cell-size);
+            height: var(--cell-size);
+            border-right: 1px solid var(--line-color);
+            border-bottom: 1px solid var(--line-color);
+            box-sizing: border-box;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.6rem;
+            overflow: hidden;
+            padding: 1px;
+        }
+
+        /* Màu ô tối */
+        .cell.dark {
+            background-color: #b58863;
+        }
+        
+        /* Điểm số trên bàn cờ */
+        .point-number {
+            position: absolute;
+            top: 1px;
+            left: 2px;
+            font-size: 0.55rem;
+            font-weight: bold;
+            color: #666;
+            z-index: 1;
+        }
+        
+        /* Nội dung trong ô (thông tin người) */
+        .cell-content {
+            text-align: center;
+            line-height: 1.1;
+            width: 100%;
+            z-index: 2;
+            font-size: 0.55rem;
+        }
+        
+        /* Tuyến trên - màu xanh */
+        .upper-line {
+            color: #1a237e;
+        }
+        
+        .cell.dark.upper-line {
+            color: #bbdefb;
+        }
+        
+        /* Tuyến dưới - màu đỏ */
+        .lower-line {
+            color: #b71c1c;
+        }
+        
+        .cell.dark.lower-line {
+            color: #ffcdd2;
+        }
+        
+        /* Highlight ô được chọn */
+        .cell.highlight {
+            background-color: rgba(255, 235, 59, 0.8);
+            z-index: 3;
+            box-shadow: inset 0 0 0 2px #e74c3c;
+        }
+        
+        /* Sông ở giữa bàn cờ */
+        .river-area {
+            grid-row: 4 / 6;
+            grid-column: 1 / 10;
+            background: linear-gradient(to bottom, rgba(135, 206, 235, 0.3), rgba(100, 149, 237, 0.3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 0;
+            border: none;
+        }
+        
+        .river-text {
+            color: #1e88e5;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+            transform: rotate(0deg);
+            writing-mode: horizontal-tb;
+        }
+        
+        .person-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 8px;
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .person-item {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .person-item:hover {
+            background-color: #f0f8ff;
+        }
+        
+        .person-item.selected {
+            background-color: #e3f2fd;
+            border-left: 4px solid #3498db;
+        }
+        
+        .person-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .person-dob {
+            color: #666;
+            font-size: 0.85rem;
+        }
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            margin-right: 4px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: background-color 0.2s;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button.secondary {
+            background-color: #95a5a6;
+        }
+        
+        button.secondary:hover {
+            background-color: #7f8c8d;
+        }
+        
+        .piece-name {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .position-info {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border-left: 4px solid #9b59b6;
+            font-size: 0.85rem;
+        }
+        
+        .explanation h3 {
+            color: #8e44ad;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+        
+        .explanation ul {
+            padding-left: 18px;
+        }
+        
+        .explanation li {
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+        
+        .coordinate-display {
+            display: inline-block;
+            background-color: #2c3e50;
+            color: white;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin-left: 5px;
+            font-size: 0.85rem;
+        }
+        
+        .age-display {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        .grid-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .section-title span {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .info-card {
+            background-color: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            font-size: 0.85rem;
+        }
+        
+        .info-card h4 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 0.9rem;
+        }
+        
+        .compact-info {
+            display: none;
+        }
+        
+        /* Hiển thị cho màn hình lớn hơn */
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            
+            .mobile-container {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 25px;
+            }
+            
+            .board-container {
+                --cell-size: 45px; /* Kích thước lớn hơn cho desktop */
+            }
+            
+            .cell {
+                font-size: 0.7rem;
+            }
+            
+            .cell-content {
+                font-size: 0.65rem;
+            }
+            
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            .board-container {
+                --cell-size: 50px; /* Kích thước lớn hơn cho màn hình rộng */
+            }
+        }
+        
+        /* Hiển thị thông tin thu gọn cho điện thoại */
+        @media (max-width: 767px) {
+            .compact-info {
+                display: block;
+                font-size: 0.6rem;
+            }
+            
+            .full-info {
+                display: none;
+            }
+            
+            .board-container {
+                --cell-size: 32px; /* Nhỏ hơn cho điện thoại nhỏ */
+            }
+            
+            .river-text {
+                font-size: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .board-container {
+                --cell-size: 28px; /* Rất nhỏ cho điện thoại rất nhỏ */
+            }
+            
+            .cell-content {
+                font-size: 0.5rem;
+            }
+            
+            .point-number {
+                font-size: 0.5rem;
+            }
+        }
+        
+        /* Ẩn thanh cuộn ngang trên một số trình duyệt mobile */
+        .board-container::-webkit-scrollbar {
+            height: 6px;
+        }
+        
+        .board-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        
+        .board-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        
+        .board-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ứng Dụng Tính Ngày Sinh và Vị Trí Bàn Cờ 90 Điểm</h1>
+    
+    <div class="mobile-container">
+        <div class="section">
+            <div class="section-title">
+                <h2>Nhập Thông Tin</h2>
+                <span>Bàn cờ: 9 cột × 8 hàng = 72 ô + sông</span>
+            </div>
+            
+            <div class="form-group">
+                <label for="currentDate">1. Ngày tháng năm hiện tại:</label>
+                <input type="date" id="currentDate" value="">
+            </div>
+            
+            <div class="form-group">
+                <label for="personSelect">2. Chọn người từ danh sách:</label>
+                <select id="personSelect">
+                    <option value="">-- Chọn một người --</option>
+                </select>
+                
+                <div class="person-list" id="personList">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="dobInput">3. Ngày tháng năm sinh:</label>
+                <input type="date" id="dobInput">
+            </div>
+            
+            <div class="controls">
+                <button id="calculateBtn">Tính Toán</button>
+                <button id="resetBtn" class="secondary">Đặt Lại</button>
+                <button id="autoAllBtn" class="secondary">Tính Tất Cả</button>
+            </div>
+            
+            <div class="result-box" id="resultBox" style="display:none;">
+                <h3>Kết Quả Tính Toán</h3>
+                <div class="result-item">
+                    <span class="result-label">Tên người:</span> <span id="resultName">-</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Ngày sinh:</span> <span id="resultDOB">-</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Thứ (Quân cờ):</span> <span id="resultPiece" class="piece-name">-</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Tuổi:</span> 
+                    <span id="resultAge" class="age-display">-</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Vị trí (mod 90):</span> 
+                    <span id="resultPosition" class="position-info">-</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Tọa độ:</span> 
+                    <span id="resultCoordinates" class="position-info">-</span>
+                    <span id="resultCoordinateDisplay" class="coordinate-display">H?C?</span>
+                </div>
+            </div>
+            
+            <div class="info-grid" id="allResults" style="display:none;">
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">
+                <h2>Bàn Cờ Tướng 90 Điểm</h2>
+                <span>9 cột × 8 hàng = 72 ô + sông ở giữa</span>
+            </div>
+            
+            <div class="board-container">
+                <div class="chess-board" id="chessboard">
+                </div>
+            </div>
+            
+            <div class="grid-info">
+                <div>Hàng 1-3: Tuyến trên (tháng 7-12) - Màu xanh</div>
+                <div>Hàng 5-8: Tuyến dưới (tháng 1-6) - Màu đỏ</div>
+                <div>Hàng 4: Sông (không tính điểm)</div>
+            </div>
+            
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #f0d9b5;"></div>
+                    <span>Ô sáng</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #b58863;"></div>
+                    <span>Ô tối</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: rgba(255, 235, 59, 0.8);"></div>
+                    <span>Vị trí chọn</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #1a237e;"></div>
+                    <span>Tuyến trên</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #b71c1c;"></div>
+                    <span>Tuyến dưới</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(to bottom, rgba(135, 206, 235, 0.3), rgba(100, 149, 237, 0.3));"></div>
+                    <span>Sông</span>
+                </div>
+            </div>
+            
+            <div class="explanation">
+                <h3>Giải thích cách tính:</h3>
+                <ul>
+                    <li><strong>Bàn cờ 90 điểm</strong>: 8 hàng × 9 cột = 72 ô + 18 điểm giao = 90 điểm, đánh số từ 1 đến 90.</li>
+                    <li><strong>Thứ (Quân cờ)</strong>: Tính theo ngày trong tuần của ngày sinh (CN=1, T2=2,..., T7=7) tương ứng với 7 quân cờ: 1=Tốt, 2=Mã, 3=Pháo, 4=Xe, 5=Tượng, 6=Sĩ, 7=Tướng.</li>
+                    <li><strong>Tuyến trên/dưới</strong>: Sinh từ tháng 1-6 là tuyến dưới (hàng 5-8), từ tháng 7-12 là tuyến trên (hàng 1-3).</li>
+                    <li><strong>Vị trí trên bàn cờ</strong>: Tính tuổi mod 90 (lấy phần dư khi chia tuổi cho 90).</li>
+                    <li><strong>Đánh số bàn cờ</strong>: Tuyến trên từ trái sang phải, từ trên xuống; tuyến dưới từ phải sang trái, từ dưới lên.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dữ liệu danh sách người
+        const peopleData = [
+            { id: 1, name: "NGUYENKHACNANG", dob: "1944-06-04" },
+            { id: 2, name: "TOTHIHA", dob: "1948-08-29" },
+            { id: 3, name: "NGUYENMINHNAM", dob: "1971-03-03" },
+            { id: 4, name: "THANTHIKIMANH", dob: "1981-09-23" },
+            { id: 5, name: "NGUYENTONGANAN", dob: "2014-09-28" },
+            { id: 6, name: "NGUYENTOMINHCHAU", dob: "2016-07-25" },
+            { id: 7, name: "NGUYENTOBICHNGOC", dob: "2020-02-05" },
+            { id: 8, name: "NGUYENTHIMINHHANG", dob: "1974-01-07" },
+            { id: 9, name: "NGOQUYCUONG", dob: "1973-05-23" },
+            { id: 10, name: "NGOGIABACH", dob: "2000-10-12" },
+            { id: 11, name: "NGOGIALINH", dob: "2005-04-05" },
+            { id: 12, name: "NGUYENTHIMINHPHUONG", dob: "1978-11-06" },
+            { id: 13, name: "HOANGANHDUNG", dob: "1978-09-21" },
+            { id: 14, name: "HOANGHAIVINH", dob: "2010-06-03" },
+            { id: 15, name: "HOANGTHIENBACHANH", dob: "2015-11-14" },
+            { id: 16, name: "TÔ KIM HUỆ", dob: "1960-08-09" },
+            { id: 17, name: "NGUYỄN TUẤN ANH", dob: "1983-10-23" },
+            { id: 18, name: "NGUYỄN THẾ ANH", dob: "2001-03-24" },
+            { id: 19, name: "NGÔ THỊ MAI", dob: "1948-12-12" },
+            { id: 20, name: "TÔ VIỆT HƯNG", dob: "1996-06-17" },
+            { id: 21, name: "TÔ THỊ HỒNG", dob: "1964-10-10" },
+            { id: 22, name: "VŨ VĂN HIỆP", dob: "1974-04-24" },
+            { id: 23, name: "NGUYỄN THỊ CHI", dob: "1946-02-08" },
+            { id: 24, name: "NGUYỄN TẤN BẮC", dob: "1957-11-30" },
+            { id: 25, name: "NGUYỄN THỊ TÂM", dob: "1954-08-08" }
+        ];
+
+        // Ánh xạ thứ trong tuần sang quân cờ
+        const pieceMap = {
+            0: { number: 1, name: "Tốt" },
+            1: { number: 2, name: "Mã" },
+            2: { number: 3, name: "Pháo" },
+            3: { number: 4, name: "Xe" },
+            4: { number: 5, name: "Tượng" },
+            5: { number: 6, name: "Sĩ" },
+            6: { number: 7, name: "Tướng" }
+        };
+
+        // Biến lưu trữ thông tin tất cả mọi người trên bàn cờ
+        let allPeopleOnBoard = {};
+        
+        // Bản đồ điểm số cho bàn cờ 9x8 (72 ô)
+        // Tuyến trên: 1-27 (hàng 1-3, 9 cột)
+        // Tuyến dưới: 28-90 (hàng 5-8, 9 cột + điểm giao)
+        const pointMap = {
+            // Tuyến trên: từ trái sang phải, từ trên xuống
+            1: {row: 1, col: 1, isUpper: true},
+            2: {row: 1, col: 2, isUpper: true},
+            3: {row: 1, col: 3, isUpper: true},
+            4: {row: 1, col: 4, isUpper: true},
+            5: {row: 1, col: 5, isUpper: true},
+            6: {row: 1, col: 6, isUpper: true},
+            7: {row: 1, col: 7, isUpper: true},
+            8: {row: 1, col: 8, isUpper: true},
+            9: {row: 1, col: 9, isUpper: true},
+            10: {row: 2, col: 1, isUpper: true},
+            11: {row: 2, col: 2, isUpper: true},
+            12: {row: 2, col: 3, isUpper: true},
+            13: {row: 2, col: 4, isUpper: true},
+            14: {row: 2, col: 5, isUpper: true},
+            15: {row: 2, col: 6, isUpper: true},
+            16: {row: 2, col: 7, isUpper: true},
+            17: {row: 2, col: 8, isUpper: true},
+            18: {row: 2, col: 9, isUpper: true},
+            19: {row: 3, col: 1, isUpper: true},
+            20: {row: 3, col: 2, isUpper: true},
+            21: {row: 3, col: 3, isUpper: true},
+            22: {row: 3, col: 4, isUpper: true},
+            23: {row: 3, col: 5, isUpper: true},
+            24: {row: 3, col: 6, isUpper: true},
+            25: {row: 3, col: 7, isUpper: true},
+            26: {row: 3, col: 8, isUpper: true},
+            27: {row: 3, col: 9, isUpper: true},
+            // Tuyến dưới: từ phải sang trái, từ dưới lên
+            28: {row: 8, col: 9, isUpper: false},
+            29: {row: 8, col: 8, isUpper: false},
+            30: {row: 8, col: 7, isUpper: false},
+            31: {row: 8, col: 6, isUpper: false},
+            32: {row: 8, col: 5, isUpper: false},
+            33: {row: 8, col: 4, isUpper: false},
+            34: {row: 8, col: 3, isUpper: false},
+            35: {row: 8, col: 2, isUpper: false},
+            36: {row: 8, col: 1, isUpper: false},
+            37: {row: 7, col: 9, isUpper: false},
+            38: {row: 7, col: 8, isUpper: false},
+            39: {row: 7, col: 7, isUpper: false},
+            40: {row: 7, col: 6, isUpper: false},
+            41: {row: 7, col: 5, isUpper: false},
+            42: {row: 7, col: 4, isUpper: false},
+            43: {row: 7, col: 3, isUpper: false},
+            44: {row: 7, col: 2, isUpper: false},
+            45: {row: 7, col: 1, isUpper: false},
+            46: {row: 6, col: 9, isUpper: false},
+            47: {row: 6, col: 8, isUpper: false},
+            48: {row: 6, col: 7, isUpper: false},
+            49: {row: 6, col: 6, isUpper: false},
+            50: {row: 6, col: 5, isUpper: false},
+            51: {row: 6, col: 4, isUpper: false},
+            52: {row: 6, col: 3, isUpper: false},
+            53: {row: 6, col: 2, isUpper: false},
+            54: {row: 6, col: 1, isUpper: false},
+            55: {row: 5, col: 9, isUpper: false},
+            56: {row: 5, col: 8, isUpper: false},
+            57: {row: 5, col: 7, isUpper: false},
+            58: {row: 5, col: 6, isUpper: false},
+            59: {row: 5, col: 5, isUpper: false},
+            60: {row: 5, col: 4, isUpper: false},
+            61: {row: 5, col: 3, isUpper: false},
+            62: {row: 5, col: 2, isUpper: false},
+            63: {row: 5, col: 1, isUpper: false},
+            // Điểm giao (64-90)
+            64: {row: 4, col: 1, isUpper: false, isCross: true},
+            65: {row: 4, col: 2, isUpper: false, isCross: true},
+            66: {row: 4, col: 3, isUpper: false, isCross: true},
+            67: {row: 4, col: 4, isUpper: false, isCross: true},
+            68: {row: 4, col: 5, isUpper: false, isCross: true},
+            69: {row: 4, col: 6, isUpper: false, isCross: true},
+            70: {row: 4, col: 7, isUpper: false, isCross: true},
+            71: {row: 4, col: 8, isUpper: false, isCross: true},
+            72: {row: 4, col: 9, isUpper: false, isCross: true},
+            73: {row: 3.5, col: 1.5, isUpper: false, isCross: true},
+            74: {row: 3.5, col: 2.5, isUpper: false, isCross: true},
+            75: {row: 3.5, col: 3.5, isUpper: false, isCross: true},
+            76: {row: 3.5, col: 4.5, isUpper: false, isCross: true},
+            77: {row: 3.5, col: 5.5, isUpper: false, isCross: true},
+            78: {row: 3.5, col: 6.5, isUpper: false, isCross: true},
+            79: {row: 3.5, col: 7.5, isUpper: false, isCross: true},
+            80: {row: 3.5, col: 8.5, isUpper: false, isCross: true},
+            81: {row: 4.5, col: 1.5, isUpper: false, isCross: true},
+            82: {row: 4.5, col: 2.5, isUpper: false, isCross: true},
+            83: {row: 4.5, col: 3.5, isUpper: false, isCross: true},
+            84: {row: 4.5, col: 4.5, isUpper: false, isCross: true},
+            85: {row: 4.5, col: 5.5, isUpper: false, isCross: true},
+            86: {row: 4.5, col: 6.5, isUpper: false, isCross: true},
+            87: {row: 4.5, col: 7.5, isUpper: false, isCross: true},
+            88: {row: 4.5, col: 8.5, isUpper: false, isCross: true},
+            89: {row: 5.5, col: 1.5, isUpper: false, isCross: true},
+            90: {row: 5.5, col: 2.5, isUpper: false, isCross: true}
+        };
+
+        // Khởi tạo khi trang được tải
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const todayFormatted = today.toISOString().split('T')[0];
+            document.getElementById('currentDate').value = todayFormatted;
+            
+            // Điền danh sách người
+            const personSelect = document.getElementById('personSelect');
+            const personList = document.getElementById('personList');
+            
+            peopleData.forEach(person => {
+                // Thêm vào dropdown
+                const option = document.createElement('option');
+                option.value = person.id;
+                option.textContent = `${person.id}. ${person.name} (${formatDate(person.dob)})`;
+                personSelect.appendChild(option);
+                
+                // Thêm vào danh sách clickable
+                const personItem = document.createElement('div');
+                personItem.className = 'person-item';
+                personItem.dataset.id = person.id;
+                
+                const personName = document.createElement('div');
+                personName.className = 'person-name';
+                personName.textContent = `${person.id}. ${person.name}`;
+                
+                const personDOB = document.createElement('div');
+                personDOB.className = 'person-dob';
+                personDOB.textContent = `Ngày sinh: ${formatDate(person.dob)}`;
+                
+                personItem.appendChild(personName);
+                personItem.appendChild(personDOB);
+                personList.appendChild(personItem);
+                
+                // Xử lý khi click vào item trong danh sách
+                personItem.addEventListener('click', function() {
+                    document.querySelectorAll('.person-item').forEach(item => {
+                        item.classList.remove('selected');
+                    });
+                    
+                    this.classList.add('selected');
+                    personSelect.value = this.dataset.id;
+                    
+                    const selectedPerson = peopleData.find(p => p.id == this.dataset.id);
+                    if (selectedPerson) {
+                        document.getElementById('dobInput').value = selectedPerson.dob;
+                    }
+                    
+                    setTimeout(calculate, 100);
+                });
+            });
+            
+            // Xử lý khi chọn từ dropdown
+            personSelect.addEventListener('change', function() {
+                const selectedId = this.value;
+                if (!selectedId) return;
+                
+                document.querySelectorAll('.person-item').forEach(item => {
+                    item.classList.remove('selected');
+                    if (item.dataset.id == selectedId) {
+                        item.classList.add('selected');
+                    }
+                });
+                
+                const selectedPerson = peopleData.find(p => p.id == selectedId);
+                if (selectedPerson) {
+                    document.getElementById('dobInput').value = selectedPerson.dob;
+                }
+                
+                setTimeout(calculate, 100);
+            });
+            
+            // Tạo bàn cờ
+            createChessboard();
+            
+            // Gắn sự kiện cho các nút
+            document.getElementById('calculateBtn').addEventListener('click', calculate);
+            document.getElementById('resetBtn').addEventListener('click', resetForm);
+            document.getElementById('autoAllBtn').addEventListener('click', calculateAll);
+            document.getElementById('dobInput').addEventListener('change', calculate);
+            document.getElementById('currentDate').addEventListener('change', calculate);
+        });
+        
+        // Tạo bàn cờ 9x8 (72 ô)
+        function createChessboard() {
+            const chessboard = document.getElementById('chessboard');
+            chessboard.innerHTML = '';
+            
+            const totalRows = 8;
+            const totalCols = 9;
+            let cellIndex = 0;
+            
+            // Tạo các ô cờ
+            for (let row = 1; row <= totalRows; row++) {
+                for (let col = 1; col <= totalCols; col++) {
+                    // Bỏ qua ô sông (hàng 4)
+                    if (row === 4) {
+                        // Tạo sông
+                        if (col === 1) {
+                            const riverCell = document.createElement('div');
+                            riverCell.className = 'cell river-area';
+                            riverCell.style.gridRow = "4 / 6";
+                            riverCell.style.gridColumn = "1 / 10";
+                            
+                            const riverText = document.createElement('div');
+                            riverText.className = 'river-text';
+                            riverText.textContent = 'SÔNG';
+                            riverCell.appendChild(riverText);
+                            
+                            chessboard.appendChild(riverCell);
+                        }
+                        continue;
+                    }
+                    
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    cell.dataset.index = cellIndex;
+                    
+                    // Xác định ô sáng/tối
+                    const isDark = (row + col) % 2 === 0;
+                    if (isDark) {
+                        cell.classList.add('dark');
+                    }
+                    
+                    // Xác định tuyến trên/dưới
+                    if (row <= 3) {
+                        cell.classList.add('upper-line');
+                    } else if (row >= 5) {
+                        cell.classList.add('lower-line');
+                    }
+                    
+                    // Tính điểm số dựa trên vị trí
+                    let pointNumber = calculatePointNumber(row, col);
+                    
+                    // Thêm số điểm
+                    const pointSpan = document.createElement('div');
+                    pointSpan.className = 'point-number';
+                    pointSpan.textContent = pointNumber;
+                    pointSpan.id = `point-${pointNumber}`;
+                    cell.appendChild(pointSpan);
+                    
+                    // Thêm nội dung trống
+                    const contentSpan = document.createElement('div');
+                    contentSpan.className = 'cell-content';
+                    contentSpan.id = `cell-content-${pointNumber}`;
+                    contentSpan.dataset.point = pointNumber;
+                    cell.appendChild(contentSpan);
+                    
+                    chessboard.appendChild(cell);
+                    cellIndex++;
+                }
+            }
+        }
+        
+        // Tính số điểm dựa trên hàng và cột
+        function calculatePointNumber(row, col) {
+            if (row <= 3) {
+                // Tuyến trên: từ trái sang phải, từ trên xuống
+                return (row - 1) * 9 + col;
+            } else if (row >= 5) {
+                // Tuyến dưới: từ phải sang trái, từ dưới lên
+                const adjustedRow = row - 5; // 5->0, 6->1, 7->2, 8->3
+                return 28 + adjustedRow * 9 + (9 - col);
+            }
+            return 0;
+        }
+        
+        // Hàm tính toán chính
+        function calculate() {
+            const currentDateStr = document.getElementById('currentDate').value;
+            const personId = document.getElementById('personSelect').value;
+            const dobStr = document.getElementById('dobInput').value;
+            
+            if (!currentDateStr || !personId || !dobStr) {
+                alert("Vui lòng điền đầy đủ thông tin!");
+                return;
+            }
+            
+            const currentDate = new Date(currentDateStr);
+            const dob = new Date(dobStr);
+            const selectedPerson = peopleData.find(p => p.id == personId);
+            
+            if (!selectedPerson) {
+                alert("Vui lòng chọn một người từ danh sách!");
+                return;
+            }
+            
+            // Tính tuổi
+            let age = currentDate.getFullYear() - dob.getFullYear();
+            const monthDiff = currentDate.getMonth() - dob.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && currentDate.getDate() < dob.getDate())) {
+                age--;
+            }
+            
+            // Tính thứ trong tuần và quân cờ
+            const dayOfWeek = dob.getDay();
+            const pieceInfo = pieceMap[dayOfWeek];
+            
+            // Xác định tuyến trên/dưới
+            const birthMonth = dob.getMonth() + 1;
+            const isUpperLine = birthMonth >= 7;
+            
+            // Tính vị trí trên bàn cờ (tuổi mod 90)
+            let boardPosition = age % 90;
+            if (boardPosition === 0) boardPosition = 90;
+            
+            // Lấy thông tin điểm từ bản đồ
+            const pointInfo = pointMap[boardPosition] || {row: 1, col: 1, isUpper: isUpperLine};
+            const row = pointInfo.row;
+            const col = pointInfo.col;
+            const isCrossPoint = pointInfo.isCross || false;
+            
+            // Lưu thông tin người này vào bàn cờ
+            allPeopleOnBoard[boardPosition] = {
+                id: selectedPerson.id,
+                name: selectedPerson.name,
+                dob: dobStr,
+                piece: pieceInfo,
+                age: age,
+                row: Math.floor(row),
+                col: Math.floor(col),
+                isUpperLine: isUpperLine,
+                isCrossPoint: isCrossPoint,
+                pointNumber: boardPosition
+            };
+            
+            // Hiển thị kết quả
+            document.getElementById('resultName').textContent = selectedPerson.name;
+            document.getElementById('resultDOB').textContent = formatDate(dobStr);
+            document.getElementById('resultPiece').textContent = `${pieceInfo.number} - ${pieceInfo.name}`;
+            document.getElementById('resultAge').textContent = `${age} tuổi`;
+            document.getElementById('resultPosition').textContent = boardPosition;
+            document.getElementById('resultCoordinates').textContent = `Hàng ${Math.floor(row)}, Cột ${Math.floor(col)}`;
+            document.getElementById('resultCoordinateDisplay').textContent = `H${Math.floor(row)}C${Math.floor(col)}`;
+            
+            document.getElementById('resultBox').style.display = 'block';
+            
+            // Cập nhật bàn cờ
+            updateChessboard();
+        }
+        
+        // Cập nhật bàn cờ với tất cả thông tin
+        function updateChessboard() {
+            // Xóa highlight cũ
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.classList.remove('highlight');
+            });
+            
+            // Xóa nội dung cũ trong các ô
+            for (let i = 1; i <= 90; i++) {
+                const cellContent = document.getElementById(`cell-content-${i}`);
+                if (cellContent) {
+                    cellContent.innerHTML = '';
+                }
+            }
+            
+            // Thêm thông tin tất cả mọi người vào bàn cờ
+            Object.keys(allPeopleOnBoard).forEach(position => {
+                const person = allPeopleOnBoard[position];
+                const cellContent = document.getElementById(`cell-content-${position}`);
+                
+                if (cellContent) {
+                    const cell = cellContent.parentElement;
+                    
+                    // Tạo nội dung hiển thị
+                    const shortName = person.name.split(' ')[0];
+                    const dobFormatted = formatDate(person.dob).substring(0, 5); // Chỉ lấy ngày/tháng
+                    
+                    // Hiển thị đầy đủ trên desktop, thu gọn trên mobile
+                    cellContent.innerHTML = `
+                        <div class="full-info">
+                            <div><strong>${shortName}</strong></div>
+                            <div>${dobFormatted}</div>
+                            <div>${person.piece.number}-${person.piece.name}</div>
+                            <div>${person.age}t</div>
+                            <div>H${person.row}C${person.col}</div>
+                        </div>
+                        <div class="compact-info">
+                            <div>${shortName.substring(0, 4)}</div>
+                            <div>${person.piece.number}</div>
+                            <div>${person.age}t</div>
+                        </div>
+                    `;
+                    
+                    // Highlight ô của người được chọn từ dropdown
+                    const selectedId = document.getElementById('personSelect').value;
+                    if (selectedId && person.id == selectedId) {
+                        cell.classList.add('highlight');
+                        
+                        // Cuộn đến ô được chọn
+                        setTimeout(() => {
+                            cell.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+                        }, 100);
+                    }
+                }
+            });
+        }
+        
+        // Tính toán cho tất cả mọi người
+        function calculateAll() {
+            const currentDateStr = document.getElementById('currentDate').value;
+            if (!currentDateStr) {
+                alert("Vui lòng chọn ngày hiện tại!");
+                return;
+            }
+            
+            const currentDate = new Date(currentDateStr);
+            const allResultsContainer = document.getElementById('allResults');
+            allResultsContainer.innerHTML = '';
+            allResultsContainer.style.display = 'grid';
+            
+            // Xóa dữ liệu cũ
+            allPeopleOnBoard = {};
+            
+            // Tính toán cho từng người
+            peopleData.forEach(person => {
+                const dob = new Date(person.dob);
+                
+                // Tính tuổi
+                let age = currentDate.getFullYear() - dob.getFullYear();
+                const monthDiff = currentDate.getMonth() - dob.getMonth();
+                
+                if (monthDiff < 0 || (monthDiff === 0 && currentDate.getDate() < dob.getDate())) {
+                    age--;
+                }
+                
+                // Tính thứ trong tuần và quân cờ
+                const dayOfWeek = dob.getDay();
+                const pieceInfo = pieceMap[dayOfWeek];
+                
+                // Xác định tuyến trên/dưới
+                const birthMonth = dob.getMonth() + 1;
+                const isUpperLine = birthMonth >= 7;
+                
+                // Tính vị trí trên bàn cờ
+                let boardPosition = age % 90;
+                if (boardPosition === 0) boardPosition = 90;
+                
+                // Lấy thông tin điểm
+                const pointInfo = pointMap[boardPosition] || {row: 1, col: 1, isUpper: isUpperLine};
+                const row = pointInfo.row;
+                const col = pointInfo.col;
+                const isCrossPoint = pointInfo.isCross || false;
+                
+                // Lưu thông tin vào bàn cờ
+                allPeopleOnBoard[boardPosition] = {
+                    id: person.id,
+                    name: person.name,
+                    dob: person.dob,
+                    piece: pieceInfo,
+                    age: age,
+                    row: Math.floor(row),
+                    col: Math.floor(col),
+                    isUpperLine: isUpperLine,
+                    isCrossPoint: isCrossPoint,
+                    pointNumber: boardPosition
+                };
+                
+                // Tạo thẻ hiển thị kết quả
+                const resultCard = document.createElement('div');
+                resultCard.className = 'info-card';
+                resultCard.innerHTML = `
+                    <h4>${person.id}. ${person.name}</h4>
+                    <div><strong>Ngày sinh:</strong> ${formatDate(person.dob)}</div>
+                    <div><strong>Tuổi:</strong> ${age} tuổi</div>
+                    <div><strong>Quân cờ:</strong> ${pieceInfo.number} - ${pieceInfo.name}</div>
+                    <div><strong>Vị trí:</strong> ${boardPosition}</div>
+                    <div><strong>Tọa độ:</strong> H${Math.floor(row)}C${Math.floor(col)}</div>
+                `;
+                
+                // Thêm sự kiện click để xem chi tiết
+                resultCard.style.cursor = 'pointer';
+                resultCard.addEventListener('click', function() {
+                    document.getElementById('personSelect').value = person.id;
+                    document.getElementById('dobInput').value = person.dob;
+                    
+                    document.querySelectorAll('.person-item').forEach(item => {
+                        item.classList.remove('selected');
+                        if (item.dataset.id == person.id) {
+                            item.classList.add('selected');
+                        }
+                    });
+                    
+                    calculate();
+                });
+                
+                allResultsContainer.appendChild(resultCard);
+            });
+            
+            // Cập nhật bàn cờ với tất cả thông tin
+            updateChessboard();
+        }
+        
+        // Đặt lại form
+        function resetForm() {
+            document.getElementById('personSelect').value = '';
+            document.getElementById('dobInput').value = '';
+            
+            document.querySelectorAll('.person-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            document.getElementById('resultBox').style.display = 'none';
+            document.getElementById('allResults').style.display = 'none';
+            
+            // Xóa dữ liệu trên bàn cờ
+            allPeopleOnBoard = {};
+            updateChessboard();
+        }
+        
+        // Định dạng ngày tháng
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phân tích BPM – Hz – Hợp âm – 12 Con Giáp & Giờ Nội Tạng</title>
+<style>
+    :root {
+        --primary: #4a6fa5;
+        --secondary: #166088;
+        --accent: #ff7e5f;
+        --light: #f8f9fa;
+        --dark: #343a40;
+        --success: #28a745;
+        --warning: #ffc107;
+        --danger: #dc3545;
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        color: var(--dark);
+        line-height: 1.6;
+        padding: 20px;
+        min-height: 100vh;
+    }
+    
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        padding: 25px;
+    }
+    
+    .header {
+        text-align: center;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 25px;
+    }
+    
+    h1 {
+        color: var(--primary);
+        font-size: 28px;
+        margin-bottom: 10px;
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    
+    .subtitle {
+        color: var(--secondary);
+        font-size: 16px;
+        font-weight: 500;
+    }
+    
+    .input-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+    
+    .input-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--secondary);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .icon {
+        font-size: 18px;
+    }
+    
+    input, select {
+        padding: 12px 15px;
+        border: 2px solid #e1e5eb;
+        border-radius: 10px;
+        font-size: 16px;
+        transition: all 0.3s;
+        background-color: var(--light);
+    }
+    
+    input:focus, select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
+    }
+    
+    .btn-analyze {
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        font-size: 18px;
+        font-weight: 600;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: block;
+        width: 100%;
+        margin: 20px 0;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-analyze:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .btn-analyze:active {
+        transform: translateY(0);
+    }
+    
+    .results-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    @media (min-width: 768px) {
+        .results-container {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+    
+    .result-box {
+        background: var(--light);
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        border-left: 5px solid var(--primary);
+    }
+    
+    .result-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .result-content {
+        font-size: 16px;
+    }
+    
+    .result-item {
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed #ddd;
+    }
+    
+    .result-item:last-child {
+        border-bottom: none;
+    }
+    
+    .highlight {
+        color: var(--accent);
+        font-weight: 600;
+    }
+    
+    .organ-time {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #f0f8ff;
+        padding: 10px 15px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .organ-name {
+        font-weight: 600;
+        color: var(--secondary);
+    }
+    
+    .organ-hours {
+        background: var(--primary);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 14px;
+    }
+    
+    .zodiac-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .zodiac-emoji {
+        font-size: 40px;
+    }
+    
+    .zodiac-details {
+        flex: 1;
+    }
+    
+    .zodiac-name {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--secondary);
+    }
+    
+    .zodiac-traits {
+        font-size: 14px;
+        color: #666;
+    }
+    
+    .bpm-indicator {
+        height: 10px;
+        background: linear-gradient(to right, #4CAF50, #FFC107, #F44336);
+        border-radius: 5px;
+        margin: 10px 0;
+        position: relative;
+    }
+    
+    .bpm-marker {
+        position: absolute;
+        top: -5px;
+        width: 20px;
+        height: 20px;
+        background: var(--dark);
+        border-radius: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .footer {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        color: #777;
+        font-size: 14px;
+    }
+</style>
+</head>
+
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🧠 Phân tích Công việc theo BPM – Hz – Hợp âm</h1>
+        <div class="subtitle">12 Con Giáp & Giờ hoạt động của cơ quan nội tạng</div>
+    </div>
+    
+    <div class="input-section">
+        <div class="input-group">
+            <label><span class="icon">🐹</span> Chọn Con Giáp</label>
+            <select id="congiap">
+                <option value="">-- Chọn Con Giáp --</option>
+                <option value="ty">🐭 Tý</option>
+                <option value="suu">🐮 Sửu</option>
+                <option value="dan">🐯 Dần</option>
+                <option value="mao">🐰 Mão</option>
+                <option value="thin">🐲 Thìn</option>
+                <option value="ty2">🐍 Tỵ</option>
+                <option value="ngo">🐴 Ngọ</option>
+                <option value="mui">🐐 Mùi</option>
+                <option value="than">🐵 Thân</option>
+                <option value="dau">🐔 Dậu</option>
+                <option value="tuat">🐶 Tuất</option>
+                <option value="hoi">🐷 Hợi</option>
+            </select>
+        </div>
+        
+        <div class="input-group">
+            <label><span class="icon">❤️</span> Nhịp tim (BPM)</label>
+            <input type="number" id="bpm" placeholder="60 – 160" min="40" max="200">
+        </div>
+        
+        <div class="input-group">
+            <label><span class="icon">🔊</span> Tần số Hz</label>
+            <input type="number" id="hz" placeholder="100 – 500" min="50" max="1000" step="0.1">
+        </div>
+        
+        <div class="input-group">
+            <label><span class="icon">🎵</span> Hợp âm</label>
+            <select id="chord">
+                <option value="">-- Không chọn --</option>
+                <option value="C">C - Đô trưởng (Sáng tạo)</option>
+                <option value="D">D - Rê trưởng (Năng động)</option>
+                <option value="E">E - Mi trưởng (Mạnh mẽ)</option>
+                <option value="F">F - Fa trưởng (Dịu dàng)</option>
+                <option value="G">G - Sol trưởng (Vui vẻ)</option>
+                <option value="A">A - La trưởng (Tươi sáng)</option>
+                <option value="B">B - Si trưởng (Phức tạp)</option>
+            </select>
+        </div>
+    </div>
+    
+    <button class="btn-analyze" onclick="phanTich()">📊 PHÂN TÍCH & ĐỐI CHIẾU</button>
+    
+    <div class="results-container">
+        <div class="result-box">
+            <div class="result-title"><span class="icon">🎯</span> Thông tin Con Giáp & Phân tích</div>
+            <div class="result-content" id="zodiacResult">
+                <div class="zodiac-info">
+                    <div class="zodiac-emoji">🐹</div>
+                    <div class="zodiac-details">
+                        <div class="zodiac-name">Chọn Con Giáp</div>
+                        <div class="zodiac-traits">Thông tin sẽ hiển thị tại đây sau khi chọn</div>
+                    </div>
+                </div>
+                <div id="analysisDetails">Vui lòng chọn Con Giáp và nhập thông tin để xem phân tích</div>
+            </div>
+        </div>
+        
+        <div class="result-box">
+            <div class="result-title"><span class="icon">🕐</span> Giờ hoạt động Nội tạng & Công việc</div>
+            <div class="result-content" id="organResult">
+                <div class="organ-time">
+                    <div class="organ-name">Dạ dày</div>
+                    <div class="organ-hours">7:00 - 9:00</div>
+                </div>
+                <div class="result-item"><span class="highlight">Ăn sáng,</span> họp buổi sáng, lên kế hoạch</div>
+                
+                <div class="organ-time">
+                    <div class="organ-name">Lá lách</div>
+                    <div class="organ-hours">9:00 - 11:00</div>
+                </div>
+                <div class="result-item"><span class="highlight">Tập trung làm việc,</span> học tập, xử lý công việc quan trọng</div>
+                
+                <div class="organ-time">
+                    <div class="organ-name">Tim</div>
+                    <div class="organ-hours">11:00 - 13:00</div>
+                </div>
+                <div class="result-item"><span class="highlight">Nghỉ ngơi, ăn trưa,</span> giao tiếp nhẹ nhàng</div>
+                
+                <div class="organ-time">
+                    <div class="organ-name">Ruột non</div>
+                    <div class="organ-hours">13:00 - 15:00</div>
+                </div>
+                <div class="result-item"><span class="highlight">Phân tích, tổng hợp,</span> làm việc chi tiết</div>
+                
+                <div class="organ-time">
+                    <div class="organ-name">Bàng quang</div>
+                    <div class="organ-hours">15:00 - 17:00</div>
+                </div>
+                <div class="result-item"><span class="highlight">Họp chiều,</span> trao đổi, lưu trữ thông tin</div>
+                
+                <div class="organ-time">
+                    <div class="organ-name">Thận</div>
+                    <div class="organ-hours">17:00 - 19:00</div>
+                </div>
+                <div class="result-item"><span class="highlight">Hoàn thành công việc,</span> lên kế hoạch ngày mai</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Ứng dụng kết hợp y học cổ truyền, âm nhạc trị liệu và phân tích nhịp sinh học</p>
+        <p>© 2023 - Dành cho mục đích tham khảo và giải trí</p>
+    </div>
+</div>
+
+<script>
+function phanTich() {
+    const congiap = document.getElementById("congiap").value;
+    const bpm = parseInt(document.getElementById("bpm").value);
+    const hz = parseFloat(document.getElementById("hz").value);
+    const chord = document.getElementById("chord").value;
+    
+    const giapMap = {
+        ty: {
+            emoji: "🐭",
+            name: "Tý",
+            traits: "Trí tuệ, kinh doanh, công nghệ, giao tiếp",
+            bpmRange: [80, 120],
+            hzRange: [220, 350],
+            chord: "E",
+            jobs: "Công nghệ thông tin, tư vấn, giao dịch, nghiên cứu"
+        },
+        suu: {
+            emoji: "🐮",
+            name: "Sửu",
+            traits: "Lao động, xây dựng, quản lý, bền bỉ",
+            bpmRange: [70, 100],
+            hzRange: [150, 250],
+            chord: "D",
+            jobs: "Xây dựng, nông nghiệp, quản lý dự án, logistics"
+        },
+        dan: {
+            emoji: "🐯",
+            name: "Dần",
+            traits: "Lãnh đạo, quân đội, thể thao, mạo hiểm",
+            bpmRange: [110, 150],
+            hzRange: [300, 450],
+            chord: "A",
+            jobs: "Quản lý cấp cao, huấn luyện, thể thao chuyên nghiệp"
+        },
+        mao: {
+            emoji: "🐰",
+            name: "Mão",
+            traits: "Nghệ thuật, ngoại giao, giáo dục, sáng tạo",
+            bpmRange: [70, 100],
+            hzRange: [180, 280],
+            chord: "F",
+            jobs: "Giáo dục, nghệ thuật, thiết kế, tâm lý học"
+        },
+        thin: {
+            emoji: "🐲",
+            name: "Thìn",
+            traits: "Quản lý, chính trị, tổ chức lớn, sáng tạo",
+            bpmRange: [100, 140],
+            hzRange: [280, 420],
+            chord: "G",
+            jobs: "Quản lý doanh nghiệp, chính trị, tổ chức sự kiện"
+        },
+        ty2: {
+            emoji: "🐍",
+            name: "Tỵ",
+            traits: "Nghiên cứu, chiến lược, tâm linh, phân tích",
+            bpmRange: [80, 120],
+            hzRange: [250, 400],
+            chord: "B",
+            jobs: "Nghiên cứu khoa học, chiến lược gia, phân tích dữ liệu"
+        },
+        ngo: {
+            emoji: "🐴",
+            name: "Ngọ",
+            traits: "Du lịch, vận động, bán hàng, giao tiếp",
+            bpmRange: [100, 140],
+            hzRange: [300, 450],
+            chord: "A",
+            jobs: "Sales, marketing, du lịch, quan hệ công chúng"
+        },
+        mui: {
+            emoji: "🐐",
+            name: "Mùi",
+            traits: "Chăm sóc, xã hội, y tế, nghệ thuật",
+            bpmRange: [60, 90],
+            hzRange: [120, 220],
+            chord: "C",
+            jobs: "Y tế, chăm sóc sức khỏe, công tác xã hội, nghệ thuật"
+        },
+        than: {
+            emoji: "🐵",
+            name: "Thân",
+            traits: "Sáng tạo, kỹ thuật, truyền thông, giải trí",
+            bpmRange: [90, 130],
+            hzRange: [250, 400],
+            chord: "E",
+            jobs: "Kỹ thuật, truyền thông, giải trí, công nghệ"
+        },
+        dau: {
+            emoji: "🐔",
+            name: "Dậu",
+            traits: "Kế toán, tổ chức, kỷ luật, giảng dạy",
+            bpmRange: [70, 100],
+            hzRange: [180, 260],
+            chord: "D",
+            jobs: "Kế toán, giáo viên, hành chính, quản lý tài chính"
+        },
+        tuat: {
+            emoji: "🐶",
+            name: "Tuất",
+            traits: "Bảo vệ, luật, quân sự, cộng đồng",
+            bpmRange: [90, 130],
+            hzRange: [220, 350],
+            chord: "F",
+            jobs: "An ninh, luật sư, quân đội, công tác cộng đồng"
+        },
+        hoi: {
+            emoji: "🐷",
+            name: "Hợi",
+            traits: "Dịch vụ, ẩm thực, giải trí, hưởng thụ",
+            bpmRange: [60, 100],
+            hzRange: [150, 250],
+            chord: "C",
+            jobs: "Ẩm thực, dịch vụ, giải trí, tư vấn tâm lý"
+        }
+    };
+    
+    // Hiển thị thông tin con giáp
+    const zodiacResult = document.getElementById("zodiacResult");
+    const analysisDetails = document.getElementById("analysisDetails");
+    
+    if (congiap && giapMap[congiap]) {
+        const zodiac = giapMap[congiap];
+        
+        // Cập nhật thông tin con giáp
+        zodiacResult.innerHTML = `
+            <div class="zodiac-info">
+                <div class="zodiac-emoji">${zodiac.emoji}</div>
+                <div class="zodiac-details">
+                    <div class="zodiac-name">${zodiac.name}</div>
+                    <div class="zodiac-traits">${zodiac.traits}</div>
+                </div>
+            </div>
+        `;
+        
+        let analysisText = `<div class="result-item"><span class="highlight">Công việc phù hợp:</span> ${zodiac.jobs}</div>`;
+        analysisText += `<div class="result-item"><span class="highlight">BPM lý tưởng:</span> ${zodiac.bpmRange[0]}-${zodiac.bpmRange[1]}</div>`;
+        analysisText += `<div class="result-item"><span class="highlight">Hz lý tưởng:</span> ${zodiac.hzRange[0]}-${zodiac.hzRange[1]}</div>`;
+        analysisText += `<div class="result-item"><span class="highlight">Hợp âm phù hợp:</span> ${zodiac.chord}</div>`;
+        
+        // Phân tích BPM
+        if (!isNaN(bpm)) {
+            analysisText += `<div class="result-item"><span class="highlight">BPM hiện tại (${bpm}):</span> `;
+            if (bpm >= zodiac.bpmRange[0] && bpm <= zodiac.bpmRange[1]) {
+                analysisText += `<span style="color:green;">✓ Phù hợp với ${zodiac.name}</span>`;
+            } else if (bpm < zodiac.bpmRange[0]) {
+                analysisText += `<span style="color:orange;">Hơi thấp so với ${zodiac.name}</span>`;
+            } else {
+                analysisText += `<span style="color:red;">Hơi cao so với ${zodiac.name}</span>`;
+            }
+            
+            analysisText += "<br>";
+            if (bpm < 80) analysisText += "→ Nghỉ ngơi, học tập nhẹ, thiền định";
+            else if (bpm <= 120) analysisText += "→ Làm việc trí óc, giao tiếp, di chuyển nhẹ";
+            else analysisText += "→ Hoạt động mạnh, thể thao, huấn luyện";
+            analysisText += "</div>";
+        }
+        
+        // Phân tích Hz
+        if (!isNaN(hz)) {
+            analysisText += `<div class="result-item"><span class="highlight">Hz hiện tại (${hz}):</span> `;
+            if (hz >= zodiac.hzRange[0] && hz <= zodiac.hzRange[1]) {
+                analysisText += `<span style="color:green;">✓ Phù hợp với ${zodiac.name}</span>`;
+            } else if (hz < zodiac.hzRange[0]) {
+                analysisText += `<span style="color:orange;">Hơi thấp so với ${zodiac.name}</span>`;
+            } else {
+                analysisText += `<span style="color:red;">Hơi cao so với ${zodiac.name}</span>`;
+            }
+            
+            analysisText += "<br>";
+            if (hz < 150) analysisText += "→ Thư giãn, cảm xúc, chăm sóc, sáng tạo nhẹ";
+            else if (hz <= 300) analysisText += "→ Giao tiếp, học tập, làm việc văn phòng";
+            else analysisText += "→ Biểu diễn, lãnh đạo, vận động mạnh";
+            analysisText += "</div>";
+        }
+        
+        // Phân tích hợp âm
+        if (chord) {
+            analysisText += `<div class="result-item"><span class="highlight">Hợp âm hiện tại (${chord}):</span> `;
+            if (chord === zodiac.chord) {
+                analysisText += `<span style="color:green;">✓ Phù hợp tuyệt đối với ${zodiac.name}</span>`;
+            } else {
+                analysisText += `Hợp âm lý tưởng cho ${zodiac.name} là ${zodiac.chord}`;
+            }
+            analysisText += "</div>";
+        }
+        
+        analysisDetails.innerHTML = analysisText;
+        
+    } else {
+        zodiacResult.innerHTML = `
+            <div class="zodiac-info">
+                <div class="zodiac-emoji">🐹</div>
+                <div class="zodiac-details">
+                    <div class="zodiac-name">Chọn Con Giáp</div>
+                    <div class="zodiac-traits">Thông tin sẽ hiển thị tại đây sau khi chọn</div>
+                </div>
+            </div>
+        `;
+        analysisDetails.innerHTML = "Vui lòng chọn Con Giáp để xem phân tích chi tiết";
+    }
+}
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

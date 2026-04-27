@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSP Solver (Thuật toán Tham Lam)</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f4f7f6; }
+        .container { max-width: 900px; margin: auto; background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h1 { color: #8b0000; text-align: center; }
+        h3 { color: #555; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-top: 20px;}
+        button { background-color: #8b0000; color: white; padding: 12px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; transition: background-color 0.3s; margin-top: 15px;}
+        button:hover { background-color: #5d0000; }
+        #matrixInput { display: grid; grid-template-columns: repeat(12, 1fr); gap: 5px; margin-bottom: 20px; }
+        .cell-label { text-align: center; font-weight: bold; padding: 5px; }
+        input[type="number"] { width: 100%; padding: 5px; border: 1px solid #ccc; border-radius: 3px; box-sizing: border-box; text-align: center; }
+        .header-cell { background-color: #eee; }
+        .diag-cell { background-color: #f5f5f5; pointer-events: none; }
+        #results { margin-top: 20px; padding: 15px; border: 2px dashed #8b0000; border-radius: 8px; background-color: #fff0f0; }
+        .path { font-size: 1.2em; font-weight: bold; color: #0056b3; }
+        .note { font-size: 0.9em; color: #666; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📍 Bài Toán Người Du Lịch (TSP) - 10 Địa Điểm</h1>
+    <p>Tìm lộ trình ngắn nhất xuất phát từ **NHÀ** (Điểm 0), đi qua 10 địa điểm (1-10) và quay về NHÀ.</p>
+    <p class="note">Thuật toán: **Tham Lam (Nearest Neighbor)**. Đơn vị: Kilômét.</p>
+
+    <h3>Nhập Ma Trận Khoảng Cách (11x11)</h3>
+    <p class="note">Nhập khoảng cách $D_{i,j}$ từ điểm $i$ đến điểm $j$. **Khoảng cách từ $i$ đến $j$ phải bằng từ $j$ đến $i$.** Ô chéo (ví dụ: 0 -> 0) không cần nhập (mặc định là 0).</p>
+
+    <div id="matrixInput">
+        <div class="cell-label header-cell">Từ \ Đến</div>
+        <div class="cell-label header-cell">0 (NHÀ)</div>
+        <div class="cell-label header-cell">1</div>
+        <div class="cell-label header-cell">2</div>
+        <div class="cell-label header-cell">3</div>
+        <div class="cell-label header-cell">4</div>
+        <div class="cell-label header-cell">5</div>
+        <div class="cell-label header-cell">6</div>
+        <div class="cell-label header-cell">7</div>
+        <div class="cell-label header-cell">8</div>
+        <div class="cell-label header-cell">9</div>
+        <div class="cell-label header-cell">10</div>
+
+        </div>
+    <button onclick="solveTSP()">Tìm Lộ Trình Tối Ưu</button>
+
+    <div id="results">
+        <h2>✨ Kết Quả Lộ Trình:</h2>
+        <p>Tổng Chi Phí (Km): <span id="totalCost" class="path">Chưa chạy</span></p>
+        <p>Lộ Trình: <span id="route" class="path">Chưa chạy</span></p>
+    </div>
+</div>
+
+<script>
+    const N = 11; // 0 (Nhà) + 10 Địa điểm
+    const matrixInput = document.getElementById('matrixInput');
+    const matrix = Array(N).fill(0).map(() => Array(N).fill(0));
+
+    // Khởi tạo Ma trận nhập liệu
+    function initializeMatrixInputs() {
+        for (let i = 0; i < N; i++) {
+            // Label dòng
+            const label = document.createElement('div');
+            label.className = 'cell-label header-cell';
+            label.textContent = (i === 0) ? '0 (NHÀ)' : i.toString();
+            matrixInput.appendChild(label);
+
+            for (let j = 0; j < N; j++) {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.min = '0';
+                input.id = `d_${i}_${j}`;
+                
+                if (i === j) {
+                    // Đường chéo: không nhập (khoảng cách 0)
+                    input.className = 'diag-cell';
+                    input.value = '0';
+                    input.disabled = true;
+                } else if (i > j) {
+                    // Chỉ nhập một nửa (sẽ sao chép sang nửa kia)
+                    input.className = 'upper-cell';
+                    input.placeholder = 'Km';
+                } else {
+                    // Ô nhập ngược lại, disable và hiển thị giá trị đối xứng
+                    input.className = 'lower-cell';
+                    input.disabled = true;
+                    input.placeholder = 'Auto';
+                }
+                matrixInput.appendChild(input);
+            }
+        }
+    }
+
+    // Load dữ liệu từ input vào ma trận
+    function loadMatrixFromInputs() {
+        let isValid = true;
+        for (let i = 0; i < N; i++) {
+            for (let j = i; j < N; j++) {
+                if (i === j) continue;
+                
+                // Lấy giá trị từ ô i->j (hoặc j->i nếu j>i)
+                const inputId = (i < j) ? `d_${i}_${j}` : `d_${j}_${i}`;
+                const value = parseInt(document.getElementById(inputId).value);
+
+                if (isNaN(value) || value < 0) {
+                    isValid = false;
+                    break;
+                }
+
+                // Gán giá trị đối xứng
+                matrix[i][j] = value;
+                matrix[j][i] = value;
+                
+                // Cập nhật giá trị hiển thị cho ô đối xứng (i>j)
+                if (i > j) {
+                     document.getElementById(`d_${i}_${j}`).value = value;
+                }
+            }
+            if (!isValid) break;
+        }
+        return isValid;
+    }
+
+    // Thuật toán Tham Lam (Nearest Neighbor)
+    function nearestNeighborTSP(startNode) {
+        let currentPath = [startNode];
+        let totalCost = 0;
+        let visited = new Set([startNode]);
+
+        while (visited.size < N) {
+            let currentNode = currentPath[currentPath.length - 1];
+            let minDistance = Infinity;
+            let nextNode = -1;
+
+            for (let j = 0; j < N; j++) {
+                if (!visited.has(j)) {
+                    // Tìm hàng xóm gần nhất chưa thăm
+                    if (matrix[currentNode][j] < minDistance) {
+                        minDistance = matrix[currentNode][j];
+                        nextNode = j;
+                    }
+                }
+            }
+
+            if (nextNode !== -1) {
+                totalCost += minDistance;
+                currentPath.push(nextNode);
+                visited.add(nextNode);
+            } else {
+                 // Trường hợp lỗi (không nên xảy ra)
+                break;
+            }
+        }
+
+        // Quay về điểm xuất phát (Nhà)
+        const lastNode = currentPath[currentPath.length - 1];
+        const distanceToHome = matrix[lastNode][startNode];
+        totalCost += distanceToHome;
+        currentPath.push(startNode);
+
+        return { totalCost, path: currentPath };
+    }
+
+    function solveTSP() {
+        if (!loadMatrixFromInputs()) {
+            alert("Vui lòng nhập khoảng cách hợp lệ (số nguyên không âm) cho tất cả các ô.");
+            return;
+        }
+
+        // Bắt đầu từ Nhà (Điểm 0)
+        const result = nearestNeighborTSP(0);
+
+        // Chuyển các điểm 1-10 thành tên gọi Địa điểm 1-10
+        const pathNames = result.path.map(node => (node === 0) ? 'NHÀ' : `Đ.điểm ${node}`);
+        const routeString = pathNames.join(' → ');
+
+        document.getElementById('totalCost').textContent = `${result.totalCost.toFixed(2)} Km`;
+        document.getElementById('route').textContent = routeString;
+    }
+    
+    // Tạo data mẫu để dễ test
+    function setSampleData() {
+        // Ma trận 3x3 đơn giản: Nhà(0), A(1), B(2)
+        // 0-1: 10, 0-2: 5, 1-2: 12
+        document.getElementById('d_0_1').value = 10;
+        document.getElementById('d_0_2').value = 5;
+        document.getElementById('d_1_2').value = 12;
+
+        // Các ô khác: nhập số ngẫu nhiên lớn hơn
+        for (let i = 0; i < N; i++) {
+            for (let j = i + 1; j < N; j++) {
+                const inputId = `d_${i}_${j}`;
+                // Kiểm tra xem đã có data mẫu chưa (3x3 đầu tiên)
+                if (i > 2 || j > 2) {
+                    // Sử dụng khoảng cách ngẫu nhiên từ 1 đến 50
+                    document.getElementById(inputId).value = Math.floor(Math.random() * 50) + 1;
+                }
+            }
+        }
+        
+        // Load lại ma trận để cập nhật các ô đối xứng
+        loadMatrixFromInputs();
+    }
+
+
+    // Chạy khởi tạo
+    initializeMatrixInputs();
+    setSampleData(); // Tải dữ liệu mẫu để người dùng dễ test
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

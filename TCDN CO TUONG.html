@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bàn Cờ Tướng</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .chessboard-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .board {
+            display: grid;
+            grid-template-columns: repeat(10, 60px);
+            grid-template-rows: repeat(9, 60px);
+            border: 3px solid #8B4513;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            background-color: #F0D9B5;
+        }
+        
+        .cell {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        /* Màu ô xen kẽ */
+        .cell:nth-child(even) {
+            background-color: #B58863;
+        }
+        
+        .cell:nth-child(odd) {
+            background-color: #F0D9B5;
+        }
+        
+        /* Tạo các đường kẻ ngang giữa bàn cờ */
+        .row-5 {
+            border-bottom: 2px solid #000;
+        }
+        
+        /* Cung điện - đường chéo */
+        .palace {
+            position: relative;
+        }
+        
+        .palace::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(to bottom right, transparent 45%, #000 45%, #000 55%, transparent 55%),
+                linear-gradient(to bottom left, transparent 45%, #000 45%, #000 55%, transparent 55%);
+            pointer-events: none;
+        }
+        
+        /* Sông */
+        .river {
+            position: relative;
+        }
+        
+        .river::after {
+            content: "SÔNG";
+            position: absolute;
+            font-size: 18px;
+            color: #1E90FF;
+            font-weight: bold;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            opacity: 0.6;
+        }
+        
+        /* Quân cờ */
+        .piece {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+        
+        .piece:hover {
+            transform: scale(1.05);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+        }
+        
+        .piece.red {
+            background-color: #FF6B6B;
+            color: #FFF;
+            border: 2px solid #D32F2F;
+        }
+        
+        .piece.black {
+            background-color: #2C3E50;
+            color: #FFF;
+            border: 2px solid #000;
+        }
+        
+        /* Các bên ngoài bàn cờ */
+        .left-side, .right-side {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .side-piece {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .left-side .side-piece {
+            background-color: #FF6B6B;
+            color: white;
+            border: 2px solid #D32F2F;
+        }
+        
+        .right-side .side-piece {
+            background-color: #2C3E50;
+            color: white;
+            border: 2px solid #000;
+        }
+        
+        /* Cột bên trong bàn cờ */
+        .column-4, .column-7 {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .column-piece {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .column-piece.red {
+            background-color: #FF6B6B;
+            color: #FFF;
+            border: 2px solid #D32F2F;
+        }
+        
+        .column-piece.black {
+            background-color: #2C3E50;
+            color: #FFF;
+            border: 2px solid #000;
+        }
+        
+        /* Chú thích */
+        .legend {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+        }
+        
+        .legend h3 {
+            margin-bottom: 10px;
+            color: #333;
+            text-align: center;
+        }
+        
+        .legend p {
+            margin-bottom: 5px;
+            color: #555;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .left-side, .right-side {
+                flex-direction: row;
+                margin: 10px 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .board {
+                grid-template-columns: repeat(10, 40px);
+                grid-template-rows: repeat(9, 40px);
+            }
+            
+            .cell {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .piece, .column-piece {
+                width: 35px;
+                height: 35px;
+                font-size: 14px;
+            }
+            
+            .side-piece {
+                width: 40px;
+                height: 40px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>BÀN CỜ TƯỚNG</h1>
+    
+    <div class="container">
+        <!-- Bên trái bàn cờ - Quân đỏ -->
+        <div class="left-side" id="left-side">
+            <!-- Quân cờ sẽ được thêm bằng JavaScript -->
+        </div>
+        
+        <!-- Bàn cờ -->
+        <div class="chessboard-container">
+            <div class="board" id="chessboard">
+                <!-- Các ô cờ sẽ được tạo bằng JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Bên phải bàn cờ - Quân đen -->
+        <div class="right-side" id="right-side">
+            <!-- Quân cờ sẽ được thêm bằng JavaScript -->
+        </div>
+    </div>
+    
+    <div class="legend">
+        <h3>Hướng dẫn bố trí quân cờ</h3>
+        <p><strong>Bên trái bàn cờ (quân đỏ):</strong> Từ trên xuống dưới: XE - MÃ - VOI - SĨ - TƯỚNG - SĨ - VOI - MÃ - XE</p>
+        <p><strong>Bên phải bàn cờ (quân đen):</strong> Từ trên xuống dưới: XE - MÃ - VOI - SĨ - TƯỚNG - SĨ - VOI - MÃ - XE</p>
+        <p><strong>Cột 4:</strong> Từ trên xuống dưới: TỐT - TỐT - TỐT - TỐT - TỐT</p>
+        <p><strong>Cột 7:</strong> Từ trên xuống dưới: TỐT - TỐT - TỐT - TỐT - TỐT</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chessboard = document.getElementById('chessboard');
+            const leftSide = document.getElementById('left-side');
+            const rightSide = document.getElementById('right-side');
+            
+            // Danh sách quân cờ bên ngoài bàn cờ (bên trái - quân đỏ)
+            const leftPieces = [
+                "XE", "MÃ", "VOI", "SĨ", "TƯỚNG", "SĨ", "VOI", "MÃ", "XE"
+            ];
+            
+            // Danh sách quân cờ bên ngoài bàn cờ (bên phải - quân đen)
+            const rightPieces = [
+                "XE", "MÃ", "VOI", "SĨ", "TƯỚNG", "SĨ", "VOI", "MÃ", "XE"
+            ];
+            
+            // Tạo bàn cờ 10x9
+            for (let row = 0; row < 9; row++) {
+                for (let col = 0; col < 10; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    
+                    // Thêm class cho cung điện (từ cột 4-6, hàng 1-3 và 6-8)
+                    if ((col >= 3 && col <= 5) && ((row >= 0 && row <= 2) || (row >= 6 && row <= 8))) {
+                        cell.classList.add('palace');
+                    }
+                    
+                    // Thêm class cho sông (hàng 4,5)
+                    if (row === 4 || row === 5) {
+                        cell.classList.add('river');
+                    }
+                    
+                    chessboard.appendChild(cell);
+                }
+            }
+            
+            // Thêm quân cờ bên trái bàn cờ (quân đỏ)
+            leftPieces.forEach((pieceName, index) => {
+                const piece = document.createElement('div');
+                piece.className = 'side-piece';
+                piece.textContent = pieceName;
+                piece.dataset.index = index;
+                leftSide.appendChild(piece);
+            });
+            
+            // Thêm quân cờ bên phải bàn cờ (quân đen)
+            rightPieces.forEach((pieceName, index) => {
+                const piece = document.createElement('div');
+                piece.className = 'side-piece';
+                piece.textContent = pieceName;
+                piece.dataset.index = index;
+                rightSide.appendChild(piece);
+            });
+            
+            // Thêm quân Tốt vào cột 4 và cột 7
+            const pawnRows = [0, 2, 4, 6, 8]; // Hàng 1, 3, 5, 7, 9 (0-indexed)
+            
+            // Cột 4 (index 3) - quân đỏ
+            pawnRows.forEach(row => {
+                const cell = document.querySelector(`.cell[data-row="${row}"][data-col="3"]`);
+                if (cell) {
+                    const pawn = document.createElement('div');
+                    pawn.className = 'piece red column-piece';
+                    pawn.textContent = 'TỐT';
+                    pawn.dataset.row = row;
+                    pawn.dataset.col = 3;
+                    cell.appendChild(pawn);
+                }
+            });
+            
+            // Cột 7 (index 6) - quân đen
+            pawnRows.forEach(row => {
+                const cell = document.querySelector(`.cell[data-row="${row}"][data-col="6"]`);
+                if (cell) {
+                    const pawn = document.createElement('div');
+                    pawn.className = 'piece black column-piece';
+                    pawn.textContent = 'TỐT';
+                    pawn.dataset.row = row;
+                    pawn.dataset.col = 6;
+                    cell.appendChild(pawn);
+                }
+            });
+            
+            // Thêm quân cờ vào vị trí ban đầu trên bàn cờ
+            // Quân đỏ (hàng 1-3)
+            const redInitialPieces = [
+                {row: 0, col: 0, name: "XE"},
+                {row: 0, col: 1, name: "MÃ"},
+                {row: 0, col: 2, name: "VOI"},
+                {row: 0, col: 3, name: "SĨ"},
+                {row: 0, col: 4, name: "TƯỚNG"},
+                {row: 0, col: 5, name: "SĨ"},
+                {row: 0, col: 6, name: "VOI"},
+                {row: 0, col: 7, name: "MÃ"},
+                {row: 0, col: 8, name: "XE"},
+                {row: 2, col: 1, name: "PHÁO"},
+                {row: 2, col: 7, name: "PHÁO"}
+            ];
+            
+            // Quân đen (hàng 6-8)
+            const blackInitialPieces = [
+                {row: 8, col: 0, name: "XE"},
+                {row: 8, col: 1, name: "MÃ"},
+                {row: 8, col: 2, name: "VOI"},
+                {row: 8, col: 3, name: "SĨ"},
+                {row: 8, col: 4, name: "TƯỚNG"},
+                {row: 8, col: 5, name: "SĨ"},
+                {row: 8, col: 6, name: "VOI"},
+                {row: 8, col: 7, name: "MÃ"},
+                {row: 8, col: 8, name: "XE"},
+                {row: 6, col: 1, name: "PHÁO"},
+                {row: 6, col: 7, name: "PHÁO"}
+            ];
+            
+            // Thêm quân đỏ vào bàn cờ
+            redInitialPieces.forEach(piece => {
+                const cell = document.querySelector(`.cell[data-row="${piece.row}"][data-col="${piece.col}"]`);
+                if (cell) {
+                    const pieceElement = document.createElement('div');
+                    pieceElement.className = 'piece red';
+                    pieceElement.textContent = piece.name;
+                    pieceElement.dataset.row = piece.row;
+                    pieceElement.dataset.col = piece.col;
+                    cell.appendChild(pieceElement);
+                }
+            });
+            
+            // Thêm quân đen vào bàn cờ
+            blackInitialPieces.forEach(piece => {
+                const cell = document.querySelector(`.cell[data-row="${piece.row}"][data-col="${piece.col}"]`);
+                if (cell) {
+                    const pieceElement = document.createElement('div');
+                    pieceElement.className = 'piece black';
+                    pieceElement.textContent = piece.name;
+                    pieceElement.dataset.row = piece.row;
+                    pieceElement.dataset.col = piece.col;
+                    cell.appendChild(pieceElement);
+                }
+            });
+            
+            // Thêm sự kiện click cho quân cờ
+            document.querySelectorAll('.piece').forEach(piece => {
+                piece.addEventListener('click', function() {
+                    // Lấy thông tin quân cờ
+                    const pieceName = this.textContent;
+                    const row = this.dataset.row;
+                    const col = this.dataset.col;
+                    const color = this.classList.contains('red') ? 'Đỏ' : 'Đen';
+                    
+                    alert(`Bạn đã chọn quân ${pieceName} (${color}) tại vị trí hàng ${parseInt(row)+1}, cột ${parseInt(col)+1}`);
+                });
+            });
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

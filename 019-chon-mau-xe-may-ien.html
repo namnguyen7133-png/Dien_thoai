@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tra màu từ thông tin xe - Bảng 25 chữ cái</title>
+<style>
+body{margin:0;font-family:sans-serif;background:#071027;color:#fff;padding:20px;}
+h1{text-align:center;font-size:1.5rem;margin-bottom:5px;}
+p.lead{text-align:center;font-size:0.95rem;opacity:0.8;margin-bottom:20px;}
+.card{background:rgba(255,255,255,0.03);padding:16px;border-radius:12px;max-width:800px;margin:0 auto;}
+.field{margin-bottom:12px;}
+label{font-weight:700;margin-bottom:4px;display:block;}
+input[type=text],input[type=number]{width:100%;padding:12px;font-size:1.1rem;border-radius:8px;border:none;background:rgba(255,255,255,0.05);color:#fff;}
+.btn{padding:12px 16px;font-weight:700;font-size:1rem;border:none;border-radius:10px;background:#06b6d4;color:#042f35;cursor:pointer;margin-right:8px;}
+.result{margin-top:16px;background:rgba(255,255,255,0.05);padding:12px;border-radius:10px;font-size:1rem;}
+.color-pill{display:inline-block;padding:6px 10px;margin:4px;border-radius:999px;font-weight:700;background:#333;color:#fff;}
+.mono{font-family:monospace;font-weight:700;}
+.small{font-size:0.9rem;opacity:0.85;}
+</style>
+</head>
+<body>
+<h1>Tra màu từ thông tin xe (Dùng bảng 25 chữ cái)</h1>
+<p class="lead">Nhập tất cả dữ liệu để tìm màu. Hệ thống sẽ kết hợp các trường để tìm tất cả khả năng.</p>
+
+<div class="card">
+<div class="field">
+<label for="vehicleName">1) Tên xe</label>
+<input type="text" id="vehicleName" placeholder="Ví dụ: SRC, Wave Alpha, Dream">
+</div>
+
+<div class="field">
+<label for="engineCC">2) Dung tích xi-lanh</label>
+<input type="number" id="engineCC" placeholder="VD: 110" min="0">
+</div>
+
+<div class="field">
+<label for="batteryCode">3) Dùng acquy / mã số</label>
+<input type="text" id="batteryCode" placeholder="VD: AC-123 hoặc 113">
+</div>
+
+<div class="field">
+<label for="ownerName">4) Tên người chủ</label>
+<input type="text" id="ownerName" placeholder="Ví dụ: NAM, Nguyễn Văn A">
+</div>
+
+<button class="btn" id="runBtn">Chạy</button>
+<button class="btn" id="clearBtn" style="background:#334155;color:#fff;">Xóa</button>
+
+<div id="output" class="result" style="display:none;"></div>
+</div>
+
+<script>
+// Bảng màu 14 mục
+const colorTables=[
+["DO","VANG","TRANG","LUC","LAM","DO","VANG","TRANG","LUC","LAM","DO","VANG","TRANG","LUC"],
+["DEN","TRANG","HB","LAM","LUC","TIM","DO","CAM","VANG","DEN","TRANG","HB","LAM","LUC"],
+["VANG","DO","HONG","GHI","TRANG","DEN","HB","LAM","VANG","DO","HONG","GHI","TRANG","DEN"],
+["DO","VANG","CAM","LUC","LAM","CHAM","TIM","DO","VANG","CAM","LUC","LAM","CHAM","TIM"],
+["DO","VANG","LAM","DO","VANG","LAM","DO","VANG","LAM","DO","VANG","LAM","DO","VANG"],
+["LAM","DO","VANG","DEN","LAM","DO","VANG","DEN","LAM","DO","VANG","DEN","LAM","DO"]
+];
+
+// Bảng chữ 25 chữ cái
+const baseMap={'a':1,'ă':1,'â':1,'b':2,'c':3,'d':4,'đ':4,'e':5,'ê':5,'g':7,'h':8,'i':9,'k':11,'l':12,'m':13,'n':14,'o':15,'ô':15,'ơ':15,'p':16,'q':17,'r':18,'s':19,'t':20,'u':21,'ư':21,'v':22,'x':24,'y':25};
+
+// Chuẩn hóa ký tự
+function normChar(ch){
+if(!ch) return '';
+if(ch==='Đ') return 'd';
+if(ch==='đ') return 'd';
+return ch.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+}
+
+// Lấy số từ chữ cái đầu
+function firstLettersToNumbers(str){
+let arr=str.split(' ').filter(Boolean).map(w=>w[0]);
+let numStr='';
+arr.forEach(ch=>{
+const n=baseMap[normChar(ch)];
+if(n) numStr+=n;
+});
+return numStr;
+}
+
+// Lấy tất cả nhóm số từ chuỗi
+function extractNumbers(str){
+return str.match(/\d+/g)||[];
+}
+
+// Chọn số để trừ dung tích
+function chooseNumber(numbers){
+if(numbers.length===0) return null;
+return parseInt(numbers[0]);
+}
+
+// Hiệu thành index bảng 1..14
+function diffIndex(num,dungtich){
+let diff=Math.abs(num-dungtich);
+let idx=diff%14;
+if(idx===0) idx=14;
+return idx;
+}
+
+// Chạy tra 3 bảng
+function pickColors(idx){
+let res=[];
+for(let i=0;i<3;i++){
+const table=colorTables[i%colorTables.length];
+res.push(table[(idx-1)%14]);
+}
+return res;
+}
+
+// Xử lý và hiển thị
+document.getElementById('runBtn').addEventListener('click',()=>{
+let vehicle=document.getElementById('vehicleName').value.trim();
+let engine=parseInt(document.getElementById('engineCC').value.trim());
+let battery=document.getElementById('batteryCode').value.trim();
+let owner=document.getElementById('ownerName').value.trim();
+
+if(!owner&&!vehicle&&!battery){
+alert("Vui lòng nhập ít nhất Tên chủ hoặc Tên xe hoặc Mã số");
+return;
+}
+if(!engine){
+alert("Vui lòng nhập Dung tích xi-lanh");
+return;
+}
+
+// Tạo tất cả chuỗi số
+let numbers=[];
+
+// 1. Chữ cái đầu tên chủ
+if(owner) numbers.push(firstLettersToNumbers(owner));
+
+// 2. Nhóm số từ tên xe
+if(vehicle) numbers=numbers.concat(extractNumbers(vehicle));
+
+// 3. Nhóm số từ mã số/acquy
+if(battery) numbers=numbers.concat(extractNumbers(battery));
+
+// 4. Chuyển tất cả chuỗi số thành số nguyên
+numbers=numbers.map(s=>parseInt(s)).filter(n=>!isNaN(n));
+
+if(numbers.length===0){
+document.getElementById('output').style.display='block';
+document.getElementById('output').innerHTML='<strong>Không tìm thấy dữ liệu với bảng chữ hiện tại</strong>';
+return;
+}
+
+// Tìm màu cho từng số
+let results=numbers.map(n=>{
+let idx=diffIndex(n,engine);
+let colors=pickColors(idx);
+return {number:n,index:idx,colors};
+});
+
+// Hiển thị kết quả
+let html='<div><strong>Kết quả tìm màu từ tất cả trường hợp:</strong></div>';
+results.forEach(r=>{
+html+=`<div class="small mono">Số: ${r.number} - Index bảng: ${r.index} - Màu: ${r.colors.map(c=>`<span class="color-pill">${c}</span>`).join('')}</div>`;
+});
+document.getElementById('output').style.display='block';
+document.getElementById('output').innerHTML=html;
+});
+
+// Xóa
+document.getElementById('clearBtn').addEventListener('click',()=>{
+document.getElementById('vehicleName').value='';
+document.getElementById('engineCC').value='';
+document.getElementById('batteryCode').value='';
+document.getElementById('ownerName').value='';
+document.getElementById('output').style.display='none';
+document.getElementById('output').innerHTML='';
+});
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

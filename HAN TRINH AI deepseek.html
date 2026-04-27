@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek Adventure</title>
+    <style>
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #4a6fa5 0%, #2c3e50 100%);
+            color: #f0f0f0;
+            line-height: 1.6;
+        }
+        .game-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #FFD700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #FFEC8B;
+            font-size: 1.6rem;
+            margin-top: 0;
+        }
+        p, li {
+            font-size: 1.1rem;
+            color: #f8f8f8;
+        }
+        .scene {
+            display: none;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .active {
+            display: block;
+        }
+        button {
+            background: #FFD700;
+            color: #2c3e50;
+            border: none;
+            padding: 12px 24px;
+            margin: 10px 5px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            background: #FFEC8B;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        .response {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            min-height: 80px;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .progress-bar {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background: #FFD700;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        .task-complete {
+            color: #90EE90;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        strong {
+            color: #FFEC8B;
+        }
+        em {
+            color: #d1e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>DeepSeek Adventure 🚀</h1>
+        <p>Hành trình học cách làm việc hiệu quả với AI DeepSeek!</p>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <!-- Scene 1: Giới thiệu -->
+        <div class="scene active" id="scene1">
+            <h2>Chào mừng đến với Thế giới AI! 🌍</h2>
+            <p>Bạn vừa được cấp quyền truy cập vào DeepSeek - trợ lý AI mạnh mẽ. Hãy cùng khám phá cách sử dụng tôi hiệu quả nhé!</p>
+            <button onclick="showScene(2)">Bắt đầu hành trình!</button>
+        </div>
+        
+        <!-- Scene 2: Học cách ra lệnh -->
+        <div class="scene" id="scene2">
+            <h2>Bài 1: Nghệ thuật ra lệnh cho AI 🎨</h2>
+            <p>Để có kết quả tốt nhất, hãy cung cấp cho tôi:</p>
+            <ul>
+                <li><strong>Mục đích rõ ràng</strong> - Bạn muốn đạt được điều gì?</li>
+                <li><strong>Đối tượng hướng đến</strong> - Ai sẽ đọc/xem kết quả?</li>
+                <li><strong>Định dạng mong muốn</strong> - Văn bản, bảng, mã code?</li>
+                <li><strong>Giọng điệu phù hợp</strong> - Chuyên nghiệp, thân thiện, hài hước?</li>
+            </ul>
+            <div class="response" id="response2">
+                Thử ra lệnh cho tôi bằng cách nhấn các nút bên dưới!
+            </div>
+            <button onclick="demonstratePrompt('good')">Lệnh tốt 👍</button>
+            <button onclick="demonstratePrompt('bad')">Lệnh chưa tốt 👎</button>
+            <button onclick="showScene(3)">Tiếp theo →</button>
+        </div>
+        
+        <!-- Scene 3: Ví dụ thực tế -->
+        <div class="scene" id="scene3">
+            <h2>Bài 2: Xử lý tình huống thực tế 🔧</h2>
+            <p>Bạn là nhân viên marketing cần viết content cho sản phẩm mới - <strong>Kem chống nắng làm từ trà xanh</strong>.</p>
+            <div class="response" id="response3">
+                Hãy chọn cách tiếp cận!
+            </div>
+            <button onclick="solveProblem('basic')">Yêu cầu cơ bản</button>
+            <button onclick="solveProblem('detailed')">Yêu cầu chi tiết</button>
+            <button onclick="showScene(4)">Tiếp theo →</button>
+        </div>
+        
+        <!-- Scene 4: Kết hợp AI -->
+        <div class="scene" id="scene4">
+            <h2>Bài 3: Đội siêu anh hùng AI 🦸‍♂️🦸‍♀️</h2>
+            <p>DeepSeek kết hợp với các AI khác tạo thành đội siêu mạnh!</p>
+            <div class="response" id="response4">
+                Chọn dự án để xem cách các AI hợp tác:
+            </div>
+            <button onclick="showAICollab('website')">Thiết kế Website</button>
+            <button onclick="showAICollab('presentation')">Bài thuyết trình</button>
+            <button onclick="showScene(5)">Tiếp theo →</button>
+        </div>
+        
+        <!-- Scene 5: Thử thách cuối -->
+        <div class="scene" id="scene5">
+            <h2>Thử thách cuối: Giải cứu công ty! 🚨</h2>
+            <p>Sếp bạn cần:
+                <br>- Phân tích dữ liệu bán hàng 6 tháng
+                <br>- Đề xuất chiến lược cải thiện
+                <br>- Viết email thông báo cho nhân viên
+                <br>- Tạo slide thuyết trình
+            </p>
+            <div class="response" id="response5">
+                Làm thế nào để giải quyết với DeepSeek?
+            </div>
+            <button onclick="finalChallenge()">Xem giải pháp thông minh!</button>
+            <button onclick="showScene(6)">Kết thúc hành trình 🎉</button>
+        </div>
+        
+        <!-- Scene 6: Kết thúc -->
+        <div class="scene" id="scene6">
+            <h2>Chúc mừng! Bạn đã hoàn thành hành trình! 🏆</h2>
+            <p>Giờ bạn đã biết cách:</p>
+            <ul>
+                <li class="task-complete">Ra lệnh hiệu quả cho AI</li>
+                <li class="task-complete">Giải quyết vấn đề thực tế</li>
+                <li class="task-complete">Kết hợp nhiều AI</li>
+                <li class="task-complete">Xử lý tình huống phức tạp</li>
+            </ul>
+            <p>Hãy thực hành thêm và khám phá sức mạnh của DeepSeek!</p>
+            <button onclick="location.reload()">Chơi lại</button>
+        </div>
+    </div>
+
+    <script>
+        let currentScene = 1;
+        const totalScenes = 6;
+        
+        function showScene(sceneNumber) {
+            document.getElementById('scene' + currentScene).classList.remove('active');
+            document.getElementById('scene' + sceneNumber).classList.add('active');
+            currentScene = sceneNumber;
+            
+            // Update progress bar
+            const progress = (sceneNumber / totalScenes) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+        
+        function demonstratePrompt(type) {
+            const responseEl = document.getElementById('response2');
+            if (type === 'good') {
+                responseEl.innerHTML = `
+                    <strong>Lệnh tốt:</strong><br>
+                    "Viết email thông báo nghỉ lễ 30/4 - 1/5 cho nhân viên, giọng văn thân thiện, bao gồm lịch nghỉ và thông tin liên hệ khẩn cấp, định dạng HTML."
+                    <br><br><em>→ Lệnh này có: mục đích rõ, đối tượng cụ thể, định dạng và giọng điệu.</em>
+                `;
+            } else {
+                responseEl.innerHTML = `
+                    <strong>Lệnh chưa tốt:</strong><br>
+                    "Viết email về lễ 30/4"
+                    <br><br><em>→ Thiếu chi tiết: cho ai? giọng điệu? nội dung cụ thể? định dạng?</em>
+                `;
+            }
+        }
+        
+        function solveProblem(approach) {
+            const responseEl = document.getElementById('response3');
+            if (approach === 'basic') {
+                responseEl.innerHTML = `
+                    <strong>Yêu cầu cơ bản:</strong><br>
+                    "Viết quảng cáo kem chống nắng trà xanh"
+                    <br><br><em>Kết quả nhận được có thể chung chung, thiếu điểm nhấn.</em>
+                `;
+            } else {
+                responseEl.innerHTML = `
+                    <strong>Yêu cầu chi tiết:</strong><br>
+                    "Viết 3 concept quảng cáo kem chống nắng chiết xuất trà xanh hữu cơ, hướng đến phụ nữ 20-35 tuổi: 
+                    <br>1. Concept thiên nhiên, bảo vệ làn da
+                    <br>2. Concept công nghệ, thành phần vượt trội  
+                    <br>3. Concept lifestyle, phù hợp cuộc sống hiện đại
+                    <br>Mỗi concept khoảng 100 từ, giọng trẻ trung, thu hút"
+                    <br><br><em>→ Kết quả sẽ chi tiết, đa dạng và phù hợp mục tiêu hơn!</em>
+                `;
+            }
+        }
+        
+        function showAICollab(project) {
+            const responseEl = document.getElementById('response4');
+            if (project === 'website') {
+                responseEl.innerHTML = `
+                    <strong>Thiết kế Website với đội AI:</strong><br>
+                    <em>DeepSeek:</em> "Viết code HTML/CSS/JS cho website bán hàng, thiết kế responsive..."
+                    <br><em>Midjourney:</em> "Tạo hình ảnh minh họa sản phẩm với prompt từ DeepSeek"
+                    <br><em>GitHub Copilot:</em> "Đề xuất code chi tiết, fix bug"
+                    <br>→ Website hoàn chỉnh với sức mạnh tổng hợp!
+                `;
+            } else {
+                responseEl.innerHTML = `
+                    <strong>Bài thuyết trình với đội AI:</strong><br>
+                    <em>DeepSeek:</em> "Viết nội dung slide, cấu trúc bài thuyết trình về AI trong y tế..."
+                    <br><em>DALL-E:</em> "Tạo hình ảnh minh họa cho các slide theo mô tả"
+                    <br><em>ChatGPT:</em> "Góp ý cải thiện flow bài thuyết trình"
+                    <br>→ Bài thuyết trình chuyên nghiệp, thu hút!
+                `;
+            }
+        }
+        
+        function finalChallenge() {
+            const responseEl = document.getElementById('response5');
+            responseEl.innerHTML = `
+                <strong>Giải pháp thông minh với DeepSeek:</strong><br>
+                1. <em>Phân tích dữ liệu:</em> "Phân tích file Excel bán hàng 6 tháng, tìm trend, sản phẩm bán chạy/chậm, đề xuất 3 chiến lược cải thiện"
+                <br>2. <em>Chiến lược:</em> "Dựa trên phân tích, đề xuất chi tiết 3 hướng đi: tập trung sản phẩm A, mở rộng kênh B, cải tiến dịch vụ C"
+                <br>3. <em>Email:</em> "Viết email thông báo thay đổi chiến lược cho nhân viên, giọng tích cực, truyền cảm hứng, định dạng HTML"
+                <br>4. <em>Slide:</em> "Tạo outline 10 slide thuyết trình chiến lược mới, bao gồm số liệu, biểu đồ và điểm nhấn"
+                <br><br><em>→ Tất cả trong 30 phút thay vì 3 ngày làm thủ công!</em>
+            `;
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

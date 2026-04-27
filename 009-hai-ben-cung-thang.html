@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Làm chủ cuộc chơi – Win‑Win trong kinh doanh</title>
+  <style>
+    body {font-family: Arial, sans-serif; background:#f5f5f5; padding:20px;}
+    .container {max-width:900px; margin:auto; background:#fff; padding:20px; border-radius:8px;}
+    h1,h2 {color:#C62828;}
+    .box {background:#FFF8F0; border-left:5px solid #1565C0; padding:15px; margin:20px 0;}
+    label {display:block; margin-top:10px; font-weight:bold;}
+    input {width:100%; padding:10px; margin-top:5px;}
+    button {margin-top:15px; padding:12px; width:100%; background:#C62828; color:#fff; border:none; border-radius:5px; font-size:16px;}
+    .result {margin-top:15px; font-size:18px; font-weight:bold; color:#2E7D32;}
+    .note {font-style:italic; color:#555; margin-top:10px;}
+  </style>
+</head>
+<body>
+<div class="container">
+
+<h1>LÀM CHỦ CUỘC CHƠI – TƯ DUY ĐÔI BÊN CÙNG THẮNG (WIN‑WIN)</h1>
+<p><strong>Nguyên tắc cốt lõi:</strong> Không chia tiền trước – chỉ chia <u>sau khi đã sống sót</u>.</p>
+
+<div class="box">
+<h2>1. Luật sống còn (áp dụng cho mọi phép tính)</h2>
+<ul>
+  <li>✅ Hòa vốn trước</li>
+  <li>✅ Có dòng tiền dương</li>
+  <li>✅ Có lãi gộp an toàn</li>
+  <li>❌ Không đạt → không chia</li>
+</ul>
+</div>
+
+<h2>2. Mô hình chia đôi – đôi bên cùng có lợi</h2>
+<p>Áp dụng khi hợp tác (mặt bằng – vốn – công sức).</p>
+
+<div class="box">
+<h3>Công thức Win‑Win chuẩn</h3>
+<p><strong>Lợi nhuận chia = Lợi nhuận ròng – Quỹ an toàn</strong></p>
+<p><strong>Mỗi bên = Lợi nhuận chia × % thỏa thuận</strong></p>
+</div>
+
+<h2>3. Máy tính chia lợi nhuận (chia đôi / theo tỷ lệ)</h2>
+
+<label>Lợi nhuận ròng (đồng)</label>
+<input type="number" id="netProfit" placeholder="Ví dụ: 100000000" />
+
+<label>Quỹ an toàn giữ lại (%)</label>
+<input type="number" id="safetyRate" placeholder="Ví dụ: 30" />
+
+<label>Tỷ lệ chia cho Bên A (%)</label>
+<input type="number" id="rateA" placeholder="Ví dụ: 50" />
+
+<label>Tỷ lệ chia cho Bên B (%)</label>
+<input type="number" id="rateB" placeholder="Ví dụ: 50" />
+
+<button onclick="calculateWinWin()">Tính chia Win‑Win</button>
+
+<div class="result" id="result"></div>
+<div class="note">Người Hoa không chia khi chưa có quỹ an toàn. Người làm chủ cuộc chơi luôn giữ quyền kiểm soát tiền.</div>
+
+<h2>4. Áp dụng Win‑Win vào các phép tính bạn có</h2>
+<div class="box">
+<ul>
+  <li><strong>Điểm hòa vốn:</strong> Chỉ chia lợi nhuận khi vượt ≥ 120% hòa vốn</li>
+  <li><strong>Dòng tiền:</strong> Chỉ chia khi dòng tiền dương ≥ 2 chu kỳ</li>
+  <li><strong>Lãi gộp:</strong> < 40% → không chia, phải sửa mô hình</li>
+  <li><strong>AOV:</strong> Thưởng theo AOV tăng thêm (không theo doanh thu)</li>
+  <li><strong>Doanh thu/m²:</strong> Ai tối ưu m² tốt hơn → thưởng thêm</li>
+</ul>
+</div>
+
+<h2>5. Bài học làm chủ cuộc chơi</h2>
+<div class="box">
+<p>❝ Người yếu hỏi chia bao nhiêu. Người mạnh đặt điều kiện mới được chia. ❞</p>
+<p>Win‑Win không phải là chia đều – mà là <strong>cùng sống, cùng lớn, không cùng chết</strong>.</p>
+</div>
+
+</div>
+
+<script>
+function calculateWinWin() {
+  const profit = parseFloat(document.getElementById('netProfit').value) || 0;
+  const safety = parseFloat(document.getElementById('safetyRate').value) || 0;
+  const rateA = parseFloat(document.getElementById('rateA').value) || 0;
+  const rateB = parseFloat(document.getElementById('rateB').value) || 0;
+
+  if (rateA + rateB !== 100) {
+    alert('Tổng tỷ lệ chia phải bằng 100%');
+    return;
+  }
+
+  const safeFund = profit * safety / 100;
+  const shareable = profit - safeFund;
+  const shareA = shareable * rateA / 100;
+  const shareB = shareable * rateB / 100;
+
+  document.getElementById('result').innerHTML =
+    `Quỹ an toàn giữ lại: ${safeFund.toLocaleString('vi-VN')} đ<br>` +
+    `Lợi nhuận được chia: ${shareable.toLocaleString('vi-VN')} đ<br>` +
+    `Bên A nhận: ${shareA.toLocaleString('vi-VN')} đ<br>` +
+    `Bên B nhận: ${shareB.toLocaleString('vi-VN')} đ`;
+}
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

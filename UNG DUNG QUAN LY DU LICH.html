@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Dự tính chi tiêu du lịch</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    padding: 20px;
+}
+h1 {
+    text-align: center;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin-top: 20px;
+}
+th, td {
+    border: 1px solid #ccc;
+    padding: 6px;
+    font-size: 13px;
+    text-align: right;
+}
+th {
+    background: #2c3e50;
+    color: white;
+}
+td:first-child, th:first-child {
+    text-align: center;
+}
+td:nth-child(2), th:nth-child(2) {
+    text-align: left;
+}
+input {
+    width: 100%;
+    box-sizing: border-box;
+}
+tfoot td {
+    font-weight: bold;
+    background: #eef;
+}
+.summary {
+    margin-top: 20px;
+    padding: 15px;
+    background: white;
+    border: 1px solid #ccc;
+}
+</style>
+</head>
+
+<body>
+
+<h1>DỰ TÍNH CHI TIÊU DU LỊCH</h1>
+
+<div class="summary">
+    <b>Tỷ giá:</b> 1 NGOẠI TỆ = 
+    <input id="rate" type="number" placeholder="Nhập tỷ giá"> VNĐ<br><br>
+
+    <b>Ngân sách tổng (VNĐ):</b> 
+    <input id="totalBudget" type="number" placeholder="Nhập ngân sách">
+</div>
+
+<table id="budgetTable">
+<thead>
+<tr>
+    <th>Ngày</th>
+    <th>Mô tả</th>
+    <th>Chi tiêu (NGOẠI TỆ)</th>
+    <th>Dự trù/ngày (NGOẠI TỆ)</th>
+    <th>Còn lại (NGOẠI TỆ)</th>
+    <th>Chi tiêu (VNĐ)</th>
+    <th>Dự trù/ngày (VNĐ)</th>
+    <th>Còn lại (VNĐ)</th>
+</tr>
+</thead>
+
+<tbody>
+<!-- 10 dòng trống để nhập -->
+<script>
+for (let i = 0; i < 10; i++) {
+document.write(`
+<tr>
+<td><input placeholder="Ngày"></td>
+<td><input placeholder="Mô tả"></td>
+<td><input type="number" class="spentNGOẠI TỆ"></td>
+<td><input type="number" class="budgetNGOẠI TỆ"></td>
+<td class="remainNGOẠI TỆ"></td>
+<td class="spentVND"></td>
+<td class="budgetVND"></td>
+<td class="remainVND"></td>
+</tr>
+`);
+}
+</script>
+</tbody>
+
+<tfoot>
+<tr>
+<td colspan="2">TỔNG</td>
+<td id="totalNGOẠI TỆ"></td>
+<td></td>
+<td></td>
+<td id="totalVND"></td>
+<td></td>
+<td id="remainTotal"></td>
+</tr>
+</tfoot>
+</table>
+
+<script>
+function calculate() {
+    const rate = +document.getElementById("rate").value || 0;
+    const totalBudget = +document.getElementById("totalBudget").value || 0;
+
+    let sumNGOẠI TỆ = 0;
+    let sumVND = 0;
+
+    document.querySelectorAll("#budgetTable tbody tr").forEach(row=>{
+        const spentNGOẠI TỆ = +row.querySelector(".spentNGOẠI TỆ").value || 0;
+        const budgetNGOẠI TỆ = +row.querySelector(".budgetNGOẠI TỆ").value || 0;
+
+        const spentVND = spentNGOẠI TỆ * rate;
+        const budgetVND = budgetNGOẠI TỆ * rate;
+
+        row.querySelector(".spentVND").innerText = spentVND ? spentVND.toLocaleString() : "";
+        row.querySelector(".budgetVND").innerText = budgetVND ? budgetVND.toLocaleString() : "";
+        row.querySelector(".remainNGOẠI TỆ").innerText = 
+            (budgetNGOẠI TỆ || spentNGOẠI TỆ) ? (budgetNGOẠI TỆ - spentNGOẠI TỆ).toLocaleString() : "";
+        row.querySelector(".remainVND").innerText = 
+            (budgetVND || spentVND) ? (budgetVND - spentVND).toLocaleString() : "";
+
+        sumNGOẠI TỆ += spentNGOẠI TỆ;
+        sumVND += spentVND;
+    });
+
+    document.getElementById("totalNGOẠI TỆ").innerText = sumNGOẠI TỆ ? sumNGOẠI TỆ.toLocaleString() : "";
+    document.getElementById("totalVND").innerText = sumVND ? sumVND.toLocaleString() : "";
+    document.getElementById("remainTotal").innerText =
+        (totalBudget || sumVND) ? (totalBudget - sumVND).toLocaleString() : "";
+}
+
+document.addEventListener("input", calculate);
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

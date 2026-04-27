@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tính Can Chi Chuẩn Theo Lịch Âm</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Vietnamese:wght@300;400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --primary-color: #8B4513;
+        --secondary-color: #D2691E;
+        --accent-color: #FFD700;
+        --light-color: #FFF8DC;
+        --dark-color: #5D4037;
+        --success-color: #2E7D32;
+        --shadow: 0 10px 30px rgba(139, 69, 19, 0.15);
+        --border-radius: 15px;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Noto Sans Vietnamese', sans-serif;
+        background: linear-gradient(135deg, #fdf6e3 0%, #f5e6ca 100%);
+        color: #333;
+        min-height: 100vh;
+        padding: 20px;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            radial-gradient(circle at 10% 20%, rgba(255, 215, 0, 0.03) 0%, transparent 20%),
+            radial-gradient(circle at 90% 80%, rgba(139, 69, 19, 0.03) 0%, transparent 20%);
+        z-index: -1;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        border: 1px solid rgba(210, 105, 30, 0.2);
+        position: relative;
+    }
+
+    .header {
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 25px 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .header h1 {
+        font-family: 'Merriweather', serif;
+        font-size: 2.2rem;
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+        position: relative;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .header p {
+        font-size: 1.05rem;
+        opacity: 0.9;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.5;
+    }
+
+    .yin-yang {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        background: radial-gradient(circle at 50% 25%, white 12px, transparent 13px),
+                    radial-gradient(circle at 50% 75%, var(--dark-color) 12px, transparent 13px),
+                    linear-gradient(to right, white 50%, var(--dark-color) 50%);
+        border-radius: 50%;
+        border: 2px solid var(--accent-color);
+        box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    }
+
+    .content {
+        padding: 30px;
+    }
+
+    .input-section {
+        background-color: #fefaf0;
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 30px;
+        border: 1px solid #f0e6d3;
+        box-shadow: 0 5px 15px rgba(139, 69, 19, 0.05);
+    }
+
+    .input-section h2 {
+        color: var(--primary-color);
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .input-section h2 i {
+        color: var(--secondary-color);
+    }
+
+    .date-input {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        max-width: 400px;
+    }
+
+    .date-input label {
+        font-weight: 600;
+        color: var(--dark-color);
+        font-size: 1.05rem;
+    }
+
+    #solarDate {
+        padding: 16px 18px;
+        border: 2px solid #e0d6c2;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        font-family: inherit;
+        transition: all 0.3s;
+        background-color: white;
+        color: var(--dark-color);
+    }
+
+    #solarDate:focus {
+        outline: none;
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 3px rgba(210, 105, 30, 0.2);
+    }
+
+    .button-container {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 16px 28px;
+        border: none;
+        border-radius: 10px;
+        font-family: inherit;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        color: white;
+        box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 18px rgba(139, 69, 19, 0.4);
+    }
+
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+    }
+
+    .btn-secondary:hover {
+        background-color: #f9f5eb;
+        transform: translateY(-3px);
+    }
+
+    .result-section {
+        background-color: #fefaf0;
+        border-radius: 12px;
+        padding: 30px;
+        border: 1px solid #f0e6d3;
+        box-shadow: 0 5px 15px rgba(139, 69, 19, 0.05);
+        min-height: 350px;
+    }
+
+    .result-section h2 {
+        color: var(--primary-color);
+        margin-bottom: 25px;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .result-section h2 i {
+        color: var(--secondary-color);
+    }
+
+    #result {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+    }
+
+    .result-card {
+        background: white;
+        border-radius: 12px;
+        padding: 22px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        border-top: 4px solid var(--secondary-color);
+        transition: transform 0.3s;
+    }
+
+    .result-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .result-card h3 {
+        color: var(--primary-color);
+        margin-bottom: 15px;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed #e0d6c2;
+    }
+
+    .result-card h3 i {
+        color: var(--secondary-color);
+        width: 24px;
+        text-align: center;
+    }
+
+    .result-content {
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    .result-content p {
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .result-label {
+        color: #666;
+        font-weight: 500;
+    }
+
+    .result-value {
+        font-weight: 700;
+        color: var(--dark-color);
+        text-align: right;
+    }
+
+    .canchi-value {
+        color: var(--success-color);
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    .lunar-date {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        text-align: center;
+        padding: 12px;
+        background: linear-gradient(to right, #f9f5eb, #f0e6d3);
+        border-radius: 10px;
+        margin-bottom: 20px;
+        border: 1px dashed var(--secondary-color);
+    }
+
+    .footer {
+        text-align: center;
+        padding: 20px;
+        color: #777;
+        font-size: 0.95rem;
+        border-top: 1px solid #f0e6d3;
+        background-color: #fefaf0;
+    }
+
+    .footer a {
+        color: var(--secondary-color);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .footer a:hover {
+        text-decoration: underline;
+    }
+
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: var(--success-color);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        display: none;
+        z-index: 1000;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+        color: #777;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        color: #e0d6c2;
+        margin-bottom: 20px;
+    }
+
+    .empty-state h3 {
+        color: var(--dark-color);
+        margin-bottom: 10px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .container {
+            margin: 10px;
+        }
+        
+        .header {
+            padding: 20px;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+        }
+        
+        .yin-yang {
+            display: none;
+        }
+        
+        .content {
+            padding: 20px;
+        }
+        
+        .button-container {
+            flex-direction: column;
+        }
+        
+        .btn {
+            min-width: 100%;
+        }
+        
+        #result {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .header h1 {
+            font-size: 1.6rem;
+        }
+        
+        .result-section, .input-section {
+            padding: 20px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1><i class="fas fa-calendar-alt"></i> Tính Can Chi Chuẩn Theo Lịch Âm</h1>
+        <p>Công cụ chuyển đổi ngày dương lịch sang âm lịch và tính Can Chi chính xác</p>
+        <div class="yin-yang"></div>
+    </div>
+    
+    <div class="content">
+        <div class="input-section">
+            <h2><i class="fas fa-calendar-day"></i> Chọn ngày dương lịch</h2>
+            <div class="date-input">
+                <label for="solarDate">Ngày dương lịch cần tính:</label>
+                <input type="date" id="solarDate">
+                
+                <div class="button-container">
+                    <button class="btn btn-primary" onclick="calc()">
+                        <i class="fas fa-calculator"></i> Tính Can Chi
+                    </button>
+                    <button class="btn btn-secondary" onclick="setToday()">
+                        <i class="fas fa-sync-alt"></i> Dùng ngày hôm nay
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="result-section">
+            <h2><i class="fas fa-chart-bar"></i> Kết Quả Tra Cứu</h2>
+            
+            <div id="result">
+                <div class="empty-state" id="emptyState">
+                    <i class="far fa-calendar-check"></i>
+                    <h3>Chưa có dữ liệu</h3>
+                    <p>Vui lòng chọn ngày và nhấn "Tính Can Chi" để xem kết quả</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Công cụ tính Can Chi dựa trên thuật toán chuyển đổi dương lịch sang âm lịch chính xác</p>
+        <p>© 2023 - Tính Can Chi Chuẩn Theo Lịch Âm | <i class="fas fa-heart" style="color:#e74c3c;"></i> Di sản văn hóa Việt Nam</p>
+    </div>
+</div>
+
+<div class="notification" id="notification"></div>
+
+<script>
+/* ===== HỆ CAN CHI ===== */
+const CAN=['Giáp','Ất','Bính','Đinh','Mậu','Kỷ','Canh','Tân','Nhâm','Quý'];
+const CHI=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
+const CHI_MONTH=['Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi','Tý','Sửu'];
+
+/* ===== JULIAN DAY ===== */
+function jdFromDate(dd,mm,yy){
+  let a=Math.floor((14-mm)/12);
+  let y=yy+4800-a;
+  let m=mm+12*a-3;
+  return dd+Math.floor((153*m+2)/5)+365*y+Math.floor(y/4)-Math.floor(y/100)+Math.floor(y/400)-32045;
+}
+
+/* ===== ÂM LỊCH (Hoàng Ngọc Đức) ===== */
+const PI=Math.PI;
+function NewMoon(k){
+  let T=k/1236.85;
+  let T2=T*T;
+  let T3=T2*T;
+  let dr=PI/180;
+  let Jd1=2415020.75933+29.53058868*k+0.0001178*T2-0.000000155*T3;
+  Jd1+=0.00033*Math.sin((166.56+132.87*T-0.009173*T2)*dr);
+  let M=359.2242+29.10535608*k-0.0000333*T2-0.00000347*T3;
+  let Mpr=306.0253+385.81691806*k+0.0107306*T2+0.00001236*T3;
+  let F=21.2964+390.67050646*k-0.0016528*T2-0.00000239*T3;
+  let C1=(0.1734-0.000393*T)*Math.sin(M*dr)+0.0021*Math.sin(2*M*dr);
+  C1-=0.4068*Math.sin(Mpr*dr)+0.0161*Math.sin(2*Mpr*dr);
+  C1-=0.0004*Math.sin(3*Mpr*dr);
+  C1+=0.0104*Math.sin(2*F*dr)-0.0051*Math.sin((M+Mpr)*dr);
+  C1-=0.0074*Math.sin((M-Mpr)*dr)+0.0004*Math.sin((2*F+M)*dr);
+  C1-=0.0004*Math.sin((2*F-M)*dr)-0.0006*Math.sin((2*F+Mpr)*dr);
+  C1+=0.0010*Math.sin((2*F-Mpr)*dr)+0.0005*Math.sin((2*Mpr+M)*dr);
+  let deltaT=T< -11?0.001+0.000839*T+0.0002261*T2-0.00000845*T3-0.000000081*T*T3:-0.000278+0.000265*T+0.000262*T2;
+  return Jd1+C1-deltaT;
+}
+
+function getNewMoonDay(k,tz){return Math.floor(NewMoon(k)+0.5+tz/24)}
+
+function getSunLongitude(jdn,tz){
+  let T=(jdn-2451545.5-tz/24)/36525;
+  let M=357.52910+35999.05030*T-0.0001559*T*T-0.00000048*T*T*T;
+  let L0=280.46645+36000.76983*T+0.0003032*T*T;
+  let DL=(1.914600-0.004817*T-0.000014*T*T)*Math.sin(M*PI/180);
+  DL+=(0.019993-0.000101*T)*Math.sin(2*M*PI/180)+0.000290*Math.sin(3*M*PI/180);
+  let L=(L0+DL)*PI/180;
+  return Math.floor(L/(PI/6));
+}
+
+function getLunarMonth11(yy,tz){
+  let off=jdFromDate(31,12,yy)-2415021;
+  let k=Math.floor(off/29.530588853);
+  let nm=getNewMoonDay(k,tz);
+  if(getSunLongitude(nm,tz)>=9) nm=getNewMoonDay(k-1,tz);
+  return nm;
+}
+
+function getLeapMonthOffset(a11,tz){
+  let k=Math.floor((a11-2415021)/29.530588853);
+  let last=0,i=1;
+  let arc=getSunLongitude(getNewMoonDay(k+i,tz),tz);
+  do{last=arc;i++;arc=getSunLongitude(getNewMoonDay(k+i,tz),tz)}while(arc!=last&&i<14);
+  return i-1;
+}
+
+function solarToLunar(dd,mm,yy,tz){
+  let dayNumber=jdFromDate(dd,mm,yy);
+  let k=Math.floor((dayNumber-2415021)/29.530588853);
+  let monthStart=getNewMoonDay(k+1,tz);
+  if(monthStart>dayNumber) monthStart=getNewMoonDay(k,tz);
+  let a11=getLunarMonth11(yy,tz);
+  let b11=a11;
+  let lunarYear;
+  if(a11>=monthStart){lunarYear=yy;a11=getLunarMonth11(yy-1,tz)}else{lunarYear=yy+1;b11=getLunarMonth11(yy+1,tz)}
+  let lunarDay=dayNumber-monthStart+1;
+  let diff=Math.floor((monthStart-a11)/29);
+  let lunarLeap=0;
+  let lunarMonth=diff+11;
+  if(b11-a11>365){let leapDiff=getLeapMonthOffset(a11,tz);if(diff>=leapDiff){lunarMonth=diff+10;if(diff==leapDiff) lunarLeap=1}}
+  if(lunarMonth>12) lunarMonth-=12;
+  if(lunarMonth>=11&&diff<4) lunarYear--;
+  return [lunarDay,lunarMonth,lunarYear,lunarLeap];
+}
+
+/* ===== HÀM HIỂN THỊ KẾT QUẢ ===== */
+function showResult(resultHtml) {
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('result').innerHTML = resultHtml;
+}
+
+function showNotification(message) {
+    const notification = document.getElementById('notification');
+    notification.innerHTML = message;
+    notification.style.display = 'block';
+    
+    setTimeout(() => {
+        notification.style.display = 'none';
+    }, 3000);
+}
+
+function setToday() {
+    const today = new Date();
+    const formattedToday = today.toISOString().split('T')[0];
+    document.getElementById('solarDate').value = formattedToday;
+    showNotification('Đã chọn ngày hôm nay: ' + formatDateDisplay(today));
+}
+
+function formatDateDisplay(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
+/* ===== TÍNH CAN CHI ===== */
+function calc(){
+    let v=document.getElementById('solarDate').value;
+    if(!v) {
+        showNotification('Vui lòng chọn ngày trước khi tính toán!');
+        return;
+    }
+    
+    let [y,m,d]=v.split('-').map(Number);
+    let tz=7;
+    let lunar=solarToLunar(d,m,y,tz);
+    let [ld,lm,ly]=lunar;
+    let jd=jdFromDate(d,m,y);
+
+    // Can Chi
+    let yearCC=CAN[(ly+6)%10]+' '+CHI[(ly+8)%12];
+    let monthCC=CAN[((ly+6)%10*2+lm-1)%10]+' '+CHI_MONTH[lm-1];
+    let dayCanIndex=(jd+9)%10;
+    let dayChiIndex=(jd+1)%12;
+    let dayCC=CAN[dayCanIndex]+' '+CHI[dayChiIndex];
+
+    // Thứ trong tuần
+    const WEEK=['Chủ nhật','Thứ hai','Thứ ba','Thứ tư','Thứ năm','Thứ sáu','Thứ bảy'];
+    let weekday=WEEK[(jd+1)%7];
+
+    // Giờ hiện tại
+    let now=new Date();
+    let hour=now.getHours();
+    let minute = now.getMinutes().toString().padStart(2, '0');
+
+    // Can Chi giờ
+    let chiHourIndex=Math.floor((hour+1)/2)%12;
+    let canHourIndex=(dayCanIndex*2+chiHourIndex)%10;
+    let hourCC=CAN[canHourIndex]+' '+CHI[chiHourIndex];
+    
+    // Tên tháng âm lịch
+    const lunarMonthNames = [
+        "Giêng", "Hai", "Ba", "Tư", "Năm", "Sáu", 
+        "Bảy", "Tám", "Chín", "Mười", "Một", "Chạp"
+    ];
+    
+    // Hiển thị kết quả với giao diện mới
+    const resultHtml = `
+        <div class="lunar-date">
+            <i class="fas fa-moon"></i> Âm lịch: ${ld}/${lm}/${ly} (${lunarMonthNames[lm-1]})
+        </div>
+        
+        <div class="result-card">
+            <h3><i class="fas fa-info-circle"></i> Thông tin cơ bản</h3>
+            <div class="result-content">
+                <p><span class="result-label">Dương lịch:</span> <span class="result-value">${d}/${m}/${y}</span></p>
+                <p><span class="result-label">Thứ:</span> <span class="result-value">${weekday}</span></p>
+                <p><span class="result-label">Giờ hiện tại:</span> <span class="result-value">${hour}:${minute}</span></p>
+            </div>
+        </div>
+        
+        <div class="result-card">
+            <h3><i class="fas fa-calendar-alt"></i> Can Chi Năm</h3>
+            <div class="result-content">
+                <p><span class="result-label">Năm âm lịch:</span> <span class="result-value">${ly}</span></p>
+                <p><span class="result-label">Can Chi năm:</span> <span class="result-value canchi-value">${yearCC}</span></p>
+                <p><span class="result-label">Hành của năm:</span> <span class="result-value">${getElement(yearCC)}</span></p>
+            </div>
+        </div>
+        
+        <div class="result-card">
+            <h3><i class="fas fa-calendar-week"></i> Can Chi Tháng</h3>
+            <div class="result-content">
+                <p><span class="result-label">Tháng âm lịch:</span> <span class="result-value">${lm} (${lunarMonthNames[lm-1]})</span></p>
+                <p><span class="result-label">Can Chi tháng:</span> <span class="result-value canchi-value">${monthCC}</span></p>
+                <p><span class="result-label">Hành của tháng:</span> <span class="result-value">${getElement(monthCC)}</span></p>
+            </div>
+        </div>
+        
+        <div class="result-card">
+            <h3><i class="fas fa-sun"></i> Can Chi Ngày & Giờ</h3>
+            <div class="result-content">
+                <p><span class="result-label">Can Chi ngày:</span> <span class="result-value canchi-value">${dayCC}</span></p>
+                <p><span class="result-label">Hành của ngày:</span> <span class="result-value">${getElement(dayCC)}</span></p>
+                <p><span class="result-label">Can Chi giờ ${hour}h:</span> <span class="result-value canchi-value">${hourCC}</span></p>
+            </div>
+        </div>
+    `;
+    
+    showResult(resultHtml);
+    showNotification('Đã tính Can Chi thành công cho ngày ' + d + '/' + m + '/' + y);
+}
+
+function getElement(canChi) {
+    const elementMap = {
+        'Giáp': 'Mộc', 'Ất': 'Mộc',
+        'Bính': 'Hỏa', 'Đinh': 'Hỏa',
+        'Mậu': 'Thổ', 'Kỷ': 'Thổ',
+        'Canh': 'Kim', 'Tân': 'Kim',
+        'Nhâm': 'Thủy', 'Quý': 'Thủy'
+    };
+    
+    const can = canChi.split(' ')[0];
+    return elementMap[can] || 'Không xác định';
+}
+
+// Khởi tạo ngày hôm nay khi tải trang
+document.addEventListener('DOMContentLoaded', function() {
+    setToday();
+    // Tự động tính toán khi trang được tải
+    setTimeout(calc, 500);
+});
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

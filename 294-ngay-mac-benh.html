@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theo Dõi Sức Khỏe & Dự Đoán Chu Kỳ Bệnh</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f5f9fc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        .container {
+            max-width: 1400px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+        .header-section {
+            background: linear-gradient(135deg, #1e5799 0%, #207cca 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .input-section {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #eaeaea;
+        }
+        .result-section {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #eaeaea;
+            margin-bottom: 25px;
+        }
+        .data-table {
+            font-size: 14px;
+        }
+        .data-table th {
+            background-color: #1e5799;
+            color: white;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .symptom-badge {
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        .food-badge {
+            background-color: #28a745;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        .critical-date {
+            background-color: #ffcccc;
+        }
+        .prediction-section {
+            background-color: #fff8e1;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .select-person {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .select-person:hover {
+            background-color: #e3f2fd;
+            transform: translateY(-2px);
+        }
+        .date-input {
+            border: 2px solid #ced4da;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+        }
+        .chart-container {
+            height: 300px;
+            margin-top: 20px;
+        }
+        h2, h3, h4 {
+            color: #1e5799;
+        }
+        .btn-custom {
+            background: linear-gradient(135deg, #1e5799 0%, #207cca 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-weight: bold;
+        }
+        .btn-custom:hover {
+            background: linear-gradient(135deg, #16457a 0%, #1a6aa8 100%);
+            color: white;
+        }
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: white;
+            padding: 10px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .solar-term-badge {
+            background-color: #6f42c1;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin: 2px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header-section">
+            <h1><i class="fas fa-heartbeat"></i> Hệ Thống Theo Dõi Sức Khỏe & Dự Đoán Chu Kỳ Bệnh</h1>
+            <p class="lead">Phân tích triệu chứng, món ăn và dự đoán chu kỳ bệnh dựa trên ngày sinh</p>
+        </div>
+
+        <!-- Input Section -->
+        <div class="input-section">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="currentDate" class="form-label"><i class="fas fa-calendar-day"></i> Ngày hiện tại</label>
+                        <input type="date" class="form-control date-input" id="currentDate">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="birthDate" class="form-label"><i class="fas fa-birthday-cake"></i> Ngày tháng năm sinh</label>
+                        <input type="date" class="form-control date-input" id="birthDate">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <label for="personSelect" class="form-label"><i class="fas fa-user-circle"></i> Danh sách người (chọn để tự động nhập ngày sinh)</label>
+                        <select class="form-select" id="personSelect" onchange="selectPerson()">
+                            <option value="">-- Chọn một người --</option>
+                            <option value="25993">NAM (Ngày sinh: 01/01/1970)</option>
+                            <option value="29850">KA (Ngày sinh: 15/08/1990)</option>
+                            <option value="41529">NA (Ngày sinh: 14/09/2013)</option>
+                            <option value="17772">BA HA (Ngày sinh: 13/03/1971)</option>
+                            <option value="16680">PHO (Ngày sinh: 20/05/1975)</option>
+                            <option value="41908">AN (Ngày sinh: 10/06/2010)</option>
+                            <option value="42515">CHAU (Ngày sinh: 12/08/2011)</option>
+                            <option value="43864">NGOC (Ngày sinh: 25/12/2013)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <button class="btn btn-custom btn-lg" onclick="analyzeHealthData()">
+                        <i class="fas fa-search"></i> Phân Tích & Dự Đoán
+                    </button>
+                    <button class="btn btn-secondary btn-lg" onclick="resetForm()">
+                        <i class="fas fa-redo"></i> Làm Mới
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="result-section" id="resultsSection" style="display:none;">
+            <h3><i class="fas fa-chart-line"></i> Kết Quả Phân Tích</h3>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header bg-primary text-white">
+                            <i class="fas fa-user"></i> Thông Tin Cá Nhân
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Mã số:</strong> <span id="personCode"></span></p>
+                            <p><strong>Ngày sinh:</strong> <span id="personBirthDate"></span></p>
+                            <p><strong>Tuổi:</strong> <span id="personAge"></span></p>
+                            <p><strong>Ngày hiện tại:</strong> <span id="currentDateDisplay"></span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header bg-warning text-dark">
+                            <i class="fas fa-exclamation-triangle"></i> Tóm Tắt Sức Khỏe
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Số lần mắc bệnh:</strong> <span id="totalSymptoms"></span></p>
+                            <p><strong>Triệu chứng phổ biến:</strong> <span id="commonSymptoms"></span></p>
+                            <p><strong>Món ăn thường dùng:</strong> <span id="commonFoods"></span></p>
+                            <p><strong>Khoảng cách trung bình giữa các lần bệnh:</strong> <span id="avgDaysBetween"></span> ngày</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Prediction Section -->
+            <div class="prediction-section">
+                <h4><i class="fas fa-crystal-ball"></i> Dự Đoán Chu Kỳ Bệnh Tiếp Theo</h4>
+                <div id="predictionResults"></div>
+            </div>
+            
+            <!-- Enhanced Health Data Table with New Columns -->
+            <div class="mt-4">
+                <h4><i class="fas fa-stethoscope"></i> Chi Tiết Triệu Chứng & Điều Trị (Với Các Cột Mới)</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered data-table" id="enhancedSymptomsTable">
+                        <thead>
+                            <tr>
+                                <th>Ngày Bệnh</th>
+                                <th>Giờ</th>
+                                <th>Số Thứ Tự</th>
+                                <th>Triệu Chứng</th>
+                                <th>Món Ăn/Điều Trị</th>
+                                <th>Tiết Khí</th>
+                                <th>Trước Đây</th>
+                                <th>Sắp Tới</th>
+                                <th>Khoảng cách từ ngày sinh</th>
+                            </tr>
+                        </thead>
+                        <tbody id="enhancedSymptomsBody">
+                            <!-- Enhanced data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Chart -->
+            <div class="chart-container">
+                <h4><i class="fas fa-chart-bar"></i> Biểu Đồ Phân Bố Triệu Chứng</h4>
+                <canvas id="symptomsChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Data Table -->
+        <div class="result-section">
+            <h3><i class="fas fa-database"></i> Dữ Liệu Sức Khỏe (Mẫu)</h3>
+            <p class="text-muted">Dưới đây là một phần dữ liệu mẫu từ hệ thống</p>
+            <div class="table-responsive">
+                <table class="table table-bordered data-table">
+                    <thead>
+                        <tr>
+                            <th>Mã</th>
+                            <th>Ngày Vận Hạn</th>
+                            <th>Giờ</th>
+                            <th>Triệu Chứng</th>
+                            <th>Món Ăn</th>
+                            <th>Chọn</th>
+                        </tr>
+                    </thead>
+                    <tbody id="healthDataBody">
+                        <!-- Data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dữ liệu mẫu (đã được làm sạch và cấu trúc từ dữ liệu đầu vào)
+        const healthData = [
+            { id: 1, code: "25993", date: "22/03/2025", time: "06:49", symptom: "Hoa mắt, chóng mặt", food: "Tiết khí", birthDate: "01/01/1970" },
+            { id: 2, code: "25993", date: "27/06/2025", time: "13:28", symptom: "Dương bất thường", food: "", birthDate: "01/01/1970" },
+            { id: 3, code: "25993", date: "28/06/2025", time: "16:35", symptom: "Tim đập mạnh / nhịp yếu", food: "", birthDate: "01/01/1970" },
+            { id: 4, code: "25993", date: "01/07/2025", time: "12:36", symptom: "khớp đau", food: "", birthDate: "01/01/1970" },
+            { id: 5, code: "25993", date: "01/07/2025", time: "13:58", symptom: "Hoa mắt, chóng mặt", food: "Óc Gan BIA", birthDate: "01/01/1970" },
+            { id: 6, code: "29850", date: "06/07/2025", time: "06:45", symptom: "bắt đầu hành kinh", food: "Sokola", birthDate: "15/08/1990" },
+            { id: 7, code: "29850", date: "11/06/2025", time: "12:25", symptom: "hết hành kinh", food: "Sokola", birthDate: "15/08/1990" },
+            { id: 8, code: "25993", date: "21/05/2025", time: "08:25", symptom: "Đi ngoài ra máu", food: "Tiết khí", birthDate: "01/01/1970" },
+            { id: 9, code: "25993", date: "14/06/2025", time: "08:30", symptom: "Đi ngoài ra máu", food: "Gan Tiết", birthDate: "01/01/1970" },
+            { id: 10, code: "25993", date: "26/04/2025", time: "23:30", symptom: "THI NGUOI MAU", food: "Pin", birthDate: "01/01/1970" },
+            { id: 11, code: "25993", date: "02/05/2025", time: "08:30", symptom: "Đi ngoài ra máu", food: "Tiết khí", birthDate: "01/01/1970" },
+            { id: 12, code: "25993", date: "07/07/2025", time: "22:15", symptom: "Mất ngủ", food: "", birthDate: "01/01/1970" },
+            { id: 13, code: "25993", date: "08/07/2025", time: "11:30", symptom: "Đau bụng, đầy bụng, tiêu chảy", food: "Cháo", birthDate: "01/01/1970" },
+            { id: 14, code: "25993", date: "04/05/2025", time: "06:30", symptom: "Đau lưng, mỏi vai gáy", food: "Phở bò", birthDate: "01/01/1970" },
+            { id: 15, code: "25993", date: "03/05/2025", time: "08:30", symptom: "Buồn ngủ, mệt mỏi", food: "Trà gừng, Cafe 247", birthDate: "01/01/1970" },
+            { id: 16, code: "41529", date: "02/01/2026", time: "09:00", symptom: "AN HOI", food: "Rượu", birthDate: "14/09/2013" },
+            { id: 17, code: "25993", date: "15/07/2025", time: "07:26", symptom: "Hoa mắt, chóng mặt", food: "", birthDate: "01/01/1970" },
+            { id: 18, code: "25993", date: "20/07/2025", time: "06:00", symptom: "Tim đập mạnh / nhịp yếu", food: "Tiểu đồng", birthDate: "01/01/1970" },
+            { id: 19, code: "25993", date: "23/07/2025", time: "17:08", symptom: "Đau bụng, đầy bụng, tiêu chảy", food: "", birthDate: "01/01/1970" },
+            { id: 20, code: "25993", date: "10/08/2025", time: "21:45", symptom: "Hoa mắt, chóng mặt", food: "Cút lộn, Vịt lộn", birthDate: "01/01/1970" },
+            { id: 21, code: "25993", date: "25/08/2025", time: "08:15", symptom: "Đi ngoài ra máu", food: "", birthDate: "01/01/1970" },
+            { id: 22, code: "25993", date: "16/09/2025", time: "04:21", symptom: "Tim đập mạnh / nhịp yếu", food: "Tiểu đồng", birthDate: "01/01/1970" },
+            { id: 23, code: "25993", date: "23/09/2025", time: "21:15", symptom: "Mất ngủ", food: "LÁ VỐI, CHÈ ĐẮNG, Củ sen, hạt sen", birthDate: "01/01/1970" },
+            { id: 24, code: "25993", date: "05/12/2025", time: "22:15", symptom: "Mất ngủ, Mũi sưng trong", food: "Canh dưỡng can", birthDate: "01/01/1970" },
+            { id: 25, code: "25993", date: "28/12/2025", time: "22:15", symptom: "Viêm họng, sổ mũi", food: "decolgel, xịt xoang", birthDate: "01/01/1970" }
+        ];
+
+        // Dữ liệu người dùng
+        const personData = {
+            "25993": { name: "NAM", birthDate: "1970-01-01" },
+            "29850": { name: "KA", birthDate: "1990-08-15" },
+            "41529": { name: "NA", birthDate: "2013-09-14" },
+            "17772": { name: "BA HA", birthDate: "1971-03-13" },
+            "16680": { name: "PHO", birthDate: "1975-05-20" },
+            "41908": { name: "AN", birthDate: "2010-06-10" },
+            "42515": { name: "CHAU", birthDate: "2011-08-12" },
+            "43864": { name: "NGOC", birthDate: "2013-12-25" }
+        };
+
+        // Dữ liệu 24 tiết khí
+        const solarTermsData = [
+            { name: "LẬP XUÂN", startMonth: 2, startDay: 4, season: "spring" },
+            { name: "VŨ THỦY", startMonth: 2, startDay: 19, season: "spring" },
+            { name: "KINH TRẬP", startMonth: 3, startDay: 6, season: "spring" },
+            { name: "XUÂN PHÂN", startMonth: 3, startDay: 21, season: "spring" },
+            { name: "THANH MINH", startMonth: 4, startDay: 5, season: "spring" },
+            { name: "CỐC VŨ", startMonth: 4, startDay: 20, season: "spring" },
+            { name: "LẬP HẠ", startMonth: 5, startDay: 6, season: "summer" },
+            { name: "TIỂU MÃN", startMonth: 5, startDay: 21, season: "summer" },
+            { name: "MANG CHỦNG", startMonth: 6, startDay: 6, season: "summer" },
+            { name: "HẠ CHÍ", startMonth: 6, startDay: 21, season: "summer" },
+            { name: "TIỂU THỬ", startMonth: 7, startDay: 7, season: "summer" },
+            { name: "ĐẠI THỬ", startMonth: 7, startDay: 22, season: "summer" },
+            { name: "LẬP THU", startMonth: 8, startDay: 8, season: "autumn" },
+            { name: "XỬ THỬ", startMonth: 8, startDay: 23, season: "autumn" },
+            { name: "BẠCH LỘ", startMonth: 9, startDay: 8, season: "autumn" },
+            { name: "THU PHÂN", startMonth: 9, startDay: 23, season: "autumn" },
+            { name: "HÀN LỘ", startMonth: 10, startDay: 8, season: "autumn" },
+            { name: "SƯƠNG GIÁNG", startMonth: 10, startDay: 23, season: "autumn" },
+            { name: "LẬP ĐÔNG", startMonth: 11, startDay: 7, season: "winter" },
+            { name: "TIỂU TUYẾT", startMonth: 11, startDay: 22, season: "winter" },
+            { name: "ĐẠI TUYẾT", startMonth: 12, startDay: 7, season: "winter" },
+            { name: "ĐÔNG CHÍ", startMonth: 12, startDay: 22, season: "winter" },
+            { name: "TIỂU HÀN", startMonth: 1, startDay: 5, season: "winter" },
+            { name: "ĐẠI HÀN", startMonth: 1, startDay: 20, season: "winter" }
+        ];
+
+        // Khởi tạo trang
+        document.addEventListener('DOMContentLoaded', function() {
+            // Đặt ngày hiện tại
+            const today = new Date();
+            const todayFormatted = today.toISOString().split('T')[0];
+            document.getElementById('currentDate').value = todayFormatted;
+            
+            // Hiển thị dữ liệu mẫu
+            displayHealthData();
+        });
+
+        // Hiển thị dữ liệu sức khỏe trong bảng
+        function displayHealthData() {
+            const tableBody = document.getElementById('healthDataBody');
+            tableBody.innerHTML = '';
+            
+            healthData.forEach(item => {
+                const row = document.createElement('tr');
+                const personName = personData[item.code] ? personData[item.code].name : item.code;
+                
+                row.innerHTML = `
+                    <td>${personName} (${item.code})</td>
+                    <td>${item.date}</td>
+                    <td>${item.time}</td>
+                    <td>${item.symptom}</td>
+                    <td>${item.food ? item.food : 'Không có'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="selectPersonFromTable('${item.code}')">
+                            <i class="fas fa-user-check"></i> Chọn
+                        </button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Chọn người từ danh sách
+        function selectPerson() {
+            const select = document.getElementById('personSelect');
+            const selectedValue = select.value;
+            
+            if (selectedValue && personData[selectedValue]) {
+                document.getElementById('birthDate').value = personData[selectedValue].birthDate;
+            }
+        }
+
+        // Chọn người từ bảng dữ liệu
+        function selectPersonFromTable(personCode) {
+            if (personData[personCode]) {
+                document.getElementById('birthDate').value = personData[personCode].birthDate;
+                document.getElementById('personSelect').value = personCode;
+                
+                // Cuộn đến phần nhập liệu
+                document.getElementById('birthDate').scrollIntoView({ behavior: 'smooth' });
+                
+                // Phân tích dữ liệu tự động
+                setTimeout(() => analyzeHealthData(), 500);
+            }
+        }
+
+        // Phân tích dữ liệu sức khỏe với các cột mới
+        function analyzeHealthData() {
+            const currentDateStr = document.getElementById('currentDate').value;
+            const birthDateStr = document.getElementById('birthDate').value;
+            
+            if (!birthDateStr) {
+                alert("Vui lòng nhập ngày tháng năm sinh!");
+                return;
+            }
+            
+            // Tìm mã người từ ngày sinh
+            let personCode = "";
+            for (const [code, data] of Object.entries(personData)) {
+                if (data.birthDate === birthDateStr) {
+                    personCode = code;
+                    break;
+                }
+            }
+            
+            // Nếu không tìm thấy, sử dụng mã mặc định
+            if (!personCode) {
+                personCode = "25993"; // Mặc định là NAM
+            }
+            
+            // Lọc dữ liệu cho người được chọn
+            const personRecords = healthData.filter(item => item.code === personCode);
+            
+            if (personRecords.length === 0) {
+                alert("Không tìm thấy dữ liệu sức khỏe cho người này!");
+                return;
+            }
+            
+            // Tính toán thông tin
+            const birthDate = new Date(birthDateStr);
+            const currentDate = currentDateStr ? new Date(currentDateStr) : new Date();
+            const age = calculateAge(birthDate, currentDate);
+            
+            // Phân tích triệu chứng
+            const symptoms = {};
+            const foods = {};
+            const symptomDates = [];
+            
+            personRecords.forEach(record => {
+                // Phân tích triệu chứng
+                const symptomList = record.symptom.split(/[,/]/).map(s => s.trim()).filter(s => s);
+                symptomList.forEach(symptom => {
+                    symptoms[symptom] = (symptoms[symptom] || 0) + 1;
+                });
+                
+                // Phân tích món ăn
+                if (record.food) {
+                    const foodList = record.food.split(/[,/]/).map(f => f.trim()).filter(f => f);
+                    foodList.forEach(food => {
+                        foods[food] = (foods[food] || 0) + 1;
+                    });
+                }
+                
+                // Lưu ngày triệu chứng
+                const symptomDate = parseDate(record.date);
+                if (symptomDate) {
+                    symptomDates.push(symptomDate);
+                }
+            });
+            
+            // Sắp xếp triệu chứng và món ăn phổ biến
+            const commonSymptoms = Object.entries(symptoms)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5)
+                .map(item => item[0]);
+                
+            const commonFoods = Object.entries(foods)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5)
+                .map(item => item[0]);
+            
+            // Tính khoảng cách giữa các lần bệnh
+            let avgDaysBetween = "Không đủ dữ liệu";
+            if (symptomDates.length >= 2) {
+                symptomDates.sort((a, b) => a - b);
+                const intervals = [];
+                
+                for (let i = 1; i < symptomDates.length; i++) {
+                    const diffTime = Math.abs(symptomDates[i] - symptomDates[i-1]);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    intervals.push(diffDays);
+                }
+                
+                const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+                avgDaysBetween = Math.round(avgInterval * 10) / 10;
+            }
+            
+            // Dự đoán chu kỳ bệnh tiếp theo
+            const predictions = predictNextSymptoms(symptomDates, currentDate);
+            
+            // Hiển thị kết quả
+            displayResults(personCode, birthDateStr, currentDate, age, 
+                          personRecords.length, commonSymptoms, commonFoods, 
+                          avgDaysBetween, predictions, personRecords);
+            
+            // Hiển thị bảng nâng cao với các cột mới
+            displayEnhancedHealthTable(personRecords, birthDate);
+            
+            // Hiển thị biểu đồ
+            displayChart(symptoms);
+            
+            // Hiển thị phần kết quả
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            // Cuộn đến phần kết quả
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Hiển thị kết quả phân tích
+        function displayResults(personCode, birthDateStr, currentDate, age, 
+                               totalRecords, commonSymptoms, commonFoods, 
+                               avgDaysBetween, predictions, personRecords) {
+            const personName = personData[personCode] ? personData[personCode].name : personCode;
+            
+            document.getElementById('personCode').textContent = `${personName} (${personCode})`;
+            document.getElementById('personBirthDate').textContent = formatDateString(birthDateStr);
+            document.getElementById('personAge').textContent = `${age} tuổi`;
+            document.getElementById('currentDateDisplay').textContent = formatDate(currentDate);
+            document.getElementById('totalSymptoms').textContent = totalRecords;
+            document.getElementById('commonSymptoms').textContent = commonSymptoms.join(", ");
+            document.getElementById('commonFoods').textContent = commonFoods.join(", ");
+            document.getElementById('avgDaysBetween').textContent = avgDaysBetween;
+            
+            // Hiển thị dự đoán
+            const predictionHTML = predictions.map(p => `
+                <div class="alert ${p.type === 'warning' ? 'alert-warning' : 'alert-info'}">
+                    <strong>${p.title}:</strong> ${p.message}
+                </div>
+            `).join('');
+            
+            document.getElementById('predictionResults').innerHTML = predictionHTML;
+        }
+
+        // Hiển thị bảng nâng cao với các cột mới
+        function displayEnhancedHealthTable(personRecords, birthDate) {
+            const tableBody = document.getElementById('enhancedSymptomsBody');
+            tableBody.innerHTML = '';
+            
+            // Sắp xếp theo ngày
+            const sortedRecords = [...personRecords].sort((a, b) => {
+                const dateA = parseDate(a.date);
+                const dateB = parseDate(b.date);
+                return dateB - dateA; // Mới nhất lên đầu
+            });
+            
+            // Xử lý từng bản ghi và thêm các cột mới
+            sortedRecords.forEach((record, index) => {
+                const row = document.createElement('tr');
+                
+                // Parse ngày và giờ
+                const symptomDate = parseDate(record.date);
+                const [hours, minutes] = record.time.split(':').map(Number);
+                
+                // 1. Tính số thứ tự (giờ * 60 + phút)
+                const sequenceNumber = hours * 60 + minutes;
+                
+                // 2. Xác định tiết khí theo ngày mắc bệnh
+                const solarTerm = getSolarTermForDate(symptomDate);
+                
+                // 3. Tính "Trước đây": ngày mắc bệnh - số thứ tự, giờ mắc bệnh - số thứ tự
+                const pastDate = calculatePastDateTime(symptomDate, hours, minutes, sequenceNumber);
+                
+                // 4. Tính "Sắp tới": ngày mắc bệnh + số thứ tự, giờ mắc bệnh + số thứ tự
+                const futureDate = calculateFutureDateTime(symptomDate, hours, minutes, sequenceNumber);
+                
+                // 5. Tính khoảng cách từ ngày sinh
+                const daysFromBirth = symptomDate ? Math.round((symptomDate - birthDate) / (1000 * 60 * 60 * 24)) : "N/A";
+                
+                // Tạo nội dung hàng
+                row.innerHTML = `
+                    <td>${record.date}</td>
+                    <td>${record.time}</td>
+                    <td class="text-center"><strong>${sequenceNumber}</strong></td>
+                    <td>${record.symptom}</td>
+                    <td>${record.food ? record.food : 'Không có'}</td>
+                    <td><span class="solar-term-badge">${solarTerm}</span></td>
+                    <td>${pastDate.date}<br/>${pastDate.time}</td>
+                    <td>${futureDate.date}<br/>${futureDate.time}</td>
+                    <td>${daysFromBirth} ngày</td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Hàm xác định tiết khí theo ngày
+        function getSolarTermForDate(date) {
+            if (!date) return "Không xác định";
+            
+            const month = date.getMonth() + 1; // Tháng từ 1-12
+            const day = date.getDate();
+            
+            // Tìm tiết khí phù hợp
+            for (const term of solarTermsData) {
+                if (term.startMonth === month && Math.abs(term.startDay - day) <= 3) {
+                    return term.name;
+                }
+            }
+            
+            // Nếu không tìm thấy chính xác, tìm tiết khí gần nhất
+            const dateNumber = month * 100 + day;
+            let closestTerm = solarTermsData[0];
+            let minDiff = Math.abs((closestTerm.startMonth * 100 + closestTerm.startDay) - dateNumber);
+            
+            for (const term of solarTermsData) {
+                const termNumber = term.startMonth * 100 + term.startDay;
+                const diff = Math.abs(termNumber - dateNumber);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closestTerm = term;
+                }
+            }
+            
+            return closestTerm.name;
+        }
+
+        // Hàm tính "Trước đây"
+        function calculatePastDateTime(baseDate, hours, minutes, sequenceNumber) {
+            if (!baseDate) return { date: "N/A", time: "N/A" };
+            
+            // Tạo bản sao của ngày để tính toán
+            const pastDate = new Date(baseDate);
+            
+            // Tính số ngày và số phút từ sequenceNumber
+            const daysToSubtract = Math.floor(sequenceNumber / (24 * 60));
+            const minutesToSubtract = sequenceNumber % (24 * 60);
+            
+            // Trừ ngày
+            pastDate.setDate(pastDate.getDate() - daysToSubtract);
+            
+            // Trừ phút từ giờ hiện tại
+            let newHours = hours;
+            let newMinutes = minutes;
+            
+            // Chuyển đổi thời gian hiện tại thành phút
+            let totalMinutes = newHours * 60 + newMinutes;
+            totalMinutes -= minutesToSubtract;
+            
+            // Xử lý nếu totalMinutes âm
+            if (totalMinutes < 0) {
+                totalMinutes += 24 * 60;
+                pastDate.setDate(pastDate.getDate() - 1);
+            }
+            
+            // Chuyển đổi lại thành giờ và phút
+            newHours = Math.floor(totalMinutes / 60) % 24;
+            newMinutes = totalMinutes % 60;
+            
+            return {
+                date: formatDate(pastDate),
+                time: `${newHours.toString().padStart(2, '0')}:${newMinutes.toString().padStart(2, '0')}`
+            };
+        }
+
+        // Hàm tính "Sắp tới"
+        function calculateFutureDateTime(baseDate, hours, minutes, sequenceNumber) {
+            if (!baseDate) return { date: "N/A", time: "N/A" };
+            
+            // Tạo bản sao của ngày để tính toán
+            const futureDate = new Date(baseDate);
+            
+            // Tính số ngày và số phút từ sequenceNumber
+            const daysToAdd = Math.floor(sequenceNumber / (24 * 60));
+            const minutesToAdd = sequenceNumber % (24 * 60);
+            
+            // Cộng ngày
+            futureDate.setDate(futureDate.getDate() + daysToAdd);
+            
+            // Cộng phút vào giờ hiện tại
+            let newHours = hours;
+            let newMinutes = minutes;
+            
+            // Chuyển đổi thời gian hiện tại thành phút
+            let totalMinutes = newHours * 60 + newMinutes;
+            totalMinutes += minutesToAdd;
+            
+            // Xử lý nếu totalMinutes vượt quá 24 giờ
+            if (totalMinutes >= 24 * 60) {
+                const extraDays = Math.floor(totalMinutes / (24 * 60));
+                totalMinutes %= (24 * 60);
+                futureDate.setDate(futureDate.getDate() + extraDays);
+            }
+            
+            // Chuyển đổi lại thành giờ và phút
+            newHours = Math.floor(totalMinutes / 60) % 24;
+            newMinutes = totalMinutes % 60;
+            
+            return {
+                date: formatDate(futureDate),
+                time: `${newHours.toString().padStart(2, '0')}:${newMinutes.toString().padStart(2, '0')}`
+            };
+        }
+
+        // Hiển thị biểu đồ
+        function displayChart(symptoms) {
+            const ctx = document.getElementById('symptomsChart').getContext('2d');
+            
+            // Lấy 8 triệu chứng phổ biến nhất
+            const sortedSymptoms = Object.entries(symptoms)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 8);
+            
+            const labels = sortedSymptoms.map(item => item[0]);
+            const data = sortedSymptoms.map(item => item[1]);
+            
+            // Màu sắc cho biểu đồ
+            const backgroundColors = [
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(153, 102, 255, 0.7)',
+                'rgba(255, 159, 64, 0.7)',
+                'rgba(199, 199, 199, 0.7)',
+                'rgba(83, 102, 255, 0.7)'
+            ];
+            
+            // Nếu biểu đồ đã tồn tại, hủy nó trước
+            if (window.symptomsChart) {
+                window.symptomsChart.destroy();
+            }
+            
+            // Tạo biểu đồ mới
+            window.symptomsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Số lần xuất hiện',
+                        data: data,
+                        backgroundColor: backgroundColors,
+                        borderColor: backgroundColors.map(color => color.replace('0.7', '1')),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Phân Bố Triệu Chứng'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Số lần xuất hiện'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Triệu chứng'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Dự đoán triệu chứng tiếp theo
+        function predictNextSymptoms(symptomDates, currentDate) {
+            const predictions = [];
+            
+            if (symptomDates.length === 0) {
+                predictions.push({
+                    title: "Không có dữ liệu",
+                    message: "Không có dữ liệu triệu chứng để dự đoán.",
+                    type: "info"
+                });
+                return predictions;
+            }
+            
+            // Sắp xếp ngày triệu chứng
+            symptomDates.sort((a, b) => a - b);
+            
+            // Tính khoảng cách trung bình
+            if (symptomDates.length >= 2) {
+                const intervals = [];
+                
+                for (let i = 1; i < symptomDates.length; i++) {
+                    const diffTime = Math.abs(symptomDates[i] - symptomDates[i-1]);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    intervals.push(diffDays);
+                }
+                
+                const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+                const lastSymptomDate = symptomDates[symptomDates.length - 1];
+                const nextPredictedDate = new Date(lastSymptomDate.getTime() + avgInterval * 24 * 60 * 60 * 1000);
+                
+                const daysUntilNext = Math.round((nextPredictedDate - currentDate) / (1000 * 60 * 60 * 24));
+                
+                if (daysUntilNext > 0) {
+                    predictions.push({
+                        title: "Dự đoán lần bệnh tiếp theo",
+                        message: `Có thể xuất hiện triệu chứng vào khoảng ${formatDate(nextPredictedDate)} (${daysUntilNext} ngày tới)`,
+                        type: "warning"
+                    });
+                } else {
+                    predictions.push({
+                        title: "Dự đoán lần bệnh tiếp theo",
+                        message: `Theo chu kỳ, có thể đã qua thời điểm xuất hiện triệu chứng gần nhất. Lần tiếp theo dự kiến trong vòng ${Math.round(avgInterval)} ngày tới.`,
+                        type: "info"
+                    });
+                }
+                
+                // Phân tích theo mùa
+                const seasonSymptoms = analyzeSeasonPatterns(symptomDates);
+                if (seasonSymptoms) {
+                    predictions.push({
+                        title: "Mẫu hình theo mùa",
+                        message: seasonSymptoms,
+                        type: "info"
+                    });
+                }
+            } else {
+                predictions.push({
+                    title: "Dữ liệu hạn chế",
+                    message: "Cần thêm dữ liệu để dự đoán chu kỳ bệnh chính xác.",
+                    type: "info"
+                });
+            }
+            
+            // Thêm khuyến nghị chung
+            predictions.push({
+                title: "Khuyến nghị sức khỏe",
+                message: "Theo dõi triệu chứng thường xuyên, ghi chép lại các món ăn và thời điểm xuất hiện triệu chứng để phân tích chính xác hơn.",
+                type: "info"
+            });
+            
+            return predictions;
+        }
+
+        // Phân tích mẫu hình theo mùa
+        function analyzeSeasonPatterns(symptomDates) {
+            if (symptomDates.length < 4) return null;
+            
+            const seasons = {
+                "Xuân": [2, 3, 4],
+                "Hạ": [5, 6, 7],
+                "Thu": [8, 9, 10],
+                "Đông": [11, 0, 1]
+            };
+            
+            const seasonCount = { "Xuân": 0, "Hạ": 0, "Thu": 0, "Đông": 0 };
+            
+            symptomDates.forEach(date => {
+                const month = date.getMonth();
+                
+                for (const [season, months] of Object.entries(seasons)) {
+                    if (months.includes(month)) {
+                        seasonCount[season]++;
+                        break;
+                    }
+                }
+            });
+            
+            // Tìm mùa có nhiều triệu chứng nhất
+            let maxSeason = null;
+            let maxCount = 0;
+            
+            for (const [season, count] of Object.entries(seasonCount)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    maxSeason = season;
+                }
+            }
+            
+            if (maxCount > symptomDates.length * 0.3) { // Nếu trên 30% triệu chứng ở một mùa
+                return `Triệu chứng thường xuất hiện nhiều vào mùa ${maxSeason} (${maxCount}/${symptomDates.length} lần).`;
+            }
+            
+            return null;
+        }
+
+        // Làm mới form
+        function resetForm() {
+            document.getElementById('birthDate').value = '';
+            document.getElementById('personSelect').value = '';
+            document.getElementById('resultsSection').style.display = 'none';
+            
+            // Đặt lại ngày hiện tại
+            const today = new Date();
+            const todayFormatted = today.toISOString().split('T')[0];
+            document.getElementById('currentDate').value = todayFormatted;
+        }
+
+        // Các hàm tiện ích
+        function calculateAge(birthDate, currentDate) {
+            let age = currentDate.getFullYear() - birthDate.getFullYear();
+            const monthDiff = currentDate.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            return age;
+        }
+
+        function parseDate(dateStr) {
+            if (!dateStr) return null;
+            
+            // Xử lý định dạng dd/mm/yyyy
+            const parts = dateStr.split('/');
+            if (parts.length === 3) {
+                return new Date(parts[2], parts[1] - 1, parts[0]);
+            }
+            
+            // Thử với định dạng khác
+            const date = new Date(dateStr);
+            return isNaN(date.getTime()) ? null : date;
+        }
+
+        function formatDate(date) {
+            if (!date) return "N/A";
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        function formatDateString(dateStr) {
+            const date = new Date(dateStr);
+            return formatDate(date);
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

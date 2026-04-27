@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>BHXH & Can Chi – Kế hoạch tuổi già</title>
+<style>
+body { font-family: Arial; margin: 20px; line-height: 1.6; }
+h2,h3 { color: #003366; }
+select,input,button { padding: 6px; margin: 4px; }
+table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+th,td { border: 1px solid #999; padding: 6px; text-align: center; }
+th { background: #f0f0f0; }
+.box { border: 1px solid #ccc; padding: 10px; margin-top: 15px; }
+.note { color: #555; font-style: italic; }
+</style>
+</head>
+<body>
+
+<h2>📌 BHXH – Can Chi – Kế hoạch tuổi già</h2>
+
+<div class="box">
+<h3>1️⃣ Chọn Can Chi</h3>
+
+<label>Bảng Can Chi:</label>
+<select id="bang">
+  <option value="60">Lục thập hoa giáp (60)</option>
+  <option value="107">Bảng mở rộng (107)</option>
+</select>
+
+<label>Can Chi:</label>
+<select id="canChiSelect"></select>
+
+<br><br>
+<label>Hoặc nhập năm sinh:</label>
+<input type="number" id="namSinh" placeholder="VD: 1971">
+<button onclick="chonTheoNam()">Lấy Can Chi</button>
+
+<p id="hienCanChi" class="note"></p>
+
+<button onclick="traCuu()">🔍 Tra mức BHXH</button>
+</div>
+
+<div class="box">
+<h3>2️⃣ Kết quả tra cứu</h3>
+
+<table>
+<thead>
+<tr>
+<th>STT BH</th>
+<th>Thu nhập</th>
+<th>Mức đóng</th>
+</tr>
+</thead>
+<tbody id="ketqua"></tbody>
+</table>
+
+<p>
+<strong>Tổng thu nhập:</strong> <span id="tongThuNhap">0</span> VNĐ<br>
+<strong>Tổng mức đóng:</strong> <span id="tongDong">0</span> VNĐ
+</p>
+</div>
+
+<div class="box">
+<h3>3️⃣ Dự tính lương hưu</h3>
+
+<label>Số năm đóng:</label>
+<input type="number" id="soNam" value="20">
+
+<button onclick="tinhHuu()">Tính lương hưu</button>
+
+<p>
+<strong>Thu nhập bình quân:</strong> <span id="binhQuan">0</span> VNĐ<br>
+<strong>Tỷ lệ hưởng:</strong> <span id="tyLe">0</span> %<br>
+<strong>Lương hưu / tháng:</strong> <span id="luongHuu">0</span> VNĐ
+</p>
+</div>
+
+<div class="box">
+<h3>4️⃣ 3 mức – 3 lời khuyên</h3>
+
+<ul>
+<li><strong>Mức A (thấp):</strong> Giữ quyền hưu – phù hợp thu nhập bấp bênh</li>
+<li><strong>Mức B (trung):</strong> Tối ưu – đủ sống – ít rủi ro</li>
+<li><strong>Mức C (cao):</strong> An nhàn – chủ động tuổi già</li>
+</ul>
+
+<p class="note">
+Khuyến nghị: trẻ → A/B, trung niên → B, 10–15 năm cuối → nâng C
+</p>
+</div>
+
+<script>
+// ===== CAN CHI =====
+const canChi60 = [
+"Giáp Tý","Ất Sửu","Bính Dần","Đinh Mão","Mậu Thìn","Kỷ Tỵ",
+"Canh Ngọ","Tân Mùi","Nhâm Thân","Quý Dậu",
+"Giáp Tuất","Ất Hợi","Bính Tý","Đinh Sửu","Mậu Dần","Kỷ Mão",
+"Canh Thìn","Tân Tỵ","Nhâm Ngọ","Quý Mùi",
+"Giáp Thân","Ất Dậu","Bính Tuất","Đinh Hợi",
+"Mậu Tý","Kỷ Sửu","Canh Dần","Tân Mão","Nhâm Thìn","Quý Tỵ",
+"Giáp Ngọ","Ất Mùi","Bính Thân","Đinh Dậu","Mậu Tuất","Kỷ Hợi",
+"Canh Tý","Tân Sửu","Nhâm Dần","Quý Mão",
+"Giáp Thìn","Ất Tỵ","Bính Ngọ","Đinh Mùi","Mậu Thân","Kỷ Dậu",
+"Canh Tuất","Tân Hợi","Nhâm Tý","Quý Sửu",
+"Giáp Dần","Ất Mão","Bính Thìn","Đinh Tỵ","Mậu Ngọ","Kỷ Mùi",
+"Canh Thân","Tân Dậu","Nhâm Tuất","Quý Hợi"
+];
+
+// ===== BHXH DATA =====
+const bhxh = [];
+let thu = 1500000, dong = 330000;
+for (let i = 1; i <= 155; i++) {
+  bhxh.push({ stt: i, thu, dong, selected:false });
+  thu += 50000;
+  dong += 11000;
+}
+
+// ===== LOAD CAN CHI =====
+function loadCanChi() {
+  const select = document.getElementById("canChiSelect");
+  select.innerHTML = "";
+  canChi60.forEach((cc,i)=>{
+    let o=document.createElement("option");
+    o.value=i+1;
+    o.text=(i+1)+" – "+cc;
+    select.appendChild(o);
+  });
+}
+loadCanChi();
+
+// ===== CAN CHI NĂM =====
+function canChiNam(y){
+  const can=["Giáp","Ất","Bính","Đinh","Mậu","Kỷ","Canh","Tân","Nhâm","Quý"];
+  const chi=["Tý","Sửu","Dần","Mão","Thìn","Tỵ","Ngọ","Mùi","Thân","Dậu","Tuất","Hợi"];
+  return can[(y-4)%10] + " " + chi[(y-4)%12];
+}
+
+function chonTheoNam(){
+  const y=parseInt(document.getElementById("namSinh").value);
+  if(!y) return;
+  const cc=canChiNam(y);
+  document.getElementById("hienCanChi").innerText="Can Chi năm sinh: "+cc;
+  const idx=canChi60.indexOf(cc);
+  if(idx>=0) document.getElementById("canChiSelect").value=idx+1;
+}
+
+// ===== TRA CỨU =====
+function traCuu(){
+  const can=parseInt(canChiSelect.value);
+  let tongThu=0,tongDong=0;
+  ketqua.innerHTML="";
+  bhxh.forEach(r=>{
+    r.selected=false;
+    let du=r.stt%60; if(du===0) du=60;
+    if(du===can){
+      r.selected=true;
+      tongThu+=r.thu; tongDong+=r.dong;
+      ketqua.innerHTML+=`<tr>
+      <td>${r.stt}</td>
+      <td>${r.thu.toLocaleString()}</td>
+      <td>${r.dong.toLocaleString()}</td></tr>`;
+    }
+  });
+  tongThuNhap.innerText=tongThu.toLocaleString();
+  tongDong.innerText=tongDong.toLocaleString();
+}
+
+// ===== TÍNH HƯU =====
+function tinhHuu(){
+  let sum=0,cnt=0;
+  bhxh.forEach(r=>{ if(r.selected){ sum+=r.thu; cnt++; }});
+  if(cnt===0) return alert("Chưa có dữ liệu tra");
+  const binh=sum/cnt;
+  let nam=parseInt(soNam.value);
+  let tl=45+(nam-20)*2; if(tl>75) tl=75;
+  binhQuan.innerText=Math.round(binh).toLocaleString();
+  tyLe.innerText=tl;
+  luongHuu.innerText=Math.round(binh*tl/100).toLocaleString();
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

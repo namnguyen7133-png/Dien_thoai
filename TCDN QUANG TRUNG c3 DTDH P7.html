@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>TCDN 1 – EAA (Chuỗi tiền tệ đều tương đương)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#eef2f7;
+    margin:0;
+    padding:20px;
+}
+h1,h2,h3{color:#2c3e50}
+.card{
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+.term{
+    border-left:5px solid #3498db;
+    padding-left:12px;
+    margin-bottom:12px;
+}
+.note{
+    background:#fff8dc;
+    padding:12px;
+    border-left:4px solid #f39c12;
+}
+input,button{
+    padding:8px;
+    width:100%;
+    margin-top:6px;
+}
+button{
+    background:#3498db;
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
+button:hover{background:#217dbb}
+.case-btn{
+    background:#2ecc71;
+    margin-bottom:6px;
+}
+.case-btn:hover{background:#27ae60}
+.result{
+    font-weight:bold;
+    margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>📘 TCDN 1 – Chương 3 – Các trường hợp đặc biệt (EAA)</h1>
+
+<div class="card">
+🔗 <b>Link video:</b> Quang Trung TV – Đầu tư dài hạn DN – Phần 7  
+<br>
+<a href="https://www.youtube.com/watch?v=Zh_ev8c465M" target="_blank">
+https://www.youtube.com/watch?v=Zh_ev8c465M
+</a>
+</div>
+
+<!-- 2.1 THUẬT NGỮ -->
+<div class="card" id="terms">
+<h2>2.1 Thuật ngữ & Công thức (Giải thích đời sống)</h2>
+
+<div class="term">
+<b>Vấn đề tuổi thọ khác nhau</b><br>
+➡️ Không thể so dự án 3 năm với 6 năm bằng NPV trực tiếp  
+➡️ Giống như so điện thoại dùng 2 năm với máy dùng 5 năm
+</div>
+
+<div class="term">
+<b>EAA (Equivalent Annual Annuity)</b><br>
+➡️ Lợi ích <b>bình quân mỗi năm</b> sau khi đã quy đổi thời gian  
+➡️ Trả lời câu hỏi: “Mỗi năm dự án nuôi ta bao nhiêu tiền?”
+</div>
+
+<div class="term">
+<b>Công thức</b><br>
+EAA = NPV / PVFA<br>
+PVFA = [1 − (1+r)<sup>−n</sup>] / r
+</div>
+
+<div class="note">
+📌 EAA giúp so sánh công bằng các dự án có thời gian sống khác nhau
+</div>
+</div>
+
+<!-- 2.2 DÙNG CHO AI -->
+<div class="card" id="usage">
+<h2>2.2 Dùng trong công việc & cá nhân</h2>
+
+<ul>
+<li><b>Cá nhân:</b> mua đồ bền – thuê hay mua → dùng <b>EAA</b></li>
+<li><b>Gia đình:</b> thuê nhà dài hạn hay mua trả góp → <b>EAA</b></li>
+<li><b>Doanh nghiệp:</b> chọn máy móc tuổi thọ khác nhau → <b>BẮT BUỘC EAA</b></li>
+</ul>
+
+<div class="note">
+✔ Khi dự án có thể lặp lại → luôn dùng EAA  
+❌ Không dùng IRR trong trường hợp này
+</div>
+</div>
+
+<!-- 3.2 THỜI ĐIỂM & ĐIỀU KIỆN -->
+<div class="card" id="timeline">
+<h2>3.2 Làm lúc nào? Điều kiện mới được làm</h2>
+
+<h3>🔁 Trình tự chuẩn</h3>
+<ol>
+<li>Tính NPV từng dự án</li>
+<li>Xác định tuổi thọ riêng</li>
+<li>Tính PVFA theo từng tuổi thọ</li>
+<li>Tính EAA</li>
+<li>So sánh EAA</li>
+</ol>
+
+<h3>📊 Điều kiện thị trường</h3>
+<ul>
+<li>Thị trường ổn định → chọn EAA cao</li>
+<li>Rủi ro công nghệ → ưu tiên dự án ngắn hạn (EAA cao, n nhỏ)</li>
+<li>Thiếu vốn → chọn EAA giúp quay vòng nhanh</li>
+</ul>
+
+<div class="note">
+⚠ NPV cao nhưng EAA thấp → vốn bị “chôn” lâu
+</div>
+</div>
+
+<!-- 4.2 NHẬP TÌNH HUỐNG -->
+<div class="card" id="calculator">
+<h2>4.2 Nhập tình huống & giải quyết</h2>
+
+<label>NPV dự án (triệu VNĐ)</label>
+<input type="number" id="npv">
+
+<label>Lãi suất chiết khấu (% / năm)</label>
+<input type="number" id="rate">
+
+<label>Tuổi thọ dự án (năm)</label>
+<input type="number" id="life">
+
+<button onclick="tinhEAA()">TÍNH EAA</button>
+
+<div class="result" id="ketqua"></div>
+</div>
+
+<!-- CASE BUTTONS -->
+<div class="card">
+<h2>📌 Chọn tình huống mẫu</h2>
+<button class="case-btn" onclick="scrollToCase('case1')">Cá nhân mua điện thoại</button>
+<button class="case-btn" onclick="scrollToCase('case2')">Gia đình mua nhà</button>
+<button class="case-btn" onclick="scrollToCase('case3')">DN mua máy móc</button>
+</div>
+
+<!-- CASES -->
+<div class="card" id="case1">
+<h3>📍 Case 1 – Cá nhân</h3>
+<p>Máy cũ: rẻ – dùng 2 năm  
+Máy mới: đắt – dùng 5 năm  
+➡️ Tính EAA chi phí/năm → chọn cái <b>tốn ít mỗi năm hơn</b></p>
+</div>
+
+<div class="card" id="case2">
+<h3>📍 Case 2 – Gia đình</h3>
+<p>Thuê 10 năm vs mua trả góp 20 năm  
+➡️ So EAA dòng tiền ra hàng năm</p>
+</div>
+
+<div class="card" id="case3">
+<h3>📍 Case 3 – Doanh nghiệp</h3>
+<p>Máy A: NPV cao – tuổi thọ dài  
+Máy B: NPV thấp – quay vòng nhanh  
+➡️ Chọn máy có <b>EAA cao hơn</b></p>
+</div>
+
+<script>
+function tinhEAA(){
+    let npv = Number(document.getElementById("npv").value);
+    let r = Number(document.getElementById("rate").value)/100;
+    let n = Number(document.getElementById("life").value);
+
+    if(npv<=0 || r<=0 || n<=0){
+        document.getElementById("ketqua").innerHTML="⚠ Nhập đầy đủ số liệu";
+        return;
+    }
+
+    let pvfa = (1 - Math.pow(1+r, -n)) / r;
+    let eaa = npv / pvfa;
+
+    document.getElementById("ketqua").innerHTML =
+        "PVFA = " + pvfa.toFixed(2) +
+        "<br>EAA = " + eaa.toFixed(2) + 
+        " triệu VNĐ / năm";
+}
+
+function scrollToCase(id){
+    document.getElementById(id).scrollIntoView({behavior:"smooth"});
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

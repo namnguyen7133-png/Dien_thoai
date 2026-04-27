@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trò chơi Tìm Chữ Ghép</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .description {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        input, button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        input {
+            width: 120px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+        
+        button {
+            background: linear-gradient(to right, #ff8a00, #da1b60);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .result {
+            text-align: center;
+            font-size: 1.8rem;
+            margin: 20px 0;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .highlight {
+            color: #ffeb3b;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 235, 59, 0.7);
+        }
+        
+        .color-red {
+            color: #ff5252;
+        }
+        
+        .color-yellow {
+            color: #ffeb3b;
+        }
+        
+        .color-green {
+            color: #69f0ae;
+        }
+        
+        .all-combinations {
+            margin-top: 40px;
+        }
+        
+        .all-combinations h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        .combinations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        
+        .combination-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .combination-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .combination-number {
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        .combination-text {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        
+        .current-highlight {
+            background: linear-gradient(135deg, #ff8a00, #da1b60);
+            box-shadow: 0 0 15px rgba(255, 138, 0, 0.7);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .combinations-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TRÒ CHƠI TÌM CHỮ GHÉP</h1>
+        
+        <div class="description">
+            <p>Ghép 12 chữ cái: <strong>A, B, C, D, Đ, E, G, H, I, K, L, M</strong></p>
+            <p>với 3 màu: <span class="color-red">Đỏ</span>, <span class="color-yellow">Vàng</span>, <span class="color-green">Xanh</span></p>
+            <p>Tạo thành 36 tổ hợp khác nhau. Nhập số thứ tự từ 1 đến 36 để tìm chữ ghép tương ứng!</p>
+        </div>
+        
+        <div class="game-controls">
+            <input type="number" id="numberInput" min="1" max="36" placeholder="Nhập số (1-36)">
+            <button id="findButton">Tìm chữ ghép</button>
+            <button id="randomButton">Ngẫu nhiên</button>
+        </div>
+        
+        <div class="result" id="result">
+            Kết quả sẽ hiển thị ở đây
+        </div>
+        
+        <div class="all-combinations">
+            <h2>TẤT CẢ TỔ HỢP</h2>
+            <div class="combinations-grid" id="combinationsGrid">
+                <!-- Tổ hợp sẽ được tạo bằng JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const letters = ['A', 'B', 'C', 'D', 'Đ', 'E', 'G', 'H', 'I', 'K', 'L', 'M'];
+            const colors = ['Đỏ', 'Vàng', 'Xanh'];
+            const colorClasses = ['color-red', 'color-yellow', 'color-green'];
+            
+            const numberInput = document.getElementById('numberInput');
+            const findButton = document.getElementById('findButton');
+            const randomButton = document.getElementById('randomButton');
+            const resultDiv = document.getElementById('result');
+            const combinationsGrid = document.getElementById('combinationsGrid');
+            
+            // Tạo tất cả tổ hợp
+            let allCombinations = [];
+            let index = 1;
+            
+            for (let letter of letters) {
+                for (let color of colors) {
+                    allCombinations.push({
+                        number: index,
+                        letter: letter,
+                        color: color
+                    });
+                    index++;
+                }
+            }
+            
+            // Hiển thị tất cả tổ hợp
+            function displayAllCombinations() {
+                combinationsGrid.innerHTML = '';
+                
+                allCombinations.forEach(combo => {
+                    const comboItem = document.createElement('div');
+                    comboItem.className = 'combination-item';
+                    comboItem.id = `combo-${combo.number}`;
+                    
+                    const comboNumber = document.createElement('div');
+                    comboNumber.className = 'combination-number';
+                    comboNumber.textContent = `#${combo.number}`;
+                    
+                    const comboText = document.createElement('div');
+                    comboText.className = 'combination-text';
+                    
+                    // Thêm class màu cho chữ màu
+                    const colorClass = colorClasses[colors.indexOf(combo.color)];
+                    
+                    comboText.innerHTML = `${combo.letter} <span class="${colorClass}">${combo.color}</span>`;
+                    
+                    comboItem.appendChild(comboNumber);
+                    comboItem.appendChild(comboText);
+                    combinationsGrid.appendChild(comboItem);
+                });
+            }
+            
+            // Tìm chữ ghép theo số
+            function findCombination(number) {
+                if (number < 1 || number > 36) {
+                    resultDiv.innerHTML = '<span class="highlight">Vui lòng nhập số từ 1 đến 36</span>';
+                    return;
+                }
+                
+                const combination = allCombinations[number - 1];
+                
+                // Xóa highlight cũ
+                document.querySelectorAll('.combination-item').forEach(item => {
+                    item.classList.remove('current-highlight');
+                });
+                
+                // Thêm highlight mới
+                const currentCombo = document.getElementById(`combo-${number}`);
+                if (currentCombo) {
+                    currentCombo.classList.add('current-highlight');
+                    currentCombo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+                
+                // Hiển thị kết quả
+                const colorClass = colorClasses[colors.indexOf(combination.color)];
+                resultDiv.innerHTML = `Số ${number}: <span class="highlight">${combination.letter} ${combination.color}</span>`;
+            }
+            
+            // Sự kiện khi nhấn nút Tìm
+            findButton.addEventListener('click', function() {
+                const number = parseInt(numberInput.value);
+                findCombination(number);
+            });
+            
+            // Sự kiện khi nhấn nút Ngẫu nhiên
+            randomButton.addEventListener('click', function() {
+                const randomNumber = Math.floor(Math.random() * 36) + 1;
+                numberInput.value = randomNumber;
+                findCombination(randomNumber);
+            });
+            
+            // Cho phép nhấn Enter để tìm
+            numberInput.addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    findButton.click();
+                }
+            });
+            
+            // Khởi tạo
+            displayAllCombinations();
+            
+            // Hiển thị kết quả mặc định
+            findCombination(2); // Hiển thị kết quả số 2 như ví dụ
+            numberInput.value = 2;
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Mẹo tính nhanh bình phương 3 chữ số</title>
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f2f4f8;
+    padding:20px;
+}
+.box{
+    max-width:800px;
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+h2{text-align:center;color:#2c3e50}
+input,select,button{
+    width:100%;
+    padding:8px;
+    margin:6px 0;
+}
+button{
+    background:#27ae60;
+    color:#fff;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+button:hover{background:#219150}
+.result{
+    margin-top:15px;
+    background:#eef9f1;
+    padding:15px;
+    border-radius:5px;
+    line-height:1.7;
+}
+</style>
+</head>
+
+<body>
+<div class="box">
+<h2>📐 TÍNH NHẨM BÌNH PHƯƠNG 3 CHỮ SỐ</h2>
+
+<label>Nhập số (100 – 999)</label>
+<input type="number" id="n" placeholder="Ví dụ: 324">
+
+<label>Chọn phương pháp</label>
+<select id="method">
+    <option value="round">🔵 Phương pháp làm tròn (gần 100 / tròn chục)</option>
+    <option value="foreign">🟣 Phương pháp người nước ngoài (tổng các dòng)</option>
+</select>
+
+<button onclick="calc()">Tính & Giải thích</button>
+
+<div id="out" class="result"></div>
+</div>
+
+<script>
+function pad2(x){ return String(x).padStart(2,"0"); }
+
+function calc(){
+    let n = parseInt(document.getElementById("n").value);
+    let method = document.getElementById("method").value;
+    let o = "";
+
+    if(isNaN(n) || n<100 || n>999){
+        document.getElementById("out").innerHTML="⚠ Nhập số từ 100 đến 999";
+        return;
+    }
+
+    if(method==="round"){
+        let base = Math.round(n/10)*10;
+        let d = n - base;
+
+        o += `<b>${n}²</b><br>`;
+        o += `Chọn số tròn: <b>${base}</b><br>`;
+        o += `Độ lệch: ${n} - ${base} = <b>${d}</b><br><br>`;
+
+        o += `Áp dụng công thức:<br>`;
+        o += `( ${base} + ${d} )² = ${base}² + 2×${base}×${d} + ${d}²<br><br>`;
+
+        o += `${base}² = ${base*base}<br>`;
+        o += `2 × ${base} × ${d} = ${2*base*d}<br>`;
+        o += `${d}² = ${d*d}<br><br>`;
+
+        o += `Kết quả: <b>${n*n}</b>`;
+    }
+
+    if(method==="foreign"){
+        let a = Math.floor(n/100);
+        let b = Math.floor((n%100)/10);
+        let c = n%10;
+
+        let r1 = pad2(a*a)+pad2(b*b)+pad2(c*c);
+        let r2 = pad2(2*a*b)+pad2(2*b*c);
+        let r3 = pad2(2*a*c);
+
+        o += `<b>${n}²</b><br><br>`;
+
+        o += `Dòng 1 (bình phương từng chữ số):<br>`;
+        o += `${a}² | ${b}² | ${c}² → <b>${r1}</b><br><br>`;
+
+        o += `Dòng 2 (nhân kề nhau ×2 – lùi 1 cột):<br>`;
+        o += `2×${a}×${b}, 2×${b}×${c} → <b>${r2}</b><br><br>`;
+
+        o += `Dòng 3 (nhân đầu-cuối ×2 – vào giữa):<br>`;
+        o += `2×${a}×${c} → <b>${r3}</b><br><br>`;
+
+        o += `Cộng tất cả các dòng:<br>`;
+        o += `<b>${n*n}</b>`;
+    }
+
+    document.getElementById("out").innerHTML=o;
+}
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

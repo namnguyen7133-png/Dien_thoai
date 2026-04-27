@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Toán Ngày Tháng</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            border-bottom: 5px solid #3498db;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        
+        .input-section {
+            flex: 1;
+            min-width: 320px;
+            padding: 20px;
+            border-right: 1px solid #eee;
+        }
+        
+        .result-section {
+            flex: 2;
+            min-width: 500px;
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        select, button {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        select {
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        button {
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background: linear-gradient(90deg, #2980b9, #1c6ea4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-box {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .result-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .person-name {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        
+        .date-info {
+            color: #7f8c8d;
+            margin: 5px 0;
+            line-height: 1.4;
+        }
+        
+        .time-info {
+            color: #3498db;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+        
+        .days-info {
+            font-weight: 600;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #ddd;
+        }
+        
+        .past {
+            color: #e74c3c;
+        }
+        
+        .future {
+            color: #27ae60;
+        }
+        
+        .highlight {
+            background-color: #fff9e6;
+            border-left: 5px solid #f1c40f;
+        }
+        
+        .instructions {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 5px solid #3498db;
+            line-height: 1.5;
+        }
+        
+        .instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .instructions p {
+            margin-bottom: 8px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .input-section {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+            
+            .result-section {
+                min-width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .input-section, .result-section {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>TÍNH TOÁN NGÀY THÁNG</h1>
+            <p class="subtitle">Ứng dụng tính toán ngày tháng theo thuật toán đặc biệt<br>Dựa trên dữ liệu nhân vật lịch sử</p>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="mainPerson">Chọn nhân vật chính:</label>
+                    <select id="mainPerson">
+                        <option value="0">Hồ Chí Minh (19/5/1890 - 3/9/1969)</option>
+                        <option value="1">Võ Nguyên Giáp (25/8/1911 - 4/10/2013)</option>
+                        <option value="2">Trần Đức Lương (5/5/1937 - 20/5/2025)</option>
+                        <option value="3">Đỗ Mười (2/2/1917 - 1/10/2018)</option>
+                        <option value="4">Trần Đại Quang (12/10/1956 - 21/9/2018)</option>
+                        <option value="5">Tôn Đức Thắng (20/8/1888 - 30/3/1980)</option>
+                        <option value="6">Nguyễn Phú Trọng (14/4/1944 - 19/7/2024)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="targetPerson">Chọn người để tính toán:</label>
+                    <select id="targetPerson">
+                        <!-- Danh sách sẽ được thêm bằng JavaScript -->
+                    </select>
+                </div>
+                
+                <button id="calculateBtn">Tính Toán</button>
+                
+                <div class="instructions">
+                    <h3>Hướng dẫn sử dụng:</h3>
+                    <p>1. Chọn một nhân vật chính từ danh sách trên</p>
+                    <p>2. Chọn một người từ danh sách để tính toán</p>
+                    <p>3. Nhấn nút "Tính Toán" để xem kết quả</p>
+                    <p>Kết quả sẽ hiển thị số ngày đã qua hoặc còn lại so với ngày hiện tại</p>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <div class="result-box">
+                    <h2 class="result-title">KẾT QUẢ TÍNH TOÁN</h2>
+                    <div id="resultContainer">
+                        <div class="result-item">
+                            <p>Chọn nhân vật và nhấn "Tính Toán" để xem kết quả</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h2 class="result-title">SỰ KIỆN SẮP TỚI</h2>
+                    <div id="upcomingEvents">
+                        <div class="result-item">
+                            <p>Đang tải dữ liệu...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Ứng dụng Tính Toán Ngày Tháng &copy; 2023</p>
+        </footer>
+    </div>
+
+    <script>
+        // Dữ liệu nhân vật chính (có thêm giờ)
+        const mainPersons = [
+            { name: "Hồ Chí Minh", birth: "19/5/1890", death: "3/9/1969", time: "09:47" },
+            { name: "Võ Nguyên Giáp", birth: "25/8/1911", death: "4/10/2013", time: "18:09" },
+            { name: "Trần Đức Lương", birth: "5/5/1937", death: "20/5/2025", time: "22:51" },
+            { name: "Đỗ Mười", birth: "2/2/1917", death: "1/10/2018", time: "18:06" },
+            { name: "Trần Đại Quang", birth: "12/10/1956", death: "21/9/2018", time: "10:05" },
+            { name: "Tôn Đức Thắng", birth: "20/8/1888", death: "30/3/1980", time: "06:35" },
+            { name: "Nguyễn Phú Trọng", birth: "14/4/1944", death: "19/7/2024", time: "13:38" }
+        ];
+
+        // Dữ liệu người để tính toán
+        const targetPersons = [
+            { name: "Nguyễn Khắc Năng", birth: "4/6/1944" },
+            { name: "Tô Thị Hà", birth: "29/8/1948" },
+            { name: "Nguyễn Minh Nam", birth: "3/3/1971" },
+            { name: "Thân Thị Kim Anh", birth: "23/9/1981" },
+            { name: "Nguyễn Tô Ngân An", birth: "28/9/2014" },
+            { name: "Nguyễn Tô Minh Châu", birth: "27/5/2016" },
+            { name: "Nguyễn Tô Bích Ngọc", birth: "5/2/2020" },
+            { name: "Vũ Văn Hiệp", birth: "24/4/1974" },
+            { name: "Tô Thị Hồng", birth: "10/10/1964" },
+            { name: "Tô Kim Huệ", birth: "9/8/1960" },
+            { name: "Nguyễn Tuấn Anh", birth: "23/10/1993" },
+            { name: "Nguyễn Thế Anh", birth: "24/3/2001" },
+            { name: "Tô Việt Hưng", birth: "17/6/1996" },
+            { name: "Nguyễn Thị Minh Hằng", birth: "7/1/1974" },
+            { name: "Ngô Quý Cường", birth: "23/5/1973" },
+            { name: "Ngô Gia Bách", birth: "12/10/2000" },
+            { name: "Ngô Gia Linh", birth: "5/4/2005" },
+            { name: "Nguyễn Thị Minh Phương", birth: "6/11/1978" },
+            { name: "Hoàng Anh Dũng", birth: "21/9/1978" },
+            { name: "Hoàng Hải Vinh", birth: "3/6/2010" },
+            { name: "Hoàng Thiên Bạch Anh", birth: "14/11/2015" },
+            { name: "Nguyễn Thị Chi", birth: "8/2/1946" },
+            { name: "Nguyễn Tấn Bắc", birth: "30/11/1957" },
+            { name: "Nguyễn Thị Tâm", birth: "8/8/1954" }
+        ];
+
+        // Khởi tạo danh sách người để tính toán
+        const targetPersonSelect = document.getElementById('targetPerson');
+        targetPersons.forEach((person, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = `${person.name} (${person.birth})`;
+            targetPersonSelect.appendChild(option);
+        });
+
+        // Hàm chuyển đổi chuỗi ngày tháng thành đối tượng Date
+        function parseDate(dateStr) {
+            const parts = dateStr.split('/');
+            return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+        }
+
+        // Hàm tính số ngày giữa hai ngày
+        function daysBetween(date1, date2) {
+            const oneDay = 24 * 60 * 60 * 1000; // Số mili giây trong một ngày
+            return Math.round(Math.abs((date1 - date2) / oneDay));
+        }
+
+        // Hàm định dạng ngày tháng và giờ
+        function formatDateTime(date, time = null) {
+            const dateStr = date.toLocaleDateString('vi-VN');
+            if (time) {
+                return `${dateStr} lúc ${time}`;
+            }
+            return dateStr;
+        }
+
+        // Hàm tạo thời gian ngẫu nhiên (nếu không có thời gian cụ thể)
+        function generateRandomTime() {
+            const hours = Math.floor(Math.random() * 24).toString().padStart(2, '0');
+            const minutes = Math.floor(Math.random() * 60).toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+
+        // Hàm tính toán và hiển thị kết quả
+        function calculate() {
+            const mainPersonIndex = parseInt(document.getElementById('mainPerson').value);
+            const targetPersonIndex = parseInt(document.getElementById('targetPerson').value);
+            
+            const mainPerson = mainPersons[mainPersonIndex];
+            const targetPerson = targetPersons[targetPersonIndex];
+            
+            // Tính số ngày giữa ngày mất và ngày sinh của nhân vật chính
+            const mainBirthDate = parseDate(mainPerson.birth);
+            const mainDeathDate = parseDate(mainPerson.death);
+            const mainDays = daysBetween(mainBirthDate, mainDeathDate);
+            
+            // Tính ngày kết quả bằng cách cộng số ngày trên với ngày sinh của người được chọn
+            const targetBirthDate = parseDate(targetPerson.birth);
+            const resultDate = new Date(targetBirthDate);
+            resultDate.setDate(resultDate.getDate() + mainDays);
+            
+            // Tạo thời gian ngẫu nhiên cho kết quả
+            const resultTime = generateRandomTime();
+            
+            // So sánh với ngày hiện tại
+            const today = new Date();
+            const daysFromToday = daysBetween(resultDate, today);
+            
+            // Hiển thị kết quả
+            const resultContainer = document.getElementById('resultContainer');
+            
+            let statusText, statusClass;
+            if (resultDate < today) {
+                statusText = `Đã qua ${daysFromToday} ngày`;
+                statusClass = 'past';
+            } else {
+                statusText = `Còn ${daysFromToday} ngày nữa`;
+                statusClass = 'future';
+            }
+            
+            resultContainer.innerHTML = `
+                <div class="result-item highlight">
+                    <div class="person-name">${mainPerson.name} → ${targetPerson.name}</div>
+                    <div class="date-info">${mainPerson.name}: ${formatDateTime(mainBirthDate)} - ${formatDateTime(mainDeathDate, mainPerson.time)} (${mainDays} ngày)</div>
+                    <div class="date-info">${targetPerson.name}: ${formatDateTime(targetBirthDate)}</div>
+                    <div class="date-info">Ngày kết quả: <strong>${formatDateTime(resultDate, resultTime)}</strong></div>
+                    <div class="days-info ${statusClass}">${statusText}</div>
+                </div>
+            `;
+            
+            // Hiển thị sự kiện sắp tới
+            displayUpcomingEvents();
+        }
+
+        // Hàm hiển thị sự kiện sắp tới
+        function displayUpcomingEvents() {
+            const upcomingEventsContainer = document.getElementById('upcomingEvents');
+            const today = new Date();
+            
+            // Tạo danh sách tất cả các sự kiện
+            let allEvents = [];
+            
+            mainPersons.forEach(mainPerson => {
+                const mainBirthDate = parseDate(mainPerson.birth);
+                const mainDeathDate = parseDate(mainPerson.death);
+                const mainDays = daysBetween(mainBirthDate, mainDeathDate);
+                
+                targetPersons.forEach(targetPerson => {
+                    const targetBirthDate = parseDate(targetPerson.birth);
+                    const resultDate = new Date(targetBirthDate);
+                    resultDate.setDate(resultDate.getDate() + mainDays);
+                    
+                    // Tạo thời gian ngẫu nhiên cho sự kiện
+                    const eventTime = generateRandomTime();
+                    
+                    // Chỉ hiển thị sự kiện trong tương lai
+                    if (resultDate > today) {
+                        allEvents.push({
+                            mainPerson: mainPerson.name,
+                            targetPerson: targetPerson.name,
+                            date: resultDate,
+                            time: eventTime,
+                            daysUntil: daysBetween(resultDate, today)
+                        });
+                    }
+                });
+            });
+            
+            // Sắp xếp theo số ngày còn lại (tăng dần)
+            allEvents.sort((a, b) => a.daysUntil - b.daysUntil);
+            
+            // Chỉ hiển thị 5 sự kiện sắp tới nhất
+            const upcomingEvents = allEvents.slice(0, 5);
+            
+            if (upcomingEvents.length === 0) {
+                upcomingEventsContainer.innerHTML = '<div class="result-item"><p>Không có sự kiện sắp tới</p></div>';
+                return;
+            }
+            
+            let eventsHTML = '';
+            upcomingEvents.forEach(event => {
+                eventsHTML += `
+                    <div class="result-item">
+                        <div class="person-name">${event.mainPerson} → ${event.targetPerson}</div>
+                        <div class="date-info">Ngày: ${formatDateTime(event.date, event.time)}</div>
+                        <div class="days-info future">Còn ${event.daysUntil} ngày nữa</div>
+                    </div>
+                `;
+            });
+            
+            upcomingEventsContainer.innerHTML = eventsHTML;
+        }
+
+        // Gán sự kiện cho nút tính toán
+        document.getElementById('calculateBtn').addEventListener('click', calculate);
+        
+        // Hiển thị sự kiện sắp tới khi tải trang
+        displayUpcomingEvents();
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

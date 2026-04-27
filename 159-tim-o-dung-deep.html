@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tìm Đồ Vật & Trang Phục</title>
+    <meta charset="UTF-8">
+    <style>
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            margin: 20px; 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); 
+            min-height: 100vh; 
+        }
+        .container { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            max-width: 1100px; 
+            margin: 0 auto; 
+        }
+        h2 { 
+            color: #2c3e50; 
+            text-align: center; 
+            margin-bottom: 25px; 
+            padding-bottom: 15px; 
+            border-bottom: 2px solid #3498db; 
+        }
+        
+        .stats-bar {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #1976d2;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+        }
+        .stat-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.95em;
+            padding: 5px 0;
+        }
+        .stat-value {
+            font-weight: bold;
+            color: #1976d2;
+            font-size: 1.1em;
+            background: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .category-filter {
+            margin-bottom: 20px;
+        }
+        .category-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .category-button {
+            padding: 10px 20px;
+            font-size: 14px;
+            border: 2px solid #95a5a6;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            color: #2c3e50;
+        }
+        .category-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .category-button.active {
+            background: #3498db;
+            color: white;
+            border-color: #2980b9;
+        }
+        
+        .input-section { 
+            margin-bottom: 25px; 
+        }
+        input[type="text"] { 
+            width: 100%; 
+            padding: 15px; 
+            font-size: 18px; 
+            border: 2px solid #ddd; 
+            border-radius: 8px; 
+            box-sizing: border-box;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+        }
+        input[type="text"]:focus { 
+            border-color: #3498db; 
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .mode-buttons { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .mode-button { 
+            padding: 12px 24px; 
+            font-size: 16px; 
+            border: 2px solid #3498db; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            flex: 1;
+            background: white;
+            color: #3498db;
+            font-weight: bold;
+            min-width: 130px;
+        }
+        .mode-button:hover { 
+            background: #f0f8ff;
+            transform: translateY(-2px);
+        }
+        .mode-button.active { 
+            background: #3498db; 
+            color: white; 
+            border-color: #2980b9;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+        }
+        
+        .button-group { 
+            display: flex; 
+            gap: 15px; 
+            margin-top: 10px; 
+            flex-wrap: wrap;
+        }
+        button { 
+            padding: 14px 28px; 
+            font-size: 16px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            flex: 1;
+            min-width: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        #searchBtn { 
+            background: linear-gradient(135deg, #2ecc71, #27ae60); 
+            color: white; 
+        }
+        #searchBtn:hover { 
+            background: linear-gradient(135deg, #27ae60, #219653);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+        #nextBtn { 
+            background: linear-gradient(135deg, #3498db, #2980b9); 
+            color: white; 
+        }
+        #nextBtn:hover { 
+            background: linear-gradient(135deg, #2980b9, #1c6ea4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+        #nextBtn:disabled { 
+            background: #bdc3c7; 
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .char-sequence-container {
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+        }
+        .char-sequence-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+        .char-sequence {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: flex-start;
+            align-items: center;
+            max-width: 100%;
+            overflow: visible;
+        }
+        .char-box { 
+            width: 40px; 
+            height: 40px; 
+            background: #ecf0f1; 
+            border-radius: 8px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: bold; 
+            font-size: 1.2em;
+            color: #2c3e50;
+            border: 2px solid #bdc3c7;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .char-box.active { 
+            background: #3498db; 
+            color: white; 
+            border-color: #2980b9;
+            transform: scale(1.05);
+        }
+        .char-box.found { 
+            background: #2ecc71; 
+            color: white; 
+            border-color: #27ae60;
+        }
+        .char-box.not-found { 
+            background: #e74c3c; 
+            color: white; 
+            border-color: #c0392b;
+        }
+        .char-index {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #2c3e50;
+            color: white;
+            font-size: 0.6em;
+            padding: 1px 4px;
+            border-radius: 8px;
+            min-width: 16px;
+            text-align: center;
+        }
+        
+        .result-section { 
+            margin-top: 20px; 
+        }
+        .result-box { 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px; 
+            min-height: 120px; 
+            border: 2px solid #e0e0e0; 
+            margin-top: 10px;
+        }
+        .status-info { 
+            margin-top: 15px; 
+            padding: 12px; 
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef); 
+            border-radius: 10px; 
+            color: #2c3e50;
+            border-left: 4px solid #3498db;
+            font-size: 0.9em;
+        }
+        
+        .found-item { 
+            background: linear-gradient(135deg, #ffffff, #f8f9fa); 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 8px; 
+            border-left: 4px solid #2ecc71; 
+            display: flex; 
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .found-item.not-found {
+            border-left-color: #e74c3c;
+            background: linear-gradient(135deg, #fff5f5, #ffeaea);
+        }
+        .found-item .char-match { 
+            background: #3498db; 
+            color: white; 
+            width: 35px; 
+            height: 35px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: bold; 
+            font-size: 1.1em;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        .found-item.not-found .char-match {
+            background: #e74c3c;
+        }
+        .found-item .item-info { 
+            flex: 1; 
+        }
+        .found-item .item-name { 
+            font-weight: bold; 
+            font-size: 1.1em; 
+            color: #2c3e50;
+            margin-bottom: 3px;
+        }
+        .found-item .item-details { 
+            color: #7f8c8d; 
+            font-size: 0.9em;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .item-room, .item-type {
+            background: #ecf0f1;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.85em;
+        }
+        
+        .summary-box {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #4caf50;
+            font-size: 0.9em;
+        }
+        
+        .new-mode-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .new-mode-button {
+            padding: 12px 20px;
+            font-size: 14px;
+            border: 2px solid #9b59b6;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            color: #9b59b6;
+            font-weight: bold;
+            flex: 1;
+            min-width: 180px;
+        }
+        .new-mode-button:hover {
+            background: #f8f9ff;
+            transform: translateY(-2px);
+        }
+        .new-mode-button.active {
+            background: #9b59b6;
+            color: white;
+            border-color: #8e44ad;
+            box-shadow: 0 4px 8px rgba(155, 89, 182, 0.3);
+        }
+        
+        .combo-item {
+            background: linear-gradient(135deg, #fffde7, #fff9c4);
+            border-left: 4px solid #ffc107;
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .char-box { width: 35px; height: 35px; font-size: 1em; }
+            button { min-width: 100%; }
+            .button-group, .mode-buttons, .new-mode-buttons { flex-direction: column; }
+            .char-sequence { gap: 6px; }
+            .mode-button, .category-button, .new-mode-button { min-width: 100%; }
+            .stats-bar { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🔍 TÌM ĐỒ VẬT & TRANG PHỤC</h2>
+        
+        <!-- Thống kê -->
+        <div class="stats-bar" id="statsBar">
+            <div class="stat-item">
+                <span>📊 Tổng số:</span>
+                <span class="stat-value" id="totalItems">0</span>
+            </div>
+            <div class="stat-item">
+                <span>🍳 Đồ bếp:</span>
+                <span class="stat-value" id="kitchenItems">0</span>
+            </div>
+            <div class="stat-item">
+                <span>🛋️ Phòng khách:</span>
+                <span class="stat-value" id="livingRoomItems">0</span>
+            </div>
+            <div class="stat-item">
+                <span>🛏️ Phòng ngủ:</span>
+                <span class="stat-value" id="bedroomItems">0</span>
+            </div>
+            <div class="stat-item">
+                <span>🚿 Phòng tắm:</span>
+                <span class="stat-value" id="bathroomItems">0</span>
+            </div>
+            <div class="stat-item">
+                <span>👔 Trang phục:</span>
+                <span class="stat-value" id="clothingItems">0</span>
+            </div>
+        </div>
+        
+        <!-- Bộ lọc danh mục -->
+        <div class="category-filter">
+            <div style="margin-bottom: 10px; font-weight: bold; color: #2c3e50;">
+                Lọc theo danh mục:
+            </div>
+            <div class="category-buttons">
+                <button class="category-button active" data-category="all" onclick="setCategory('all')">
+                    Tất cả
+                </button>
+                <button class="category-button" data-category="kitchen" onclick="setCategory('kitchen')">
+                    🍳 Đồ bếp
+                </button>
+                <button class="category-button" data-category="living" onclick="setCategory('living')">
+                    🛋️ Phòng khách
+                </button>
+                <button class="category-button" data-category="bedroom" onclick="setCategory('bedroom')">
+                    🛏️ Phòng ngủ
+                </button>
+                <button class="category-button" data-category="bathroom" onclick="setCategory('bathroom')">
+                    🚿 Phòng tắm
+                </button>
+                <button class="category-button" data-category="clothing" onclick="setCategory('clothing')">
+                    👔 Trang phục
+                </button>
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <label for="charInput" style="display: block; margin-bottom: 10px; font-weight: bold; color: #2c3e50;">
+                Nhập tên riêng:
+            </label>
+            <input type="text" id="charInput" placeholder="Nhập tên riêng..." value="">
+            
+            <div class="mode-buttons">
+                <button class="mode-button active" data-mode="first" onclick="setMode('first')">
+                    ĐẦU
+                </button>
+                <button class="mode-button" data-mode="middle" onclick="setMode('middle')">
+                    GIỮA
+                </button>
+                <button class="mode-button" data-mode="last" onclick="setMode('last')">
+                    CUỐI
+                </button>
+            </div>
+            
+            <div class="new-mode-buttons">
+                <button class="new-mode-button" data-mode="combo" onclick="setMode('combo')">
+                    🔄 TÌM TẤT CẢ CHỮ
+                </button>
+                <button class="new-mode-button" data-mode="allinone" onclick="setMode('allinone')">
+                    🎯 TỔNG HỢP 1 TỪ
+                </button>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button id="searchBtn" onclick="searchItems()">
+                <span>🔎</span> Tìm Kiếm
+            </button>
+            <button id="nextBtn" onclick="nextSearch()" disabled>
+                <span>⏭️</span> Tìm tiếp
+            </button>
+        </div>
+        
+        <div class="char-sequence-container" id="charSequenceContainer" style="display: none;">
+            <div class="char-sequence-title">Chữ cái tìm kiếm:</div>
+            <div class="char-sequence" id="charSequenceDisplay"></div>
+        </div>
+        
+        <div class="result-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <strong style="font-size: 1em; color: #2c3e50;">Kết quả:</strong>
+                <div id="resultSummary" style="font-size: 0.85em; color: #7f8c8d;"></div>
+            </div>
+            <div class="result-box" id="resultBox">
+                <div style="color: #bdc3c7; text-align: center; padding: 30px; font-size: 1em;">
+                    ⏳ Nhập tên và chọn chế độ tìm kiếm
+                </div>
+            </div>
+            <div class="status-info" id="statusText" style="display: none;">
+                <!-- Đã giấu hướng dẫn -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== CẤU HÌNH ====================
+        let currentMode = 'first';
+        let currentCategory = 'all';
+        let foundItems = [];
+        let searchIndex = 0;
+        let searchChars = [];
+        const itemsPerPage = 4;
+        let usedItemIds = new Set();
+        let comboModeResults = [];
+        
+        // ==================== DANH SÁCH ĐỒ VẬT & TRANG PHỤC ĐẦY ĐỦ ====================
+        // (Danh sách items giữ nguyên như trong mã gốc)
+        const allItems = [
+            // ... (giữ nguyên toàn bộ danh sách items từ mã gốc) ...
+            // NHÀ BẾP (50 đồ vật)
+            { name: "Tủ bếp", key_first: "T", key_middle: "Ư", key_last: "P", room: "Nhà bếp", type: "đồ gia dụng", category: "kitchen" },
+            { name: "Tủ lạnh", key_first: "T", key_middle: "A", key_last: "H", room: "Nhà bếp", type: "thiết bị điện", category: "kitchen" },
+            { name: "Bếp ga", key_first: "B", key_middle: "E", key_last: "A", room: "Nhà bếp", type: "thiết bị nấu", category: "kitchen" },
+            { name: "Bếp từ", key_first: "B", key_middle: "E", key_last: "U", room: "Nhà bếp", type: "thiết bị nấu", category: "kitchen" },
+            { name: "Lò vi sóng", key_first: "L", key_middle: "O", key_last: "G", room: "Nhà bếp", type: "thiết bị điện", category: "kitchen" },
+            { name: "Lò nướng", key_first: "L", key_middle: "O", key_last: "G", room: "Nhà bếp", type: "thiết bị nấu", category: "kitchen" },
+            { name: "Máy rửa chén", key_first: "M", key_middle: "A", key_last: "N", room: "Nhà bếp", type: "thiết bị điện", category: "kitchen" },
+            { name: "Máy hút mùi", key_first: "M", key_middle: "A", key_last: "I", room: "Nhà bếp", type: "thiết bị điện", category: "kitchen" },
+            { name: "Bồn rửa", key_first: "B", key_middle: "O", key_last: "A", room: "Nhà bếp", type: "thiết bị vệ sinh", category: "kitchen" },
+            { name: "Chén", key_first: "C", key_middle: "E", key_last: "N", room: "Nhà bếp", type: "đồ dùng", category: "kitchen" },
+            { name: "Bát", key_first: "B", key_middle: "A", key_last: "T", room: "Nhà bếp", type: "đồ dùng", category: "kitchen" },
+            { name: "Đĩa", key_first: "Đ", key_middle: "I", key_last: "A", room: "Nhà bếp", type: "đồ dùng", category: "kitchen" },
+            { name: "Dao", key_first: "D", key_middle: "A", key_last: "O", room: "Nhà bếp", type: "dụng cụ", category: "kitchen" },
+            { name: "Thớt", key_first: "T", key_middle: "O", key_last: "T", room: "Nhà bếp", type: "dụng cụ", category: "kitchen" },
+            { name: "Nồi cơm điện", key_first: "N", key_middle: "O", key_last: "N", room: "Nhà bếp", type: "thiết bị điện", category: "kitchen" },
+            { name: "Ấm đun nước", key_first: "Ấ", key_middle: "A", key_last: "C", room: "Nhà bếp", type: "thiết bị điện", category: "kitchen" },
+            { name: "Hũ gia vị", key_first: "H", key_middle: "U", key_last: "I", room: "Nhà bếp", type: "đồ dùng", category: "kitchen" },
+            { name: "Bình đựng nước", key_first: "B", key_middle: "I", key_last: "C", room: "Nhà bếp", type: "đồ dùng", category: "kitchen" },
+            { name: "Khăn lau bếp", key_first: "K", key_middle: "A", key_last: "P", room: "Nhà bếp", type: "vật dụng", category: "kitchen" },
+            { name: "Nồi áp suất", key_first: "N", key_middle: "O", key_last: "T", room: "Nhà bếp", type: "thiết bị nấu", category: "kitchen" },
+            { name: "Chảo", key_first: "C", key_middle: "A", key_last: "O", room: "Nhà bếp", type: "dụng cụ nấu", category: "kitchen" },
+            { name: "Rổ", key_first: "R", key_middle: "O", key_last: "Ổ", room: "Nhà bếp", type: "đồ dùng", category: "kitchen" },
+            { name: "Muỗng", key_first: "M", key_middle: "U", key_last: "G", room: "Nhà bếp", type: "dụng cụ", category: "kitchen" },
+            { name: "Đũa", key_first: "Đ", key_middle: "U", key_last: "A", room: "Nhà bếp", type: "dụng cụ", category: "kitchen" },
+            { name: "Lọc", key_first: "L", key_middle: "O", key_last: "C", room: "Nhà bếp", type: "dụng cụ", category: "kitchen" },
+            { name: "Vỉ nướng", key_first: "V", key_middle: "I", key_last: "G", room: "Nhà bếp", type: "dụng cụ nấu", category: "kitchen" },
+            { name: "Thùng rác", key_first: "T", key_middle: "U", key_last: "C", room: "Nhà bếp", type: "vật dụng", category: "kitchen" },
+            { name: "Giá treo", key_first: "G", key_middle: "I", key_last: "O", room: "Nhà bếp", type: "phụ kiện", category: "kitchen" },
+            { name: "Kệ đựng", key_first: "K", key_middle: "E", key_last: "G", room: "Nhà bếp", type: "đồ gia dụng", category: "kitchen" },
+            { name: "Máy xay sinh tố", key_first: "M", key_middle: "A", key_last: "T", room: "Nhà bếp", type: "thiết bị điện", category: "kitchen" },
+            { name: "Máy ép trái cây", key_first: "M", key_middle: "A", key_last: "Y", room: "Nhà bếp", type: "thiết bị điện", category: "kitchen" },
+            { name: "Nồi chiên không dầu", key_first: "N", key_middle: "O", key_last: "U", room: "Nhà bếp", type: "thiết bị điện", category: "kitchen" },
+            { name: "Bình đun siêu tốc", key_first: "B", key_middle: "I", key_last: "C", room: "Nhà bếp", type: "thiết bị điện", category: "kitchen" },
+            { name: "Máy pha cà phê", key_first: "M", key_middle: "A", key_last: "Ê", room: "Nhà bếp", type: "thiết bị điện", category: "kitchen" },
+            { name: "Lò vi ba", key_first: "L", key_middle: "O", key_last: "A", room: "Nhà bếp", type: "thiết bị điện", category: "kitchen" },
+            { name: "Máy làm bánh mì", key_first: "M", key_middle: "A", key_last: "I", room: "Nhà bếp", type: "thiết bị điện", category: "kitchen" },
+            { name: "Máy đánh trứng", key_first: "M", key_middle: "A", key_last: "G", room: "Nhà bếp", type: "thiết bị điện", category: "kitchen" },
+            { name: "Bình giữ nhiệt", key_first: "B", key_middle: "I", key_last: "T", room: "Nhà bếp", type: "đồ dùng", category: "kitchen" },
+            { name: "Hộp cơm", key_first: "H", key_middle: "O", key_last: "M", room: "Nhà bếp", type: "đồ dùng", category: "kitchen" },
+            { name: "Bình nước", key_first: "B", key_middle: "I", key_last: "C", room: "Nhà bếp", type: "đồ dùng", category: "kitchen" },
+            { name: "Khay đá", key_first: "K", key_middle: "A", key_last: "Y", room: "Nhà bếp", type: "đồ dùng", category: "kitchen" },
+            { name: "Rây bột", key_first: "R", key_middle: "A", key_last: "T", room: "Nhà bếp", type: "dụng cụ", category: "kitchen" },
+            { name: "Cối giã", key_first: "C", key_middle: "O", key_last: "A", room: "Nhà bếp", type: "dụng cụ", category: "kitchen" },
+            { name: "Chày", key_first: "C", key_middle: "A", key_last: "Y", room: "Nhà bếp", type: "dụng cụ", category: "kitchen" },
+            { name: "Vợt", key_first: "V", key_middle: "O", key_last: "T", room: "Nhà bếp", type: "dụng cụ", category: "kitchen" },
+            { name: "Kẹp", key_first: "K", key_middle: "E", key_last: "P", room: "Nhà bếp", type: "dụng cụ", category: "kitchen" },
+            { name: "Thìa", key_first: "T", key_middle: "I", key_last: "A", room: "Nhà bếp", type: "dụng cụ", category: "kitchen" },
+            { name: "Dĩa", key_first: "D", key_middle: "I", key_last: "A", room: "Nhà bếp", type: "dụng cụ", category: "kitchen" },
+            { name: "Ly", key_first: "L", key_middle: "Y", key_last: "Y", room: "Nhà bếp", type: "đồ dùng", category: "kitchen" },
+            { name: "Tách", key_first: "T", key_middle: "A", key_last: "H", room: "Nhà bếp", type: "đồ dùng", category: "kitchen" },
+            
+            // PHÒNG KHÁCH (30 đồ vật)
+            { name: "Sofa", key_first: "S", key_middle: "O", key_last: "A", room: "Phòng khách", type: "nội thất", category: "living" },
+            { name: "Ghế bành", key_first: "G", key_middle: "E", key_last: "H", room: "Phòng khách", type: "nội thất", category: "living" },
+            { name: "Bàn trà", key_first: "B", key_middle: "A", key_last: "A", room: "Phòng khách", type: "nội thất", category: "living" },
+            { name: "Kệ tivi", key_first: "K", key_middle: "E", key_last: "I", room: "Phòng khách", type: "nội thất", category: "living" },
+            { name: "Tủ trang trí", key_first: "T", key_middle: "U", key_last: "I", room: "Phòng khách", type: "nội thất", category: "living" },
+            { name: "Đèn chùm", key_first: "Đ", key_middle: "E", key_last: "M", room: "Phòng khách", type: "đèn", category: "living" },
+            { name: "Thảm trải sàn", key_first: "T", key_middle: "A", key_last: "N", room: "Phòng khách", type: "vật dụng", category: "living" },
+            { name: "Rèm cửa", key_first: "R", key_middle: "E", key_last: "A", room: "Phòng khách", type: "vật dụng", category: "living" },
+            { name: "Lò sưởi", key_first: "L", key_middle: "O", key_last: "I", room: "Phòng khách", type: "thiết bị", category: "living" },
+            { name: "Đồng hồ treo tường", key_first: "Đ", key_middle: "O", key_last: "G", room: "Phòng khách", type: "đồng hồ", category: "living" },
+            { name: "Quạt trần", key_first: "Q", key_middle: "U", key_last: "N", room: "Phòng khách", type: "thiết bị", category: "living" },
+            { name: "Bình hoa", key_first: "B", key_middle: "I", key_last: "A", room: "Phòng khách", type: "trang trí", category: "living" },
+            { name: "Giá sách", key_first: "G", key_middle: "I", key_last: "H", room: "Phòng khách", type: "nội thất", category: "living" },
+            { name: "Tủ rượu", key_first: "T", key_middle: "U", key_last: "U", room: "Phòng khách", type: "nội thất", category: "living" },
+            { name: "Kệ giày", key_first: "K", key_middle: "E", key_last: "Y", room: "Phòng khách", type: "nội thất", category: "living" },
+            { name: "Gương trang trí", key_first: "G", key_middle: "U", key_last: "I", room: "Phòng khách", type: "trang trí", category: "living" },
+            { name: "Đèn bàn", key_first: "Đ", key_middle: "E", key_last: "N", room: "Phòng khách", type: "đèn", category: "living" },
+            { name: "Đèn ngủ", key_first: "Đ", key_middle: "E", key_last: "U", room: "Phòng khách", type: "đèn", category: "living" },
+            { name: "Lọ hoa", key_first: "L", key_middle: "O", key_last: "A", room: "Phòng khách", type: "trang trí", category: "living" },
+            { name: "Khay đựng tạp chí", key_first: "K", key_middle: "A", key_last: "I", room: "Phòng khách", type: "phụ kiện", category: "living" },
+            { name: "Ghế đôn", key_first: "G", key_middle: "E", key_last: "N", room: "Phòng khách", type: "nội thất", category: "living" },
+            { name: "Bàn console", key_first: "B", key_middle: "A", key_last: "E", room: "Phòng khách", type: "nội thất", category: "living" },
+            { name: "Kệ âm tường", key_first: "K", key_middle: "E", key_last: "G", room: "Phòng khách", type: "nội thất", category: "living" },
+            { name: "Tranh trang trí", key_first: "T", key_middle: "R", key_last: "I", room: "Phòng khách", type: "trang trí", category: "living" },
+            { name: "Chậu cây", key_first: "C", key_middle: "A", key_last: "Y", room: "Phòng khách", type: "trang trí", category: "living" },
+            { name: "Đèn LED", key_first: "Đ", key_middle: "E", key_last: "D", room: "Phòng khách", type: "đèn", category: "living" },
+            { name: "Ổ cắm đa năng", key_first: "Ổ", key_middle: "A", key_last: "G", room: "Phòng khách", type: "thiết bị", category: "living" },
+            { name: "Remote", key_first: "R", key_middle: "E", key_last: "E", room: "Phòng khách", type: "phụ kiện", category: "living" },
+            { name: "Loa", key_first: "L", key_middle: "O", key_last: "A", room: "Phòng khách", type: "thiết bị", category: "living" },
+            { name: "Đầu DVD", key_first: "Đ", key_middle: "A", key_last: "D", room: "Phòng khách", type: "thiết bị", category: "living" },
+            
+            // PHÒNG NGỦ (30 đồ vật)
+            { name: "Giường", key_first: "G", key_middle: "I", key_last: "G", room: "Phòng ngủ", type: "nội thất", category: "bedroom" },
+            { name: "Tủ áo", key_first: "T", key_middle: "U", key_last: "O", room: "Phòng ngủ", type: "nội thất", category: "bedroom" },
+            { name: "Tủ đầu giường", key_first: "T", key_middle: "U", key_last: "G", room: "Phòng ngủ", type: "nội thất", category: "bedroom" },
+            { name: "Bàn trang điểm", key_first: "B", key_middle: "A", key_last: "M", room: "Phòng ngủ", type: "nội thất", category: "bedroom" },
+            { name: "Ghế trang điểm", key_first: "G", key_middle: "E", key_last: "Ê", room: "Phòng ngủ", type: "nội thất", category: "bedroom" },
+            { name: "Đèn ngủ", key_first: "Đ", key_middle: "E", key_last: "U", room: "Phòng ngủ", type: "đèn", category: "bedroom" },
+            { name: "Đèn bàn", key_first: "Đ", key_middle: "E", key_last: "N", room: "Phòng ngủ", type: "đèn", category: "bedroom" },
+            { name: "Gương", key_first: "G", key_middle: "U", key_last: "G", room: "Phòng ngủ", type: "trang trí", category: "bedroom" },
+            { name: "Thảm trải sàn", key_first: "T", key_middle: "A", key_last: "N", room: "Phòng ngủ", type: "vật dụng", category: "bedroom" },
+            { name: "Chăn", key_first: "C", key_middle: "A", key_last: "N", room: "Phòng ngủ", type: "đồ ngủ", category: "bedroom" },
+            { name: "Gối", key_first: "G", key_middle: "O", key_last: "I", room: "Phòng ngủ", type: "đồ ngủ", category: "bedroom" },
+            { name: "Mền", key_first: "M", key_middle: "E", key_last: "N", room: "Phòng ngủ", type: "đồ ngủ", category: "bedroom" },
+            { name: "Rèm cửa", key_first: "R", key_middle: "E", key_last: "A", room: "Phòng ngủ", type: "vật dụng", category: "bedroom" },
+            { name: "Đồng hồ báo thức", key_first: "Đ", key_middle: "O", key_last: "C", room: "Phòng ngủ", type: "đồng hồ", category: "bedroom" },
+            { name: "Đệm", key_first: "Đ", key_middle: "E", key_last: "M", room: "Phòng ngủ", type: "đồ ngủ", category: "bedroom" },
+            { name: "Vỏ gối", key_first: "V", key_middle: "O", key_last: "I", room: "Phòng ngủ", type: "đồ ngủ", category: "bedroom" },
+            { name: "Ga trải giường", key_first: "G", key_middle: "A", key_last: "G", room: "Phòng ngủ", type: "đồ ngủ", category: "bedroom" },
+            { name: "Tủ giày", key_first: "T", key_middle: "U", key_last: "Y", room: "Phòng ngủ", type: "nội thất", category: "bedroom" },
+            { name: "Kệ sách", key_first: "K", key_middle: "E", key_last: "H", room: "Phòng ngủ", type: "nội thất", category: "bedroom" },
+            { name: "Bàn làm việc", key_first: "B", key_middle: "A", key_last: "C", room: "Phòng ngủ", type: "nội thất", category: "bedroom" },
+            { name: "Ghế xoay", key_first: "G", key_middle: "E", key_last: "Y", room: "Phòng ngủ", type: "nội thất", category: "bedroom" },
+            { name: "Đèn học", key_first: "Đ", key_middle: "E", key_last: "C", room: "Phòng ngủ", type: "đèn", category: "bedroom" },
+            { name: "Bình nước", key_first: "B", key_middle: "I", key_last: "C", room: "Phòng ngủ", type: "đồ dùng", category: "bedroom" },
+            { name: "Hộp đựng đồ", key_first: "H", key_middle: "O", key_last: "Ồ", room: "Phòng ngủ", type: "vật dụng", category: "bedroom" },
+            { name: "Vali", key_first: "V", key_middle: "A", key_last: "I", room: "Phòng ngủ", type: "vật dụng", category: "bedroom" },
+            { name: "Túi xách", key_first: "T", key_middle: "U", key_last: "H", room: "Phòng ngủ", type: "vật dụng", category: "bedroom" },
+            { name: "Móc áo", key_first: "M", key_middle: "O", key_last: "O", room: "Phòng ngủ", type: "phụ kiện", category: "bedroom" },
+            { name: "Giá treo", key_first: "G", key_middle: "I", key_last: "O", room: "Phòng ngủ", type: "phụ kiện", category: "bedroom" },
+            { name: "Quạt máy", key_first: "Q", key_middle: "U", key_last: "Y", room: "Phòng ngủ", type: "thiết bị", category: "bedroom" },
+            { name: "Máy lọc không khí", key_first: "M", key_middle: "A", key_last: "I", room: "Phòng ngủ", type: "thiết bị", category: "bedroom" },
+            
+            // PHÒNG TẮM (20 đồ vật)
+            { name: "Bồn tắm", key_first: "B", key_middle: "O", key_last: "M", room: "Phòng tắm", type: "thiết bị", category: "bathroom" },
+            { name: "Bồn cầu", key_first: "B", key_middle: "O", key_last: "U", room: "Phòng tắm", type: "thiết bị", category: "bathroom" },
+            { name: "Bồn rửa mặt", key_first: "B", key_middle: "O", key_last: "T", room: "Phòng tắm", type: "thiết bị", category: "bathroom" },
+            { name: "Vòi hoa sen", key_first: "V", key_middle: "O", key_last: "N", room: "Phòng tắm", type: "thiết bị", category: "bathroom" },
+            { name: "Gương phòng tắm", key_first: "G", key_middle: "U", key_last: "M", room: "Phòng tắm", type: "trang trí", category: "bathroom" },
+            { name: "Tủ phòng tắm", key_first: "T", key_middle: "U", key_last: "M", room: "Phòng tắm", type: "nội thất", category: "bathroom" },
+            { name: "Kệ đựng đồ", key_first: "K", key_middle: "E", key_last: "Ồ", room: "Phòng tắm", type: "nội thất", category: "bathroom" },
+            { name: "Móc treo", key_first: "M", key_middle: "O", key_last: "O", room: "Phòng tắm", type: "phụ kiện", category: "bathroom" },
+            { name: "Khăn tắm", key_first: "K", key_middle: "A", key_last: "M", room: "Phòng tắm", type: "vật dụng", category: "bathroom" },
+            { name: "Bình nóng lạnh", key_first: "B", key_middle: "I", key_last: "H", room: "Phòng tắm", type: "thiết bị", category: "bathroom" },
+            { name: "Máy sấy tóc", key_first: "M", key_middle: "A", key_last: "C", room: "Phòng tắm", type: "thiết bị", category: "bathroom" },
+            { name: "Xà bông", key_first: "X", key_middle: "A", key_last: "G", room: "Phòng tắm", type: "vệ sinh", category: "bathroom" },
+            { name: "Bàn chải đánh răng", key_first: "B", key_middle: "A", key_last: "G", room: "Phòng tắm", type: "vệ sinh", category: "bathroom" },
+            { name: "Kem đánh răng", key_first: "K", key_middle: "E", key_last: "G", room: "Phòng tắm", type: "vệ sinh", category: "bathroom" },
+            { name: "Lược", key_first: "L", key_middle: "U", key_last: "C", room: "Phòng tắm", type: "vệ sinh", category: "bathroom" },
+            { name: "Cốc", key_first: "C", key_middle: "O", key_last: "C", room: "Phòng tắm", type: "đồ dùng", category: "bathroom" },
+            { name: "Bồn tiểu", key_first: "B", key_middle: "O", key_last: "U", room: "Phòng tắm", type: "thiết bị", category: "bathroom" },
+            { name: "Vòi nước", key_first: "V", key_middle: "O", key_last: "C", room: "Phòng tắm", type: "thiết bị", category: "bathroom" },
+            { name: "Giấy vệ sinh", key_first: "G", key_middle: "I", key_last: "H", room: "Phòng tắm", type: "vệ sinh", category: "bathroom" },
+            { name: "Sàn nhà tắm", key_first: "S", key_middle: "A", key_last: "M", room: "Phòng tắm", type: "vật liệu", category: "bathroom" },
+            
+            // TRANG PHỤC MAY MẶC (60 sản phẩm)
+            { name: "Áo sơ mi", key_first: "Á", key_middle: "O", key_last: "I", room: "Tủ quần áo", type: "áo", category: "clothing" },
+            { name: "Áo thun", key_first: "Á", key_middle: "O", key_last: "N", room: "Tủ quần áo", type: "áo", category: "clothing" },
+            { name: "Áo khoác", key_first: "Á", key_middle: "O", key_last: "C", room: "Tủ quần áo", type: "áo", category: "clothing" },
+            { name: "Áo len", key_first: "Á", key_middle: "O", key_last: "N", room: "Tủ quần áo", type: "áo", category: "clothing" },
+            { name: "Áo hoodie", key_first: "Á", key_middle: "O", key_last: "E", room: "Tủ quần áo", type: "áo", category: "clothing" },
+            { name: "Áo cardigan", key_first: "Á", key_middle: "O", key_last: "N", room: "Tủ quần áo", type: "áo", category: "clothing" },
+            { name: "Áo blazer", key_first: "Á", key_middle: "O", key_last: "R", room: "Tủ quần áo", type: "áo", category: "clothing" },
+            { name: "Áo vest", key_first: "Á", key_middle: "O", key_last: "T", room: "Tủ quần áo", type: "áo", category: "clothing" },
+            { name: "Áo ba lỗ", key_first: "Á", key_middle: "O", key_last: "Ỗ", room: "Tủ quần áo", type: "áo", category: "clothing" },
+            { name: "Áo polo", key_first: "Á", key_middle: "O", key_last: "O", room: "Tủ quần áo", type: "áo", category: "clothing" },
+            { name: "Quần jean", key_first: "Q", key_middle: "U", key_last: "N", room: "Tủ quần áo", type: "quần", category: "clothing" },
+            { name: "Quần tây", key_first: "Q", key_middle: "U", key_last: "Y", room: "Tủ quần áo", type: "quần", category: "clothing" },
+            { name: "Quần short", key_first: "Q", key_middle: "U", key_last: "T", room: "Tủ quần áo", type: "quần", category: "clothing" },
+            { name: "Quần kaki", key_first: "Q", key_middle: "U", key_last: "I", room: "Tủ quần áo", type: "quần", category: "clothing" },
+            { name: "Quần jogger", key_first: "Q", key_middle: "U", key_last: "R", room: "Tủ quần áo", type: "quần", category: "clothing" },
+            { name: "Quần legging", key_first: "Q", key_middle: "U", key_last: "G", room: "Tủ quần áo", type: "quần", category: "clothing" },
+            { name: "Quần yếm", key_first: "Q", key_middle: "U", key_last: "M", room: "Tủ quần áo", type: "quần", category: "clothing" },
+            { name: "Quần culottes", key_first: "Q", key_middle: "U", key_last: "S", room: "Tủ quần áo", type: "quần", category: "clothing" },
+            { name: "Váy dài", key_first: "V", key_middle: "A", key_last: "I", room: "Tủ quần áo", type: "váy", category: "clothing" },
+            { name: "Váy ngắn", key_first: "V", key_middle: "A", key_last: "N", room: "Tủ quần áo", type: "váy", category: "clothing" },
+            { name: "Váy xòe", key_first: "V", key_middle: "A", key_last: "E", room: "Tủ quần áo", type: "váy", category: "clothing" },
+            { name: "Đầm dạ hội", key_first: "Đ", key_middle: "A", key_last: "I", room: "Tủ quần áo", type: "đầm", category: "clothing" },
+            { name: "Đầm công sở", key_first: "Đ", key_middle: "A", key_last: "Ở", room: "Tủ quần áo", type: "đầm", category: "clothing" },
+            { name: "Đầm maxi", key_first: "Đ", key_middle: "A", key_last: "I", room: "Tủ quần áo", type: "đầm", category: "clothing" },
+            { name: "Đầm body", key_first: "Đ", key_middle: "A", key_last: "Y", room: "Tủ quần áo", type: "đầm", category: "clothing" },
+            { name: "Áo dài", key_first: "Á", key_middle: "O", key_last: "I", room: "Tủ quần áo", type: "áo dài", category: "clothing" },
+            { name: "Áo bà ba", key_first: "Á", key_middle: "O", key_last: "A", room: "Tủ quần áo", type: "áo truyền thống", category: "clothing" },
+            { name: "Áo tứ thân", key_first: "Á", key_middle: "O", key_last: "N", room: "Tủ quần áo", type: "áo truyền thống", category: "clothing" },
+            { name: "Áo the", key_first: "Á", key_middle: "O", key_last: "E", room: "Tủ quần áo", type: "áo truyền thống", category: "clothing" },
+            { name: "Áo lót", key_first: "Á", key_middle: "O", key_last: "T", room: "Tủ quần áo", type: "đồ lót", category: "clothing" },
+            { name: "Quần lót", key_first: "Q", key_middle: "U", key_last: "T", room: "Tủ quần áo", type: "đồ lót", category: "clothing" },
+            { name: "Áo ngủ", key_first: "Á", key_middle: "O", key_last: "Ủ", room: "Tủ quần áo", type: "đồ ngủ", category: "clothing" },
+            { name: "Bộ đồ ngủ", key_first: "B", key_middle: "O", key_last: "Ủ", room: "Tủ quần áo", type: "đồ ngủ", category: "clothing" },
+            { name: "Váy ngủ", key_first: "V", key_middle: "A", key_last: "Ủ", room: "Tủ quần áo", type: "đồ ngủ", category: "clothing" },
+            { name: "Áo thể thao", key_first: "Á", key_middle: "O", key_last: "O", room: "Tủ quần áo", type: "thể thao", category: "clothing" },
+            { name: "Quần thể thao", key_first: "Q", key_middle: "U", key_last: "O", room: "Tủ quần áo", type: "thể thao", category: "clothing" },
+            { name: "Bộ đồ thể thao", key_first: "B", key_middle: "O", key_last: "O", room: "Tủ quần áo", type: "thể thao", category: "clothing" },
+            { name: "Áo bóng đá", key_first: "Á", key_middle: "O", key_last: "A", room: "Tủ quần áo", type: "thể thao", category: "clothing" },
+            { name: "Áo phao", key_first: "Á", key_middle: "O", key_last: "O", room: "Tủ quần áo", type: "áo khoác", category: "clothing" },
+            { name: "Áo gió", key_first: "Á", key_middle: "O", key_last: "O", room: "Tủ quần áo", type: "áo khoác", category: "clothing" },
+            { name: "Áo da", key_first: "Á", key_middle: "O", key_last: "A", room: "Tủ quần áo", type: "áo khoác", category: "clothing" },
+            { name: "Áo lông vũ", key_first: "Á", key_middle: "O", key_last: "U", room: "Tủ quần áo", type: "áo khoác", category: "clothing" },
+            { name: "Khăn quàng cổ", key_first: "K", key_middle: "A", key_last: "Ổ", room: "Tủ quần áo", type: "phụ kiện", category: "clothing" },
+            { name: "Găng tay", key_first: "G", key_middle: "A", key_last: "Y", room: "Tủ quần áo", type: "phụ kiện", category: "clothing" },
+            { name: "Mũ len", key_first: "M", key_middle: "U", key_last: "N", room: "Tủ quần áo", type: "phụ kiện", category: "clothing" },
+            { name: "Vớ", key_first: "V", key_middle: "O", key_last: "Ớ", room: "Tủ quần áo", type: "phụ kiện", category: "clothing" },
+            { name: "Tất", key_first: "T", key_middle: "A", key_last: "T", room: "Tủ quần áo", type: "phụ kiện", category: "clothing" },
+            { name: "Bít tất", key_first: "B", key_middle: "I", key_last: "T", room: "Tủ quần áo", type: "phụ kiện", category: "clothing" },
+            { name: "Đồ bơi", key_first: "Đ", key_middle: "O", key_last: "I", room: "Tủ quần áo", type: "đồ bơi", category: "clothing" },
+            { name: "Bikini", key_first: "B", key_middle: "I", key_last: "I", room: "Tủ quần áo", type: "đồ bơi", category: "clothing" },
+            { name: "Quần bơi", key_first: "Q", key_middle: "U", key_last: "I", room: "Tủ quần áo", type: "đồ bơi", category: "clothing" },
+            { name: "Vest công sở", key_first: "V", key_middle: "E", key_last: "Ở", room: "Tủ quần áo", type: "công sở", category: "clothing" },
+            { name: "Đồng phục", key_first: "Đ", key_middle: "O", key_last: "C", room: "Tủ quần áo", type: "đồng phục", category: "clothing" },
+            { name: "Áo cưới", key_first: "Á", key_middle: "O", key_last: "I", room: "Tủ quần áo", type: "trang phục đặc biệt", category: "clothing" },
+            { name: "Váy cưới", key_first: "V", key_middle: "A", key_last: "I", room: "Tủ quần áo", type: "trang phục đặc biệt", category: "clothing" },
+            { name: "Áo choàng", key_first: "Á", key_middle: "O", key_last: "G", room: "Tủ quần áo", type: "áo khoác", category: "clothing" },
+            { name: "Kimono", key_first: "K", key_middle: "I", key_last: "O", room: "Tủ quần áo", type: "trang phục đặc biệt", category: "clothing" },
+            { name: "Cà vạt", key_first: "C", key_middle: "A", key_last: "T", room: "Tủ quần áo", type: "phụ kiện", category: "clothing" },
+            { name: "Nơ cổ", key_first: "N", key_middle: "O", key_last: "Ổ", room: "Tủ quần áo", type: "phụ kiện", category: "clothing" },
+            { name: "Băng đô", key_first: "B", key_middle: "A", key_last: "Ô", room: "Tủ quần áo", type: "phụ kiện", category: "clothing" }
+        ];
+        
+        // ==================== THỐNG KÊ ====================
+        function updateStatistics() {
+            const totalItems = allItems.length;
+            const kitchenItems = allItems.filter(item => item.category === "kitchen").length;
+            const livingRoomItems = allItems.filter(item => item.category === "living").length;
+            const bedroomItems = allItems.filter(item => item.category === "bedroom").length;
+            const bathroomItems = allItems.filter(item => item.category === "bathroom").length;
+            const clothingItems = allItems.filter(item => item.category === "clothing").length;
+            
+            document.getElementById('statsBar').innerHTML = `
+                <div class="stat-item">
+                    <span>📊 Tổng số:</span>
+                    <span class="stat-value">${totalItems}</span>
+                </div>
+                <div class="stat-item">
+                    <span>🍳 Đồ bếp:</span>
+                    <span class="stat-value">${kitchenItems}</span>
+                </div>
+                <div class="stat-item">
+                    <span>🛋️ Phòng khách:</span>
+                    <span class="stat-value">${livingRoomItems}</span>
+                </div>
+                <div class="stat-item">
+                    <span>🛏️ Phòng ngủ:</span>
+                    <span class="stat-value">${bedroomItems}</span>
+                </div>
+                <div class="stat-item">
+                    <span>🚿 Phòng tắm:</span>
+                    <span class="stat-value">${bathroomItems}</span>
+                </div>
+                <div class="stat-item">
+                    <span>👔 Trang phục:</span>
+                    <span class="stat-value">${clothingItems}</span>
+                </div>
+            `;
+        }
+        
+        // ==================== BỘ LỌC DANH MỤC ====================
+        function setCategory(category) {
+            currentCategory = category;
+            
+            document.querySelectorAll('.category-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.category-button[data-category="${category}"]`).classList.add('active');
+        }
+        
+        function getModeText() {
+            switch(currentMode) {
+                case 'first': return 'ĐẦU';
+                case 'middle': return 'GIỮA';
+                case 'last': return 'CUỐI';
+                case 'combo': return 'TẤT CẢ CHỮ';
+                case 'allinone': return 'TỔNG HỢP 1 TỪ';
+                default: return 'ĐẦU';
+            }
+        }
+        
+        // ==================== HÀM CHẾ ĐỘ TÌM KIẾM ====================
+        function setMode(mode) {
+            currentMode = mode;
+            
+            // Cập nhật nút mode cũ
+            document.querySelectorAll('.mode-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            if (mode === 'first' || mode === 'middle' || mode === 'last') {
+                document.querySelector(`.mode-button[data-mode="${mode}"]`).classList.add('active');
+            }
+            
+            // Cập nhật nút mode mới
+            document.querySelectorAll('.new-mode-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            if (mode === 'combo' || mode === 'allinone') {
+                document.querySelector(`.new-mode-button[data-mode="${mode}"]`).classList.add('active');
+            }
+            
+            // Reset tìm kiếm
+            resetSearch();
+        }
+        
+        function getItemKey(item, mode, charIndex = 0) {
+            switch(mode) {
+                case 'first': return item.key_first;
+                case 'middle': return item.key_middle;
+                case 'last': return item.key_last;
+                case 'combo': 
+                    // Trong combo mode, tìm tất cả các chữ cái trong từ
+                    const word = item.name.toUpperCase().replace(/[^A-ZÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴ]/g, '');
+                    return word[charIndex % word.length] || '';
+                default: return item.key_first;
+            }
+        }
+        
+        function getCharFromInput(inputChar, mode, index = 0) {
+            const char = inputChar.toUpperCase();
+            
+            if (mode === 'middle') {
+                const vowels = 'AEIOUYÀÁẢÃẠĂẰẮẲẴẶÂẦẤẨẪẬÈÉẺẼẸÊỀẾỂỄỆÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴ';
+                return vowels.includes(char) ? char : null;
+            }
+            
+            return char;
+        }
+        
+        function resetSearch() {
+            foundItems = [];
+            searchIndex = 0;
+            usedItemIds = new Set();
+            comboModeResults = [];
+            document.getElementById('nextBtn').disabled = true;
+            document.getElementById('resultBox').innerHTML = `
+                <div style="color: #bdc3c7; text-align: center; padding: 30px; font-size: 1em;">
+                    ⏳ Nhập tên và chọn chế độ tìm kiếm
+                </div>
+            `;
+            document.getElementById('resultSummary').innerHTML = '';
+            document.getElementById('charSequenceContainer').style.display = 'none';
+            document.getElementById('statusText').style.display = 'none';
+        }
+        
+        // ==================== HÀM XỬ LÝ TÌM KIẾM ====================
+        function searchItems() {
+            const input = document.getElementById('charInput').value.trim();
+            
+            if (!input) {
+                alert("Vui lòng nhập một tên riêng!");
+                return;
+            }
+            
+            // Xử lý các chế độ tìm kiếm khác nhau
+            if (currentMode === 'combo') {
+                searchComboMode(input);
+            } else if (currentMode === 'allinone') {
+                searchAllInOneMode(input);
+            } else {
+                searchNormalMode(input);
+            }
+        }
+        
+        function searchNormalMode(input) {
+            const normalizedInput = input.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+            
+            searchChars = [];
+            for (let char of normalizedInput) {
+                if (char !== ' ') {
+                    const processedChar = getCharFromInput(char, currentMode);
+                    if (processedChar) {
+                        searchChars.push(processedChar);
+                    }
+                }
+            }
+            
+            if (searchChars.length === 0) {
+                alert("Không tìm thấy chữ cái phù hợp với chế độ đã chọn!");
+                return;
+            }
+            
+            displayCharSequence(searchChars);
+            document.getElementById('charSequenceContainer').style.display = 'block';
+            
+            foundItems = [];
+            usedItemIds.clear();
+            
+            // Lọc danh sách theo danh mục
+            let filteredItems = allItems;
+            if (currentCategory !== 'all') {
+                filteredItems = allItems.filter(item => item.category === currentCategory);
+            }
+            
+            for (let i = 0; i < searchChars.length; i++) {
+                const char = searchChars[i];
+                
+                const matchedItems = filteredItems.filter(item => {
+                    const itemKey = getItemKey(item, currentMode);
+                    return itemKey === char && !usedItemIds.has(item.name + "_" + item.category);
+                });
+                
+                if (matchedItems.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * matchedItems.length);
+                    const selectedItem = { ...matchedItems[randomIndex] };
+                    
+                    selectedItem.matchedChar = char;
+                    selectedItem.charIndex = i + 1;
+                    selectedItem.isNotFound = false;
+                    
+                    foundItems.push(selectedItem);
+                    usedItemIds.add(selectedItem.name + "_" + selectedItem.category);
+                } else {
+                    foundItems.push({
+                        name: "Không tìm thấy",
+                        key: char,
+                        room: getRandomRoom(currentCategory),
+                        type: "n/a",
+                        matchedChar: char,
+                        charIndex: i + 1,
+                        isNotFound: true
+                    });
+                }
+            }
+            
+            searchIndex = 0;
+            displayNextPage();
+            updateStatus();
+            document.getElementById('nextBtn').disabled = (foundItems.length <= itemsPerPage);
+            updateResultSummary();
+        }
+        
+        function searchComboMode(input) {
+            // Tìm tất cả chữ cái trong một từ (ví dụ: "nim" -> nồi, điện, cơm)
+            const normalizedInput = input.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/\s+/g, '');
+            
+            searchChars = [];
+            for (let char of normalizedInput) {
+                if (char !== ' ') {
+                    searchChars.push(char);
+                }
+            }
+            
+            if (searchChars.length === 0) {
+                alert("Vui lòng nhập ít nhất một chữ cái!");
+                return;
+            }
+            
+            displayCharSequence(searchChars);
+            document.getElementById('charSequenceContainer').style.display = 'block';
+            
+            foundItems = [];
+            usedItemIds.clear();
+            
+            // Lọc danh sách theo danh mục
+            let filteredItems = allItems;
+            if (currentCategory !== 'all') {
+                filteredItems = allItems.filter(item => item.category === currentCategory);
+            }
+            
+            // Tìm các vật phẩm có chữ cái đầu trùng với từng chữ trong input
+            for (let i = 0; i < searchChars.length; i++) {
+                const char = searchChars[i];
+                
+                const matchedItems = filteredItems.filter(item => {
+                    return item.key_first === char && !usedItemIds.has(item.name + "_" + item.category);
+                });
+                
+                if (matchedItems.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * matchedItems.length);
+                    const selectedItem = { ...matchedItems[randomIndex] };
+                    
+                    selectedItem.matchedChar = char;
+                    selectedItem.charIndex = i + 1;
+                    selectedItem.isNotFound = false;
+                    
+                    foundItems.push(selectedItem);
+                    usedItemIds.add(selectedItem.name + "_" + selectedItem.category);
+                } else {
+                    foundItems.push({
+                        name: "Không tìm thấy",
+                        key: char,
+                        room: getRandomRoom(currentCategory),
+                        type: "n/a",
+                        matchedChar: char,
+                        charIndex: i + 1,
+                        isNotFound: true
+                    });
+                }
+            }
+            
+            searchIndex = 0;
+            displayNextPage();
+            updateStatus();
+            document.getElementById('nextBtn').disabled = (foundItems.length <= itemsPerPage);
+            updateResultSummary();
+        }
+        
+        function searchAllInOneMode(input) {
+            // Tìm tất cả chữ cái trong một từ và ghép thành cụm từ
+            const normalizedInput = input.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/\s+/g, '');
+            
+            searchChars = [];
+            for (let char of normalizedInput) {
+                if (char !== ' ') {
+                    searchChars.push(char);
+                }
+            }
+            
+            if (searchChars.length === 0) {
+                alert("Vui lòng nhập ít nhất một chữ cái!");
+                return;
+            }
+            
+            displayCharSequence(searchChars);
+            document.getElementById('charSequenceContainer').style.display = 'block';
+            
+            // Tìm các vật phẩm có chữ cái đầu trùng với từng chữ trong input
+            let filteredItems = allItems;
+            if (currentCategory !== 'all') {
+                filteredItems = allItems.filter(item => item.category === currentCategory);
+            }
+            
+            const allResults = [];
+            usedItemIds.clear();
+            
+            // Tìm tất cả kết hợp có thể
+            for (let i = 0; i < searchChars.length; i++) {
+                const char = searchChars[i];
+                
+                const matchedItems = filteredItems.filter(item => {
+                    return item.key_first === char && !usedItemIds.has(item.name + "_" + item.category);
+                });
+                
+                if (matchedItems.length > 0) {
+                    allResults.push({
+                        char: char,
+                        items: matchedItems,
+                        index: i + 1
+                    });
+                } else {
+                    allResults.push({
+                        char: char,
+                        items: [],
+                        index: i + 1
+                    });
+                }
+            }
+            
+            // Tạo các kết hợp
+            comboModeResults = generateCombinations(allResults);
+            
+            if (comboModeResults.length === 0) {
+                alert("Không thể tìm thấy kết hợp nào phù hợp!");
+                return;
+            }
+            
+            // Hiển thị kết quả đầu tiên
+            searchIndex = 0;
+            displayComboResult(0);
+            updateStatus();
+            document.getElementById('nextBtn').disabled = (comboModeResults.length <= 1);
+            updateResultSummary();
+        }
+        
+        function generateCombinations(allResults) {
+            const combinations = [];
+            
+            function backtrack(index, currentCombo, usedItems) {
+                if (index === allResults.length) {
+                    combinations.push([...currentCombo]);
+                    return;
+                }
+                
+                const result = allResults[index];
+                
+                if (result.items.length === 0) {
+                    // Không có vật phẩm nào cho chữ này
+                    currentCombo.push({
+                        char: result.char,
+                        item: null,
+                        index: result.index,
+                        isNotFound: true
+                    });
+                    backtrack(index + 1, currentCombo, usedItems);
+                    currentCombo.pop();
+                } else {
+                    // Thử từng vật phẩm cho chữ này
+                    for (const item of result.items) {
+                        const itemKey = item.name + "_" + item.category;
+                        if (!usedItems.has(itemKey)) {
+                            usedItems.add(itemKey);
+                            currentCombo.push({
+                                char: result.char,
+                                item: item,
+                                index: result.index,
+                                isNotFound: false
+                            });
+                            backtrack(index + 1, currentCombo, usedItems);
+                            currentCombo.pop();
+                            usedItems.delete(itemKey);
+                        }
+                    }
+                }
+            }
+            
+            backtrack(0, [], new Set());
+            return combinations;
+        }
+        
+        function displayComboResult(index) {
+            if (index >= comboModeResults.length) return;
+            
+            const combo = comboModeResults[index];
+            const resultBox = document.getElementById('resultBox');
+            
+            const input = document.getElementById('charInput').value.trim();
+            const foundCount = combo.filter(item => !item.isNotFound).length;
+            const totalInDatabase = currentCategory === 'all' ? allItems.length : 
+                allItems.filter(item => item.category === currentCategory).length;
+            
+            resultBox.innerHTML = `
+                <div class="summary-box">
+                    <div style="font-weight: bold; color: #2c3e50; margin-bottom: 5px;">
+                        🎯 Tổng hợp từ "${input}"
+                    </div>
+                    <div style="color: #555; font-size: 0.85em;">
+                        Kết hợp: ${index + 1}/${comboModeResults.length}<br>
+                        Tìm thấy: ${foundCount}/${searchChars.length} chữ cái
+                    </div>
+                </div>
+                <div id="itemsContainer"></div>
+                <div style="margin-top: 20px; padding: 15px; background: linear-gradient(135deg, #e3f2fd, #bbdefb); border-radius: 10px;">
+                    <div style="font-weight: bold; color: #1976d2; margin-bottom: 10px;">
+                        🔄 Kết hợp tạo thành:
+                    </div>
+                    <div style="font-size: 1.2em; color: #2c3e50; text-align: center; padding: 10px;">
+                        ${combo.map(item => item.isNotFound ? "?" : item.item.name).join(" + ")}
+                    </div>
+                </div>
+            `;
+            
+            const itemsContainer = document.getElementById('itemsContainer');
+            
+            combo.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = `found-item combo-item ${item.isNotFound ? 'not-found' : ''}`;
+                
+                if (item.isNotFound) {
+                    itemElement.innerHTML = `
+                        <div class="char-match">${item.char}</div>
+                        <div class="item-info">
+                            <div class="item-name">❌ Không tìm thấy</div>
+                            <div class="item-details">
+                                <span class="item-room">${getRandomRoom(currentCategory)}</span>
+                                <span class="item-type">n/a</span>
+                            </div>
+                        </div>
+                        <div style="color: #e74c3c; font-weight: bold; font-size: 0.9em;">
+                            #${item.index}
+                        </div>
+                    `;
+                } else {
+                    itemElement.innerHTML = `
+                        <div class="char-match">${item.char}</div>
+                        <div class="item-info">
+                            <div class="item-name">${item.item.name}</div>
+                            <div class="item-details">
+                                <span class="item-room">${item.item.room}</span>
+                                <span class="item-type">${item.item.type}</span>
+                            </div>
+                        </div>
+                        <div style="color: #3498db; font-weight: bold; font-size: 0.9em;">
+                            #${item.index}
+                        </div>
+                    `;
+                }
+                
+                itemsContainer.appendChild(itemElement);
+            });
+            
+            updateCharSequenceStatus();
+        }
+        
+        function getRandomRoom(category) {
+            const rooms = {
+                'kitchen': 'Nhà bếp',
+                'living': 'Phòng khách',
+                'bedroom': 'Phòng ngủ',
+                'bathroom': 'Phòng tắm',
+                'clothing': 'Tủ quần áo',
+                'all': 'Không xác định'
+            };
+            return rooms[category] || 'Không xác định';
+        }
+        
+        // ==================== HIỂN THỊ CHUỖI CHỮ CÁI ====================
+        function displayCharSequence(chars) {
+            const container = document.getElementById('charSequenceDisplay');
+            container.innerHTML = '';
+            
+            chars.forEach((char, index) => {
+                const charBox = document.createElement('div');
+                charBox.className = 'char-box';
+                charBox.textContent = char;
+                charBox.title = `Chữ cái thứ ${index + 1}: ${char}`;
+                
+                const indexBadge = document.createElement('div');
+                indexBadge.className = 'char-index';
+                indexBadge.textContent = index + 1;
+                charBox.appendChild(indexBadge);
+                
+                container.appendChild(charBox);
+            });
+        }
+        
+        // ==================== HIỂN THỊ TRANG KẾT QUẢ ====================
+        function displayNextPage() {
+            const resultBox = document.getElementById('resultBox');
+            
+            const itemsToShow = foundItems.slice(searchIndex, searchIndex + itemsPerPage);
+            
+            if (searchIndex === 0) {
+                const input = document.getElementById('charInput').value.trim();
+                let modeText = '';
+                switch(currentMode) {
+                    case 'first': modeText = 'Đầu'; break;
+                    case 'middle': modeText = 'Giữa'; break;
+                    case 'last': modeText = 'Cuối'; break;
+                    case 'combo': modeText = 'Tất cả chữ'; break;
+                    case 'allinone': modeText = 'Tổng hợp 1 từ'; break;
+                }
+                
+                let categoryText = '';
+                switch(currentCategory) {
+                    case 'all': categoryText = 'Tất cả'; break;
+                    case 'kitchen': categoryText = 'Đồ bếp'; break;
+                    case 'living': categoryText = 'Phòng khách'; break;
+                    case 'bedroom': categoryText = 'Phòng ngủ'; break;
+                    case 'bathroom': categoryText = 'Phòng tắm'; break;
+                    case 'clothing': categoryText = 'Trang phục'; break;
+                }
+                
+                const foundCount = foundItems.filter(item => !item.isNotFound).length;
+                const totalInDatabase = currentCategory === 'all' ? allItems.length : 
+                    allItems.filter(item => item.category === currentCategory).length;
+                
+                resultBox.innerHTML = `
+                    <div class="summary-box">
+                        <div style="font-weight: bold; color: #2c3e50; margin-bottom: 5px;">
+                            📊 "${input}" - ${categoryText} - Chế độ: ${modeText}
+                        </div>
+                        <div style="color: #555; font-size: 0.85em;">
+                            Tìm thấy: ${foundCount}/${searchChars.length} chữ cái<br>
+                            Từ tổng số: ${totalInDatabase} mục trong danh mục
+                        </div>
+                    </div>
+                    <div id="itemsContainer"></div>
+                `;
+            }
+            
+            const itemsContainer = document.getElementById('itemsContainer') || resultBox;
+            
+            itemsToShow.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = `found-item ${item.isNotFound ? 'not-found' : ''}`;
+                
+                if (item.isNotFound) {
+                    itemElement.innerHTML = `
+                        <div class="char-match">${item.matchedChar}</div>
+                        <div class="item-info">
+                            <div class="item-name">❌ ${item.name}</div>
+                            <div class="item-details">
+                                <span class="item-room">${item.room}</span>
+                                <span class="item-type">${item.type}</span>
+                            </div>
+                        </div>
+                        <div style="color: #e74c3c; font-weight: bold; font-size: 0.9em;">
+                            #${item.charIndex}
+                        </div>
+                    `;
+                } else {
+                    itemElement.innerHTML = `
+                        <div class="char-match">${item.matchedChar}</div>
+                        <div class="item-info">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-details">
+                                <span class="item-room">${item.room}</span>
+                                <span class="item-type">${item.type}</span>
+                            </div>
+                        </div>
+                        <div style="color: #3498db; font-weight: bold; font-size: 0.9em;">
+                            #${item.charIndex}
+                        </div>
+                    `;
+                }
+                
+                itemsContainer.appendChild(itemElement);
+            });
+            
+            searchIndex += itemsPerPage;
+            updateCharSequenceStatus();
+            
+            if (searchIndex >= foundItems.length && foundItems.length > 0) {
+                const endMessage = document.createElement('div');
+                endMessage.style.cssText = `
+                    text-align: center; 
+                    padding: 15px; 
+                    color: #27ae60; 
+                    background: #e8f5e9; 
+                    border-radius: 8px; 
+                    margin-top: 15px;
+                    border: 1px solid #c8e6c9;
+                    font-size: 0.9em;
+                `;
+                const foundCount = foundItems.filter(item => !item.isNotFound).length;
+                const totalInDatabase = currentCategory === 'all' ? allItems.length : 
+                    allItems.filter(item => item.category === currentCategory).length;
+                endMessage.innerHTML = `
+                    <div style="font-size: 1.1em; margin-bottom: 8px;">✅</div>
+                    <strong>Hoàn tất!</strong><br>
+                    <span>${foundCount}/${searchChars.length} chữ cái được tìm thấy</span><br>
+                    <small>Từ ${totalInDatabase} mục trong danh mục ${getCategoryName(currentCategory)}</small>
+                `;
+                itemsContainer.appendChild(endMessage);
+                document.getElementById('nextBtn').disabled = true;
+            }
+        }
+        
+        function getCategoryName(category) {
+            switch(category) {
+                case 'kitchen': return '🍳 Đồ bếp';
+                case 'living': return '🛋️ Phòng khách';
+                case 'bedroom': return '🛏️ Phòng ngủ';
+                case 'bathroom': return '🚿 Phòng tắm';
+                case 'clothing': return '👔 Trang phục';
+                default: return 'Tất cả';
+            }
+        }
+        
+        function updateCharSequenceStatus() {
+            const charBoxes = document.querySelectorAll('.char-box');
+            const displayedCount = Math.min(searchIndex, foundItems.length);
+            
+            charBoxes.forEach((box, index) => {
+                box.classList.remove('active', 'found', 'not-found');
+                
+                if (index < displayedCount) {
+                    const item = foundItems[index];
+                    if (item && item.isNotFound) {
+                        box.classList.add('not-found');
+                    } else if (item) {
+                        box.classList.add('found');
+                    }
+                } else if (index === displayedCount && displayedCount < foundItems.length) {
+                    box.classList.add('active');
+                }
+            });
+        }
+        
+        function updateResultSummary() {
+            let foundCount, totalCount;
+            
+            if (currentMode === 'allinone') {
+                if (comboModeResults.length === 0) {
+                    foundCount = 0;
+                    totalCount = searchChars.length;
+                } else {
+                    const currentCombo = comboModeResults[searchIndex] || comboModeResults[0] || [];
+                    foundCount = currentCombo.filter(item => !item.isNotFound).length;
+                    totalCount = searchChars.length;
+                }
+            } else {
+                foundCount = foundItems.filter(item => !item.isNotFound).length;
+                totalCount = searchChars.length;
+            }
+            
+            const percentage = totalCount > 0 ? Math.round((foundCount / totalCount) * 100) : 0;
+            
+            document.getElementById('resultSummary').innerHTML = `
+                <span style="color: ${percentage >= 80 ? '#27ae60' : percentage >= 50 ? '#f39c12' : '#e74c3c'};">
+                    ${foundCount}/${totalCount} chữ cái (${percentage}%)
+                </span>
+            `;
+        }
+        
+        function nextSearch() {
+            if (currentMode === 'allinone') {
+                // Hiển thị kết hợp tiếp theo
+                searchIndex = (searchIndex + 1) % comboModeResults.length;
+                displayComboResult(searchIndex);
+            } else {
+                // Hiển thị trang tiếp theo
+                displayNextPage();
+                
+                if (searchIndex >= foundItems.length) {
+                    document.getElementById('nextBtn').disabled = true;
+                }
+            }
+            
+            updateStatus();
+            updateResultSummary();
+        }
+        
+        function updateStatus() {
+            const statusText = document.getElementById('statusText');
+            statusText.style.display = 'block';
+            
+            if (currentMode === 'allinone') {
+                if (comboModeResults.length === 0) return;
+                
+                const currentCombo = comboModeResults[searchIndex] || comboModeResults[0] || [];
+                const displayedCount = searchIndex + 1;
+                const foundCount = currentCombo.filter(item => !item.isNotFound).length;
+                
+                let categoryText = '';
+                switch(currentCategory) {
+                    case 'all': categoryText = 'Tất cả'; break;
+                    case 'kitchen': categoryText = '🍳 Đồ bếp'; break;
+                    case 'living': categoryText = '🛋️ Phòng khách'; break;
+                    case 'bedroom': categoryText = '🛏️ Phòng ngủ'; break;
+                    case 'bathroom': categoryText = '🚿 Phòng tắm'; break;
+                    case 'clothing': categoryText = '👔 Trang phục'; break;
+                }
+                
+                statusText.innerHTML = `
+                    Danh mục: <strong>${categoryText}</strong> | 
+                    Chế độ: <strong>TỔNG HỢP 1 TỪ</strong><br>
+                    Kết hợp: <strong>${displayedCount}/${comboModeResults.length}</strong> | 
+                    Tìm thấy: <strong style="color: ${foundCount === searchChars.length ? '#27ae60' : '#f39c12'}">${foundCount}/${searchChars.length}</strong>
+                `;
+            } else {
+                if (foundItems.length === 0) return;
+                
+                const displayedCount = Math.min(searchIndex, foundItems.length);
+                const remainingCount = Math.max(foundItems.length - displayedCount, 0);
+                const foundCount = foundItems.filter(item => !item.isNotFound).length;
+                
+                let categoryText = '';
+                switch(currentCategory) {
+                    case 'all': categoryText = 'Tất cả'; break;
+                    case 'kitchen': categoryText = '🍳 Đồ bếp'; break;
+                    case 'living': categoryText = '🛋️ Phòng khách'; break;
+                    case 'bedroom': categoryText = '🛏️ Phòng ngủ'; break;
+                    case 'bathroom': categoryText = '🚿 Phòng tắm'; break;
+                    case 'clothing': categoryText = '👔 Trang phục'; break;
+                }
+                
+                let modeText = '';
+                switch(currentMode) {
+                    case 'first': modeText = 'ĐẦU'; break;
+                    case 'middle': modeText = 'GIỮA'; break;
+                    case 'last': modeText = 'CUỐI'; break;
+                    case 'combo': modeText = 'TẤT CẢ CHỮ'; break;
+                }
+                
+                if (remainingCount > 0) {
+                    statusText.innerHTML = `
+                        Danh mục: <strong>${categoryText}</strong> | 
+                        Chế độ: <strong>${modeText}</strong><br>
+                        Hiển thị: <strong>${displayedCount}/${foundItems.length}</strong> | 
+                        Tìm thấy: <strong style="color: ${foundCount === searchChars.length ? '#27ae60' : '#f39c12'}">${foundCount}/${searchChars.length}</strong>
+                    `;
+                } else {
+                    statusText.innerHTML = `
+                        <strong>Hoàn tất!</strong> Danh mục: ${categoryText} | Chế độ: ${modeText}<br>
+                        Đã tìm thấy <strong style="color: #27ae60">${foundCount}/${searchChars.length}</strong> chữ cái
+                    `;
+                }
+            }
+        }
+        
+        // ==================== KHỞI TẠO ====================
+        window.addEventListener('DOMContentLoaded', function() {
+            setMode('first');
+            setCategory('all');
+            updateStatistics();
+            document.getElementById('charInput').focus();
+        });
+        
+        document.getElementById('charInput').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                searchItems();
+            }
+        });
+        
+        const examples = ['Nam', 'Anh', 'Linh', 'Minh', 'Huy', 'Long'];
+        let exampleIndex = 0;
+        
+        document.getElementById('charInput').addEventListener('focus', function() {
+            if (!this.value) {
+                this.placeholder = "Ví dụ: " + examples[exampleIndex];
+                exampleIndex = (exampleIndex + 1) % examples.length;
+            }
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

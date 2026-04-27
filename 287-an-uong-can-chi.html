@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công Cụ Tra Cứu Món Ăn Theo Ngày Can Chi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2d5016;
+            --secondary: #5a8c29;
+            --light: #f5f9f0;
+            --border: #c2d6a3;
+            --text: #333;
+            --text-light: #666;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #f0f7e9 0%, #e4f0d7 100%);
+            color: var(--text); line-height: 1.6;
+            padding: 20px; min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px; margin: 20px auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px; box-shadow: 0 15px 35px rgba(45, 80, 22, 0.15);
+            padding: 30px; border: 2px solid var(--border);
+        }
+        header { 
+            text-align: center; 
+            margin-bottom: 40px; 
+            padding: 20px 0;
+            background: linear-gradient(to right, #f5f9f0, #eaf4e1);
+            border-radius: 15px;
+            border: 2px solid var(--border);
+        }
+        h1 { 
+            color: var(--primary); 
+            font-size: 2.5rem; 
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        .subtitle { 
+            color: var(--secondary); 
+            font-size: 1.1rem; 
+            margin: 0 auto 20px; 
+            max-width: 800px;
+        }
+        .note-box {
+            background: linear-gradient(to right, #f0f7e9, #e4f0d7);
+            border: 2px solid var(--secondary); 
+            border-left: 6px solid var(--primary);
+            padding: 15px; margin: 20px auto; 
+            border-radius: 12px;
+            font-size: 0.95rem; 
+            color: #2d5016; 
+            max-width: 800px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        @media (max-width: 900px) {
+            .main-content { grid-template-columns: 1fr; }
+        }
+        
+        .card {
+            background: white; 
+            border-radius: 18px; 
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 2px solid var(--border);
+            height: fit-content;
+        }
+        .card-title {
+            color: var(--primary); 
+            font-size: 1.5rem;
+            margin-bottom: 20px; 
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--border);
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+        }
+        
+        .input-row { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 15px; 
+            margin-bottom: 20px; 
+        }
+        .input-group { 
+            flex: 1; 
+            min-width: 150px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600; 
+            color: var(--primary); 
+        }
+        input, button {
+            padding: 14px 18px; 
+            border: 2px solid var(--border); 
+            border-radius: 10px;
+            font-size: 16px; 
+            width: 100%; 
+            transition: all 0.3s;
+            background-color: var(--light);
+        }
+        input:focus { 
+            outline: none; 
+            border-color: var(--secondary); 
+            box-shadow: 0 0 0 3px rgba(90, 140, 41, 0.2); 
+        }
+        button {
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+            color: white; 
+            border: none; 
+            font-weight: bold; 
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        button:hover { 
+            background: linear-gradient(to right, var(--primary), #3a641f);
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 15px rgba(90, 140, 41, 0.3);
+        }
+        
+        .day-result {
+            background: linear-gradient(135deg, #f5f9f0 0%, #eaf4e1 100%);
+            padding: 25px; 
+            border-radius: 15px; 
+            margin-top: 20px;
+            border: 3px solid var(--secondary);
+            text-align: center;
+        }
+        .day-canchi {
+            font-size: 2.5rem; 
+            font-weight: bold; 
+            color: var(--primary);
+            margin: 15px 0;
+        }
+        .day-animal {
+            font-size: 2rem; 
+            margin: 10px 0;
+        }
+        .day-desc {
+            color: var(--text-light);
+            font-style: italic;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--border);
+        }
+        
+        .food-card {
+            background: white; 
+            border-radius: 15px; 
+            padding: 0; 
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 2px solid var(--border);
+            border-left: 6px solid var(--secondary);
+            transition: transform 0.3s;
+        }
+        .food-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(90, 140, 41, 0.15);
+        }
+        .food-header {
+            background: linear-gradient(to right, var(--secondary), #6ba832);
+            color: white; 
+            padding: 18px 25px;
+            display: flex; 
+            align-items: center; 
+            gap: 15px;
+        }
+        .food-icon { font-size: 1.8rem; }
+        .food-name { 
+            font-size: 1.4rem; 
+            font-weight: bold; 
+            flex-grow: 1;
+        }
+        .food-body { padding: 25px; }
+        .food-detail {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .detail-item {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid var(--secondary);
+        }
+        .detail-label {
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border);
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        .highlight {
+            background: linear-gradient(to right, #fff9e6, #fff0cc);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ffcc00;
+            margin: 10px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 20px; }
+            h1 { font-size: 2rem; flex-direction: column; }
+            .input-row { flex-direction: column; }
+            .food-detail { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calendar-day"></i> Công Cụ Tra Món Ăn Theo Ngày Can Chi</h1>
+            <p class="subtitle">Nhập ngày dương lịch để xem Can Chi của ngày đó và món ăn tương ứng với con giáp của ngày</p>
+            <div class="note-box">
+                <i class="fas fa-info-circle"></i> <strong>Lưu ý:</strong> Công cụ này tra cứu món ăn theo <strong>Can Chi của NGÀY</strong> (ví dụ: ngày Tân Sửu -> món của Sửu/Trâu), không phải theo năm Can Chi.
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Phần nhập liệu -->
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-calendar-alt"></i> Nhập Ngày Cần Tra</h2>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="inputDay">Ngày</label>
+                        <input type="number" id="inputDay" min="1" max="31" value="18" placeholder="Ngày">
+                    </div>
+                    <div class="input-group">
+                        <label for="inputMonth">Tháng</label>
+                        <input type="number" id="inputMonth" min="1" max="12" value="12" placeholder="Tháng">
+                    </div>
+                    <div class="input-group">
+                        <label for="inputYear">Năm</label>
+                        <input type="number" id="inputYear" min="1900" max="2100" value="2025" placeholder="Năm">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="input-group">
+                        <button id="btnToday"><i class="fas fa-bolt"></i> Hôm Nay</button>
+                    </div>
+                    <div class="input-group">
+                        <button id="btnCalculate"><i class="fas fa-search"></i> Tra Cứu Món Ăn</button>
+                    </div>
+                </div>
+                
+                <!-- Kết quả Can Chi ngày -->
+                <div class="day-result" id="dayResult">
+                    <h3><i class="fas fa-star"></i> Can Chi Của Ngày</h3>
+                    <div class="day-canchi" id="resultDayCanchi">--</div>
+                    <div class="day-animal" id="resultDayAnimal">--</div>
+                    <div class="day-desc" id="dayAnimalDesc">Mô tả con giáp sẽ hiển thị ở đây</div>
+                </div>
+            </div>
+            
+            <!-- Phần món ăn -->
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-utensils"></i> Món Ăn Theo Ngày Can Chi</h2>
+                <div id="foodResultContainer">
+                    <p style="text-align:center; padding:30px; color:#999;">
+                        Nhập ngày và nhấn "Tra Cứu Món Ăn" để xem các món ăn phù hợp với con giáp của ngày đó.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p><i class="fas fa-lightbulb"></i> Công cụ tra cứu ẩm thực theo văn hóa Can Chi - Kết nối ẩm thực với thiên nhiên</p>
+            <p>© 2024 - Phiên bản tra cứu theo ngày Can Chi</p>
+        </footer>
+    </div>
+
+    <script>
+        // ========== DỮ LIỆU CƠ BẢN ==========
+        const thienCan = ['Giáp', 'Ất', 'Bính', 'Đinh', 'Mậu', 'Kỷ', 'Canh', 'Tân', 'Nhâm', 'Quý'];
+        const diaChi = [
+            { chi: 'Tý', animal: 'Chuột', icon: '🐀', element: 'Thủy' },
+            { chi: 'Sửu', animal: 'Trâu', icon: '🐂', element: 'Thổ' },
+            { chi: 'Dần', animal: 'Hổ', icon: '🐅', element: 'Mộc' },
+            { chi: 'Mão', animal: 'Mèo', icon: '🐇', element: 'Mộc' },
+            { chi: 'Thìn', animal: 'Rồng', icon: '🐉', element: 'Thổ' },
+            { chi: 'Tỵ', animal: 'Rắn', icon: '🐍', element: 'Hỏa' },
+            { chi: 'Ngọ', animal: 'Ngựa', icon: '🐎', element: 'Hỏa' },
+            { chi: 'Mùi', animal: 'Dê', icon: '🐐', element: 'Thổ' },
+            { chi: 'Thân', animal: 'Khỉ', icon: '🐒', element: 'Kim' },
+            { chi: 'Dậu', animal: 'Gà', icon: '🐓', element: 'Kim' },
+            { chi: 'Tuất', animal: 'Chó', icon: '🐕', element: 'Thổ' },
+            { chi: 'Hợi', animal: 'Lợn', icon: '🐖', element: 'Thủy' }
+        ];
+        
+        // Mô tả con giáp theo ngày
+        const dayAnimalDesc = {
+            'Tý': 'Ngày Chuột: Thông minh, nhanh nhẹn, thích tích trữ. Giống sóc, chồn, kangaroo, capibara...',
+            'Sửu': 'Ngày Trâu: Chăm chỉ, kiên định, bền bỉ. Động vật nhai lại, cho sữa.',
+            'Dần': 'Ngày Hổ: Mạnh mẽ, dũng cảm, độc lập. Chúa sơn lâm, thích ăn nội tạng.',
+            'Mão': 'Ngày Mèo: Nhanh nhẹn, thận trọng, hòa đồng. Thích cá, tôm, mắm.',
+            'Thìn': 'Ngày Rồng: Quyền lực, may mắn, nhiệt huyết. Rồng Komodo ăn thịt, ví như lòng ruột động vật.',
+            'Tỵ': 'Ngày Rắn: Khôn ngoan, thâm sâu, quyến rũ. Dài như tàu hỏa, ăn trứng, ếch nhái.',
+            'Ngọ': 'Ngày Ngựa: Năng động, tự do, thân thiện. Chạy nhanh như ô tô, ăn cỏ, ngô, lúa.',
+            'Mùi': 'Ngày Dê: Hiền lành, sáng tạo, đồng cảm. Có Ngọc Dương quý, ăn cỏ, rau mùi.',
+            'Thân': 'Ngày Khỉ: Thông minh, tò mò, thích ứng tốt. Mắt tinh đọc báo, ăn chuối, đào, hoa quả.',
+            'Dậu': 'Ngày Gà: Chăm chỉ, quả quyết, đúng giờ. Hót hay như hát, bay như máy bay, ăn tôm cá.',
+            'Tuất': 'Ngày Chó: Trung thành, chân thành, bảo vệ. Giọng sang sảng, mắt tinh tai thính, ăn xương thịt.',
+            'Hợi': 'Ngày Lợn: Hào phóng, chân thật, yêu hòa bình. Ăn tạp, thích rau củ, cháo, cám.'
+        };
+
+        // ========== DỮ LIỆU MÓN ĂN THEO CON GIÁP CỦA NGÀY ==========
+        const dayFoods = {
+            'Tý': [
+                {
+                    name: 'Hạt Rang Ngũ Cốc Cao Cấp',
+                    icon: '🥜',
+                    desc: 'Hỗn hợp hạt dẻ, hạt óc chó, hạt điều, hạnh nhân rang thơm. Giống tập tính tích trữ hạt của chuột, sóc, chồn, capibara.',
+                    portion: '1 bát nhỏ (~100g)',
+                    price: '45.000 - 65.000 VNĐ',
+                    nutrients: 'Giàu Omega-3, vitamin E, chất xơ',
+                    note: 'Capibara là loài gặm nhấm lớn nhất, cũng thích ăn thực vật tương tự'
+                },
+                {
+                    name: 'Cháo Ngô Non Hạt Thông',
+                    icon: '🌽',
+                    desc: 'Cháo trắng nấu với ngô non ngọt, điểm thêm hạt thông béo ngậy.',
+                    portion: '1 tô lớn (~300g)',
+                    price: '25.000 - 35.000 VNĐ',
+                    nutrients: 'Tinh bột, protein thực vật',
+                    note: 'Kangaroo (có túi) khác họ với gặm nhấm nhưng cũng ăn thực vật'
+                }
+            ],
+            'Sửu': [
+                {
+                    name: 'Cháo Bò Thập Cẩm Đặc Biệt',
+                    icon: '🍲',
+                    desc: 'Cháo trắng ninh nhừ với thịt bò băm, tim bò thái lát, nấm hương, ăn kèm quẩy giòn và rau thơm.',
+                    portion: '1 tô đầy đủ (~400g)',
+                    price: '55.000 - 75.000 VNĐ',
+                    nutrients: 'Đạm động vật, sắt, kẽm từ thịt bò và nội tạng',
+                    note: 'Tim bò, pin bò (lá lách), bắp bò đều là những phần ngon của bò'
+                },
+                {
+                    name: 'Sữa Bò Tươi & Sữa Chua Hy Lạp',
+                    icon: '🥛',
+                    desc: 'Sữa bò tươi thanh trùng và sữa chua Hy Lạp nguyên chất, có thể thêm mật ong hoặc trái cây.',
+                    portion: '1 ly sữa 200ml + 1 hũ sữa chua 150g',
+                    price: '35.000 - 50.000 VNĐ',
+                    nutrients: 'Canxi, protein, probiotic',
+                    note: 'Sữa bò là thực phẩm quan trọng từ động vật nhai lại'
+                },
+                {
+                    name: 'Rau Chân Vịt & Chùm Ngây Xào Tỏi',
+                    icon: '🥬',
+                    desc: 'Rau chân vịt (spinach) và rau chùm ngây non xào với tỏi phi thơm, nêm nếm nhẹ.',
+                    portion: '1 đĩa rau vừa (~200g rau sống)',
+                    price: '20.000 - 30.000 VNĐ',
+                    nutrients: 'Đạm thực vật cao, sắt, vitamin A, C, canxi',
+                    note: 'Rau chân vịt có lượng đạm cao hơn một số loại thịt, chùm ngây là "siêu thực phẩm"'
+                },
+                {
+                    name: 'Lẩu Bò Nhúng Dấm',
+                    icon: '🥘',
+                    desc: 'Lẩu nước dùng chua ngọt nhúng các loại thịt bò: thăn bò, bắp bò, tim bò, pin bò, ăn kèm rau sống.',
+                    portion: 'Phần cho 2-3 người',
+                    price: '180.000 - 250.000 VNĐ',
+                    nutrients: 'Đa dạng protein, vitamin từ rau',
+                    note: 'Món tổng hợp các phần ngon nhất của bò theo yêu cầu'
+                }
+            ],
+            'Dần': [
+                {
+                    name: 'Lẩu Thập Cẩm "Chúa Sơn Lâm"',
+                    icon: '🍖',
+                    desc: 'Lẩu nước dùng đậm đà với tim, gan, thịt thăn, nấm hương, rau nhúng.',
+                    portion: 'Phần cho 2-3 người',
+                    price: '200.000 - 300.000 VNĐ',
+                    nutrients: 'Sắt, đạm, vitamin từ nội tạng',
+                    note: 'Hổ thích ăn nội tạng con mồi trước'
+                }
+            ],
+            'Mão': [
+                {
+                    name: 'Cá Thu Sốt Mắm Tôm',
+                    icon: '🐟',
+                    desc: 'Cá thu tươi sốt mắm tôm đặc biệt pha chanh ớt, ăn với bún và rau sống.',
+                    portion: '1 phần 150g cá',
+                    price: '65.000 - 85.000 VNĐ',
+                    nutrients: 'Omega-3, đạm, vitamin D',
+                    note: 'Mèo rất thích mùi cá và mắm tôm'
+                }
+            ],
+            'Thìn': [
+                {
+                    name: 'Bò Lúc Lắc "Rồng Komodo"',
+                    icon: '🥩',
+                    desc: 'Thịt bò thăn viên lúc lắc sốt tiêu đen, ăn kèm khoai tây chiên.',
+                    portion: '1 phần 180g thịt bò',
+                    price: '85.000 - 110.000 VNĐ',
+                    nutrients: 'Đạm, sắt, năng lượng',
+                    note: 'Rồng Komodo có nọc độc và ăn cả xác thối'
+                }
+            ],
+            'Tỵ': [
+                {
+                    name: 'Ếch Chiên Bơ & Trứng Cút Lộn',
+                    icon: '🍳',
+                    desc: 'Đùi ếch chiên giòn sốt bơ tỏi và trứng cút lộn xào me.',
+                    portion: '1 phần hỗn hợp (~200g ếch + 3 trứng)',
+                    price: '70.000 - 90.000 VNĐ',
+                    nutrients: 'Đạm, canxi từ trứng',
+                    note: 'Rắn có thể nuốt chửng con mồi lớn'
+                }
+            ],
+            'Ngọ': [
+                {
+                    name: 'Cơm Gạo Lứt Rang Ngô Nấm',
+                    icon: '🍚',
+                    desc: 'Cơm gạo lứt rang với ngô hạt, nấm rơm, đậu Hà Lan.',
+                    portion: '1 đĩa đầy (~250g)',
+                    price: '30.000 - 45.000 VNĐ',
+                    nutrients: 'Chất xơ, vitamin B',
+                    note: 'Ngựa chạy nhanh như ô tô, cần nhiều năng lượng'
+                }
+            ],
+            'Mùi': [
+                {
+                    name: 'Dê Núi Nướng & Rau Mùi',
+                    icon: '🍖',
+                    desc: 'Thịt dê núi ướp ngũ vị hương nướng than, ăn kèm rau mùi tây.',
+                    portion: '1 phần 200g thịt',
+                    price: '95.000 - 130.000 VNĐ',
+                    nutrients: 'Đạm, kẽm',
+                    note: 'Ngọc Dương là món quý từ dê đực'
+                }
+            ],
+            'Thân': [
+                {
+                    name: 'Salad Trái Cây Nhiệt Đới',
+                    icon: '🥗',
+                    desc: 'Chuối, đào, dứa, xoài trộn sữa chua, rắc hạt chia.',
+                    portion: '1 bát lớn (~300g)',
+                    price: '35.000 - 50.000 VNĐ',
+                    nutrients: 'Vitamin C, chất xơ',
+                    note: 'Khỉ có đôi mắt tinh nhanh'
+                }
+            ],
+            'Dậu': [
+                {
+                    name: 'Cơm Gà Hải Nam & Canh Tôm',
+                    icon: '🍗',
+                    desc: 'Cơm gà truyền thống ăn kèm canh tôm khô nấu củ cải.',
+                    portion: '1 suất đầy đủ',
+                    price: '55.000 - 70.000 VNĐ',
+                    nutrients: 'Đạm, tinh bột',
+                    note: 'Gà bay như máy bay nhỏ'
+                }
+            ],
+            'Tuất': [
+                {
+                    name: 'Sườn Heo Nướng Mật Ong',
+                    icon: '🦴',
+                    desc: 'Sườn heo non ướp mật ong nướng cháy cạnh.',
+                    portion: '1 sườn nguyên miếng (~300g)',
+                    price: '75.000 - 95.000 VNĐ',
+                    nutrients: 'Canxi từ xương, protein',
+                    note: 'Chó có thính giác và khứu giác nhạy'
+                }
+            ],
+            'Hợi': [
+                {
+                    name: 'Cháo Lòng Heo Thập Cẩm',
+                    icon: '🥣',
+                    desc: 'Cháo trắng với đầy đủ lòng, tim, gan, dồi heo.',
+                    portion: '1 tô lớn (~400g)',
+                    price: '45.000 - 60.000 VNĐ',
+                    nutrients: 'Đa dạng protein',
+                    note: 'Heo là loài ăn tạp'
+                }
+            ]
+        };
+
+        // ========== HÀM TÍNH CAN CHI NGÀY ==========
+        function calculateDayCanChi(year, month, day) {
+            // Ngày mốc: 1/1/1900 là ngày Giáp Tý
+            const baseDate = new Date(1900, 0, 1); // 1/1/1900
+            
+            // Ngày cần tính
+            const targetDate = new Date(year, month - 1, day);
+            
+            // Tính số ngày chênh lệch
+            const diffTime = targetDate.getTime() - baseDate.getTime();
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            // Tính chỉ số Can Chi (chu kỳ 60 ngày)
+            const canChiIndex = diffDays % 60;
+            
+            // Tính Can (10 can) và Chi (12 chi)
+            const canIndex = canChiIndex % 10;
+            const chiIndex = canChiIndex % 12;
+            
+            return {
+                can: thienCan[canIndex],
+                chi: diaChi[chiIndex].chi,
+                animal: diaChi[chiIndex].animal,
+                icon: diaChi[chiIndex].icon,
+                full: thienCan[canIndex] + ' ' + diaChi[chiIndex].chi
+            };
+        }
+
+        // ========== HÀM HIỂN THỊ KẾT QUẢ ==========
+        function displayResults() {
+            const day = parseInt(document.getElementById('inputDay').value) || 18;
+            const month = parseInt(document.getElementById('inputMonth').value) || 12;
+            const year = parseInt(document.getElementById('inputYear').value) || 2025;
+
+            // Tính Can Chi của ngày
+            const dayCanChi = calculateDayCanChi(year, month, day);
+            
+            // Hiển thị Can Chi ngày
+            document.getElementById('resultDayCanchi').textContent = dayCanChi.full;
+            document.getElementById('resultDayAnimal').innerHTML = `
+                ${dayCanChi.icon} ${dayCanChi.animal} (${dayCanChi.chi})
+            `;
+            document.getElementById('dayAnimalDesc').textContent = dayAnimalDesc[dayCanChi.chi] || 'Mô tả con giáp';
+
+            // HIỂN THỊ MÓN ĂN THEO CON GIÁP CỦA NGÀY
+            const foodContainer = document.getElementById('foodResultContainer');
+            foodContainer.innerHTML = '';
+            
+            if (dayFoods[dayCanChi.chi]) {
+                // Thêm ghi chú đặc biệt cho ngày Sửu
+                if (dayCanChi.chi === 'Sửu') {
+                    const specialNote = document.createElement('div');
+                    specialNote.className = 'highlight';
+                    specialNote.innerHTML = `
+                        <strong><i class="fas fa-star"></i> Đặc biệt cho ngày ${dayCanChi.full}:</strong> 
+                        Ngày ${dayCanChi.animal} nên ăn các món từ bò, sữa bò, và các loại rau giàu đạm như rau chân vịt, chùm ngây.
+                    `;
+                    foodContainer.appendChild(specialNote);
+                }
+                
+                // Hiển thị các món ăn
+                dayFoods[dayCanChi.chi].forEach(food => {
+                    const foodCard = document.createElement('div');
+                    foodCard.className = 'food-card';
+                    foodCard.innerHTML = `
+                        <div class="food-header">
+                            <span class="food-icon">${food.icon}</span>
+                            <span class="food-name">${food.name}</span>
+                        </div>
+                        <div class="food-body">
+                            <p>${food.desc}</p>
+                            <div class="food-detail">
+                                <div class="detail-item">
+                                    <span class="detail-label"><i class="fas fa-weight"></i> Định lượng</span>
+                                    <span>${food.portion}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label"><i class="fas fa-tag"></i> Giá ước tính</span>
+                                    <span>${food.price}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label"><i class="fas fa-apple-alt"></i> Dinh dưỡng</span>
+                                    <span>${food.nutrients}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label"><i class="fas fa-lightbulb"></i> Ghi chú</span>
+                                    <span>${food.note}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    foodContainer.appendChild(foodCard);
+                });
+                
+                // Thêm tổng kết
+                const summary = document.createElement('div');
+                summary.style.marginTop = '20px';
+                summary.style.padding = '15px';
+                summary.style.background = 'linear-gradient(to right, #f0f7e9, #e4f0d7)';
+                summary.style.borderRadius = '10px';
+                summary.style.border = '1px solid var(--border)';
+                summary.innerHTML = `
+                    <p><strong><i class="fas fa-shopping-cart"></i> Ước tính mua sắm cho 3-4 lần đi chợ:</strong></p>
+                    <p>• Lần 1 (thịt, sữa): 80.000 - 120.000 VNĐ</p>
+                    <p>• Lần 2 (rau củ, gia vị): 50.000 - 80.000 VNĐ</p>
+                    <p>• Lần 3 (ngũ cốc, đồ khô): 40.000 - 60.000 VNĐ</p>
+                    <p><strong>Tổng: 170.000 - 260.000 VNĐ</strong> (cho 2-3 người ăn)</p>
+                `;
+                foodContainer.appendChild(summary);
+                
+            } else {
+                foodContainer.innerHTML = `
+                    <div class="food-card">
+                        <div class="food-body">
+                            <p style="text-align:center; padding:40px; color:#999;">
+                                Đang cập nhật dữ liệu món ăn cho ngày ${dayCanChi.full}...
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // ========== KHỞI TẠO ==========
+        function setCurrentDate() {
+            const now = new Date();
+            document.getElementById('inputDay').value = now.getDate();
+            document.getElementById('inputMonth').value = now.getMonth() + 1;
+            document.getElementById('inputYear').value = now.getFullYear();
+            displayResults();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hiển thị kết quả mặc định (ngày 18/12/2025)
+            displayResults();
+            
+            // Gán sự kiện
+            document.getElementById('btnToday').addEventListener('click', setCurrentDate);
+            document.getElementById('btnCalculate').addEventListener('click', displayResults);
+            
+            // Tự động cập nhật khi thay đổi
+            document.getElementById('inputDay').addEventListener('change', displayResults);
+            document.getElementById('inputMonth').addEventListener('change', displayResults);
+            document.getElementById('inputYear').addEventListener('change', displayResults);
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

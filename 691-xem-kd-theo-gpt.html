@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác Định Cấp Bậc và Vị Trí Bàn Cờ - Cập Nhật Cấp Bậc Đảo Ngược</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            color: #333;
+            min-height: 100vh;
+            padding: 15px;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #1a2980;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #26d0ce;
+        }
+        
+        h2 {
+            color: #1a2980;
+            margin: 25px 0 15px 0;
+            font-size: 1.4rem;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        h3 {
+            color: #1a2980;
+            margin: 20px 0 10px 0;
+            font-size: 1.2rem;
+        }
+        
+        .input-section {
+            margin-bottom: 25px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #1a2980;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: #26d0ce;
+            outline: none;
+        }
+        
+        .btn {
+            background: linear-gradient(to right, #1a2980, #26d0ce);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(to right, #6c757d, #adb5bd);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(to right, #dc3545, #e35d6a);
+        }
+        
+        .btn-success {
+            background: linear-gradient(to right, #28a745, #34ce57);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(to right, #ffc107, #ffd54f);
+            color: #333;
+        }
+        
+        .btn-info {
+            background: linear-gradient(to right, #17a2b8, #5bc0de);
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .toggle-container {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 2px solid #ffc107;
+        }
+        
+        .toggle-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .toggle-status {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background-color: #e9ecef;
+        }
+        
+        .rank-explanation {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+        
+        .rank-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .rank-table th, .rank-table td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        .rank-table th {
+            background-color: #1a2980;
+            color: white;
+        }
+        
+        .results-container {
+            margin-top: 25px;
+            overflow-x: auto;
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .results-table th {
+            background: linear-gradient(to right, #1a2980, #26d0ce);
+            color: white;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        
+        .results-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .results-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .results-table tr:hover {
+            background-color: #e9ecef;
+        }
+        
+        .rank-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            min-width: 60px;
+        }
+        
+        /* Cấp bậc đảo ngược (mặc định) */
+        .rank-1 { background-color: #dc3545; } /* Tướng */
+        .rank-2 { background-color: #fd7e14; } /* Sĩ */
+        .rank-3 { background-color: #ffc107; color: #333; } /* Tượng */
+        .rank-4 { background-color: #28a745; } /* Xe */
+        .rank-5 { background-color: #17a2b8; } /* Pháo */
+        .rank-6 { background-color: #6f42c1; } /* Mã */
+        .rank-7 { background-color: #6c757d; } /* Tốt */
+        
+        /* Cấp bậc thuận (khi đổi) */
+        .rank-reverse-1 { background-color: #6c757d; } /* Tốt */
+        .rank-reverse-2 { background-color: #6f42c1; } /* Mã */
+        .rank-reverse-3 { background-color: #17a2b8; } /* Pháo */
+        .rank-reverse-4 { background-color: #28a745; } /* Xe */
+        .rank-reverse-5 { background-color: #ffc107; color: #333; } /* Tượng */
+        .rank-reverse-6 { background-color: #fd7e14; } /* Sĩ */
+        .rank-reverse-7 { background-color: #dc3545; } /* Tướng */
+        
+        .letter-counts {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .count-item {
+            display: inline-block;
+            margin-right: 5px;
+            padding: 2px 5px;
+            background-color: #f1f1f1;
+            border-radius: 3px;
+        }
+        
+        .count-value {
+            font-weight: bold;
+            color: #1a2980;
+        }
+        
+        .chessboard-container {
+            margin-top: 30px;
+            overflow-x: auto;
+        }
+        
+        .chessboard-title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #1a2980;
+            font-size: 1.3rem;
+        }
+        
+        .chessboard {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            border-collapse: collapse;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chessboard td {
+            width: 11.11%;
+            height: 35px;
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid #aaa;
+            position: relative;
+            font-size: 0.7rem;
+            font-weight: bold;
+            overflow: hidden;
+        }
+        
+        .chessboard tr:nth-child(odd) td:nth-child(odd),
+        .chessboard tr:nth-child(even) td:nth-child(even) {
+            background-color: #f0d9b5;
+        }
+        
+        .chessboard tr:nth-child(odd) td:nth-child(even),
+        .chessboard tr:nth-child(even) td:nth-child(odd) {
+            background-color: #b58863;
+        }
+        
+        .position-marker {
+            background-color: rgba(220, 53, 69, 0.8) !important;
+            color: white;
+            border-radius: 3px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .position-marker::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px solid #ff0000;
+            border-radius: 3px;
+            z-index: 1;
+        }
+        
+        .multiple-marker {
+            background-color: rgba(255, 193, 7, 0.9) !important;
+            color: #333;
+        }
+        
+        .river {
+            border-top: 2px solid #1a2980;
+            border-bottom: 2px solid #1a2980;
+        }
+        
+        .rank-name {
+            font-size: 0.75rem;
+            color: #1a2980;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 5px;
+        }
+        
+        .add-person-section {
+            background-color: #f0f7ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .instructions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            border-left: 4px solid #26d0ce;
+        }
+        
+        .instructions h3 {
+            color: #1a2980;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 5px;
+        }
+        
+        .summary {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        
+        .summary-item {
+            text-align: center;
+            padding: 10px;
+            min-width: 120px;
+        }
+        
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1a2980;
+        }
+        
+        .summary-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        @media (max-width: 768px) {
+            .results-table {
+                font-size: 0.85rem;
+            }
+            
+            .results-table th,
+            .results-table td {
+                padding: 8px 5px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .form-group {
+                min-width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-right: 0;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .chessboard td {
+                height: 30px;
+                font-size: 0.6rem;
+            }
+            
+            .toggle-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1200px;
+                padding: 30px;
+            }
+            
+            .chessboard td {
+                height: 45px;
+                font-size: 0.85rem;
+            }
+        }
+        
+        .person-count {
+            display: inline-block;
+            background-color: #1a2980;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            margin-left: 5px;
+        }
+        
+        .position-count {
+            font-size: 0.7rem;
+            display: block;
+            margin-top: 2px;
+            color: #333;
+            font-weight: normal;
+        }
+        
+        .note-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            color: #856404;
+        }
+        
+        .note-box strong {
+            color: #d35400;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>XÁC ĐỊNH CẤP BẬC VÀ VỊ TRÍ BÀN CỜ - CẬP NHẬT CẤP BẬC ĐẢO NGƯỢC</h1>
+        
+        <div class="toggle-container">
+            <div class="toggle-info">
+                <div>
+                    <h3>Chế độ cấp bậc hiện tại:</h3>
+                    <p>Nhấn nút để chuyển đổi giữa hai chế độ xác định cấp bậc</p>
+                </div>
+                <div class="toggle-status" id="rankModeStatus">Chế độ đảo ngược (1=TƯỚNG, 7=TỐT)</div>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-warning" id="toggleRankBtn">Đổi chế độ cấp bậc</button>
+                <button class="btn btn-info" id="showRulesBtn">Xem quy tắc tính cấp bậc</button>
+            </div>
+        </div>
+        
+        <div class="rank-explanation" id="rankRulesSection" style="display: none;">
+            <h3>Quy tắc xác định cấp bậc:</h3>
+            <p><strong>Cách tính:</strong> Đếm số lần xuất hiện của mỗi giá trị chữ cái trong tên theo bảng 237, sau đó xác định giá trị nào xuất hiện nhiều nhất.</p>
+            
+            <table class="rank-table">
+                <thead>
+                    <tr>
+                        <th>Giá trị</th>
+                        <th>Chế độ đảo ngược</th>
+                        <th>Chế độ thuận</th>
+                        <th>Ví dụ chữ cái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1</strong></td>
+                        <td><span class="rank-badge rank-1">TƯỚNG</span></td>
+                        <td><span class="rank-badge rank-reverse-1">TỐT</span></td>
+                        <td>A, H, P, X, À, Á, Ả, Ã, Ạ, Ă, Ằ, Ắ, Ẳ, Ẵ, Ặ, Â, Ầ, Ấ, Ẩ, Ẫ, Ậ</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2</strong></td>
+                        <td><span class="rank-badge rank-2">SĨ</span></td>
+                        <td><span class="rank-badge rank-reverse-2">MÃ</span></td>
+                        <td>B, I, Q, Y, Ì, Í, Ỉ, Ĩ, Ị, Ỳ, Ý, Ỷ, Ỹ, Ỵ</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3</strong></td>
+                        <td><span class="rank-badge rank-3">TƯỢNG</span></td>
+                        <td><span class="rank-badge rank-reverse-3">PHÁO</span></td>
+                        <td>C, K, R</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4</strong></td>
+                        <td><span class="rank-badge rank-4">XE</span></td>
+                        <td><span class="rank-badge rank-reverse-4">XE</span></td>
+                        <td>D, L, S</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5</strong></td>
+                        <td><span class="rank-badge rank-5">PHÁO</span></td>
+                        <td><span class="rank-badge rank-reverse-5">TƯỢNG</span></td>
+                        <td>Đ, M, T</td>
+                    </tr>
+                    <tr>
+                        <td><strong>6</strong></td>
+                        <td><span class="rank-badge rank-6">MÃ</span></td>
+                        <td><span class="rank-badge rank-reverse-6">SĨ</span></td>
+                        <td>E, N, U, V, È, É, Ẻ, Ẽ, Ẹ, Ê, Ề, Ế, Ể, Ễ, Ệ, Ù, Ú, Ủ, Ũ, Ụ, Ư, Ừ, Ứ, Ử, Ữ, Ự, Ỳ</td>
+                    </tr>
+                    <tr>
+                        <td><strong>7</strong></td>
+                        <td><span class="rank-badge rank-7">TỐT</span></td>
+                        <td><span class="rank-badge rank-reverse-7">TƯỚNG</span></td>
+                        <td>G, O, V, Ò, Ó, Ỏ, Õ, Ọ, Ô, Ồ, Ố, Ổ, Ỗ, Ộ, Ơ, Ờ, Ớ, Ở, Ỡ, Ợ</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="note-box">
+                <p><strong>Chú ý quan trọng:</strong></p>
+                <ul>
+                    <li><strong>Chế độ đảo ngược (mặc định):</strong> 1=TƯỚNG, 2=SĨ, 3=TƯỢNG, 4=XE, 5=PHÁO, 6=MÃ, 7=TỐT</li>
+                    <li><strong>Chế độ thuận (khi đổi):</strong> 1=TỐT, 2=MÃ, 3=PHÁO, 4=XE, 5=TƯỢNG, 6=SĨ, 7=TƯỚNG</li>
+                    <li>Hệ thống sẽ tự động đếm số lượng chữ cái theo từng giá trị (1-7) trong tên của mỗi người</li>
+                    <li>Cấp bậc được xác định bằng giá trị có số lượng nhiều nhất</li>
+                    <li>Nếu có nhiều giá trị cùng số lượng, sẽ ưu tiên giá trị nhỏ hơn</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="currentDate">Ngày tháng năm hiện tại (dùng để tính tuổi tất cả mọi người)</label>
+                <input type="date" id="currentDate" value="">
+            </div>
+            
+            <div class="button-group">
+                <button class="btn" id="calculateAllBtn">Tính toán cho tất cả người</button>
+                <button class="btn btn-secondary" id="exportBtn">Xuất kết quả ra CSV</button>
+                <button class="btn btn-danger" id="clearAllBtn">Xóa tất cả kết quả</button>
+            </div>
+        </div>
+        
+        <div class="summary" id="summarySection">
+            <!-- Phần tổng kết sẽ được cập nhật bằng JavaScript -->
+        </div>
+        
+        <div class="results-container">
+            <h2>Kết quả tính toán <span id="personCount" class="personCount">0</span></h2>
+            <table class="results-table" id="resultsTable">
+                <thead>
+                    <tr>
+                        <th width="4%">STT</th>
+                        <th width="16%">Họ tên</th>
+                        <th width="10%">Ngày sinh</th>
+                        <th width="9%">Tuổi (mod 90)</th>
+                        <th width="12%">Cấp bậc</th>
+                        <th width="20%">Số lượng chữ cái theo giá trị</th>
+                        <th width="12%">Vị trí bàn cờ</th>
+                        <th width="8%">Tuyến</th>
+                        <th width="9%">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody">
+                    <!-- Kết quả sẽ được thêm vào đây -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="add-person-section">
+            <h2>Thêm người mới vào danh sách</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="newPersonName">Họ và tên</label>
+                    <input type="text" id="newPersonName" placeholder="Nhập họ tên đầy đủ">
+                </div>
+                <div class="form-group">
+                    <label for="newPersonBirthDate">Ngày tháng năm sinh</label>
+                    <input type="date" id="newPersonBirthDate">
+                </div>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-success" id="addPersonBtn">Thêm người mới</button>
+                <button class="btn btn-secondary" id="addSampleBtn">Thêm người mẫu</button>
+            </div>
+        </div>
+        
+        <div class="chessboard-container">
+            <h3 class="chessboard-title">BÀN CỜ TƯỚNG 90 ĐIỂM - VỊ TRÍ CỦA MỌI NGƯỜI</h3>
+            <table class="chessboard" id="chessboard">
+                <!-- Bàn cờ sẽ được tạo bằng JavaScript -->
+            </table>
+            <div class="rank-name">Tuyến trên: từ trái sang phải | Tuyến dưới: từ phải sang trái | Đỏ: 1 người | Vàng: nhiều người</div>
+        </div>
+        
+        <div class="instructions">
+            <h3>Hướng dẫn sử dụng:</h3>
+            <ul>
+                <li><strong>Bước 1:</strong> Chọn ngày hiện tại để tính tuổi cho tất cả mọi người</li>
+                <li><strong>Bước 2:</strong> Chọn chế độ cấp bậc (đảo ngược hoặc thuận) theo nhu cầu</li>
+                <li><strong>Bước 3:</strong> Nhấn "Tính toán cho tất cả người" để tính cấp bậc và vị trí</li>
+                <li><strong>Bước 4:</strong> Xem kết quả trong bảng và trên bàn cờ</li>
+                <li><strong>Bước 5:</strong> Thêm người mới nếu cần (tự động tính toán luôn)</li>
+                <li><strong>Chú ý:</strong> Cột "Số lượng chữ cái theo giá trị" hiển thị số lần xuất hiện của mỗi giá trị (1-7) trong tên</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Danh sách người theo yêu cầu
+        let people = [
+            { id: 1, name: "NGUYENKHACNANG", birthDate: "1944-06-04" },
+            { id: 2, name: "TOTHIHA", birthDate: "1948-08-29" },
+            { id: 3, name: "NGUYENMINHNAM", birthDate: "1971-03-03" },
+            { id: 4, name: "THANTHIKIMANH", birthDate: "1981-09-23" },
+            { id: 5, name: "NGUYENTONGANAN", birthDate: "2014-09-28" },
+            { id: 6, name: "NGUYENTOMINHCHAU", birthDate: "2016-07-25" },
+            { id: 7, name: "NGUYENTOBICHNGOC", birthDate: "2020-02-05" },
+            { id: 8, name: "NGUYENTHIMINHHANG", birthDate: "1974-01-07" },
+            { id: 9, name: "NGOQUYCUONG", birthDate: "1973-05-23" },
+            { id: 10, name: "NGOGIABACH", birthDate: "2000-10-12" },
+            { id: 11, name: "NGOGIALINH", birthDate: "2005-04-05" },
+            { id: 12, name: "NGUYENTHIMINHPHUONG", birthDate: "1978-11-06" },
+            { id: 13, name: "HOANGANHDUNG", birthDate: "1978-09-21" },
+            { id: 14, name: "HOANGHAIVINH", birthDate: "2010-06-03" },
+            { id: 15, name: "HOANGTHIENBACHANH", birthDate: "2015-11-14" },
+            { id: 16, name: "TÔ KIM HUỆ", birthDate: "1960-08-09" },
+            { id: 17, name: "NGUYỄN TUẤN ANH", birthDate: "1983-10-23" },
+            { id: 18, name: "NGUYỄN THẾ ANH", birthDate: "2001-03-24" },
+            { id: 19, name: "NGÔ THỊ MAI", birthDate: "1948-12-12" },
+            { id: 20, name: "TÔ VIỆT HƯNG", birthDate: "1996-06-17" },
+            { id: 21, name: "TÔ THỊ HỒNG", birthDate: "1964-10-10" },
+            { id: 22, name: "VŨ VĂN HIỆP", birthDate: "1974-04-24" },
+            { id: 23, name: "NGUYỄN THỊ CHI", birthDate: "1946-02-08" },
+            { id: 24, name: "NGUYỄN TẤN BẮC", birthDate: "1957-11-30" },
+            { id: 25, name: "NGUYỄN THỊ TÂM", birthDate: "1954-08-08" }
+        ];
+
+        // Bảng chữ cái theo yêu cầu (xuôi)
+        const letterValuesForward = {
+            'A':1,'B':2,'C':3,'D':4,'Đ':5,'E':6,'G':7,'H':1,'I':2,'K':3,'L':4,'M':5,'N':6,'O':7,'P':1,'Q':2,'R':3,'S':4,'T':5,'U':6,'V':7,'X':1,'Y':2,
+            'À':1,'Á':1,'Ả':1,'Ã':1,'Ạ':1,'Ă':1,'Ằ':1,'Ắ':1,'Ẳ':1,'Ẵ':1,'Ặ':1,'Â':1,'Ầ':1,'Ấ':1,'Ẩ':1,'Ẫ':1,'Ậ':1,
+            'È':6,'É':6,'Ẻ':6,'Ẽ':6,'Ẹ':6,'Ê':6,'Ề':6,'Ế':6,'Ể':6,'Ễ':6,'Ệ':6,
+            'Ì':2,'Í':2,'Ỉ':2,'Ĩ':2,'Ị':2,
+            'Ò':7,'Ó':7,'Ỏ':7,'Õ':7,'Ọ':7,'Ô':7,'Ồ':7,'Ố':7,'Ổ':7,'Ỗ':7,'Ộ':7,'Ơ':7,'Ờ':7,'Ớ':7,'Ở':7,'Ỡ':7,'Ợ':7,
+            'Ù':6,'Ú':6,'Ủ':6,'Ũ':6,'Ụ':6,'Ư':6,'Ừ':6,'Ứ':6,'Ử':6,'Ữ':6,'Ự':6,
+            'Ỳ':2,'Ý':2,'Ỷ':2,'Ỹ':2,'Ỵ':2,
+            'a':1,'b':2,'c':3,'d':4,'đ':5,'e':6,'g':7,'h':1,'i':2,'k':3,'l':4,'m':5,'n':6,'o':7,'p':1,'q':2,'r':3,'s':4,'t':5,'u':6,'v':7,'x':1,'y':2,
+            'à':1,'á':1,'ả':1,'ã':1,'ạ':1,'ă':1,'ằ':1,'ắ':1,'ẳ':1,'ẵ':1,'ặ':1,'â':1,'ầ':1,'ấ':1,'ẩ':1,'ẫ':1,'ậ':1,
+            'è':6,'é':6,'ẻ':6,'ẽ':6,'ẹ':6,'ê':6,'ề':6,'ế':6,'ể':6,'ễ':6,'ệ':6,
+            'ì':2,'í':2,'ỉ':2,'ĩ':2,'ị':2,
+            'ò':7,'ó':7,'ỏ':7,'õ':7,'ọ':7,'ô':7,'ồ':7,'ố':7,'ổ':7,'ỗ':7,'ộ':7,'ơ':7,'ờ':7,'ớ':7,'ở':7,'ỡ':7,'ợ':7,
+            'ù':6,'ú':6,'ủ':6,'ũ':6,'ụ':6,'ư':6,'ừ':6,'ứ':6,'ử':6,'ữ':6,'ự':6,
+            'ỳ':6,'ý':2,'ỷ':2,'ỹ':2,'ỵ':2
+        };
+
+        // Biến toàn cục để lưu chế độ cấp bậc
+        let isReverseMode = true; // true: đảo ngược (1=TƯỚNG, 7=TỐT), false: thuận (1=TỐT, 7=TƯỚNG)
+        
+        // Bảng cấp bậc đảo ngược (mặc định)
+        const rankNamesReverse = {
+            1: "TƯỚNG",
+            2: "SĨ",
+            3: "TƯỢNG",
+            4: "XE",
+            5: "PHÁO",
+            6: "MÃ",
+            7: "TỐT"
+        };
+        
+        // Bảng cấp bậc thuận
+        const rankNamesForward = {
+            1: "TỐT",
+            2: "MÃ",
+            3: "PHÁO",
+            4: "XE",
+            5: "TƯỢNG",
+            6: "SĨ",
+            7: "TƯỚNG"
+        };
+
+        // Lấy tên cấp bậc theo chế độ hiện tại
+        function getRankName(rank) {
+            return isReverseMode ? rankNamesReverse[rank] : rankNamesForward[rank];
+        }
+
+        // Màu sắc cho các cấp bậc (theo chế độ)
+        function getRankColorClass(rank) {
+            const baseClass = "rank-badge";
+            if (isReverseMode) {
+                return `${baseClass} rank-${rank}`;
+            } else {
+                return `${baseClass} rank-reverse-${rank}`;
+            }
+        }
+
+        // Lưu kết quả tính toán
+        let calculationResults = [];
+        
+        // Đếm số người theo cấp bậc
+        let rankCounts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0};
+        
+        // Lưu vị trí trên bàn cờ
+        let boardPositions = {};
+
+        // Khởi tạo khi trang được tải
+        document.addEventListener('DOMContentLoaded', function() {
+            // Đặt ngày hiện tại làm mặc định
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0];
+            document.getElementById('currentDate').value = todayStr;
+            
+            // Xử lý sự kiện
+            document.getElementById('calculateAllBtn').addEventListener('click', calculateAll);
+            document.getElementById('addPersonBtn').addEventListener('click', addNewPerson);
+            document.getElementById('addSampleBtn').addEventListener('click', addSamplePerson);
+            document.getElementById('exportBtn').addEventListener('click', exportToCSV);
+            document.getElementById('clearAllBtn').addEventListener('click', clearAllResults);
+            document.getElementById('toggleRankBtn').addEventListener('click', toggleRankMode);
+            document.getElementById('showRulesBtn').addEventListener('click', toggleRulesSection);
+            
+            // Tạo bàn cờ
+            createChessboard();
+            
+            // Cập nhật trạng thái chế độ
+            updateRankModeStatus();
+            
+            // Tính toán mặc định cho tất cả người
+            setTimeout(() => {
+                calculateAll();
+            }, 500);
+        });
+
+        // Hàm đổi chế độ cấp bậc
+        function toggleRankMode() {
+            isReverseMode = !isReverseMode;
+            updateRankModeStatus();
+            
+            // Tính toán lại với chế độ mới
+            if (calculationResults.length > 0) {
+                calculateAll();
+            }
+            
+            alert(`Đã chuyển sang chế độ: ${isReverseMode ? 'Đảo ngược (1=TƯỚNG, 7=TỐT)' : 'Thuận (1=TỐT, 7=TƯỚNG)'}`);
+        }
+
+        // Hàm cập nhật trạng thái chế độ
+        function updateRankModeStatus() {
+            const statusElement = document.getElementById('rankModeStatus');
+            if (isReverseMode) {
+                statusElement.textContent = "Chế độ đảo ngược (1=TƯỚNG, 2=SĨ, 3=TƯỢNG, 4=XE, 5=PHÁO, 6=MÃ, 7=TỐT)";
+                statusElement.style.backgroundColor = "#ffc107";
+                statusElement.style.color = "#333";
+            } else {
+                statusElement.textContent = "Chế độ thuận (1=TỐT, 2=MÃ, 3=PHÁO, 4=XE, 5=TƯỢNG, 6=SĨ, 7=TƯỚNG)";
+                statusElement.style.backgroundColor = "#17a2b8";
+                statusElement.style.color = "white";
+            }
+        }
+
+        // Hàm hiển thị/ẩn phần quy tắc
+        function toggleRulesSection() {
+            const rulesSection = document.getElementById('rankRulesSection');
+            if (rulesSection.style.display === 'none' || rulesSection.style.display === '') {
+                rulesSection.style.display = 'block';
+                document.getElementById('showRulesBtn').textContent = 'Ẩn quy tắc tính cấp bậc';
+            } else {
+                rulesSection.style.display = 'none';
+                document.getElementById('showRulesBtn').textContent = 'Xem quy tắc tính cấp bậc';
+            }
+        }
+
+        // Hàm định dạng ngày tháng
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        // Hàm tính toán cho tất cả người
+        function calculateAll() {
+            const currentDate = document.getElementById('currentDate').value;
+            
+            if (!currentDate) {
+                alert("Vui lòng chọn ngày hiện tại để tính tuổi!");
+                return;
+            }
+            
+            // Reset dữ liệu
+            calculationResults = [];
+            rankCounts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0};
+            boardPositions = {};
+            
+            // Tính toán cho từng người
+            people.forEach(person => {
+                const result = calculatePerson(person, currentDate);
+                calculationResults.push(result);
+                
+                // Đếm số người theo cấp bậc
+                rankCounts[result.rank]++;
+                
+                // Lưu vị trí trên bàn cờ
+                const positionKey = `${result.position.row}-${result.position.col}`;
+                if (!boardPositions[positionKey]) {
+                    boardPositions[positionKey] = [];
+                }
+                boardPositions[positionKey].push(result);
+            });
+            
+            // Hiển thị kết quả
+            displayResults();
+            
+            // Cập nhật bàn cờ
+            updateChessboard();
+            
+            // Cập nhật tổng kết
+            updateSummary();
+            
+            alert(`Đã tính toán xong cho ${people.length} người!`);
+        }
+
+        // Hàm tính toán cho một người
+        function calculatePerson(person, currentDateStr) {
+            const name = person.name;
+            const birthDate = person.birthDate;
+            
+            // Tính tuổi
+            const birth = new Date(birthDate);
+            const current = new Date(currentDateStr);
+            let age = current.getFullYear() - birth.getFullYear();
+            const monthDiff = current.getMonth() - birth.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && current.getDate() < birth.getDate())) {
+                age--;
+            }
+            
+            // Tuổi mod 90
+            const ageMod90 = age % 90;
+            
+            // Xác định cấp bậc và đếm số lượng chữ cái
+            const { rank, letterCounts } = determineRankAndCounts(name);
+            const rankName = getRankName(rank);
+            
+            // Xác định vị trí trên bàn cờ
+            const position = calculateBoardPosition(birth, ageMod90);
+            
+            return {
+                id: person.id,
+                name: name,
+                birthDate: birthDate,
+                age: age,
+                ageMod90: ageMod90,
+                rank: rank,
+                rankName: rankName,
+                letterCounts: letterCounts,
+                position: position,
+                isUpperLine: position.isUpperLine
+            };
+        }
+
+        // Hàm xác định cấp bậc và đếm số lượng chữ cái theo giá trị
+        function determineRankAndCounts(name) {
+            let counts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0};
+            
+            // Đếm số lần xuất hiện của mỗi giá trị trong tên
+            for (let char of name) {
+                if (letterValuesForward.hasOwnProperty(char)) {
+                    const value = letterValuesForward[char];
+                    counts[value]++;
+                }
+            }
+            
+            // Xác định giá trị xuất hiện nhiều nhất
+            let maxCount = 0;
+            let maxRank = 1;
+            
+            for (let rank in counts) {
+                if (counts[rank] > maxCount) {
+                    maxCount = counts[rank];
+                    maxRank = parseInt(rank);
+                }
+            }
+            
+            return {
+                rank: maxRank,
+                letterCounts: counts
+            };
+        }
+
+        // Hàm tính vị trí trên bàn cờ
+        function calculateBoardPosition(birthDate, ageMod90) {
+            const month = birthDate.getMonth() + 1; // Tháng từ 1-12
+            const isUpperLine = month >= 7; // Tuyến trên: tháng 7-12
+            
+            // Tính vị trí trên bàn cờ (1-90)
+            let positionNumber = ageMod90 === 0 ? 90 : ageMod90;
+            
+            // Tính hàng và cột
+            let row, col;
+            
+            if (isUpperLine) {
+                // Tuyến trên: tính từ trái sang phải, từ trên xuống
+                row = Math.ceil(positionNumber / 9);
+                col = positionNumber % 9 || 9;
+            } else {
+                // Tuyến dưới: tính từ phải sang trái, từ dưới lên
+                // Đảo ngược vị trí: 1->90, 2->89, ...
+                const reversedPosition = 91 - positionNumber;
+                row = Math.ceil(reversedPosition / 9);
+                col = reversedPosition % 9 || 9;
+                
+                // Điều chỉnh hàng cho tuyến dưới (từ hàng 10 trở lên)
+                row = 11 - row;
+            }
+            
+            // Mô tả vị trí
+            const description = `H${row}C${col} (${positionNumber})`;
+            
+            return {
+                row: row,
+                col: col,
+                positionNumber: positionNumber,
+                description: description,
+                isUpperLine: isUpperLine
+            };
+        }
+
+        // Hàm hiển thị kết quả
+        function displayResults() {
+            const resultsBody = document.getElementById('resultsBody');
+            resultsBody.innerHTML = '';
+            
+            calculationResults.forEach((result, index) => {
+                const row = document.createElement('tr');
+                
+                // STT
+                const td1 = document.createElement('td');
+                td1.textContent = index + 1;
+                row.appendChild(td1);
+                
+                // Họ tên
+                const td2 = document.createElement('td');
+                td2.textContent = result.name;
+                row.appendChild(td2);
+                
+                // Ngày sinh
+                const td3 = document.createElement('td');
+                td3.textContent = formatDate(result.birthDate);
+                row.appendChild(td3);
+                
+                // Tuổi (mod 90)
+                const td4 = document.createElement('td');
+                td4.textContent = `${result.age} (${result.ageMod90})`;
+                row.appendChild(td4);
+                
+                // Cấp bậc
+                const td5 = document.createElement('td');
+                const rankBadge = document.createElement('span');
+                rankBadge.className = getRankColorClass(result.rank);
+                rankBadge.textContent = result.rankName;
+                td5.appendChild(rankBadge);
+                row.appendChild(td5);
+                
+                // Số lượng chữ cái theo giá trị
+                const td6 = document.createElement('td');
+                const countsDiv = document.createElement('div');
+                countsDiv.className = 'letter-counts';
+                
+                // Hiển thị số lượng cho mỗi giá trị từ 1 đến 7
+                for (let i = 1; i <= 7; i++) {
+                    const countSpan = document.createElement('span');
+                    countSpan.className = 'count-item';
+                    countSpan.innerHTML = `<span class="count-value">${i}:${result.letterCounts[i]}</span>`;
+                    countsDiv.appendChild(countSpan);
+                }
+                
+                td6.appendChild(countsDiv);
+                row.appendChild(td6);
+                
+                // Vị trí bàn cờ
+                const td7 = document.createElement('td');
+                td7.textContent = result.position.description;
+                row.appendChild(td7);
+                
+                // Tuyến
+                const td8 = document.createElement('td');
+                td8.textContent = result.isUpperLine ? 'Trên' : 'Dưới';
+                row.appendChild(td8);
+                
+                // Thao tác
+                const td9 = document.createElement('td');
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'btn btn-danger';
+                removeBtn.textContent = 'Xóa';
+                removeBtn.style.padding = '5px 10px';
+                removeBtn.style.fontSize = '0.8rem';
+                removeBtn.addEventListener('click', () => removePerson(result.id));
+                td9.appendChild(removeBtn);
+                row.appendChild(td9);
+                
+                resultsBody.appendChild(row);
+            });
+            
+            // Cập nhật số lượng người
+            document.getElementById('personCount').textContent = calculationResults.length;
+        }
+
+        // Hàm tạo bàn cờ
+        function createChessboard() {
+            const chessboard = document.getElementById('chessboard');
+            chessboard.innerHTML = '';
+            
+            // Tạo 10 hàng
+            for (let row = 1; row <= 10; row++) {
+                const tr = document.createElement('tr');
+                
+                // Thêm lớp "river" cho hàng 5 và 6 (sông)
+                if (row === 5 || row === 6) {
+                    tr.classList.add('river');
+                }
+                
+                // Tạo 9 cột
+                for (let col = 1; col <= 9; col++) {
+                    const td = document.createElement('td');
+                    td.id = `cell-${row}-${col}`;
+                    td.textContent = (row-1)*9 + col;
+                    tr.appendChild(td);
+                }
+                
+                chessboard.appendChild(tr);
+            }
+        }
+
+        // Hàm cập nhật bàn cờ
+        function updateChessboard() {
+            // Xóa tất cả các đánh dấu cũ
+            const allCells = document.querySelectorAll('.chessboard td');
+            allCells.forEach(cell => {
+                cell.classList.remove('position-marker', 'multiple-marker');
+                // Khôi phục số ban đầu
+                const [row, col] = cell.id.replace('cell-', '').split('-').map(Number);
+                cell.textContent = (row-1)*9 + col;
+            });
+            
+            // Đánh dấu các ô mới
+            for (const positionKey in boardPositions) {
+                const [row, col] = positionKey.split('-').map(Number);
+                const targetCell = document.getElementById(`cell-${row}-${col}`);
+                if (targetCell) {
+                    const peopleAtPosition = boardPositions[positionKey];
+                    
+                    if (peopleAtPosition.length === 1) {
+                        targetCell.classList.add('position-marker');
+                        targetCell.textContent = peopleAtPosition[0].position.positionNumber;
+                    } else {
+                        targetCell.classList.add('multiple-marker');
+                        targetCell.innerHTML = `${peopleAtPosition[0].position.positionNumber}<span class="position-count">${peopleAtPosition.length} người</span>`;
+                    }
+                }
+            }
+        }
+
+        // Hàm thêm người mới
+        function addNewPerson() {
+            const name = document.getElementById('newPersonName').value.trim();
+            const birthDate = document.getElementById('newPersonBirthDate').value;
+            const currentDate = document.getElementById('currentDate').value;
+            
+            if (!name || !birthDate) {
+                alert("Vui lòng nhập đầy đủ họ tên và ngày sinh!");
+                return;
+            }
+            
+            if (!currentDate) {
+                alert("Vui lòng chọn ngày hiện tại trước!");
+                return;
+            }
+            
+            // Tạo ID mới
+            const newId = people.length > 0 ? Math.max(...people.map(p => p.id)) + 1 : 1;
+            
+            // Thêm vào danh sách
+            const newPerson = {
+                id: newId,
+                name: name.toUpperCase(),
+                birthDate: birthDate
+            };
+            
+            people.push(newPerson);
+            
+            // Tính toán cho người mới
+            const result = calculatePerson(newPerson, currentDate);
+            calculationResults.push(result);
+            
+            // Đếm số người theo cấp bậc
+            rankCounts[result.rank]++;
+            
+            // Lưu vị trí trên bàn cờ
+            const positionKey = `${result.position.row}-${result.position.col}`;
+            if (!boardPositions[positionKey]) {
+                boardPositions[positionKey] = [];
+            }
+            boardPositions[positionKey].push(result);
+            
+            // Hiển thị kết quả
+            displayResults();
+            
+            // Cập nhật bàn cờ
+            updateChessboard();
+            
+            // Cập nhật tổng kết
+            updateSummary();
+            
+            // Xóa form nhập liệu
+            document.getElementById('newPersonName').value = '';
+            document.getElementById('newPersonBirthDate').value = '';
+            
+            alert(`Đã thêm người mới: ${name}`);
+        }
+
+        // Hàm thêm người mẫu
+        function addSamplePerson() {
+            const sampleNames = [
+                "LÊ VĂN TÚ", "PHẠM THỊ HOA", "TRẦN VĂN ĐỨC", 
+                "VŨ THỊ LAN", "HOÀNG VĂN MINH", "ĐẶNG THỊ THU"
+            ];
+            
+            const sampleBirthDates = [
+                "1990-05-15", "1985-11-22", "1978-03-08",
+                "1995-07-30", "1982-12-10", "1975-09-18"
+            ];
+            
+            const randomIndex = Math.floor(Math.random() * sampleNames.length);
+            
+            document.getElementById('newPersonName').value = sampleNames[randomIndex];
+            document.getElementById('newPersonBirthDate').value = sampleBirthDates[randomIndex];
+        }
+
+        // Hàm xóa người
+        function removePerson(personId) {
+            if (!confirm("Bạn có chắc chắn muốn xóa người này khỏi danh sách?")) {
+                return;
+            }
+            
+            // Xóa khỏi danh sách people
+            people = people.filter(p => p.id !== personId);
+            
+            // Xóa khỏi kết quả tính toán
+            const resultIndex = calculationResults.findIndex(r => r.id === personId);
+            if (resultIndex !== -1) {
+                const result = calculationResults[resultIndex];
+                
+                // Giảm số đếm cấp bậc
+                rankCounts[result.rank]--;
+                
+                // Xóa khỏi vị trí bàn cờ
+                const positionKey = `${result.position.row}-${result.position.col}`;
+                if (boardPositions[positionKey]) {
+                    boardPositions[positionKey] = boardPositions[positionKey].filter(r => r.id !== personId);
+                    if (boardPositions[positionKey].length === 0) {
+                        delete boardPositions[positionKey];
+                    }
+                }
+                
+                calculationResults.splice(resultIndex, 1);
+            }
+            
+            // Cập nhật hiển thị
+            displayResults();
+            updateChessboard();
+            updateSummary();
+            
+            alert("Đã xóa người khỏi danh sách!");
+        }
+
+        // Hàm cập nhật tổng kết
+        function updateSummary() {
+            const summarySection = document.getElementById('summarySection');
+            
+            let summaryHTML = `
+                <div class="summary-item">
+                    <div class="summary-value">${calculationResults.length}</div>
+                    <div class="summary-label">Tổng số người</div>
+                </div>
+            `;
+            
+            // Thêm số lượng theo từng cấp bậc
+            for (let rank = 1; rank <= 7; rank++) {
+                if (rankCounts[rank] > 0) {
+                    const rankName = getRankName(rank);
+                    const rankColor = isReverseMode ? 
+                        (rank === 1 ? '#dc3545' : rank === 2 ? '#fd7e14' : rank === 3 ? '#ffc107' : 
+                         rank === 4 ? '#28a745' : rank === 5 ? '#17a2b8' : rank === 6 ? '#6f42c1' : '#6c757d') :
+                        (rank === 1 ? '#6c757d' : rank === 2 ? '#6f42c1' : rank === 3 ? '#17a2b8' : 
+                         rank === 4 ? '#28a745' : rank === 5 ? '#ffc107' : rank === 6 ? '#fd7e14' : '#dc3545');
+                    
+                    summaryHTML += `
+                        <div class="summary-item">
+                            <div class="summary-value" style="color: ${rankColor}">${rankCounts[rank]}</div>
+                            <div class="summary-label">${rankName}</div>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Tính số vị trí độc lập trên bàn cờ
+            const uniquePositions = Object.keys(boardPositions).length;
+            summaryHTML += `
+                <div class="summary-item">
+                    <div class="summary-value">${uniquePositions}</div>
+                    <div class="summary-label">Vị trí khác nhau</div>
+                </div>
+            `;
+            
+            summarySection.innerHTML = summaryHTML;
+        }
+
+        // Hàm xuất kết quả ra CSV
+        function exportToCSV() {
+            if (calculationResults.length === 0) {
+                alert("Không có dữ liệu để xuất!");
+                return;
+            }
+            
+            // Tạo tiêu đề CSV
+            let csvContent = "STT,Họ tên,Ngày sinh,Tuổi,Tuổi (mod 90),Cấp bậc số,Tên cấp bậc,Số lượng chữ (1),Số lượng chữ (2),Số lượng chữ (3),Số lượng chữ (4),Số lượng chữ (5),Số lượng chữ (6),Số lượng chữ (7),Vị trí bàn cờ,Hàng,Cột,Tuyến\n";
+            
+            // Thêm dữ liệu
+            calculationResults.forEach((result, index) => {
+                const row = [
+                    index + 1,
+                    `"${result.name}"`,
+                    formatDate(result.birthDate),
+                    result.age,
+                    result.ageMod90,
+                    result.rank,
+                    result.rankName,
+                    result.letterCounts[1],
+                    result.letterCounts[2],
+                    result.letterCounts[3],
+                    result.letterCounts[4],
+                    result.letterCounts[5],
+                    result.letterCounts[6],
+                    result.letterCounts[7],
+                    result.position.description,
+                    result.position.row,
+                    result.position.col,
+                    result.isUpperLine ? "Trên" : "Dưới"
+                ].join(',');
+                
+                csvContent += row + '\n';
+            });
+            
+            // Tạo file và tải xuống
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'ket_qua_tinh_toan.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert("Đã xuất kết quả ra file CSV!");
+        }
+
+        // Hàm xóa tất cả kết quả
+        function clearAllResults() {
+            if (!confirm("Bạn có chắc chắn muốn xóa tất cả kết quả tính toán? Dữ liệu gốc vẫn được giữ lại.")) {
+                return;
+            }
+            
+            calculationResults = [];
+            rankCounts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0};
+            boardPositions = {};
+            
+            displayResults();
+            updateChessboard();
+            updateSummary();
+            
+            alert("Đã xóa tất cả kết quả tính toán!");
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

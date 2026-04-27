@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Học Thuật: Giá Trị Thời Gian Của Tiền - Phiên Bản Hoàn Chỉnh</title>
+<style>
+body{font-family:Arial;line-height:1.6;background:#f7f7f7;padding:20px}
+.section{background:#fff;padding:20px;margin-bottom:25px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+h2,h3{color:#2c3e50;margin-top:0}
+button{padding:10px 15px;margin:6px;font-size:16px;cursor:pointer;background:#3498db;color:white;border:none;border-radius:5px}
+button:hover{background:#2980b9}
+input{padding:10px;width:100%;font-size:16px;border-radius:5px;border:1px solid #ccc}
+.note{background:#eef;border-left:4px solid #3498db;padding:15px;margin:15px 0;border-radius:5px}
+.warn{background:#fee;border-left:4px solid #e74c3c;padding:15px;margin:15px 0;border-radius:5px}
+.calc{background:#f0fff0;border-left:4px solid #2ecc71;padding:15px;margin:15px 0;border-radius:5px}
+.example-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:15px;margin-top:15px}
+.example-card{background:#f9f9f9;padding:12px;border-radius:8px;border:1px solid #ddd;font-size:14px}
+.reality-section{background:#fff8e1;border-left:4px solid #ffc107;padding:15px;margin:15px 0;border-radius:5px}
+.reality-item{margin:10px 0;padding:10px;background:#fffde7;border-radius:5px;border-left:3px solid #4caf50}
+.scenario-buttons{display:flex;flex-wrap:wrap;gap:10px;margin-top:15px}
+.scenario-btn{background:#9c27b0;color:white;border:none;padding:8px 15px;border-radius:5px;cursor:pointer}
+.scenario-btn:hover{background:#7b1fa2}
+.highlight{background-color:#ffff88;padding:2px 5px;border-radius:3px}
+</style>
+<script>
+function go(id){
+  document.getElementById(id).scrollIntoView({behavior:"smooth"});
+}
+
+// GHI CHÚ PHẦN MỚI: Hàm xử lý tìm kiếm tình huống và cuộn đến phần phù hợp
+function searchScenario() {
+  const input = document.getElementById('scenarioInput').value.toLowerCase();
+  const sections = [
+    'personal', 'family', 'company', 'corporation', 'city', 
+    'ministry', 'country', 'international', 'no-capital', 'timeline', 'risk'
+  ];
+  
+  // Các từ khóa phổ biến và phần tương ứng
+  const keywords = {
+    'personal': ['cá nhân', 'lương', 'tiết kiệm', 'vay', 'mua', 'điện thoại', 'xe', 'nhà', 'chứng khoán', 'bảo hiểm', 'thẻ tín dụng'],
+    'family': ['gia đình', 'vợ chồng', 'con cái', 'học phí', 'đám cưới', 'mua nhà', 'kế hoạch tài chính'],
+    'company': ['doanh nghiệp nhỏ', 'công ty', 'vốn', 'lợi nhuận', 'đầu tư', 'mở rộng'],
+    'corporation': ['tập đoàn', 'cổ phiếu', 'trái phiếu', 'cổ tức', 'niêm yết'],
+    'city': ['thành phố', 'đô thị', 'hạ tầng', 'giao thông', 'xây dựng', 'quy hoạch'],
+    'ministry': ['bộ tài chính', 'ngân sách', 'thuế', 'trái phiếu chính phủ', 'lạm phát'],
+    'country': ['quốc gia', 'ngoại tệ', 'xuất nhập khẩu', 'ngân hàng trung ương', 'tỷ giá'],
+    'international': ['quốc tế', 'liên hợp quốc', 'imf', 'world bank', 'đầu tư nước ngoài', 'toàn cầu'],
+    'no-capital': ['không vốn', 'ẩn danh', 'nghề tự do', 'freelancer', 'content creator', 'youtuber'],
+    'timeline': ['trình tự', 'quyết định', 'kế hoạch', 'lộ trình', 'thời gian'],
+    'risk': ['rủi ro', 'quản lý rủi ro', 'bảo hiểm', 'dự phòng', 'khủng hoảng']
+  };
+  
+  let found = false;
+  
+  // Kiểm tra từ khóa
+  for (const section in keywords) {
+    for (const keyword of keywords[section]) {
+      if (input.includes(keyword)) {
+        go(section);
+        found = true;
+        
+        // Highlight từ khóa tìm thấy
+        const sectionElement = document.getElementById(section);
+        if (sectionElement) {
+          const text = sectionElement.innerHTML;
+          const highlightedText = text.replace(new RegExp(keyword, 'gi'), 
+            match => `<span class="highlight">${match}</span>`);
+          sectionElement.innerHTML = highlightedText;
+        }
+        
+        break;
+      }
+    }
+    if (found) break;
+  }
+  
+  if (!found && input.trim() !== '') {
+    // Nếu không tìm thấy, cuộn đến phần cá nhân (mặc định)
+    go('personal');
+    alert("Không tìm thấy tình huống chính xác. Đang hiển thị ví dụ cá nhân phổ biến.");
+  }
+}
+
+// GHI CHÚ PHẦN MỚI: Hàm chọn tình huống mẫu từ danh sách
+function selectSampleScenario(scenario) {
+  document.getElementById('scenarioInput').value = scenario;
+  searchScenario();
+}
+
+// GHI CHÚ PHẦN MỚI: Hàm xử lý tính toán nhanh
+function quickCalculate() {
+  const principle = parseFloat(prompt("Nhập số tiền gốc (triệu đồng):", "100"));
+  const rate = parseFloat(prompt("Nhập lãi suất/năm (%):", "8")) / 100;
+  const years = parseFloat(prompt("Nhập số năm:", "5"));
+  
+  if (isNaN(principle) || isNaN(rate) || isNaN(years)) {
+    alert("Vui lòng nhập số hợp lệ!");
+    return;
+  }
+  
+  // Tính FV
+  const fv = principle * Math.pow(1 + rate, years);
+  
+  // Tính PV của số tiền tương lai
+  const futureAmount = parseFloat(prompt("Nhập số tiền bạn muốn có trong tương lai (triệu đồng):", "150"));
+  if (!isNaN(futureAmount)) {
+    const pv = futureAmount / Math.pow(1 + rate, years);
+    
+    const result = `
+    KẾT QUẢ TÍNH TOÁN:
+    
+    Với ${principle} triệu đồng:
+    • Sau ${years} năm với lãi suất ${(rate*100).toFixed(1)}%/năm
+    • Số tiền nhận được: ${fv.toFixed(1)} triệu đồng
+    • Lãi thực nhận: ${(fv - principle).toFixed(1)} triệu đồng
+    
+    Để có ${futureAmount} triệu sau ${years} năm:
+    • Cần đầu tư ngay: ${pv.toFixed(1)} triệu đồng
+    `;
+    
+    alert(result);
+  } else {
+    alert(`Với ${principle} triệu đồng, sau ${years} năm với lãi suất ${(rate*100).toFixed(1)}%/năm, bạn sẽ có: ${fv.toFixed(1)} triệu đồng`);
+  }
+}
+</script>
+</head>
+<body>
+
+<!-- ================= LINK VIDEO ================= -->
+<div class="section">
+<h2>🎥 Video bài giảng chính</h2>
+<p>🔗 <b>Link video:</b> 
+<a href="https://www.youtube.com/watch?v=vOrhZ1pn9p0" target="_blank">
+Quang Trung TV – TCDN 1 – Chương 2: Giá trị thời gian của tiền (Phần 3)
+</a>
+</p>
+</div>
+
+<!-- ================= BỘ ĐIỀU KHIỂN CHÍNH ================= -->
+<!-- GHI CHÚ PHẦN MỚI: Đã bổ sung chức năng nhập tình huống và các nút bấm -->
+<div class="section">
+<h2>🎮 BẢNG ĐIỀU KHIỂN - NHẬP TÌNH HUỐNG CỦA BẠN</h2>
+<label><b>Nhập tình huống thực tế bạn đang gặp:</b></label>
+<input id="scenarioInput" placeholder="VD: Muốn mua nhà trả góp, lương bị giảm, đang nợ thẻ tín dụng, muốn đầu tư chứng khoán...">
+<div style="margin-top:10px; display:flex; gap:10px;">
+  <button onclick="searchScenario()">🔍 Tìm giải pháp</button>
+  <button onclick="quickCalculate()">🧮 Tính toán nhanh</button>
+  <button onclick="document.getElementById('scenarioInput').value=''">Xóa</button>
+</div>
+
+<!-- GHI CHÚ PHẦN MỚI: Thêm các nút tình huống mẫu -->
+<h3 style="margin-top:20px;">📋 Tình huống mẫu phổ biến (Click để xem giải pháp)</h3>
+<div class="scenario-buttons">
+  <button class="scenario-btn" onclick="selectSampleScenario('muốn mua nhà trả góp 20 năm')">Mua nhà trả góp</button>
+  <button class="scenario-btn" onclick="selectSampleScenario('vay tiêu dùng mua xe máy')">Vay mua xe máy</button>
+  <button class="scenario-btn" onclick="selectSampleScenario('nợ thẻ tín dụng lãi cao')">Nợ thẻ tín dụng</button>
+  <button class="scenario-btn" onclick="selectSampleScenario('tiết kiệm cho con đi du học')">Du học cho con</button>
+  <button class="scenario-btn" onclick="selectSampleScenario('đầu tư chứng khoán hay gửi tiết kiệm')">Đầu tư hay tiết kiệm</button>
+  <button class="scenario-btn" onclick="selectSampleScenario('khởi nghiệp không vốn')">Khởi nghiệp không vốn</button>
+  <button class="scenario-btn" onclick="selectSampleScenario('lập kế hoạch tài chính gia đình')">Kế hoạch tài chính gia đình</button>
+  <button class="scenario-btn" onclick="selectSampleScenario('quản lý rủi ro tài chính')">Quản lý rủi ro</button>
+</div>
+
+<h3>🎯 Chọn cấp độ tình huống để xem ví dụ thực tế</h3>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;">
+<button onclick="go('term')">📘 Thuật ngữ cơ bản</button>
+<button onclick="go('formula')">📐 Công thức chính</button>
+<button onclick="go('personal')">👤 Cá nhân</button>
+<button onclick="go('family')">👨‍👩‍👧 Gia đình</button>
+<button onclick="go('company')">🏭 Doanh nghiệp nhỏ</button>
+<button onclick="go('corporation')">🏢 Tập đoàn lớn</button>
+<button onclick="go('city')">🏙 Thành phố / Thủ đô</button>
+<button onclick="go('ministry')">🏛 Bộ Tài chính</button>
+<button onclick="go('country')">🌍 Quốc gia</button>
+<button onclick="go('international')">🌐 Liên Hợp Quốc</button>
+<button onclick="go('no-capital')">💡 Nghề không vốn & ẩn danh</button>
+<button onclick="go('timeline')">⏳ Trình tự quyết định</button>
+<button onclick="go('risk')">⚠️ Quản lý rủi ro</button>
+<button onclick="go('reality')">🔍 Áp dụng thực tế hoàn chỉnh</button>
+</div>
+</div>
+
+<!-- ================= THUẬT NGỮ ================= -->
+<div class="section" id="term">
+<h3>📘 Thuật ngữ tài chính (Giải thích dễ hiểu)</h3>
+<ul>
+<li><b>PV (Present Value):</b> Giá trị tiền ngay hôm nay</li>
+<li><b>FV (Future Value):</b> Giá trị tiền trong tương lai</li>
+<li><b>i (Lãi suất):</b> Chi phí sử dụng tiền theo thời gian</li>
+<li><b>n (Số kỳ):</b> Số năm/tháng vay hoặc đầu tư</li>
+<li><b>EAR (Effective Annual Rate):</b> Lãi suất thực tế sau khi ghép lãi</li>
+</ul>
+<div class="note">💡 10 triệu hôm nay > 10 triệu sau 5 năm vì lạm phát và cơ hội đầu tư.</div>
+</div>
+
+<!-- ================= CÔNG THỨC ================= -->
+<div class="section" id="formula">
+<h3>📐 Công thức quan trọng nhất</h3>
+<div class="calc"><b>Giá trị tương lai (FV):</b> FV = PV × (1 + i)<sup>n</sup></div>
+<div class="calc"><b>Giá trị hiện tại (PV):</b> PV = FV / (1 + i)<sup>n</sup></div>
+<div class="calc"><b>Lãi suất thực (i):</b> i = (FV / PV)<sup>1/n</sup> − 1</div>
+<div class="note">👉 Dùng để quyết định: "Lấy tiền ngay hay chờ?"</div>
+</div>
+
+<!-- ================= CÁ NHÂN ================= -->
+<div class="section" id="personal">
+<h3>👤 25 Ví dụ thực tế cấp độ CÁ NHÂN</h3>
+<div class="example-grid">
+<div class="example-card">1. Mua điện thoại trả góp 24 tháng – tính PV tổng trả</div>
+<div class="example-card">2. Gửi tiết kiệm 5 triệu/tháng để mua xe máy sau 3 năm</div>
+<div class="example-card">3. Vay tiêu dùng 50 triệu lãi 15%/năm – tính khả năng trả nợ</div>
+<div class="example-card">4. Đầu tư chứng khoán hay gửi ngân hàng khi lãi suất thay đổi</div>
+<div class="example-card">5. Mua bảo hiểm nhân thọ – tính FV quỹ đáo hạn</div>
+<div class="example-card">6. Trả nợ thẻ tín dụng trước hạn để giảm lãi</div>
+<div class="example-card">7. Học đại học hay đi làm sớm – so sánh FV thu nhập</div>
+<div class="example-card">8. Mua nhà trả góp 20 năm – tính tổng lãi phải trả</div>
+<div class="example-card">9. Đầu tư vàng hay bất động sản dài hạn</div>
+<div class="example-card">10. Rút lương hưu sớm hay chờ đầy tuổi</div>
+<div class="example-card">11. Vay nóng tín dụng đen – rủi ro lãi kép</div>
+<div class="example-card">12. Tiết kiệm du học – tính FV cần đạt</div>
+<div class="example-card">13. Mua cổ phiếu trả cổ tức – tính lãi thực</div>
+<div class="example-card">14. Đầu tư quỹ mở ETF 10 năm</div>
+<div class="example-card">15. Vay học phí sinh viên – tính tổng trả sau tốt nghiệp</div>
+<div class="example-card">16. Mua xe ô tô trả góp – so sánh lãi suất ngân hàng</div>
+<div class="example-card">17. Tiết kiệm đám cưới sau 5 năm</div>
+<div class="example-card">18. Đầu tư crypto dài hạn vs ngắn hạn</div>
+<div class="example-card">19. Mua bảo hiểm y tế tư nhân – giá trị thực</div>
+<div class="example-card">20. Làm thêm giờ hay đầu tư học kỹ năng</div>
+<div class="example-card">21. Vay thế chấp sổ đỏ lãi suất thả nổi</div>
+<div class="example-card">22. Tiết kiệm hưu trí tự nguyện</div>
+<div class="example-card">23. Mua căn hộ chung cư trả góp 30 năm</div>
+<div class="example-card">24. Đầu tư trái phiếu chính phủ</div>
+<div class="example-card">25. Quyết định nghỉ việc khởi nghiệp – tính chi phí cơ hội</div>
+</div>
+</div>
+
+<!-- ================= GIA ĐÌNH ================= -->
+<div class="section" id="family">
+<h3>👨‍👩‍👧 15 Ví dụ thực tế cấp độ GIA ĐÌNH</h3>
+<div class="example-grid">
+<div class="example-card">1. Lập quỹ giáo dục cho con từ khi sinh – tính FV đủ học phí ĐH</div>
+<div class="example-card">2. Mua bảo hiểm sức khỏe cho cả gia đình – so sánh chi phí dài hạn</div>
+<div class="example-card">3. Vay thế chấp mua nhà – chọn kỳ hạn 15 năm hay 20 năm?</div>
+<div class="example-card">4. Lập ngân sách hưu trí cho vợ chồng – tính PV cần tiết kiệm mỗi tháng</div>
+<div class="example-card">5. Mua xe gia đình – trả tiền mặt hay vay ngân hàng?</div>
+<div class="example-card">6. Đầu tư đất nền để 10 năm sau xây nhà cho con</div>
+<div class="example-card">7. Kế hoạch tài chính đám cưới con cái</div>
+<div class="example-card">8. Chi phí du lịch gia đình hàng năm – nên để quỹ riêng</div>
+<div class="example-card">9. Mua bảo hiểm tai nạn cho người trụ cột</div>
+<div class="example-card">10. Đầu tư vàng tích lũy cho con gái làm của hồi môn</div>
+<div class="example-card">11. Quyết định mở cửa hàng kinh doanh gia đình</div>
+<div class="example-card">12. Chi phí chăm sóc người già trong gia đình</div>
+<div class="example-card">13. Mua thiết bị điện tử gia đình – nên mua trả góp?</div>
+<div class="example-card">14. Lập quỹ dự phòng khẩn cấp gia đình (6 tháng chi phí)</div>
+<div class="example-card">15. Kế hoạch mua nhà thứ 2 cho thuê tạo thu nhập thụ động</div>
+</div>
+</div>
+
+<!-- ================= DOANH NGHIỆP NHỎ ================= -->
+<div class="section" id="company">
+<h3>🏭 15 Ví dụ thực tế cấp độ DOANH NGHIỆP NHỎ</h3>
+<div class="example-grid">
+<div class="example-card">1. Vay vốn mở rộng sản xuất – tính IRR dự án</div>
+<div class="example-card">2. Mua máy móc mới – tính thời gian hoàn vốn</div>
+<div class="example-card">3. Chiết khấu thanh toán sớm cho khách hàng – có lợi không?</div>
+<div class="example-card">4. Vay ngắn hạn bổ sung vốn lưu động</div>
+<div class="example-card">5. Đầu tư phần mềm quản lý – tính PV lợi ích dài hạn</div>
+<div class="example-card">6. Thuê hay mua mặt bằng kinh doanh?</div>
+<div class="example-card">7. Quyết định giá bán sản phẩm mới dựa trên chi phí vốn</div>
+<div class="example-card">8. Trả lương sớm hay cuối tháng – ảnh hưởng dòng tiền</div>
+<div class="example-card">9. Mua bảo hiểm cho tài sản doanh nghiệp</div>
+<div class="example-card">10. Đầu tư marketing – tính ROI sau 6 tháng, 1 năm</div>
+<div class="example-card">11. Vay mua xe tải phục vụ giao hàng</div>
+<div class="example-card">12. Lựa chọn giữa lợi nhuận ngắn hạn và đầu tư dài hạn</div>
+<div class="example-card">13. Tính giá trị hiện tại của hợp đồng dài hạn</div>
+<div class="example-card">14. Quyết định mua hay thuê thiết bị văn phòng</div>
+<div class="example-card">15. Lập kế hoạch trả nợ cho các khoản vay doanh nghiệp</div>
+</div>
+</div>
+
+<!-- ================= TẬP ĐOÀN LỚN ================= -->
+<div class="section" id="corporation">
+<h3>🏢 15 Ví dụ thực tế cấp độ TẬP ĐOÀN LỚN</h3>
+<div class="example-grid">
+<div class="example-card">1. Phát hành trái phiếu doanh nghiệp – tính chi phí vốn</div>
+<div class="example-card">2. Mua lại công ty đối thủ – tính NPV dự án M&A</div>
+<div class="example-card">3. Đầu tư ra nước ngoài – tính tỷ suất sinh lời yêu cầu</div>
+<div class="example-card">4. Chi trả cổ tức hay tái đầu tư – tối đa hóa giá trị cổ đông</div>
+<div class="example-card">5. Phát hành cổ phiếu ESOP cho nhân viên</div>
+<div class="example-card">6. Đầu tư R&D – tính giá trị thực của bằng sáng chế tương lai</div>
+<div class="example-card">7. Mua bảo hiểm rủi ro cho hoạt động toàn cầu</div>
+<div class="example-card">8. Phòng ngừa rủi ro tỷ giá với hợp đồng tương lai</div>
+<div class="example-card">9. Tính WACC (chi phí vốn bình quân gia quyền)</div>
+<div class="example-card">10. Định giá công ty để niêm yết chứng khoán</div>
+<div class="example-card">11. Đầu tư vào startup công nghệ – đánh giá rủi ro cao/lợi nhuận cao</div>
+<div class="example-card">12. Lập quỹ dự phòng cho các vụ kiện pháp lý</div>
+<div class="example-card">13. Tính toán giá trị thương hiệu trong dài hạn</div>
+<div class="example-card">14. Đầu tư vào ESG (môi trường, xã hội, quản trị) – giá trị dài hạn</div>
+<div class="example-card">15. Mua lại cổ phiếu quỹ (share buyback) để tăng giá trị cổ đông</div>
+</div>
+</div>
+
+<!-- ================= THÀNH PHỐ/THỦ ĐÔ ================= -->
+<div class="section" id="city">
+<h3>🏙 10 Ví dụ thực tế cấp độ THÀNH PHỐ/THỦ ĐÔ</h3>
+<div class="example-grid">
+<div class="example-card">1. Phát hành trái phiếu đô thị xây dựng hạ tầng</div>
+<div class="example-card">2. Tính NPV dự án xây dựng metro/tàu điện ngầm</div>
+<div class="example-card">3. Đầu tư hệ thống xử lý nước thải – lợi ích dài hạn</div>
+<div class="example-card">4. Thu phí đường cao tốc – tính thời gian hoàn vốn</div>
+<div class="example-card">5. Xây dựng bệnh viện công – tính chi phí vận hành suốt vòng đời</div>
+<div class="example-card">6. Phát triển khu đô thị mới – tính IRR dự án</div>
+<div class="example-card">7. Đầu tư hệ thống đèn đường tiết kiệm năng lượng</div>
+<div class="example-card">8. Tính giá trị hiện tại của thuế bất động sản trong 20 năm</div>
+<div class="example-card">9. Xây dựng trường học – tính lợi ích xã hội dài hạn</div>
+<div class="example-card">10. Đầu tư công viên cây xanh – giá trị môi trường và sức khỏe</div>
+</div>
+</div>
+
+<!-- ================= BỘ TÀI CHÍNH ================= -->
+<div class="section" id="ministry">
+<h3>🏛 10 Ví dụ thực tế cấp độ BỘ TÀI CHÍNH</h3>
+<div class="example-grid">
+<div class="example-card">1. Phát hành trái phiếu chính phủ kỳ hạn 10, 20 năm</div>
+<div class="example-card">2. Tính toán thâm hụt ngân sách và phương án bù đắp</div>
+<div class="example-card">3. Điều chỉnh lãi suất chính sách kiểm soát lạm phát</div>
+<div class="example-card">4. Vay ODA (vay ưu đãi nước ngoài) cho dự án lớn</div>
+<div class="example-card">5. Tính toán chi phí vốn cho các chương trình an sinh xã hội</div>
+<div class="example-card">6. Định giá tài sản công để cổ phần hóa doanh nghiệp nhà nước</div>
+<div class="example-card">7. Quản lý dự trữ ngoại hối quốc gia</div>
+<div class="example-card">8. Tính toán tác động của thuế VAT đến ngân sách</div>
+<div class="example-card">9. Đầu tư vào giáo dục – tính lợi tức xã hội (social return)</div>
+<div class="example-card">10. Quản lý nợ công – chiến lược trả nợ dài hạn</div>
+</div>
+</div>
+
+<!-- ================= QUỐC GIA ================= -->
+<div class="section" id="country">
+<h3>🌍 10 Ví dụ thực tế cấp độ QUỐC GIA</h3>
+<div class="example-grid">
+<div class="example-card">1. Tính GDP tiềm năng trong 10 năm tới</div>
+<div class="example-card">2. Đàm phán hiệp định thương mại – tính lợi ích dài hạn</div>
+<div class="example-card">3. Đầu tư vào nghiên cứu hạt nhân dân sự</div>
+<div class="example-card">4. Phát triển ngành công nghiệp vũ trụ – tính chi phí/ lợi ích</div>
+<div class="example-card">5. Xây dựng hệ thống phòng thủ quốc gia – ngân sách dài hạn</div>
+<div class="example-card">6. Đầu tư vào an ninh mạng quốc gia</div>
+<div class="example-card">7. Phát triển ngành công nghiệp ô tô điện – chiến lược 20 năm</div>
+<div class="example-card">8. Tính toán chi phí biến đổi khí hậu đến nền kinh tế</div>
+<div class="example-card">9. Đầu tư vào y tế dự phòng đại dịch</div>
+<div class="example-card">10. Phát triển trí tuệ nhân tạo quốc gia – chiến lược dài hạn</div>
+</div>
+</div>
+
+<!-- ================= LIÊN HỢP QUỐC ================= -->
+<div class="section" id="international">
+<h3>🌐 10 Ví dụ thực tế cấp độ LIÊN HỢP QUỐC</h3>
+<div class="example-grid">
+<div class="example-card">1. Quỹ IMF cho vay ổn định tiền tệ các nước</div>
+<div class="example-card">2. Ngân hàng Thế giới tài trợ dự án phát triển</div>
+<div class="example-card">3. Tính toán ngân sách cho các phái bộ gìn giữ hòa bình</div>
+<div class="example-card">4. Quỹ khí hậu xanh hỗ trợ các nước đang phát triển</div>
+<div class="example-card">5. Chương trình phát triển bền vững SDGs 2030</div>
+<div class="example-card">6. Viện trợ nhân đạo cho vùng thiên tai</div>
+<div class="example-card">7. Đầu tư vào nghiên cứu y tế toàn cầu (WHO)</div>
+<div class="example-card">8. Quỹ dự trữ khẩn cấp cho khủng hoảng kinh tế toàn cầu</div>
+<div class="example-card">9. Tài trợ cho giáo dục ở các nước nghèo (UNESCO)</div>
+<div class="example-card">10. Đầu tư vào nông nghiệp bền vững toàn cầu (FAO)</div>
+</div>
+</div>
+
+<!-- ================= NGHỀ KHÔNG VỐN & ẨN DANH ================= -->
+<div class="section" id="no-capital">
+<h3>💡 15 Ví dụ thực tế cấp độ NGHỀ KHÔNG VỐN & ẨN DANH</h3>
+<div class="example-grid">
+<div class="example-card">1. Content Creator YouTube – tính giá trị kênh qua thời gian</div>
+<div class="example-card">2. Freelancer viết bài – đầu tư vào portfolio thay vốn</div>
+<div class="example-card">3. Streamer game – tính doanh thu từ subscriber, donate</div>
+<div class="example-card">4. Nhà văn mạng – bản quyền tác phẩm điện tử</div>
+<div class="example-card">5. Dịch giả tự do – giá trị kỹ năng ngôn ngữ theo thời gian</div>
+<div class="example-card">6. Thiết kế đồ họa freelance – giá trị danh tiếng tích lũy</div>
+<div class="example-card">7. Tư vấn trực tuyến – kiến thức là vốn</div>
+<div class="example-card">8. Lập trình viên remote – thu nhập toàn cầu không cần văn phòng</div>
+<div class="example-card">9. Day trader chứng khoán – chỉ cần vốn nhỏ + kiến thức</div>
+<div class="example-card">10. Affiliate marketing – hoa hồng từ giới thiệu sản phẩm</div>
+<div class="example-card">11. Dropshipping – không cần kho hàng, chỉ cần kết nối</div>
+<div class="example-card">12. Người mẫu ảnh stock – bán ảnh nhiều lần</div>
+<div class="example-card">13. Biên tập viên tự do – làm remote cho nhiều tờ báo</div>
+<div class="example-card">14. Nhạc sĩ sáng tác nhạc online – bản quyền âm nhạc</div>
+<div class="example-card">15. Chuyên gia SEO – tối ưu website không cần vốn</div>
+</div>
+</div>
+
+<!-- ================= TRÌNH TỰ QUYẾT ĐỊNH ================= -->
+<div class="section" id="timeline">
+<h3>⏳ Trình tự quyết định tài chính theo thời gian</h3>
+<div class="example-grid">
+<div class="example-card"><b>Ngắn hạn (0-1 năm):</b> Quản lý dòng tiền, trả nợ lãi cao, xây dựng quỹ khẩn cấp</div>
+<div class="example-card"><b>Trung hạn (1-5 năm):</b> Tiết kiệm mục tiêu (xe, học phí), đầu tư kiến thức, mua bảo hiểm</div>
+<div class="example-card"><b>Dài hạn (5-20 năm):</b> Mua nhà, giáo dục con cái, đầu tư hưu trí, xây dựng tài sản thế hệ</div>
+<div class="example-card"><b>Rất dài hạn (20+ năm):</b> Kế thừa, di sản, tài trợ từ thiện, xây dựng thương hiệu cá nhân</div>
+</div>
+<div class="note">📌 Quy tắc: Ưu tiên trả nợ lãi cao trước → Xây quỹ khẩn cấp → Đầu tư dài hạn → Tích lũy tài sản thế hệ</div>
+</div>
+
+<!-- ================= QUẢN LÝ RỦI RO ================= -->
+<div class="section" id="risk">
+<h3>⚠️ 10 Tình huống quản lý rủi ro tài chính</h3>
+<div class="example-grid">
+<div class="example-card">1. Mất việc đột ngột – quỹ dự phòng 6 tháng chi phí</div>
+<div class="example-card">2. Ốm đau bệnh tật – bảo hiểm y tế và bảo hiểm bệnh hiểm nghèo</div>
+<div class="example-card">3. Thiên tai (bão lụt) – bảo hiểm tài sản</div>
+<div class="example-card">4. Lừa đảo tài chính – nhận biết và phòng ngừa</div>
+<div class="example-card">5. Khủng hoảng kinh tế – đa dạng hóa đầu tư</div>
+<div class="example-card">6. Kiện tụng pháp lý – bảo hiểm trách nhiệm</div>
+<div class="example-card">7. Rủi ro tỷ giá – phòng ngừa với hợp đồng kỳ hạn</div>
+<div class="example-card">8. Lạm phát tăng cao – đầu tư vào tài sản thực</div>
+<div class="example-card">9. Biến động thị trường chứng khoán – chiến lược đầu tư giá trị</div>
+<div class="example-card">10. Rủi ro công nghệ (tiền mã hóa) – chỉ đầu tư số tiền có thể mất</div>
+</div>
+<div class="warn">⚠️ Nguyên tắc: Không bỏ tất cả trứng vào một giỏ. Luôn có kế hoạch B, C.</div>
+</div>
+
+<!-- GHI CHÚ PHẦN MỚI: Bổ sung phần "Áp dụng thực tế hoàn chỉnh" -->
+<!-- ================= ÁP DỤNG THỰC TẾ HOÀN CHỈNH ================= -->
+<div class="section" id="reality">
+<h3>🔍 ÁP DỤNG THỰC TẾ HOÀN CHỈNH - LỘ TRÌNH 7 BƯỚC</h3>
+
+<div class="reality-section">
+<h4>📋 Bước 1: Đánh giá hiện trạng tài chính</h4>
+<div class="reality-item">
+  <b>Thực hành:</b> Liệt kê toàn bộ tài sản (tiền mặt, tiết kiệm, đầu tư, bất động sản) và nợ (vay ngân hàng, thẻ tín dụng, nợ cá nhân).
+</div>
+<div class="reality-item">
+  <b>Công cụ:</b> Sử dụng công thức: <b>Giá trị ròng = Tổng tài sản - Tổng nợ</b>
+</div>
+</div>
+
+<div class="reality-section">
+<h4>🎯 Bước 2: Xác định mục tiêu tài chính theo thời gian</h4>
+<div class="reality-item">
+  <b>Ngắn hạn (0-1 năm):</b> Trả hết nợ thẻ tín dụng, xây dựng quỹ khẩn cấp 3-6 tháng chi phí sinh hoạt.
+</div>
+<div class="reality-item">
+  <b>Trung hạn (1-5 năm):</b> Tiết kiệm mua xe, đặt cọc mua nhà, du lịch gia đình.
+</div>
+<div class="reality-item">
+  <b>Dài hạn (5-20 năm):</b> Mua nhà, giáo dục con cái, nghỉ hưu sớm.
+</div>
+</div>
+
+<div class="reality-section">
+<h4>💰 Bước 3: Lập ngân sách và kế hoạch tiết kiệm</h4>
+<div class="reality-item">
+  <b>Quy tắc 50-30-20:</b> 50% cho nhu cầu thiết yếu, 30% cho mong muốn cá nhân, 20% cho tiết kiệm & đầu tư.
+</div>
+<div class="reality-item">
+  <b>Tự động hóa:</b> Thiết lập chuyển khoản tự động vào tài khoản tiết kiệm ngay khi nhận lương.
+</div>
+</div>
+
+<div class="reality-section">
+<h4>📈 Bước 4: Xây dựng danh mục đầu tư đa dạng</h4>
+<div class="reality-item">
+  <b>Nguyên tắc:</b> Đa dạng hóa theo tuổi: (100 - tuổi)% vào cổ phiếu/tài sản rủi ro, phần còn lại vào trái phiếu/tài sản an toàn.
+</div>
+<div class="reality-item">
+  <b>Ví dụ:</b> Năm 30 tuổi → 70% cổ phiếu/quỹ ETF, 30% trái phiếu/tiền gửi.
+</div>
+</div>
+
+<div class="reality-section">
+<h4>🛡️ Bước 5: Quản lý và phòng ngừa rủi ro</h4>
+<div class="reality-item">
+  <b>Bảo hiểm cơ bản:</b> Y tế, nhân thọ (nếu có người phụ thuộc), tai nạn, bảo hiểm nhà/tài sản.
+</div>
+<div class="reality-item">
+  <b>Quỹ khẩn cấp:</b> Luôn duy trì 3-6 tháng chi phí sinh hoạt trong tài khoản dễ tiếp cận.
+</div>
+</div>
+
+<div class="reality-section">
+<h4>🧾 Bước 6: Tối ưu hóa thuế</h4>
+<div class="reality-item">
+  <b>Đầu tư ưu đãi thuế:</b> Quỹ hưu trí tự nguyện, bảo hiểm nhân thọ, trái phiếu chính phủ.
+</div>
+<div class="reality-item">
+  <b>Khai thuế thu nhập:</b> Tận dụng các khoản giảm trừ gia cảnh, đóng góp từ thiện.
+</div>
+</div>
+
+<div class="reality-section">
+<h4>🔄 Bước 7: Đánh giá và điều chỉnh định kỳ</h4>
+<div class="reality-item">
+  <b>Hàng quý:</b> Xem xét danh mục đầu tư, điều chỉnh phân bổ nếu cần.
+</div>
+<div class="reality-item">
+  <b>Hàng năm:</b> Đánh giá lại mục tiêu, điều chỉnh kế hoạch theo thay đổi cuộc sống (kết hôn, sinh con, thay đổi công việc).
+</div>
+</div>
+
+<div class="note">
+💡 <b>Case study thực tế:</b> Anh Nam 30 tuổi, lương 30 triệu/tháng, muốn mua nhà 3 tỷ sau 5 năm, có 200 triệu tiết kiệm hiện tại.
+<br><b>Giải pháp:</b> Cần tiết kiệm thêm 40 triệu/tháng với lãi suất đầu tư 8%/năm để đạt mục tiêu.
+<br><b>Tính toán:</b> FV = 200tr*(1+0.08)^5 + [40tr*(((1+0.08)^5 - 1)/0.08)] = 294tr + 235tr*12 = ~3 tỷ
+</div>
+
+<h4 style="margin-top:20px;">🎮 THỰC HÀNH NGAY: Áp dụng vào tình huống của bạn</h4>
+<div style="background:#e3f2fd;padding:15px;border-radius:8px;">
+<p><b>1. Nhập tình huống của bạn vào ô phía trên trang</b></p>
+<p><b>2. Chọn cấp độ phù hợp với hoàn cảnh</b></p>
+<p><b>3. Xem ví dụ thực tế và áp dụng công thức</b></p>
+<p><b>4. Sử dụng nút "Tính toán nhanh" để tự tính cho riêng mình</b></p>
+</div>
+</div>
+
+<!-- ================= FOOTER ================= -->
+<div class="section" style="text-align:center;background:#2c3e50;color:white;">
+<p>🎓 <b>Game Học Thuật: Giá Trị Thời Gian Của Tiền</b></p>
+<p>Phiên bản hoàn chỉnh với 150+ ví dụ thực tế từ cá nhân đến quốc tế</p>
+<p>Áp dụng ngay để ra quyết định tài chính thông minh!</p>
+<p style="font-size:0.9em;margin-top:10px;">📚 Tài liệu tham khảo: Sách Tài chính Cá nhân, Giáo trình TCDN, Case study thực tế</p>
+</div>
+
+<script>
+// GHI CHÚ PHẦN MỚI: Thêm chức năng tự động cuộn khi trang tải xong để hiển thị phần giới thiệu
+document.addEventListener('DOMContentLoaded', function() {
+  // Hiển thị thông báo chào mừng
+  setTimeout(function() {
+    alert("Chào mừng đến với Game Học Thuật: Giá Trị Thời Gian Của Tiền!\n\nNhập tình huống của bạn vào ô phía trên và nhấn 'Tìm giải pháp' để bắt đầu.");
+  }, 1000);
+});
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCDN – Trò Chơi Tài Chính Doanh Nghiệp - Chương 2</title>
+<style>
+body{font-family:Arial;background:#f5f6fa;padding:20px;line-height:1.6}
+.section{background:#fff;border-radius:8px;padding:16px;margin-bottom:20px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+h2,h3{color:#2c3e50}
+button{padding:8px 12px;margin:6px;cursor:pointer;background:#3498db;color:white;border:none;border-radius:4px}
+button:hover{background:#2980b9}
+input,select{padding:8px;width:100%;margin:8px 0;border-radius:4px;border:1px solid #ccc}
+.note{background:#eef;border-left:4px solid #3498db;padding:12px;margin:12px 0;border-radius:4px}
+.warn{background:#fee;border-left:4px solid #e74c3c;padding:12px;margin:12px 0;border-radius:4px}
+.calc{background:#f0fff0;border-left:4px solid #2ecc71;padding:12px;margin:12px 0;border-radius:4px}
+table{border-collapse:collapse;width:100%;margin:10px 0}
+td,th{border:1px solid #ccc;padding:8px;text-align:left}
+th{background:#f2f2f2}
+.game{background:#fff9e6;border-left:4px solid #f39c12;padding:12px;margin:12px 0;border-radius:4px}
+.game-container{display:flex;flex-wrap:wrap;gap:20px;margin:20px 0}
+.game-panel{flex:1;min-width:300px;background:#fff;padding:15px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.game-score{background:linear-gradient(135deg,#2ecc71,#27ae60);color:white;padding:15px;border-radius:8px;text-align:center;margin:10px 0}
+.game-score h3{margin-top:0;color:white}
+.decision-result{background:#e8f4fc;border:2px dashed #3498db;padding:15px;border-radius:8px;margin:15px 0}
+.progress-bar{height:20px;background:#eee;border-radius:10px;margin:10px 0;overflow:hidden}
+.progress-fill{height:100%;background:#2ecc71;border-radius:10px;transition:width 0.5s}
+.risk-meter{display:flex;justify-content:space-between;margin:10px 0}
+.risk-level{flex:1;text-align:center;padding:5px;background:#eee;margin:0 2px;border-radius:4px}
+.risk-level.active{background:#e74c3c;color:white}
+.game-controls{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}
+.simulation-table{border:1px solid #ddd;border-radius:8px;overflow:hidden;margin:15px 0}
+.simulation-row{display:flex;border-bottom:1px solid #ddd;padding:10px}
+.simulation-row.header{background:#2c3e50;color:white;font-weight:bold}
+.simulation-cell{flex:1;padding:5px 10px}
+.highlight{animation:highlight 2s ease;}
+@keyframes highlight{
+  0%{background-color:#ffffcc;}
+  100%{background-color:transparent;}
+}
+</style>
+<script>
+// ================== BIẾN TOÀN CỤC TRÒ CHƠI ==================
+let gameScore = 100; // Điểm ban đầu
+let gameLevel = "Cá nhân"; // Cấp độ hiện tại
+let riskTolerance = 3; // Mức chấp nhận rủi ro (1-5)
+let playerName = "Người chơi";
+let decisionsHistory = []; // Lịch sử quyết định
+let currentScenario = null; // Tình huống hiện tại
+
+// ================== HÀM CHÍNH ==================
+function go(id){
+  document.getElementById(id).scrollIntoView({behavior:"smooth"});
+}
+
+function searchSituation(){
+  let query = document.getElementById('situationInput').value.toLowerCase().trim();
+  if(query === '') return;
+  
+  // Danh sách từ khóa đến section
+  let map = {
+    'mua nhà': 'ex-personal-1',
+    'vay mua nhà': 'ex-personal-1',
+    'trả góp xe': 'ex-personal-2',
+    'vay tiêu dùng': 'ex-personal-3',
+    'thuê tài chính': 'company',
+    'đầu tư dự án': 'nation',
+    'vay ngân hàng': 'personal',
+    'trái phiếu': 'corporation',
+    'vay quốc tế': 'un',
+    'startup': 'nocapital',
+    'freelance': 'nocapital'
+  };
+  
+  for(let key in map){
+    if(query.includes(key)){
+      go(map[key]);
+      // Tạo hiệu ứng highlight
+      let element = document.getElementById(map[key]);
+      if(element){
+        element.classList.add('highlight');
+        setTimeout(() => element.classList.remove('highlight'), 2000);
+      }
+      return;
+    }
+  }
+  alert('Không tìm thấy tình huống khớp. Hãy thử từ khóa khác!');
+}
+
+// ================== HỆ THỐNG TRÒ CHƠI ==================
+function startGame(){
+  playerName = document.getElementById('playerName').value || "Người chơi";
+  gameLevel = document.getElementById('gameLevel').value;
+  riskTolerance = parseInt(document.getElementById('riskTolerance').value);
+  gameScore = 100;
+  
+  updateGameDisplay();
+  
+  // Hiển thị thông báo
+  alert(`🎮 Chào mừng ${playerName} đến với Trò Chơi Tài Chính!\nCấp độ: ${gameLevel}\nMục tiêu: Đạt 200 điểm bằng các quyết định tài chính thông minh!`);
+  
+  // Tạo tình huống ngẫu nhiên
+  generateRandomScenario();
+}
+
+function updateGameDisplay(){
+  document.getElementById('currentScore').textContent = gameScore;
+  document.getElementById('currentLevel').textContent = gameLevel;
+  document.getElementById('currentPlayer').textContent = playerName;
+  
+  // Cập nhật thanh progress
+  let progressPercent = Math.min(100, (gameScore / 200) * 100);
+  document.getElementById('progressFill').style.width = progressPercent + '%';
+  
+  // Cập nhật risk meter
+  document.querySelectorAll('.risk-level').forEach((el, index) => {
+    el.classList.toggle('active', index < riskTolerance);
+  });
+  
+  // Cập nhật lịch sử
+  updateHistoryDisplay();
+}
+
+function generateRandomScenario(){
+  const scenarios = [
+    {id: 1, title: "Vay mua nhà 30 năm", level: "Cá nhân", options: [
+      {name: "Vay cố định 8%/năm", pv: 1200000000, risk: 2},
+      {name: "Vay thả nổi 7% + 2%", pv: 1300000000, risk: 4},
+      {name: "Thuê nhà dài hạn", pv: 1400000000, risk: 1}
+    ]},
+    {id: 2, title: "Đầu tư máy móc sản xuất", level: "Công ty", options: [
+      {name: "Thuê tài chính 5 năm", pv: 500000000, risk: 2},
+      {name: "Vay mua trực tiếp", pv: 550000000, risk: 3},
+      {name: "Hợp tác PPP", pv: 450000000, risk: 4}
+    ]},
+    {id: 3, title: "Phát hành trái phiếu doanh nghiệp", level: "Tập đoàn", options: [
+      {name: "Trái phiếu xanh 5%", pv: 10000000000, risk: 2},
+      {name: "Trái phiếu thường 7%", pv: 9500000000, risk: 3},
+      {name: "Vay ngân hàng syndicate", pv: 10500000000, risk: 2}
+    ]}
+  ];
+  
+  // Chọn scenario phù hợp với level
+  let filteredScenarios = scenarios.filter(s => s.level === gameLevel);
+  if(filteredScenarios.length === 0) filteredScenarios = scenarios;
+  
+  currentScenario = filteredScenarios[Math.floor(Math.random() * filteredScenarios.length)];
+  
+  // Hiển thị scenario
+  let scenarioHTML = `<h4>${currentScenario.title}</h4>`;
+  currentScenario.options.forEach((opt, index) => {
+    scenarioHTML += `
+      <button onclick="makeDecision(${index})" style="margin:5px;width:100%;text-align:left">
+        ${opt.name}<br>
+        <small>PV ước tính: ${formatMoney(opt.pv)} | Rủi ro: ${getRiskLevelText(opt.risk)}</small>
+      </button>
+    `;
+  });
+  
+  document.getElementById('currentScenario').innerHTML = scenarioHTML;
+}
+
+function makeDecision(optionIndex){
+  if(!currentScenario) return;
+  
+  const option = currentScenario.options[optionIndex];
+  const isGoodDecision = option.pv <= getAveragePV(currentScenario.options) && option.risk <= riskTolerance;
+  
+  // Tính điểm
+  let points = 0;
+  let message = "";
+  
+  if(isGoodDecision){
+    points = 20 - (option.risk * 2);
+    message = `✅ Quyết định tốt! PV thấp và phù hợp với khẩu vị rủi ro. +${points} điểm`;
+  } else {
+    points = -10 + (option.risk * 3);
+    message = `⚠️ Quyết định chưa tối ưu! PV cao hoặc rủi ro vượt mức chấp nhận. ${points} điểm`;
+  }
+  
+  gameScore += points;
+  
+  // Lưu vào lịch sử
+  decisionsHistory.unshift({
+    scenario: currentScenario.title,
+    decision: option.name,
+    points: points,
+    date: new Date().toLocaleTimeString()
+  });
+  
+  // Giới hạn lịch sử
+  if(decisionsHistory.length > 5) decisionsHistory.pop();
+  
+  // Hiển thị kết quả
+  document.getElementById('decisionResult').innerHTML = `
+    <h4>Kết quả quyết định:</h4>
+    <p>${message}</p>
+    <p><strong>Phân tích:</strong></p>
+    <ul>
+      <li>PV của phương án: ${formatMoney(option.pv)}</li>
+      <li>Mức rủi ro: ${getRiskLevelText(option.risk)}</li>
+      <li>Khẩu vị rủi ro của bạn: ${riskTolerance}/5</li>
+      <li>Điểm thưởng/trừ: ${points > 0 ? '+' : ''}${points}</li>
+    </ul>
+  `;
+  
+  // Kiểm tra thắng/thua
+  if(gameScore >= 200){
+    document.getElementById('decisionResult').innerHTML += `
+      <div class="game-score" style="margin-top:10px">
+        🏆 CHÚC MỪNG! Bạn đã chiến thắng trò chơi!<br>
+        Tổng điểm: ${gameScore}
+      </div>
+    `;
+  } else if(gameScore <= 0){
+    document.getElementById('decisionResult').innerHTML += `
+      <div class="warn" style="margin-top:10px">
+        💀 GAME OVER! Bạn đã phá sản!<br>
+        Hãy bắt đầu lại với chiến lược thận trọng hơn.
+      </div>
+    `;
+  }
+  
+  updateGameDisplay();
+  
+  // Tạo scenario mới
+  setTimeout(generateRandomScenario, 2000);
+}
+
+function getAveragePV(options){
+  const total = options.reduce((sum, opt) => sum + opt.pv, 0);
+  return total / options.length;
+}
+
+function getRiskLevelText(level){
+  const levels = ["Rất thấp", "Thấp", "Trung bình", "Cao", "Rất cao"];
+  return levels[level-1] || "Không xác định";
+}
+
+function formatMoney(amount){
+  if(amount >= 1000000000){
+    return (amount/1000000000).toFixed(1) + " tỷ VND";
+  } else if(amount >= 1000000){
+    return (amount/1000000).toFixed(1) + " triệu VND";
+  }
+  return amount.toLocaleString() + " VND";
+}
+
+function updateHistoryDisplay(){
+  let historyHTML = "<h4>Lịch sử quyết định gần đây:</h4>";
+  
+  if(decisionsHistory.length === 0){
+    historyHTML += "<p>Chưa có quyết định nào</p>";
+  } else {
+    decisionsHistory.forEach(decision => {
+      const color = decision.points > 0 ? '#2ecc71' : '#e74c3c';
+      historyHTML += `
+        <div style="border-left:4px solid ${color};padding-left:10px;margin:5px 0">
+          <strong>${decision.scenario}</strong><br>
+          <small>Quyết định: ${decision.decision}</small><br>
+          <small>Điểm: <span style="color:${color}">${decision.points > 0 ? '+' : ''}${decision.points}</span> | ${decision.date}</small>
+        </div>
+      `;
+    });
+  }
+  
+  document.getElementById('decisionsHistory').innerHTML = historyHTML;
+}
+
+function calculatePV(){
+  const cf = parseFloat(document.getElementById('cfInput').value) || 0;
+  const rate = parseFloat(document.getElementById('rateInput').value) / 100 || 0.08;
+  const periods = parseInt(document.getElementById('periodsInput').value) || 12;
+  
+  if(cf <= 0 || rate <= 0 || periods <= 0){
+    alert("Vui lòng nhập giá trị hợp lệ!");
+    return;
+  }
+  
+  let pv = 0;
+  let calculation = `PV = `;
+  
+  for(let t = 1; t <= periods; t++){
+    const discounted = cf / Math.pow(1 + rate, t);
+    pv += discounted;
+    
+    if(t <= 3 || t === periods){
+      calculation += `${cf}/(1+${rate.toFixed(2)})^${t} ${t < periods ? '+ ' : ''}`;
+    }
+  }
+  
+  if(periods > 3){
+    calculation += `+ ... + ${cf}/(1+${rate.toFixed(2)})^${periods}`;
+  }
+  
+  calculation += `\nPV = ${pv.toFixed(2)} triệu VND`;
+  
+  document.getElementById('pvResult').innerHTML = `
+    <h4>Kết quả tính PV:</h4>
+    <div class="calc">
+      <strong>Giá trị hiện tại (PV):</strong><br>
+      ${formatMoney(pv * 1000000)}<br><br>
+      <strong>Phép tính:</strong><br>
+      <pre style="background:#fff;padding:10px;border-radius:4px">${calculation}</pre>
+    </div>
+  `;
+}
+
+function calculatePMT(){
+  const pv = parseFloat(document.getElementById('pmtPV').value) || 0;
+  const rate = parseFloat(document.getElementById('pmtRate').value) / 100 / 12 || 0.01;
+  const periods = parseInt(document.getElementById('pmtPeriods').value) || 36;
+  
+  if(pv <= 0 || rate <= 0 || periods <= 0){
+    alert("Vui lòng nhập giá trị hợp lệ!");
+    return;
+  }
+  
+  const pmt = pv * (rate * Math.pow(1 + rate, periods)) / (Math.pow(1 + rate, periods) - 1);
+  
+  document.getElementById('pmtResult').innerHTML = `
+    <h4>Kết quả tính PMT:</h4>
+    <div class="calc">
+      <strong>Thanh toán hàng tháng (PMT):</strong><br>
+      ${formatMoney(pmt * 1000000)}/tháng<br><br>
+      <strong>Tổng số tiền trả:</strong><br>
+      ${formatMoney(pmt * periods * 1000000)}<br><br>
+      <strong>Tổng lãi phải trả:</strong><br>
+      ${formatMoney((pmt * periods - pv) * 1000000)}
+    </div>
+  `;
+}
+
+// Khởi tạo khi trang load
+window.onload = function(){
+  updateGameDisplay();
+};
+</script>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<div class="section">
+<h1 style="text-align:center;color:#2c3e50">🎲 Trò Chơi Tài Chính Doanh Nghiệp - Chương 2: Quyết Định Vay & Thuê Tài Chính</h1>
+<p style="text-align:center;font-size:1.2em">Áp dụng thực tế - Chọn phương án tối ưu - Giảm rủi ro tối đa</p>
+<p style="text-align:center"><b>🎥 Video bài giảng:</b> <a href="https://www.youtube.com/watch?v=rL4wrlTvhYU" target="_blank">Quang Trung TV – TCDN Chương 2 Phần 4</a></p>
+</div>
+
+<!-- ================= TRÒ CHƠI TƯƠNG TÁC ================= -->
+<div class="section">
+<h2>🎮 TRÒ CHƠI TÀI CHÍNH ĐỜI THẬT</h2>
+<div class="game-container">
+  <div class="game-panel">
+    <h3>Thông tin người chơi</h3>
+    <div class="game-score">
+      <h3>ĐIỂM: <span id="currentScore">100</span>/200</h3>
+      <p>Cấp độ: <span id="currentPlayer">Người chơi</span> - <span id="currentLevel">Cá nhân</span></p>
+    </div>
+    
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width:50%"></div>
+    </div>
+    
+    <p><strong>Khẩu vị rủi ro của bạn:</strong></p>
+    <div class="risk-meter">
+      <div class="risk-level active">1</div>
+      <div class="risk-level active">2</div>
+      <div class="risk-level active">3</div>
+      <div class="risk-level">4</div>
+      <div class="risk-level">5</div>
+    </div>
+    <p><small>1 = Bảo thủ, 5 = Mạo hiểm</small></p>
+    
+    <div id="decisionsHistory"></div>
+  </div>
+  
+  <div class="game-panel">
+    <h3>Bắt đầu trò chơi</h3>
+    <input type="text" id="playerName" placeholder="Tên của bạn" value="Người chơi">
+    
+    <select id="gameLevel">
+      <option value="Cá nhân">👤 Cá nhân (Dễ)</option>
+      <option value="Công ty">🏭 Công ty (Trung bình)</option>
+      <option value="Tập đoàn">🏢 Tập đoàn (Khó)</option>
+    </select>
+    
+    <select id="riskTolerance">
+      <option value="1">Rất thận trọng (Rủi ro thấp)</option>
+      <option value="2" selected>Thận trọng</option>
+      <option value="3">Cân bằng</option>
+      <option value="4">Mạo hiểm</option>
+      <option value="5">Rất mạo hiểm (Rủi ro cao)</option>
+    </select>
+    
+    <button onclick="startGame()" style="background:#2ecc71;width:100%">🎮 BẮT ĐẦU TRÒ CHƠI</button>
+    
+    <div class="game">
+      <b>📋 Luật chơi:</b>
+      <ol>
+        <li>Bắt đầu với 100 điểm</li>
+        <li>Chọn phương án có PV thấp nhất và rủi ro phù hợp</li>
+        <li>Đạt 200 điểm để chiến thắng</li>
+        <li>Xuống 0 điểm sẽ thua</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<!-- TÌNH HUỐNG HIỆN TẠI -->
+<div class="section">
+<h3>📊 Tình huống cần quyết định</h3>
+<div id="currentScenario">
+  <p>Nhấn "Bắt đầu trò chơi" để nhận tình huống đầu tiên!</p>
+</div>
+
+<div id="decisionResult" class="decision-result">
+  <p>Kết quả quyết định sẽ hiển thị ở đây...</p>
+</div>
+</div>
+
+<!-- ================= CÔNG CỤ TÍNH TOÁN ================= -->
+<div class="section">
+<h3>🧮 Công cụ tính toán thực tế</h3>
+
+<div class="game-container">
+  <div class="game-panel">
+    <h4>Tính Giá Trị Hiện Tại (PV)</h4>
+    <p><small>Tính PV của dòng tiền đều trong tương lai</small></p>
+    
+    <input type="number" id="cfInput" placeholder="Dòng tiền mỗi kỳ (triệu VND)" value="10">
+    <input type="number" id="rateInput" placeholder="Lãi suất chiết khấu (%/năm)" value="8" step="0.1">
+    <input type="number" id="periodsInput" placeholder="Số kỳ (tháng/năm)" value="12">
+    
+    <button onclick="calculatePV()" style="width:100%">Tính PV</button>
+    
+    <div id="pvResult" style="margin-top:15px"></div>
+  </div>
+  
+  <div class="game-panel">
+    <h4>Tính Thanh Toán Đều (PMT)</h4>
+    <p><small>Tính khoản trả góp hàng tháng</small></p>
+    
+    <input type="number" id="pmtPV" placeholder="Số tiền vay (triệu VND)" value="500">
+    <input type="number" id="pmtRate" placeholder="Lãi suất năm (%)" value="12" step="0.1">
+    <input type="number" id="pmtPeriods" placeholder="Số tháng trả góp" value="36">
+    
+    <button onclick="calculatePMT()" style="width:100%">Tính PMT</button>
+    
+    <div id="pmtResult" style="margin-top:15px"></div>
+  </div>
+</div>
+</div>
+
+<!-- ================= ĐIỀU KHIỂN ================= -->
+<div class="section">
+<h2>🎮 Bảng Điều Khiển Tình Huống Thực Tế</h2>
+<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:end">
+  <div style="flex:1;min-width:300px">
+    <input id="situationInput" placeholder="Nhập tình huống thực tế (VD: vay mua nhà, mua máy móc trả góp, đầu tư dự án quốc gia...)">
+    <button onclick="searchSituation()" style="width:100%;background:#e67e22">🔍 Tìm & Cuộn đến Tình Huống</button>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;width:100%">
+    <button onclick="go('term')">📘 Thuật ngữ</button>
+    <button onclick="go('formula')">📐 Công thức</button>
+    <button onclick="go('personal')">👤 Cá nhân</button>
+    <button onclick="go('family')">🏡 Gia đình</button>
+    <button onclick="go('company')">🏭 Công ty</button>
+    <button onclick="go('corporation')">🏢 Tập đoàn</button>
+    <button onclick="go('city')">🏙 Thành phố/Thủ đô</button>
+    <button onclick="go('ministry')">🏛 Bộ Tài chính</button>
+    <button onclick="go('nation')">🌍 Quốc gia</button>
+    <button onclick="go('un')">🌐 Liên Hiệp Quốc</button>
+    <button onclick="go('nocapital')">💡 Nghề không vốn</button>
+    <button onclick="go('timeline')">⏳ Trình tự quyết định</button>
+    <button onclick="go('risk')">⚠️ Rủi ro chiến lược</button>
+  </div>
+</div>
+<div class="game">
+<b>🎯 Mục tiêu trò chơi:</b> Bạn là nhà quyết định tài chính ở nhiều cấp độ. Chọn phương án vay/thuê/mua có <b>PV chi phí thấp nhất</b> và <b>rủi ro ít nhất</b> để thắng cuộc!
+</div>
+</div>
+
+<!-- ================= THUẬT NGỮ ================= -->
+<div class="section" id="term">
+<h3>📘 Thuật ngữ trọng tâm</h3>
+<ul>
+<li><b>Amortization:</b> Bảng phân bổ trả nợ gốc + lãi từng kỳ</li>
+<li><b>PMT:</b> Khoản thanh toán cố định mỗi kỳ</li>
+<li><b>PV (Present Value):</b> Giá trị hiện tại của dòng tiền tương lai</li>
+<li><b>Dư nợ giảm dần:</b> Gốc còn lại sau mỗi kỳ trả</li>
+<li><b>Chiết khấu dòng tiền:</b> Quy tất cả về giá trị hôm nay để so sánh công bằng</li>
+</ul>
+<div class="note">💡 Quy tắc vàng: Luôn chọn phương án có <b>PV nhỏ nhất</b> → Chi phí thực tế rẻ nhất!</div>
+</div>
+
+<!-- ================= CÔNG THỨC ================= -->
+<div class="section" id="formula">
+<h3>📐 Công thức cốt lõi</h3>
+<div class="calc">
+<b>Thanh toán đều PMT:</b><br>
+PMT = PV × (i × (1+i)^n) / ((1+i)^n - 1)
+</div>
+<div class="calc">
+<b>Giá trị hiện tại PV của dòng tiền:</b><br>
+PV = Σ (CF_t / (1+i)^t)
+</div>
+<div class="note">👉 Trong kinh doanh thực tế: Chọn lãi suất chiết khấu = chi phí vốn (WACC) hoặc lãi vay ngân hàng</div>
+</div>
+
+<!-- ================= CÁ NHÂN ================= -->
+<div class="section" id="personal">
+<h3>👤 25 Tình Huống Thực Tế Cấp Độ Cá Nhân</h3>
+<div class="game"><b>🎲 Thử thách:</b> Bạn là người trẻ độc lập, chọn cách tài chính thông minh nhất để tránh bẫy lãi suất.</div>
+<ol>
+<li id="ex-personal-1"><b>Vay ngân hàng mua nhà trả góp 30 năm vs thuê nhà dài hạn:</b> Tính PV tổng chi phí → thường mua nhà PV thấp hơn nếu lãi cố định.</li>
+<li id="ex-personal-2"><b>Mua xe ô tô trả góp 5 năm vs trả thẳng:</b> So PV, nếu lãi cao → trả thẳng tốt hơn.</li>
+<li><b>Vay tiêu dùng mua điện thoại/iPhone trả góp 0% lãi:</b> Thực tế có phí ẩn → tính PV thực.</li>
+<li><b>Vay tín chấp tiêu dùng vs vay thế chấp:</b> Lãi tín chấp cao → PV đắt hơn nhiều.</li>
+<li><b>Mua bảo hiểm nhân thọ tích lũy vs gửi tiết kiệm:</b> So PV giá trị hoàn lại.</li>
+<li><b>Trả góp thẻ tín dụng vs trả đầy đủ:</b> Lãi thẻ cao → tránh trả tối thiểu.</li>
+<li><b>Vay học phí du học vs tự tích lũy:</b> Tính PV chi phí lãi vay.</li>
+<li><b>Mua laptop trả góp vs chờ tích tiền:</b> Nếu lãi thấp → trả góp giữ tiền đầu tư khác.</li>
+<li><b>Đầu tư chứng khoán vay margin vs dùng tiền tự có:</b> Rủi ro cao nếu thị trường giảm.</li>
+<li><b>Thuê tài chính mua xe máy vs vay ngân hàng:</b> So PV tổng thanh toán.</li>
+<li><b>Mua đồ nội thất trả góp vs mua cũ:</b> Tính chi phí cơ hội.</li>
+<li><b>Vay nóng ngoài luồng vs ngân hàng:</b> Lãi cắt cổ → PV cực cao.</li>
+<li><b>Tham gia quỹ tín dụng đen vs tiết kiệm cá nhân:</b> Rủi ro mất trắng.</li>
+<li><b>Mua vàng trả góp vs tích lũy dần:</b> Nếu giá vàng tăng mạnh → trả góp lợi.</li>
+<li><b>Vay để đầu tư bất động sản lướt sóng:</b> Rủi ro lãi suất tăng.</li>
+<li><b>Sử dụng ví điện tử trả sau (like Fundiin):</b> Phí ẩn → tính PV.</li>
+<li><b>Mua vé máy bay trả góp vs trả ngay:</b> Thường 0% thật → lợi.</li>
+<li><b>Vay để học thêm kỹ năng (khóa học online):</b> Nếu tăng thu nhập → PV lợi nhuận dương.</li>
+<li><b>Trả nợ thẻ tín dụng sớm vs đầu tư khác:</b> Lãi thẻ cao → trả sớm ưu tiên.</li>
+<li><b>Mua quà cưới trả góp vs tiết kiệm trước:</b> Áp lực tài chính cá nhân.</li>
+<li><b>Vay để du lịch vs tiết kiệm:</b> Thường không đáng PV.</li>
+<li><b>Sử dụng BNPL (Buy Now Pay Later) mua sắm:</b> Dễ rơi bẫy chi tiêu quá tay.</li>
+<li><b>Vay peer-to-peer (P2P lending):</b> Lãi cao hơn ngân hàng.</li>
+<li><b>Đầu tư crypto vay đòn bẩy:</b> Rủi ro thanh lý cực cao.</li>
+<li><b>Mua hợp đồng tương lai vs tiền mặt:</b> Cá nhân thường thua lỗ.</li>
+</ol>
+</div>
+
+<!-- ================= GIA ĐÌNH ================= -->
+<div class="section" id="family">
+<h3>🏡 25 Tình Huống Thực Tế Cấp Độ Gia Đình</h3>
+<div class="game"><b>🎲 Thử thách:</b> Bạn là trụ cột gia đình, cân bằng chi tiêu và rủi ro cho cả nhà.</div>
+<ol>
+<li><b>Xây nhà mới vay ngân hàng vs sửa nhà cũ:</b> Tính PV dài hạn 20-30 năm.</li>
+<li><b>Vay mua ô tô gia đình vs đi xe công cộng:</b> Chi phí vận hành + lãi.</li>
+<li><b>Cho con du học vay học phí vs quỹ tiết kiệm giáo dục:</b> So PV tổng chi phí.</li>
+<li><b>Mua bảo hiểm y tế gia đình vs tự để tiền phòng bệnh:</b> Rủi ro lớn nếu bệnh nặng.</li>
+<li><b>Thuê nhà lớn vs mua nhà nhỏ trả góp:</b> Tính toán dòng tiền gia đình.</li>
+<li><b>Vay để tổ chức đám cưới vs tiết kiệm:</b> Áp lực trả nợ sau cưới.</li>
+<li><b>Mua đất nền trả góp vs gửi ngân hàng:</b> Rủi ro thị trường bất động sản.</li>
+<li><b>Đầu tư quỹ hưu trí gia đình vs tự quản lý:</b> PV giá trị tương lai.</li>
+<li><b>Vay sửa chữa nhà cửa sau bão lũ:</b> Ưu tiên vay ưu đãi chính phủ.</li>
+<li><b>Mua máy phát điện dự phòng vs không:</b> Rủi ro mất điện dài ngày.</li>
+<li><b>Vay để hỗ trợ con khởi nghiệp:</b> Rủi ro con thất bại.</li>
+<li><b>Tham gia hợp tác xã tín dụng gia đình:</b> Lãi nội bộ thấp hơn.</li>
+<li><b>Mua nông cụ trả góp cho nông nghiệp gia đình:</b> Tăng năng suất bù lãi.</li>
+<li><b>Vay vốn nuôi con ăn học đại học:</b> Tính ROI thu nhập tương lai con.</li>
+<li><b>Thuê tài chính thiết bị y tế tại nhà (máy thở oxy):</b> Cho người cao tuổi.</li>
+<li><b>Mua bảo hiểm tài sản nhà cửa:</b> Chống rủi ro thiên tai.</li>
+<li><b>Vay để chuyển đổi số gia đình (mua thiết bị học online):</b> Đại dịch.</li>
+<li><b>Tích lũy quỹ khẩn cấp vs vay khi cần:</b> Tránh lãi cao đột xuất.</li>
+<li><b>Mua thực phẩm dự trữ dài hạn trả góp:</b> Thời lạm phát cao.</li>
+<li><b>Vay để di cư nội địa:</b> Tìm việc làm tốt hơn.</li>
+<li><b>Tham gia nhóm tiết kiệm xoay vòng (hụi):</b> Rủi ro vỡ hụi.</li>
+<li><b>Mua xe điện gia đình trả góp:</b> Tiết kiệm nhiên liệu dài hạn.</li>
+<li><b>Vay vốn mở quán ăn nhỏ gia đình:</b> Rủi ro kinh doanh.</li>
+<li><b>Đầu tư năng lượng mặt trời mái nhà vay ưu đãi:</b> Giảm hóa đơn điện PV thấp.</li>
+<li><b>Thế chấp nhà để vay kinh doanh:</b> Rủi ro mất nhà nếu thất bại.</li>
+</ol>
+</div>
+
+<!-- ================= CÔNG TY ================= -->
+<div class="section" id="company">
+<h3>🏭 25 Tình Huống Thực Tế Cấp Độ Công Ty (SME)</h3>
+<div class="game"><b>🎲 Thử thách:</b> Bạn là CEO công ty nhỏ, quyết định đầu tư máy móc/vốn lưu động.</div>
+<ol>
+<li><b>Thuê tài chính máy móc vs vay ngân hàng mua:</b> Thuê thường PV thấp hơn do khấu hao.</li>
+<li><b>Mua xe tải trả góp vs thuê xe logistics:</b> Tính PV vận hành dài hạn.</li>
+<li><b>Vay vốn lưu động vs factoring hóa đơn:</b> Factoring phí cao hơn.</li>
+<li><b>Đầu tư phần mềm ERP vay ngân hàng:</b> Tăng hiệu quả bù lãi.</li>
+<li><b>Mua nhà xưởng trả góp vs thuê dài hạn:</b> Quyền sở hữu vs linh hoạt.</li>
+<li><b>Vay để nhập hàng tồn kho mùa cao điểm:</b> Rủi ro hàng ế.</li>
+<li><b>Tham gia chương trình vay ưu đãi SME chính phủ:</b> Lãi thấp → ưu tiên.</li>
+<li><b>Phát hành trái phiếu công ty vs vay ngân hàng:</b> Trái phiếu lãi cao hơn.</li>
+<li><b>Mua máy in 3D công nghiệp trả góp:</b> Đổi mới sản xuất.</li>
+<li><b>Vay để tuyển dụng & đào tạo nhân sự:</b> Tăng năng suất dài hạn.</li>
+<li><b>Thuê tài chính hệ thống năng lượng mặt trời:</b> Tiết kiệm chi phí điện.</li>
+<li><b>Vay mở chi nhánh mới:</b> Rủi ro thị trường mới.</li>
+<li><b>Mua phần mềm quản lý kho vay:</b> Giảm thất thoát.</li>
+<li><b>Vay để nghiên cứu sản phẩm mới (R&D):</b> Rủi ro thất bại cao.</li>
+<li><b>Thế chấp tài sản vay mở rộng sản xuất:</b> Tăng công suất.</li>
+<li><b>Sử dụng leasing thiết bị văn phòng:</b> Giữ dòng tiền mặt.</li>
+<li><b>Vay ngắn hạn trả lương mùa khó khăn:</b> Tránh mất nhân tài.</li>
+<li><b>Mua xe nâng hàng trả góp:</b> Tăng hiệu quả logistics nội bộ.</li>
+<li><b>Đầu tư chứng chỉ xanh vay ưu đãi:</b> Thu hút khách hàng quốc tế.</li>
+<li><b>Vay để tham gia chuỗi cung ứng lớn:</b> Đơn hàng ổn định.</li>
+<li><b>Thuê tài chính tàu đánh cá (công ty thủy sản nhỏ):</b> Mùa đánh bắt.</li>
+<li><b>Vay chuyển đổi số (cloud computing):</b> Thời COVID.</li>
+<li><b>Mua robot hàn tự động:</b> Giảm lao động thủ công.</li>
+<li><b>Vay để dự trữ nguyên liệu giá tăng:</b> Hedging giá.</li>
+<li><b>Tham gia sàn thương mại điện tử vay vốn quảng cáo:</b> Tăng doanh số.</li>
+</ol>
+</div>
+
+<!-- ================= TẬP ĐOÀN ================= -->
+<div class="section" id="corporation">
+<h3>🏢 25 Tình Huống Thực Tế Cấp Độ Tập Đoàn</h3>
+<div class="game"><b>🎲 Thử thách:</b> Bạn là CFO tập đoàn lớn, tối ưu chi phí vốn hàng nghìn tỷ.</div>
+<ol>
+<li><b>Phát hành trái phiếu quốc tế vs vay syndicate ngân hàng:</b> Tính PV với lãi suất USD/EUR.</li>
+<li><b>Thuê tài chính đội tàu bay (leasing aircraft):</b> Vietnam Airlines thường dùng.</li>
+<li><b>Mua cổ phần công ty con vs spin-off:</b> Tối ưu cấu trúc vốn.</li>
+<li><b>Vay để M&A sáp nhập đối thủ:</b> Synergy bù chi phí lãi.</li>
+<li><b>Đầu tư dự án xanh phát hành green bond:</b> Lãi thấp hơn bond thường.</li>
+<li><b>Hedging rủi ro lãi suất bằng swap:</b> Chuyển lãi floating sang fixed.</li>
+<li><b>Repo agreement ngắn hạn vs commercial paper:</b> Quản lý thanh khoản.</li>
+<li><b>Thuê tài chính nhà máy sản xuất chip:</b> Chi phí khổng lồ.</li>
+<li><b>Vay dự án PPP hạ tầng (VinGroup):</b> Hợp tác công tư.</li>
+<li><b>Phát hành cổ phiếu ưu đãi vs nợ:</b> Không pha loãng cổ phần thường.</li>
+<li><b>Đầu tư nước ngoài vay ECB (External Commercial Borrowing):</b> Lãi thấp.</li>
+<li><b>Quản lý nợ bằng buyback trái phiếu khi lãi giảm:</b> Giảm chi phí lãi.</li>
+<li><b>Thuê tài chính vệ tinh viễn thông:</b> Tập đoàn viễn thông lớn.</li>
+<li><b>Vay để xây dựng data center:</b> Thời AI bùng nổ.</li>
+<li><b>Sử dụng derivative phòng rủi ro tỷ giá:</b> Xuất nhập khẩu lớn.</li>
+<li><b>Phát hành bond chuyển đổi (convertible):</b> Lãi thấp + tiềm năng equity.</li>
+<li><b>Đầu tư ESG vay ưu đãi từ IFC:</b> Tổ chức tài chính quốc tế.</li>
+<li><b>Vay syndicated cho dự án dầu khí offshore:</b> Rủi ro địa chính trị.</li>
+<li><b>Thuê tài chính đội tàu container:</b> Thời chuỗi cung ứng gián đoạn.</li>
+<li><b>Quản lý vốn lưu động bằng supply chain finance:</b> Tối ưu với nhà cung cấp.</li>
+<li><b>Vay để repurchase cổ phiếu:</b> Tăng EPS.</li>
+<li><b>Đầu tư R&D pin năng lượng vay dài hạn:</b> Chuyển đổi năng lượng.</li>
+<li><b>Sử dụng securitization tài sản:</b> Chuyển nợ bảng cân đối.</li>
+<li><b>Vay dự án bất động sản khu đô thị lớn:</b> Dài hạn 20-30 năm.</li>
+<li><b>Hedging giá hàng hóa (commodity swap):</b> Tập đoàn sản xuất.</li>
+</ol>
+</div>
+
+<!-- ================= THÀNH PHỐ ================= -->
+<div class="section" id="city">
+<h3>🏙 25 Tình Huống Thực Tế Cấp Độ Thành Phố/Thủ Đô</h3>
+<div class="game"><b>🎲 Thử thách:</b> Bạn là Chủ tịch UBND thành phố, quyết định dự án hạ tầng hàng nghìn tỷ.</div>
+<ol>
+<li><b>Xây metro vay ODA Nhật Bản vs trái phiếu đô thị:</b> ODA lãi siêu thấp.</li>
+<li><b>Thuê tài chính hệ thống xe buýt điện:</b> Chuyển đổi xanh.</li>
+<li><b>Vay Ngân hàng Thế giới xây cầu vượt:</b> Điều kiện chính sách kèm theo.</li>
+<li><b>PPP đường cao tốc nội đô:</b> Tư nhân đầu tư lấy phí.</li>
+<li><b>Phát hành trái phiếu chính quyền địa phương:</b> Xây trường học bệnh viện.</li>
+<li><b>Vay ADB xây hệ thống xử lý nước thải:</b> Môi trường đô thị.</li>
+<li><b>Thuê tài chính đèn LED chiếu sáng công cộng:</b> Tiết kiệm điện dài hạn.</li>
+<li><b>Dự án smart city vay Hàn Quốc:</b> Công nghệ cao.</li>
+<li><b>Xây nhà ở xã hội vay ưu đãi:</b> Giải quyết an sinh.</li>
+<li><b>Vay để cải tạo khu ổ chuột:</b> Tái định cư.</li>
+<li><b>Đầu tư camera giám sát an ninh:</b> An toàn đô thị.</li>
+<li><b>Thuê tài chính máy thu gom rác hiện đại:</b> Vệ sinh môi trường.</li>
+<li><b>Vay xây công viên cây xanh:</b> Chống biến đổi khí hậu.</li>
+<li><b>PPP bãi đỗ xe ngầm:</b> Giảm ùn tắc.</li>
+<li><b>Phát hành green bond thành phố:</b> Dự án môi trường.</li>
+<li><b>Vay để nâng cấp hệ thống thoát nước chống ngập:</b> Mùa mưa bão.</li>
+<li><b>Đầu tư wifi công cộng toàn thành phố:</b> Kết nối số.</li>
+<li><b>Thuê tài chính tàu điện ngầm:</b> Nếu không đủ vốn mua.</li>
+<li><b>Vay xây sân vận động SEA Games:</b> Sự kiện quốc tế.</li>
+<li><b>PPP hệ thống giao thông thông minh:</b> Giảm tắc nghẽn.</li>
+<li><b>Vay để bảo tồn di sản văn hóa:</b> Du lịch bền vững.</li>
+<li><b>Đầu tư năng lượng tái tạo cho công trình công:</b> Giảm chi phí vận hành.</li>
+<li><b>Vay khẩn cấp ứng phó thiên tai:</b> Quỹ dự phòng.</li>
+<li><b>Xây cầu vượt biển nối quận:</b> Phát triển kinh tế.</li>
+<li><b>Thuê tài chính hệ thống y tế công cộng:</b> Đại dịch.</li>
+</ol>
+</div>
+
+<!-- ================= BỘ TÀI CHÍNH ================= -->
+<div class="section" id="ministry">
+<h3>🏛 25 Tình Huống Thực Tế Cấp Độ Bộ Tài Chính</h3>
+<div class="game"><b>🎲 Thử thách:</b> Bạn là Bộ trưởng Tài chính, quản lý ngân sách quốc gia.</div>
+<ol>
+<li><b>Phát hành trái phiếu chính phủ vay nội tệ vs ngoại tệ:</b> Tránh rủi ro tỷ giá.</li>
+<li><b>Vay IMF standby agreement:</b> Ổn định kinh tế vĩ mô.</li>
+<li><b>Quản lý nợ công bằng buyback khi lãi giảm:</b> Tối ưu chi phí.</li>
+<li><b>Phát hành eurobond trên thị trường quốc tế:</b> Lãi thấp hơn nội địa.</li>
+<li><b>Hedging rủi ro lãi suất cho nợ công:</b> Swap fixed-floating.</li>
+<li><b>Vay ADB/World Bank cho dự án hạ tầng:</b> Điều kiện cải cách.</li>
+<li><b>Quản lý quỹ dự phòng ngân sách:</b> Ứng phó khủng hoảng.</li>
+<li><b>Tái cơ cấu nợ công dài hạn:</b> Giảm áp lực trả nợ ngắn.</li>
+<li><b>Phát hành bond xanh quốc gia:</b> Tài trợ chuyển đổi năng lượng.</li>
+<li><b>Vay song phương từ Trung Quốc/Nhật:</b> Rủi ro địa chính trị.</li>
+<li><b>Quản lý thanh khoản bằng repo với NHNN:</b> Ổn định thị trường tiền tệ.</li>
+<li><b>Tăng thuế vs vay thêm khi thiếu hụt ngân sách:</b> Lạm phát vs nợ.</li>
+<li><b>Vay để hỗ trợ doanh nghiệp COVID:</b> Gói kích thích kinh tế.</li>
+<li><b>Phát hành trái phiếu kỳ hạn dài 30 năm:</b> Khớp với dự án dài.</li>
+<li><b>Tham gia SDR allocation từ IMF:</b> Tăng dự trữ ngoại hối.</li>
+<li><b>Quản lý rủi ro tỷ giá nợ ngoại tệ:</b> Natural hedge.</li>
+<li><b>Vay để cải cách lương hưu:</b> Bền vững tài chính công.</li>
+<li><b>Phát hành inflation-linked bond:</b> Chống lạm phát.</li>
+<li><b>Vay khẩn cấp ứng phó thiên tai quốc gia:</b> Quỹ dự phòng.</li>
+<li><b>Tái tài trợ nợ cũ lãi cao:</b> Refinancing.</li>
+<li><b>Tham gia Asian Bond Market Initiative:</b> Phát triển thị trường khu vực.</li>
+<li><b>Vay để số hóa tài chính công:</b> Tăng minh bạch.</li>
+<li><b>Quản lý nợ địa phương:</b> Bảo lãnh trái phiếu địa phương.</li>
+<li><b>Phát hành samurai bond tại Nhật:</b> Đa dạng nhà đầu tư.</li>
+<li><b>Vay để ổn định tỷ giá hối đoái:</b> Can thiệp thị trường.</li>
+</ol>
+</div>
+
+<!-- ================= QUỐC GIA ================= -->
+<div class="section" id="nation">
+<h3>🌍 25 Tình Huống Thực Tế Cấp Độ Quốc Gia</h3>
+<div class="game"><b>🎲 Thử thách:</b> Bạn là Thủ tướng, quyết định chiến lược tài chính quốc gia.</div>
+<ol>
+<li><b>Vay ODA xây đường cao tốc Bắc Nam:</b> Lãi ưu đãi dài hạn.</li>
+<li><b>Phát hành trái phiếu quốc tế USD:</b> Thu hút vốn ngoại.</li>
+<li><b>Tham gia CPTPP vay ưu đãi thương mại:</b> Gián tiếp tài chính.</li>
+<li><b>Vay để xây dựng cảng biển quốc tế:</b> Tăng xuất khẩu.</li>
+<li><b>Quản lý dự trữ ngoại hối vay ngắn hạn:</b> Ổn định tiền tệ.</li>
+<li><b>Hợp tác PPP sân bay Long Thành:</b> Giảm gánh nặng ngân sách.</li>
+<li><b>Vay Trung Quốc BRI đường sắt:</b> Rủi ro bẫy nợ.</li>
+<li><b>Phát hành sovereign bond xanh:</b> Chuyển đổi năng lượng.</li>
+<li><b>Vay để phát triển 5G toàn quốc:</b> Cách mạng công nghiệp 4.0.</li>
+<li><b>Tham gia AIIB vay hạ tầng:</b> Ngân hàng Trung Quốc dẫn dắt.</li>
+<li><b>Vay Nhật Bản xây dựng tàu điện:</b> Công nghệ cao.</li>
+<li><b>Quản lý nợ/GDP dưới 65%:</b> An toàn tài chính vĩ mô.</li>
+<li><b>Vay để hỗ trợ nông nghiệp thông minh:</b> An ninh lương thực.</li>
+<li><b>Phát hành bond diaspora cho kiều bào:</b> Lãi cao nhưng patriot.</li>
+<li><b>Vay IMF Extended Fund Facility:</b> Cải cách cấu trúc.</li>
+<li><b>Đầu tư quỹ chủ quyền (sovereign wealth fund):</b> Từ dầu khí hoặc vay.</li>
+<li><b>Vay để chống biến đổi khí hậu (đê biển):</b> Thích ứng.</li>
+<li><b>Hedging giá dầu nhập khẩu:</b> Ổn định ngân sách.</li>
+<li><b>Vay xây dựng khu công nghiệp sinh thái:</b> Thu hút FDI.</li>
+<li><b>Tham gia Paris Agreement vay xanh:</b> Tài trợ khí hậu.</li>
+<li><b>Vay để giáo dục đại học quốc tế:</b> Nguồn nhân lực.</li>
+<li><b>Quản lý lạm phát bằng chính sách nợ:</b> Tránh in tiền.</li>
+<li><b>Vay khẩn cấp vaccine COVID toàn dân:</b> Sức khỏe công cộng.</li>
+<li><b>Phát hành perpetual bond:</b> Nợ vĩnh viễn lãi thấp.</li>
+<li><b>Vay để phát triển du lịch bền vững:</b> Sau đại dịch.</li>
+</ol>
+</div>
+
+<!-- ================= LIÊN HIỆP QUỐC ================= -->
+<div class="section" id="un">
+<h3>🌐 25 Tình Huống Thực Tế Cấp Độ Liên Hiệp Quốc / Quốc Tế</h3>
+<div class="game"><b>🎲 Thử thách:</b> Bạn là Tổng thư ký LHQ, phân bổ tài trợ toàn cầu.</div>
+<ol>
+<li><b>Vay từ World Bank cho quốc gia nghèo IDA:</b> Lãi 0% dài hạn.</li>
+<li><b>Phát hành bond LHQ cho mục tiêu SDG:</b> Tài trợ phát triển bền vững.</li>
+<li><b>Quỹ Green Climate Fund vay khí hậu:</b> Chống biến đổi cho nước nghèo.</li>
+<li><b>Hỗ trợ vay concessional cho refugee crisis:</b> Khủng hoảng di cư.</li>
+<li><b>IMF Special Drawing Rights allocation:</b> Tăng thanh khoản toàn cầu.</li>
+<li><b>Vay để vaccine COVAX toàn cầu:</b> Công bằng vaccine.</li>
+<li><b>Quỹ Global Fund chống HIV/AIDS:</b> Tài trợ y tế.</li>
+<li><b>Vay khẩn cấp peacekeeping mission:</b> Giữ hòa bình.</li>
+<li><b>ADB/ AfDB vay khu vực châu Á/Phi:</b> Phát triển khu vực.</li>
+<li><b>Debt relief initiative cho HIPC (nước nghèo nợ cao):</b> Xóa nợ.</li>
+<li><b>Vay để hỗ trợ food security Ukraine war:</b> An ninh lương thực.</li>
+<li><b>UN Peacebuilding Fund:</b> Tái thiết sau xung đột.</li>
+<li><b>Vay từ Islamic Development Bank:</b> Quốc gia Hồi giáo.</li>
+<li><b>Global Infrastructure Facility:</b> Hạ tầng toàn cầu.</li>
+<li><b>Vay để digital inclusion cho nước đang phát triển:</b> Kết nối internet.</li>
+<li><b>UNDP funding cho gender equality:</b> Bình đẳng giới.</li>
+<li><b>Vay khẩn cấp natural disaster response:</b> Quỹ CERF.</li>
+<li><b>Paris Club rescheduling nợ song phương:</b> Tái cơ cấu nợ.</li>
+<li><b>Vay để bảo vệ biodiversity:</b> Công ước đa dạng sinh học.</li>
+<li><b>WHO funding vay pandemic preparedness:</b> Phòng đại dịch.</li>
+<li><b>UNHCR vay cho refugee camp:</b> Người tị nạn.</li>
+<li><b>Vay từ GAVI Alliance vaccine:</b> Tiêm chủng trẻ em.</li>
+<li><b>Climate Adaptation Fund:</b> Thích ứng khí hậu.</li>
+<li><b>Vay để nuclear non-proliferation:</b> An ninh hạt nhân.</li>
+<li><b>Global Partnership for Education:</b> Giáo dục toàn cầu.</li>
+</ol>
+</div>
+
+<!-- ================= NGHỀ KHÔNG VỐN / ẨN DANH ================= -->
+<div class="section" id="nocapital">
+<h3>💡 25 Tình Huống + 25 Ví Dụ Nghề Không Vốn / Làm Online Ẩn Danh</h3>
+<div class="game"><b>🎲 Thử thách:</b> Bắt đầu từ 0 vốn, dùng tài chính thông minh để nhân lên.</div>
+<p><b>Áp dụng nguyên tắc:</b> Tránh vay lãi cao, ưu tiên bootstrapping, dùng dòng tiền tự tạo để tái đầu tư.</p>
+<ol>
+<li><b>Freelance viết lách trên Upwork:</b> Không vốn, thu nhập USD.</li>
+<li><b>Làm YouTube ẩn danh (faceless channel):</b> Kiếm tiền adsense.</li>
+<li><b>Bán khóa học online Teachable/Gumroad:</b> Sản phẩm số margin cao.</li>
+<li><b>Affiliate marketing blog ẩn danh:</b> Tiếp thị liên kết Amazon.</li>
+<li><b>Dropshipping Shopify không giữ hàng:</b> Vốn thấp rủi ro thấp.</li>
+<li><b>Lập trình freelance Fiverr:</b> Kỹ năng code.</li>
+<li><b>Thiết kế đồ họa Canva bán template Etsy:</b> Sản phẩm số.</li>
+<li><b>Trading crypto nhỏ lẻ (không vay margin):</b> Tránh đòn bẩy.</li>
+<li><b>Viết ebook bán Amazon Kindle:</b> Hidden author.</li>
+<li><b>Làm TikTok ẩn danh viral content:</b> Monetize creator fund.</li>
+<li><b>Quản lý fanpage Facebook thuê:</b> Social media manager.</li>
+<li><b>Dạy ngoại ngữ online Italki:</b> Không cần bằng cấp cao.</li>
+<li><b>Bán stock photo/video Shutterstock:</b> Chụp bằng điện thoại.</li>
+<li><b>Podcast ẩn danh Spotify:</b> Kiếm tiền sponsor.</li>
+<li><b>Copywriting quảng cáo Facebook ads:</b> Freelance.</li>
+<li><b>Virtual assistant cho doanh nghiệp nước ngoài:</b> Làm remote.</li>
+<li><b>Arbitrage online (mua thấp bán cao khác nền tảng):</b> Không giữ hàng.</li>
+<li><b>Làm survey/online task Amazon MTurk:</b> Thu nhập nhỏ tích lũy.</li>
+<li><b>Bán NFT art ẩn danh:</b> Nếu thị trường hot.</li>
+<li><b>Stream game Twitch ẩn mặt:</b> Donation + sub.</li>
+<li><b>Viết thread Twitter/X monetize:</b> X Premium revenue.</li>
+<li><b>Làm voice over ẩn danh:</b> Giọng đọc AI hoặc thật.</li>
+<li><b>Consulting online ẩn danh qua Discord:</b> Chuyên môn niche.</li>
+<li><b>Bán signal trading (không vốn thực gửi):</b> Cẩn thận pháp lý.</li>
+<li><b>Tham gia bug bounty hacker ẩn danh:</b> Tìm lỗ hổng phần mềm.</li>
+</ol>
+<div class="note">💡 Nguyên tắc: Dùng thu nhập đầu tiên trả nợ (nếu có), tái đầu tư 50% để scale, giữ 6 tháng chi phí sống dự phòng.</div>
+</div>
+
+<!-- ================= TRÌNH TỰ QUYẾT ĐỊNH ================= -->
+<div class="section" id="timeline">
+<h3>⏳ Trình Tự Quyết Định Chiến Lược (Áp Dụng Mọi Cấp Độ)</h3>
+<div class="game"><b>🎯 Luật chơi:</b> Làm đúng thứ tự để thắng - sai thứ tự dễ phá sản!</div>
+<ol>
+<li>Xác định rõ tất cả dòng tiền vào/ra từng phương án (CF)</li>
+<li>Chọn lãi suất chiết khấu phù hợp (i = chi phí vốn thực tế)</li>
+<li>Tính PV toàn bộ chi phí từng phương án</li>
+<li>Đánh giá rủi ro (thu nhập giảm, lãi tăng, thị trường biến động)</li>
+<li>Chọn phương án PV thấp nhất + rủi ro chấp nhận được</li>
+<li>Theo dõi & tất toán sớm nếu lãi thị trường giảm</li>
+</ol>
+<div class="warn">⚠️ Sai lầm phổ biến: Chỉ nhìn tổng tiền trả hoặc PMT thấp → rơi bẫy PV cao!</div>
+</div>
+
+<!-- ================= RỦI RO ================= -->
+<div class="section" id="risk">
+<h3>⚠️ Rủi Ro & Chiến Lược Giảm Thiểu (Doanh Nghiệp Đời Thực)</h3>
+<div class="game"><b>💀 Game Over nếu:</b> Dòng tiền thực tế < PMT + chi phí vận hành!</div>
+<ul>
+<li><b>Rủi ro lãi suất tăng:</b> Chọn vay cố định hoặc hedging swap</li>
+<li><b>Rủi ro thu nhập giảm:</b> Giữ quỹ dự phòng 6-12 tháng</li>
+<li><b>Rủi ro tỷ giá:</b> Vay nội tệ hoặc natural hedge</li>
+<li><b>Rủi ro thanh khoản:</b> Đa dạng nguồn vốn, tránh vay ngắn hạn dài dụng</li>
+<li><b>Rủi ro pháp lý:</b> Đọc kỹ hợp đồng thuê tài chính (tất toán sớm phạt cao)</li>
+</ul>
+<div class="calc">
+<b>Ví dụ thực tế VinFast:</b> Vay hàng tỷ USD xây nhà máy → nếu bán xe chậm → áp lực lãi khổng lồ → phải huy động thêm vốn.
+</div>
+<div class="note">🏆 Chiến lược thắng: Luôn tính PV ở kịch bản xấu nhất (worst-case) trước khi quyết!</div>
+</div>
+
+<!-- ================= FOOTER ================= -->
+<div class="section" style="text-align:center;background:#2c3e50;color:white">
+<p>🎯 <b>Trò Chơi Tài Chính Doanh Nghiệp - Chương 2</b></p>
+<p>Áp dụng kiến thức PV, PMT vào quyết định thực tế</p>
+<p>© 2023 - Quang Trung TV - Học viện Tài chính Doanh nghiệp</p>
+</div>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

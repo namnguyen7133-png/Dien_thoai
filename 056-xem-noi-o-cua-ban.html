@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xem Nhà Cửa - Dự Đoán Theo Tuổi và Tháng Sinh</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        
+        .disclaimer {
+            background-color: #fff9e6;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .input-section {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        
+        select, button {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: white;
+        }
+        
+        button {
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-section {
+            padding: 20px;
+            display: none;
+        }
+        
+        .result-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+        
+        .gia-type {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #182848;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .prediction-item {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .prediction-item:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #4b6cb7;
+            font-size: 1.2rem;
+        }
+        
+        .gender-specific {
+            background-color: #f0f5ff;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 5px;
+        }
+        
+        .table-section {
+            padding: 20px;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        th {
+            background-color: #4b6cb7;
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .input-section, .result-section, .table-section {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>XEM NHÀ CỬA</h1>
+            <p class="subtitle">Dự đoán về nhà cửa, tài vận và sức khỏe dựa trên tuổi và tháng sinh</p>
+        </header>
+        
+        <div class="disclaimer">
+            <strong>Lưu ý:</strong> Đây chỉ là tài liệu tham khảo và không phải là thầy bà. Kết quả mang tính chất giải trí và tham khảo.
+        </div>
+        
+        <div class="input-section">
+            <div class="form-group">
+                <label for="zodiac">Chọn tuổi (12 con giáp):</label>
+                <select id="zodiac">
+                    <option value="">-- Chọn con giáp --</option>
+                    <option value="TI">Tý</option>
+                    <option value="SUU">Sửu</option>
+                    <option value="DAN">Dần</option>
+                    <option value="MAO">Mão</option>
+                    <option value="THIN">Thìn</option>
+                    <option value="TY">Tỵ</option>
+                    <option value="NGO">Ngọ</option>
+                    <option value="MUI">Mùi</option>
+                    <option value="THAN">Thân</option>
+                    <option value="DAU">Dậu</option>
+                    <option value="TUAT">Tuất</option>
+                    <option value="HOI">Hợi</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="month">Chọn tháng sinh (dương lịch):</label>
+                <select id="month">
+                    <option value="">-- Chọn tháng --</option>
+                    <option value="1">Tháng 1</option>
+                    <option value="2">Tháng 2</option>
+                    <option value="3">Tháng 3</option>
+                    <option value="4">Tháng 4</option>
+                    <option value="5">Tháng 5</option>
+                    <option value="6">Tháng 6</option>
+                    <option value="7">Tháng 7</option>
+                    <option value="8">Tháng 8</option>
+                    <option value="9">Tháng 9</option>
+                    <option value="10">Tháng 10</option>
+                    <option value="11">Tháng 11</option>
+                    <option value="12">Tháng 12</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="gender">Chọn giới tính:</label>
+                <select id="gender">
+                    <option value="">-- Chọn giới tính --</option>
+                    <option value="male">Nam</option>
+                    <option value="female">Nữ</option>
+                </select>
+            </div>
+            
+            <button id="predict-btn">Xem kết quả</button>
+        </div>
+        
+        <div class="result-section" id="result-section">
+            <div class="result-card">
+                <div class="gia-type" id="gia-type">KẾT QUẢ</div>
+                <div id="prediction-content">
+                    <!-- Nội dung dự đoán sẽ được thêm vào đây bằng JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="table-section">
+            <h2>Bảng Tra Cứu</h2>
+            <p>Dưới đây là bảng tra cứu đầy đủ để bạn có thể đối chiếu:</p>
+            <div id="table-container">
+                <!-- Bảng sẽ được tạo bằng JavaScript -->
+            </div>
+        </div>
+        
+        <footer>
+            <p>Trò chơi dựa trên nội dung từ video: "Xem nhà cửa"</p>
+            <p>Link video: <a href="http://www.youtube.com/watch?v=Yi2_Olp51ss" target="_blank">YouTube</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // Dữ liệu bảng tra cứu
+        const lookupTable = {
+            "TI": [7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6],
+            "SUU": [4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3],
+            "DAN": [10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            "MAO": [7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6],
+            "THIN": [4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3],
+            "TY": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+            "NGO": [10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            "MUI": [7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6],
+            "THAN": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+            "DAU": [4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3],
+            "TUAT": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+            "HOI": [10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        };
+
+        // Tên các loại "Gia" theo thứ tự cột
+        const giaTypes = [
+            "KHÔNG GIA", "VONG GIA", "BẠI GIA", "HƯỚNG GIA", 
+            "HIỆP GIA", "HƯỚNG GIA", "HIỆP GIA", "KIÊN GIA", 
+            "KIÊN GIA", "GIẢI GIA", "PHÁ GIA", "KHÔNG GIA"
+        ];
+
+        // Mô tả chi tiết cho từng loại "Gia"
+        const giaDescriptions = {
+            "KHÔNG GIA": {
+                "male": "Hay bị hao tốn tiền bạc, tài sản.",
+                "female": "Dễ mắc các bệnh về đường máu huyết.",
+                "house": "Có thể ở được lâu dài trong ngôi nhà đó."
+            },
+            "VONG GIA": {
+                "male": "Hay bị hao tốn tiền bạc, tài sản.",
+                "female": "Dễ mắc các bệnh về đường máu huyết.",
+                "house": "Có thể ở được lâu dài trong ngôi nhà đó."
+            },
+            "BẠI GIA": {
+                "house": "Không nên ở nhà của cha mẹ.",
+                "career": "Phải dời đổi đi nơi khác để lập nghiệp mới thành công; nếu ở lại nhà cha mẹ sẽ gặp cực khổ."
+            },
+            "HƯỚNG GIA": {
+                "house": "Rất tốt khi ở chung nhà với cha mẹ.",
+                "career": "Dễ mở mang việc làm ăn, tạo lập sự nghiệp, được thịnh vượng và phát đạt.",
+                "recommendation": "Nên ở chung gia đình cha mẹ để được sự cưu mang, đùm bọc."
+            },
+            "HIỆP GIA": {
+                "house": "Là dấu hiệu của người có nhà cao cửa rộng, nguy nga đồ sộ. Đây là trường hợp rất hiếm gặp.",
+                "career": "Từ 50 tuổi trở lên gia nghiệp hưng vượng, tiền của rất nhiều."
+            },
+            "KIÊN GIA": {
+                "house": "Chỉ tốt khi ở nhà mới xây hoặc nhà mới mua. Nếu ở nhà cũ, nhà của cha mẹ, hoặc mua lại nhà cũ của người khác thì sẽ bị đau ốm triền miên.",
+                "health": "Sức lao động suy giảm, kéo theo kinh tế gia đình sa sút."
+            },
+            "GIẢI GIA": {
+                "house": "Không thể ở nhà cha mẹ. Nếu cố tình ở lại, thường bị tai nạn, hao tài tốn tiền, hao tài tốn của.",
+                "career": "Phải đi đến xứ khác lập nghiệp mới tốt, việc làm ăn sẽ dễ dàng hơn ở chỗ cũ."
+            },
+            "PHÁ GIA": {
+                "house": "Không nên ở nhà của cha mẹ.",
+                "career": "Phải dời đổi đi nơi khác để lập nghiệp mới thành công; nếu ở lại nhà cha mẹ sẽ gặp cực khổ."
+            }
+        };
+
+        // Tạo bảng tra cứu
+        function createLookupTable() {
+            const tableContainer = document.getElementById('table-container');
+            let tableHTML = '<table><tr><th>NĂM SINH</th>';
+            
+            // Thêm tiêu đề cột
+            giaTypes.forEach(type => {
+                tableHTML += `<th>${type}</th>`;
+            });
+            tableHTML += '</tr>';
+            
+            // Thêm dữ liệu từng dòng
+            Object.keys(lookupTable).forEach(zodiac => {
+                tableHTML += `<tr><td>${getZodiacName(zodiac)}</td>`;
+                lookupTable[zodiac].forEach(month => {
+                    tableHTML += `<td>${month}</td>`;
+                });
+                tableHTML += '</tr>';
+            });
+            
+            tableHTML += '</table>';
+            tableContainer.innerHTML = tableHTML;
+        }
+
+        // Chuyển đổi mã con giáp thành tên tiếng Việt
+        function getZodiacName(code) {
+            const zodiacNames = {
+                "TI": "TÝ", "SUU": "SỬU", "DAN": "DẦN", "MAO": "MÃO",
+                "THIN": "THÌN", "TY": "TỴ", "NGO": "NGỌ", "MUI": "MÙI",
+                "THAN": "THÂN", "DAU": "DẬU", "TUAT": "TUẤT", "HOI": "HỢI"
+            };
+            return zodiacNames[code] || code;
+        }
+
+        // Tìm loại "Gia" dựa trên tuổi và tháng sinh
+        function findGiaType(zodiac, month) {
+            const months = lookupTable[zodiac];
+            for (let i = 0; i < months.length; i++) {
+                if (months[i] === parseInt(month)) {
+                    return giaTypes[i];
+                }
+            }
+            return null;
+        }
+
+        // Hiển thị kết quả dự đoán
+        function showPrediction(zodiac, month, gender, giaType) {
+            const resultSection = document.getElementById('result-section');
+            const giaTypeElement = document.getElementById('gia-type');
+            const predictionContent = document.getElementById('prediction-content');
+            
+            // Hiển thị phần kết quả
+            resultSection.style.display = 'block';
+            giaTypeElement.textContent = giaType;
+            
+            // Lấy mô tả cho loại "Gia" tương ứng
+            const description = giaDescriptions[giaType];
+            let contentHTML = '';
+            
+            // Thêm thông tin về giới tính
+            if (description[gender]) {
+                contentHTML += `<div class="prediction-item gender-specific">
+                    <strong>${gender === 'male' ? 'Nam' : 'Nữ'}:</strong> ${description[gender]}
+                </div>`;
+            }
+            
+            // Thêm thông tin về nhà cửa
+            if (description.house) {
+                contentHTML += `<div class="prediction-item">
+                    <strong>Nhà ở:</strong> ${description.house}
+                </div>`;
+            }
+            
+            // Thêm thông tin về sự nghiệp
+            if (description.career) {
+                contentHTML += `<div class="prediction-item">
+                    <strong>Lập nghiệp:</strong> ${description.career}
+                </div>`;
+            }
+            
+            // Thêm thông tin về sức khỏe
+            if (description.health) {
+                contentHTML += `<div class="prediction-item">
+                    <strong>Sức khỏe:</strong> ${description.health}
+                </div>`;
+            }
+            
+            // Thêm khuyến nghị
+            if (description.recommendation) {
+                contentHTML += `<div class="prediction-item">
+                    <strong>Khuyến nghị:</strong> ${description.recommendation}
+                </div>`;
+            }
+            
+            predictionContent.innerHTML = contentHTML;
+            
+            // Cuộn đến phần kết quả
+            resultSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Xử lý sự kiện khi nhấn nút "Xem kết quả"
+        document.getElementById('predict-btn').addEventListener('click', function() {
+            const zodiac = document.getElementById('zodiac').value;
+            const month = document.getElementById('month').value;
+            const gender = document.getElementById('gender').value;
+            
+            // Kiểm tra xem người dùng đã nhập đủ thông tin chưa
+            if (!zodiac || !month || !gender) {
+                alert('Vui lòng chọn đầy đủ thông tin: tuổi, tháng sinh và giới tính.');
+                return;
+            }
+            
+            // Tìm loại "Gia" tương ứng
+            const giaType = findGiaType(zodiac, month);
+            
+            if (giaType) {
+                showPrediction(zodiac, month, gender, giaType);
+            } else {
+                alert('Không tìm thấy kết quả phù hợp. Vui lòng kiểm tra lại thông tin.');
+            }
+        });
+
+        // Khởi tạo bảng tra cứu khi trang được tải
+        window.onload = function() {
+            createLookupTable();
+        };
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

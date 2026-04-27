@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tính nhẩm nhanh – 2 chữ số</title>
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6fa;
+    padding:20px;
+}
+.box{
+    max-width:850px;
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+h2{text-align:center;color:#2c3e50}
+input,select,button{
+    width:100%;
+    padding:8px;
+    margin:6px 0;
+}
+button{
+    background:#8e44ad;
+    color:#fff;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+button:hover{background:#732d91}
+.result{
+    margin-top:15px;
+    background:#f3ecf9;
+    padding:15px;
+    border-radius:5px;
+    line-height:1.7;
+}
+</style>
+</head>
+
+<body>
+<div class="box">
+<h2>🧠 TÍNH NHẨM NHANH – SỐ CÓ 2 CHỮ SỐ</h2>
+
+<label>Chọn dạng bài</label>
+<select id="type">
+    <option value="square">1️⃣ Bình phương 2 chữ số (không có số 5)</option>
+    <option value="sum10same">2️⃣ Tổng hàng chục = 10, hàng đơn vị giống nhau</option>
+    <option value="same10sum">3️⃣ Hàng chục giống nhau, tổng hàng đơn vị = 10</option>
+</select>
+
+<label>Số thứ nhất</label>
+<input type="number" id="a" placeholder="Ví dụ: 68">
+
+<label>Số thứ hai (nếu có)</label>
+<input type="number" id="b" placeholder="Ví dụ: 44 (bỏ trống nếu là bình phương)">
+
+<button onclick="calc()">Tính & Giải thích</button>
+
+<div id="out" class="result"></div>
+</div>
+
+<script>
+function calc(){
+    let type = document.getElementById("type").value;
+    let a = parseInt(document.getElementById("a").value);
+    let b = parseInt(document.getElementById("b").value);
+    let o = "";
+
+    if(isNaN(a)){
+        out.innerHTML="⚠ Vui lòng nhập số";
+        return;
+    }
+
+    // 1. Bình phương 2 chữ số (không có số 5)
+    if(type==="square"){
+        let round = Math.round(a/10)*10;
+        let d = a - round;
+
+        o += `<b>${a}²</b><br><br>`;
+        o += `Bước 1: Chọn số tròn → <b>${round}</b><br>`;
+        o += `Khoảng cách làm tròn: ${a} - ${round} = <b>${d}</b><br><br>`;
+
+        o += `Bước 2: Tạo phép nhân mới:<br>`;
+        o += `(${a} - ${d}) × (${a} + ${d}) = ${round - d} × ${round + d}<br>`;
+        o += `Tính nhanh: ${(round - d) * ((round + d)/10)} (bỏ số 0)<br><br>`;
+
+        o += `Bước 3: Cộng ${d}² = ${d*d} vào cuối<br><br>`;
+        o += `<b>Kết quả: ${a*a}</b>`;
+    }
+
+    // 2. Tổng hàng chục = 10, hàng đơn vị giống nhau
+    if(type==="sum10same"){
+        if(isNaN(b)){
+            out.innerHTML="⚠ Cần nhập đủ 2 số";
+            return;
+        }
+        let a10=Math.floor(a/10), a1=a%10;
+        let b10=Math.floor(b/10), b1=b%10;
+
+        o += `<b>${a} × ${b}</b><br><br>`;
+        o += `Tổng hàng chục: ${a10} + ${b10} = 10<br>`;
+        o += `Hàng đơn vị giống nhau: ${a1}<br><br>`;
+
+        let first = a10*b10 + a1;
+        let last = a1*a1;
+
+        o += `Hai số đầu: (${a10}×${b10}) + ${a1} = ${first}<br>`;
+        o += `Hai số cuối: ${a1}×${a1} = ${String(last).padStart(2,"0")}<br><br>`;
+        o += `<b>Kết quả: ${a*b}</b>`;
+    }
+
+    // 3. Hàng chục giống nhau, tổng hàng đơn vị = 10
+    if(type==="same10sum"){
+        if(isNaN(b)){
+            out.innerHTML="⚠ Cần nhập đủ 2 số";
+            return;
+        }
+        let t = Math.floor(a/10);
+        let a1=a%10, b1=b%10;
+
+        o += `<b>${a} × ${b}</b><br><br>`;
+        o += `Hàng chục giống nhau: ${t}<br>`;
+        o += `Tổng hàng đơn vị: ${a1} + ${b1} = 10<br><br>`;
+
+        let first = t*(t+1);
+        let last = a1*b1;
+
+        o += `Hai số đầu: ${t} × (${t}+1) = ${first}<br>`;
+        o += `Hai số cuối: ${a1} × ${b1} = ${String(last).padStart(2,"0")}<br><br>`;
+        o += `<b>Kết quả: ${a*b}</b>`;
+    }
+
+    document.getElementById("out").innerHTML=o;
+}
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

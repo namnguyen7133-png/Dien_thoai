@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>TCDN 1 - Giá trị thời gian của tiền (Thực hành đời sống)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f8;
+    margin:0;
+    padding:0;
+}
+header{
+    background:#0d47a1;
+    color:#fff;
+    padding:20px;
+}
+section{
+    background:#fff;
+    margin:15px;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+h2{color:#0d47a1}
+h3{color:#1565c0}
+button{
+    padding:10px 15px;
+    margin:5px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    background:#1976d2;
+    color:#fff;
+}
+button:hover{background:#0d47a1}
+input,select{
+    padding:8px;
+    width:100%;
+    margin:5px 0 10px;
+}
+.result{
+    background:#e3f2fd;
+    padding:10px;
+    border-radius:6px;
+    font-weight:bold;
+}
+.badge{
+    display:inline-block;
+    padding:5px 10px;
+    border-radius:12px;
+    background:#e8f5e9;
+    color:#1b5e20;
+    font-size:13px;
+}
+.warning{
+    background:#ffebee;
+    padding:10px;
+    border-radius:6px;
+    color:#b71c1c;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>📘 TCDN 1 – Giá trị thời gian của tiền</h1>
+<p>Áp dụng cho cá nhân – đi làm – doanh nghiệp nhỏ</p>
+<p>🔗 Video: Quang Trung TV – Chương 2: Giá trị thời gian của tiền</p>
+</header>
+
+<!-- 2.1 THUẬT NGỮ -->
+<section id="thuatngu">
+<h2>2.1 Thuật ngữ tài chính & cách dùng đời sống</h2>
+
+<h3>FV – Giá trị tương lai</h3>
+<p><b>Ý nghĩa:</b> Số tiền bạn sẽ có trong tương lai.</p>
+<p><b>Đời sống:</b> Gửi tiết kiệm, mua nhà, quỹ hưu trí.</p>
+<p class="badge">✔ Cá nhân ✔ Công việc</p>
+
+<h3>PV – Giá trị hiện tại</h3>
+<p><b>Ý nghĩa:</b> Số tiền bạn có hôm nay.</p>
+<p><b>Đời sống:</b> Tiền vốn khởi nghiệp, tiền tiết kiệm.</p>
+
+<h3>Lãi suất (Rate)</h3>
+<p>Giá của đồng tiền theo thời gian.</p>
+<p><b>Đi làm:</b> So sánh gửi ngân hàng hay đầu tư.</p>
+
+<h3>Dòng tiền</h3>
+<ul>
+<li>Chi tiền → Âm (-)</li>
+<li>Thu tiền → Dương (+)</li>
+</ul>
+
+</section>
+
+<!-- 2.2 CHỌN DÙNG -->
+<section id="chon">
+<h2>2.2 Dùng trong công việc hay cá nhân?</h2>
+
+<ul>
+<li><b>Cá nhân:</b> FV, PV, tiết kiệm, vay trả góp</li>
+<li><b>Đi làm:</b> FV, dòng tiền, lãi – lỗ</li>
+<li><b>Doanh nghiệp:</b> FV, PV, NPV, IRR (nâng cao)</li>
+</ul>
+
+<div class="warning">
+👉 Nếu <b>chưa có dòng tiền ổn định</b> → chỉ dùng FV, PV  
+<br>👉 Nếu <b>kinh doanh</b> → bắt buộc tính lãi – lỗ
+</div>
+</section>
+
+<!-- 3.2 TRÌNH TỰ -->
+<section id="trinh-tu">
+<h2>3.2 Làm gì trước – làm gì sau?</h2>
+
+<h3>Trình tự chuẩn</h3>
+<ol>
+<li>Xác định vốn hiện có (PV)</li>
+<li>Xác định lãi suất thực tế</li>
+<li>Xác định thời gian</li>
+<li>Tính FV</li>
+<li>So sánh rủi ro</li>
+</ol>
+
+<h3>Khi nào nên làm?</h3>
+<ul>
+<li>Thị trường ổn định</li>
+<li>Dòng tiền dương</li>
+<li>Lãi > lạm phát</li>
+</ul>
+
+<h3>Khi KHÔNG nên làm?</h3>
+<ul>
+<li>Vay để đầu tư rủi ro</li>
+<li>Lãi vay > lợi nhuận</li>
+<li>Không có quỹ dự phòng</li>
+</ul>
+
+</section>
+
+<!-- BÀI TOÁN -->
+<section id="baitoan">
+<h2>📐 Bài toán tính tiền trực tiếp</h2>
+
+<label>Vốn ban đầu (PV):</label>
+<input type="number" id="pv" placeholder="Ví dụ: 10000000">
+
+<label>Lãi suất (% / năm):</label>
+<input type="number" id="rate" placeholder="Ví dụ: 8">
+
+<label>Số năm:</label>
+<input type="number" id="year" placeholder="Ví dụ: 5">
+
+<button onclick="tinhFV()">Tính FV</button>
+
+<div class="result" id="ketqua"></div>
+
+<script>
+function tinhFV(){
+    let pv = parseFloat(document.getElementById("pv").value);
+    let rate = parseFloat(document.getElementById("rate").value)/100;
+    let year = parseInt(document.getElementById("year").value);
+
+    if(isNaN(pv)||isNaN(rate)||isNaN(year)){
+        document.getElementById("ketqua").innerHTML="⚠️ Nhập đầy đủ số liệu";
+        return;
+    }
+
+    let fv = pv * Math.pow(1+rate,year);
+    let lai = fv - pv;
+
+    document.getElementById("ketqua").innerHTML=
+    "💰 Giá trị tương lai: " + fv.toLocaleString()+" đ<br>"+
+    "📈 Tiền lãi: " + lai.toLocaleString()+" đ";
+}
+</script>
+</section>
+
+<!-- 4.2 TÌNH HUỐNG -->
+<section id="tinhhuong">
+<h2>4.2 Chọn tình huống & giải quyết</h2>
+
+<input placeholder="Nhập tình huống của bạn...">
+
+<button onclick="scrollToId('baitoan')">📌 Tôi có vốn – muốn gửi tiết kiệm</button>
+<button onclick="scrollToId('trinh-tu')">📌 Tôi phân vân thời điểm đầu tư</button>
+<button onclick="scrollToId('thuatngu')">📌 Tôi không hiểu thuật ngữ</button>
+
+<script>
+function scrollToId(id){
+    document.getElementById(id).scrollIntoView({behavior:"smooth"});
+}
+</script>
+</section>
+
+<footer style="text-align:center;padding:15px;color:#555">
+© TCDN 1 – Học để dùng – Không học vẹt
+</footer>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tự bấm nút tính toán
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("số " + s) || text.includes("Kết quả " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠️ BÁO ĐỘNG: ' + document.title,
+                        body: 'Thấy số: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

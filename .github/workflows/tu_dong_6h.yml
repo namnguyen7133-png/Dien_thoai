@@ -1,0 +1,36 @@
+name: Quet Suc Khoe Tu Dong 6H Sang
+on:
+  schedule:
+    - cron: '0 23 * * *' # Chạy lúc 6:00 AM giờ Việt Nam
+  workflow_dispatch: # Nút bấm để bạn chạy thử ngay bây giờ
+
+jobs:
+  run_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cai dat moi truong
+        run: |
+          pip install playwright
+          playwright install chromium
+          
+      - name: Mo 300 file HTML
+        run: |
+          python -c "
+          import time
+          from playwright.sync_api import sync_playwright
+          
+          # Tao danh sach 300 link tu GitHub Pages cua ban
+          urls = [f'https://namnguyen7133-png.github.io/Dien_thoai/file_{{i}}.html' for i in range(1, 301)]
+          
+          with sync_playwright() as p:
+              browser = p.chromium.launch(headless=True)
+              page = browser.new_page()
+              for url in urls:
+                  try:
+                      print(f'Dang kiem tra: {url}')
+                      page.goto(url)
+                      time.sleep(30) # Doi 30 giay de script trong HTML tu tinh va gui Pushbullet
+                  except:
+                      continue
+              browser.close()
+          "

@@ -5,42 +5,34 @@
     <title>Hệ Thống Điều Hành - NGUYÊN MINH NAM</title>
 </head>
 <body>
-    <div id="output">Đang kiểm tra chỉ số...</div>
+    <div id="output">Nhấn <b>Ctrl + Shift + S</b> để thực hiện kiểm tra.</div>
 
 <script>
-    // Cấu hình danh sách số đặc biệt nguy hiểm của anh
     const SO_NGUY_HIEM = ["307", "14", "41", "27", "72", "627", "168", "303"];
-    const TOKEN = "o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2"; // Kiểm tra kỹ Token này
+    const TOKEN = "o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2"; 
     const BIRTH = "19710303";
 
     async function checkMultiDays() {
+        document.getElementById('output').innerText = "Đang kiểm tra...";
         let reports = [];
-        let foundDanger = false;
 
-        // Quét từ hôm qua (-1) đến 3 ngày tới (+3)
         for (let i = -1; i <= 3; i++) {
             let d = new Date();
             d.setDate(d.getDate() + i);
             let dString = d.toLocaleDateString('vi-VN');
             let seed = d.toISOString().split('T')[0].replaceAll('-', '') + BIRTH;
             
-            // Logic tính số đặc biệt (3 số cuối)
             let num = ((parseInt(seed.slice(-5)) * 7) % 900 + 100).toString();
-            
-            // Logic tính Giờ : Phút (dựa trên con số đó)
             let hh = (parseInt(num) % 24).toString().padStart(2, '0');
             let mm = (parseInt(num) % 60).toString().padStart(2, '0');
 
             let status = SO_NGUY_HIEM.includes(num) ? "⚠️ NGUY HIỂM" : "Bình thường";
-            if (SO_NGUY_HIEM.includes(num)) foundDanger = true;
-
             reports.push(`${dString} | Số: ${num} | Giờ: ${hh}:${mm} -> ${status}`);
         }
 
         const finalMsg = reports.join('\n');
         document.getElementById('output').innerText = finalMsg;
 
-        // Gửi Pushbullet
         await fetch('https://api.pushbullet.com/v2/pushes', {
             method: 'POST',
             headers: { 'Access-Token': TOKEN, 'Content-Type': 'application/json' },
@@ -49,11 +41,17 @@
                 title: 'BÁO CÁO CHỈ SỐ: NGUYÊN MINH NAM',
                 body: finalMsg
             })
-        });
+        }).catch(err => console.error("Lỗi gửi Pushbullet:", err));
     }
 
-    // Tự động chạy ngay khi load trang
-    window.onload = checkMultiDays;
+    // Lắng nghe sự kiện bàn phím
+    document.addEventListener('keydown', function(event) {
+        // Kiểm tra phím tắt Ctrl + Shift + S
+        if (event.ctrlKey && event.shiftKey && event.key === 'S') {
+            event.preventDefault(); // Chặn hành động mặc định của trình duyệt
+            checkMultiDays();
+        }
+    });
 </script>
 </body>
 </html>

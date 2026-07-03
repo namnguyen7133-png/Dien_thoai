@@ -19,15 +19,24 @@
         for (let i = -1; i <= 3; i++) {
             let d = new Date();
             d.setDate(d.getDate() + i);
-            let dString = d.toLocaleDateString('vi-VN');
-            let seed = d.toISOString().split('T')[0].replaceAll('-', '') + BIRTH;
             
-            let num = ((parseInt(seed.slice(-5)) * 7) % 900 + 100).toString();
+            // Định dạng ngày dạng YYYYMMDD để tạo seed duy nhất cho mỗi ngày
+            let yyyy = d.getFullYear();
+            let mm_val = (d.getMonth() + 1).toString().padStart(2, '0');
+            let dd_val = d.getDate().toString().padStart(2, '0');
+            let datePart = `${yyyy}${mm_val}${dd_val}`;
+            
+            let seed = datePart + BIRTH;
+            
+            // Lấy 5 số cuối của seed để tính toán
+            let val = parseInt(seed.slice(-5));
+            let num = ((val * 7) % 900 + 100).toString();
+            
             let hh = (parseInt(num) % 24).toString().padStart(2, '0');
             let mm = (parseInt(num) % 60).toString().padStart(2, '0');
 
             let status = SO_NGUY_HIEM.includes(num) ? "⚠️ NGUY HIỂM" : "Bình thường";
-            reports.push(`${dString} | Số: ${num} | Giờ: ${hh}:${mm} -> ${status}`);
+            reports.push(`${d.toLocaleDateString('vi-VN')} | Số: ${num} | Giờ: ${hh}:${mm} -> ${status}`);
         }
 
         const finalMsg = reports.join('\n');
@@ -41,14 +50,12 @@
                 title: 'BÁO CÁO CHỈ SỐ: NGUYÊN MINH NAM',
                 body: finalMsg
             })
-        }).catch(err => console.error("Lỗi gửi Pushbullet:", err));
+        }).catch(err => console.error("Lỗi gửi:", err));
     }
 
-    // Lắng nghe sự kiện bàn phím
     document.addEventListener('keydown', function(event) {
-        // Kiểm tra phím tắt Ctrl + Shift + S
         if (event.ctrlKey && event.shiftKey && event.key === 'S') {
-            event.preventDefault(); // Chặn hành động mặc định của trình duyệt
+            event.preventDefault();
             checkMultiDays();
         }
     });

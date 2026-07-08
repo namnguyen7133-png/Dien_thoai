@@ -2,12 +2,108 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ Thống Điều Hành - NGUYÊN MINH NAM</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h3 {
+            margin-top: 0;
+            color: #0366d6;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 8px;
+        }
+        .search-box {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px; /* Tránh bị tự động zoom trên màn hình iPhone/Android */
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: white;
+        }
+        .btn-local { background-color: #2ea44f; } /* Màu xanh lá cho tìm trong kho */
+        .btn-global { background-color: #24292e; } /* Màu đen cho tìm toàn cầu */
+        .btn-system { background-color: #007bff; margin-top: 10px; } /* Nút bấm phụ cho điện thoại */
+        
+        #output {
+            background: #eef2f7;
+            padding: 15px;
+            border-left: 5px solid #007bff;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
-    <div id="output">Nhấn <b>Ctrl + Shift + S</b> để thực hiện kiểm tra.</div>
+
+<div class="container">
+    <!-- KHU VỰC TÌM KIẾM TỆP HTML -->
+    <h3>🔍 CÔNG CỤ TÌM KIẾM FILE</h3>
+    <div class="search-box">
+        <input type="text" id="keyword" placeholder="Nhập từ khóa cần tìm vào đây...">
+        <button class="btn-local" onclick="searchGitHub(true)">🔍 Tìm trong tệp của tôi (Dien_thoai)</button>
+        <button class="btn-global" onclick="searchGitHub(false)">🌐 Tìm trên GitHub Thế giới</button>
+    </div>
+
+    <!-- KHU VỰC HỆ THỐNG CŨ CỦA BẠN -->
+    <h3>⚙️ HỆ THỐNG ĐIỀU HÀNH</h3>
+    <div id="output">Nhấn <b>Ctrl + Shift + S</b> để kiểm tra (Hoặc bấm nút bên dưới nếu dùng điện thoại).</div>
+    <button class="btn-system" onclick="checkMultiDays()">🚀 Chạy Kiểm Tra Chỉ Số</button>
+</div>
 
 <script>
+    // Hàm xử lý tìm kiếm chuyên biệt cho di động
+    function searchGitHub(isLocal) {
+        const keyword = document.getElementById('keyword').value.trim();
+        if (!keyword) {
+            alert('Vui lòng nhập từ khóa trước khi tìm!');
+            return;
+        }
+        
+        let searchUrl = "";
+        if (isLocal) {
+            // Tự động thêm bộ lọc chỉ tìm trong kho "namnguyen7133/Dien_thoai" và lọc theo file Code
+            searchUrl = `https://github.com/search?q=${encodeURIComponent(keyword)}+repo%3Anamnguyen7133%2FDien_thoai&type=code`;
+        } else {
+            // Tìm kiếm trên toàn thế giới
+            searchUrl = `https://github.com/search?q=${encodeURIComponent(keyword)}&type=code`;
+        }
+        
+        // Mở kết quả ở một tab mới
+        window.open(searchUrl, '_blank');
+    }
+
+    // --- GIỮ NGUYÊN TOÀN BỘ LOGIC HỆ THỐNG CỦA BẠN ---
     const SO_NGUY_HIEM = ["307", "14", "41", "27", "72", "627", "168", "303"];
     const TOKEN = "o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2"; 
     const BIRTH = "19710303";
@@ -20,7 +116,6 @@
             let d = new Date();
             d.setDate(d.getDate() + i);
             
-            // Định dạng ngày dạng YYYYMMDD để tạo seed duy nhất cho mỗi ngày
             let yyyy = d.getFullYear();
             let mm_val = (d.getMonth() + 1).toString().padStart(2, '0');
             let dd_val = d.getDate().toString().padStart(2, '0');
@@ -28,7 +123,6 @@
             
             let seed = datePart + BIRTH;
             
-            // Lấy 5 số cuối của seed để tính toán
             let val = parseInt(seed.slice(-5));
             let num = ((val * 7) % 900 + 100).toString();
             

@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full bg-slate-950 text-slate-100 selection:bg-emerald-500 selection:text-slate-950">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Điều Phối & Quản Lý Tra Cứu (THUONGLUU Calc)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        darkBg: '#090d16',
+                        panelBg: '#111827',
+                        panelBorder: '#1f2937',
+                        accentGreen: '#10b981',
+                        accentCyan: '#06b6d4',
+                        accentAmber: '#f59e0b',
+                        accentRose: '#f43f5e'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-size: 13px;
+        }
+        /* Custom scrollbar styling for Dark Mode */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col bg-darkBg text-slate-200 font-sans antialiased">
+
+    <!-- Top Header Navigation -->
+    <header class="bg-slate-900 border-b border-slate-800 px-4 py-2.5 flex-none shadow-lg">
+        <div class="max-w-[1600px] mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="p-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-lg">
+                    <i class="fa-solid fa-calculator text-base"></i>
+                </div>
+                <div>
+                    <h1 class="text-sm font-bold text-slate-100 flex items-center gap-2">
+                        <span>Hệ Thống Điều Phối & Quản Lý Tra Cứu</span>
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800">script_quan_ly.py</span>
+                    </h1>
+                    <p class="text-[11px] text-slate-400">Chế độ lọc trùng 6 bảng số dư & tự động tích hợp THUONGLUU</p>
+                </div>
+            </div>
+
+            <!-- Header Quick Actions -->
+            <div class="flex items-center space-x-2">
+                <button id="btnOpenReferenceModal" class="px-2.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded text-xs font-medium transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-layer-group text-amber-400"></i> Quản lý 6 Bảng Số Dư (<span id="refNumbersCount">0</span>)
+                </button>
+                <button id="btnExportJSON" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-medium shadow-sm transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-file-export"></i> Xuất JSON Trùng Khớp
+                </button>
+                <button id="btnExportTXT" class="px-2.5 py-1.5 bg-cyan-700 hover:bg-cyan-600 text-white rounded text-xs font-medium shadow-sm transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-file-code"></i> Tải THUONGLUU.txt
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-[1600px] w-full mx-auto p-4 flex flex-col gap-4 overflow-hidden">
+        
+        <!-- Tab Navigation Bar -->
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <div class="flex space-x-2 bg-slate-900 p-1 rounded-lg border border-slate-800">
+                <button tab-target="tab-1" class="tab-btn active px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition">
+                    <i class="fa-solid fa-chart-pie text-cyan-400"></i> 📊 Tab 1: Quản Lý & Lịch Sử
+                </button>
+                <button tab-target="tab-2" class="tab-btn px-3 py-1.5 rounded-md text-xs font-medium flex items-center gap-2 transition">
+                    <i class="fa-solid fa-calculator text-emerald-400"></i> 📝 Tab 2: Tính Toán & Lọc Trùng THUONGLUU
+                </button>
+            </div>
+
+            <!-- Path / Folder Config Indicator -->
+            <div class="text-[11px] font-mono text-slate-400 bg-slate-900/80 border border-slate-800 px-3 py-1 rounded-md flex items-center gap-2">
+                <i class="fa-solid fa-folder-open text-amber-400"></i>
+                <span class="text-slate-400">Thư mục đích:</span>
+                <span class="text-slate-200 font-semibold" id="displayPath">/KET_QUA_JSON/THUONGLUU.txt</span>
+            </div>
+        </div>
+
+        <!-- TAB CONTENT CONTAINER -->
+        <div class="flex-1 overflow-y-auto">
+
+            <!-- TAB 1: Quản Lý & Lịch Sử Gốc -->
+            <div id="tab-1" class="tab-content block space-y-4">
+                
+                <!-- Input Panel for Tab 1 -->
+                <div class="bg-panelBg border border-panelBorder rounded-xl p-4 shadow-sm">
+                    <h2 class="text-xs font-bold text-slate-200 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-filter text-cyan-400"></i> 1. Bộ Lọc, Tìm Kiếm Tên, Thời Gian, Bệnh Lý & Thư Mục
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <!-- Tên nhân sự -->
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Tên Nhân Sự / Đối Tượng</label>
+                            <input type="text" id="t1_ten" placeholder="Nhập tên nhân sự..." class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-cyan-500">
+                        </div>
+
+                        <!-- Bệnh lý -->
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Bệnh Bị Mắc / Nội Dung</label>
+                            <input type="text" id="t1_benh" placeholder="Ví dụ: Đau đầu, Cảm cúm..." class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-cyan-500">
+                        </div>
+
+                        <!-- Tìm kiếm nhanh -->
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Lọc Theo Tên Bảng</label>
+                            <div class="relative">
+                                <input type="text" id="t1_search" placeholder="Nhập từ khóa tìm..." class="w-full bg-slate-900 border border-slate-700 rounded pl-8 pr-2.5 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-cyan-500">
+                                <i class="fa-solid fa-search absolute left-2.5 top-2 text-slate-500 text-xs"></i>
+                            </div>
+                        </div>
+
+                        <!-- Button Actions -->
+                        <div class="flex items-end space-x-2">
+                            <button id="btnSaveTab1" class="flex-1 bg-cyan-600 hover:bg-cyan-500 text-white font-medium py-1.5 px-3 rounded text-xs transition flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-floppy-disk"></i> Lưu Lịch Sử TXT
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Time Components Input Grid -->
+                    <div class="mt-3 pt-3 border-t border-slate-800">
+                        <label class="block text-[11px] font-semibold text-slate-400 mb-2">Thông Số Thời Gian (Năm / Quý / Tháng / Tuần / Ngày / Giờ / Phút)</label>
+                        <div class="grid grid-cols-7 gap-2">
+                            <div>
+                                <span class="text-[10px] text-slate-500 block mb-0.5">Năm</span>
+                                <input type="number" id="t1_nam" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs font-mono text-center text-slate-200">
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-500 block mb-0.5">Quý</span>
+                                <input type="number" id="t1_quy" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs font-mono text-center text-slate-200">
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-500 block mb-0.5">Tháng</span>
+                                <input type="number" id="t1_thang" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs font-mono text-center text-slate-200">
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-500 block mb-0.5">Tuần</span>
+                                <input type="number" id="t1_tuan" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs font-mono text-center text-slate-200">
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-500 block mb-0.5">Ngày</span>
+                                <input type="number" id="t1_ngay" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs font-mono text-center text-slate-200">
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-500 block mb-0.5">Giờ</span>
+                                <input type="number" id="t1_gio" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs font-mono text-center text-slate-200">
+                            </div>
+                            <div>
+                                <span class="text-[10px] text-slate-500 block mb-0.5">Phút</span>
+                                <input type="number" id="t1_phut" class="w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs font-mono text-center text-slate-200">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table History View -->
+                <div class="bg-panelBg border border-panelBorder rounded-xl overflow-hidden shadow-sm flex flex-col">
+                    <div class="p-3 bg-slate-900/60 border-b border-slate-800 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-200 text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-list-ul text-slate-400"></i> 2. Bảng Lịch Sử & Kết Quả Tra Cứu (Template Mẫu)
+                        </h3>
+                        <span class="text-[11px] text-slate-400" id="t1_count">Tổng số mục: 0</span>
+                    </div>
+
+                    <div class="overflow-x-auto max-h-[380px]">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-900 text-slate-400 font-semibold border-b border-slate-800 sticky top-0">
+                                    <th class="py-2.5 px-4 w-12 text-center">STT</th>
+                                    <th class="py-2.5 px-4 w-48">Tên Nhân Sự / Đối Tượng</th>
+                                    <th class="py-2.5 px-4">Thời Gian (Năm/Quý/Tháng/Tuần/Ngày/Giờ/Phút)</th>
+                                    <th class="py-2.5 px-4 w-52">Bệnh Bị Mắc / Nội Dung</th>
+                                    <th class="py-2.5 px-4 w-16 text-center">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="t1_tableBody" class="divide-y divide-slate-800/60 font-mono text-[12px]">
+                                <!-- Dynamic Tab 1 Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: Tính Toán & Lọc Trùng THUONGLUU -->
+            <div id="tab-2" class="tab-content hidden space-y-4">
+                
+                <!-- Main Input Calculation Form -->
+                <div class="bg-panelBg border border-panelBorder rounded-xl p-4 shadow-sm">
+                    <h2 class="text-xs font-bold text-slate-200 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-emerald-400"></i> Nhập Liệu Thời Gian, Tên & Bệnh Tật (Lọc Trùng 6 Bảng)
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3">
+                        <!-- Giờ (1-1440) -->
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Giờ STT (1-1440):</label>
+                            <input type="number" id="t2_gio" min="1" max="1440" value="1" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs font-mono text-emerald-400 font-bold focus:outline-none focus:border-emerald-500">
+                        </div>
+
+                        <!-- Phút -->
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Phút:</label>
+                            <input type="number" id="t2_phut" value="0" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs font-mono text-slate-200 focus:outline-none focus:border-emerald-500">
+                        </div>
+
+                        <!-- Ngày -->
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Ngày Sinh / Nhập:</label>
+                            <input type="number" id="t2_ngay" min="1" max="31" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs font-mono text-slate-200 focus:outline-none focus:border-emerald-500">
+                        </div>
+
+                        <!-- Tháng -->
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Tháng Sinh / Nhập:</label>
+                            <input type="number" id="t2_thang" min="1" max="12" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs font-mono text-slate-200 focus:outline-none focus:border-emerald-500">
+                        </div>
+
+                        <!-- Năm -->
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Năm Sinh (hoặc Năm):</label>
+                            <input type="number" id="t2_nam" value="2000" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs font-mono text-slate-200 focus:outline-none focus:border-emerald-500">
+                        </div>
+
+                        <!-- Chọn Tên Tab 1 -->
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Chọn Tên (từ Tab 1):</label>
+                            <select id="t2_comboTen" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                                <!-- Dynamic Options -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3 items-end">
+                        <!-- Chọn hoặc nhập bệnh tật -->
+                        <div class="md:col-span-2">
+                            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Bệnh Tật / Ghi Chú:</label>
+                            <div class="flex space-x-2">
+                                <select id="t2_comboBenh" class="w-1/2 bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                                    <option value="Cảm cúm">Cảm cúm</option>
+                                    <option value="Đau đầu">Đau đầu</option>
+                                    <option value="Đau bụng">Đau bụng</option>
+                                    <option value="Huyết áp">Huyết áp</option>
+                                </select>
+                                <input type="text" id="t2_inputBenhCustom" placeholder="Hoặc nhập tên bệnh mới..." class="w-1/2 bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                            </div>
+                        </div>
+
+                        <!-- Action Button -->
+                        <div>
+                            <button id="btnCalcAndSave" class="w-full bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold py-2 px-3 rounded text-xs shadow-md transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-bolt"></i> Kiểm Tra Trùng & Lưu THUONGLUU.txt
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Result Simulation Box -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
+                    <div class="flex items-center space-x-4">
+                        <span class="text-slate-500">Tóm tắt công thức:</span>
+                        <span class="text-slate-300">Chênh lệch: <strong id="previewDays" class="text-cyan-400">0</strong> ngày</span>
+                        <span class="text-slate-300">Thương x24: <strong id="previewThuong" class="text-emerald-400">0</strong></span>
+                        <span class="text-slate-300">Nguyên (%1000): <strong id="previewDuNguyen" class="text-amber-400">0</strong></span>
+                        <span class="text-slate-300">Dư (%1000): <strong id="previewDuDu" class="text-rose-400">0</strong></span>
+                    </div>
+                    <div id="previewStatus" class="px-2.5 py-1 rounded text-[11px] font-sans font-bold bg-slate-800 text-slate-400">
+                        Chờ kiểm tra trùng...
+                    </div>
+                </div>
+
+                <!-- THUONGLUU Table -->
+                <div class="bg-panelBg border border-panelBorder rounded-xl overflow-hidden shadow-sm flex flex-col">
+                    <div class="p-3 bg-slate-900/60 border-b border-slate-800 flex justify-between items-center">
+                        <h3 class="font-bold text-slate-200 text-xs flex items-center gap-2">
+                            <i class="fa-solid fa-database text-amber-400"></i> Dữ Liệu Trùng Khớp Trong THUONGLUU.txt (Đã Lọc Lấy)
+                        </h3>
+                        <span class="text-[11px] text-slate-400" id="t2_count">Tổng bản ghi trùng: 0</span>
+                    </div>
+
+                    <div class="overflow-x-auto max-h-[380px]">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-900 text-slate-400 font-semibold border-b border-slate-800 sticky top-0">
+                                    <th class="py-2.5 px-3">Cột 1 (Thương Tính Toán & Số Dư)</th>
+                                    <th class="py-2.5 px-3 w-40">Tên Đối Tượng</th>
+                                    <th class="py-2.5 px-3 w-48">Thời Gian Nhập</th>
+                                    <th class="py-2.5 px-3 w-40">Bệnh Tật</th>
+                                    <th class="py-2.5 px-3 w-56">Trạng Thái Lọc (Chỉ lấy Trùng)</th>
+                                    <th class="py-2.5 px-3 w-12 text-center">Xóa</th>
+                                </tr>
+                            </thead>
+                            <tbody id="t2_tableBody" class="divide-y divide-slate-800/60 font-mono text-[11px]">
+                                <!-- Dynamic THUONGLUU Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-2 px-4 text-center text-[11px] text-slate-500">
+        Hệ Thống Điều Phối & Quản Lý Tra Cứu (THUONGLUU HTML5 Engine) &copy; 2026
+    </footer>
+
+    <!-- MODAL: Managed 6 Reference Tables Numbers (muc_1 to muc_6) -->
+    <div id="refModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col">
+            <div class="p-3.5 border-b border-slate-800 flex justify-between items-center bg-slate-950 rounded-t-xl">
+                <h3 class="font-bold text-slate-100 text-xs flex items-center gap-2">
+                    <i class="fa-solid fa-list-numeric text-amber-400"></i> Quản Lý Danh Sách Số Dư (6 Bảng Tham Chiếu muc_1 - muc_6)
+                </h3>
+                <button id="btnCloseRefModal" class="text-slate-400 hover:text-slate-200 p-1">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+
+            <div class="p-4 overflow-y-auto space-y-4 flex-1">
+                <p class="text-xs text-slate-400">
+                    Ứng dụng sẽ quét dữ liệu số từ các bảng tham chiếu dưới đây để kiểm tra trùng khớp với giá trị <code class="text-amber-400 font-mono">du_nguyen</code> và <code class="text-rose-400 font-mono">du_du</code>.
+                </p>
+
+                <!-- Input custom raw array -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Dữ liệu các số tham chiếu (cách nhau bằng dấu phẩy hoặc khoảng trắng):</label>
+                    <textarea id="refNumbersInput" class="w-full h-44 bg-slate-950 border border-slate-800 rounded p-2.5 font-mono text-xs text-emerald-400 focus:outline-none focus:border-emerald-500" placeholder="Nhập danh sách số..."></textarea>
+                </div>
+
+                <div class="flex justify-between items-center bg-slate-950/60 p-3 rounded border border-slate-800">
+                    <span class="text-xs text-slate-400">Tổng số lượng số duy nhất trong bộ nhớ: <strong id="modalNumbersCount" class="text-emerald-400 font-mono">0</strong> số</span>
+                    <button id="btnResetDefaultRef" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded transition">
+                        Khôi phục mặc định (269 số)
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-3 border-t border-slate-800 flex justify-end gap-2 bg-slate-950 rounded-b-xl">
+                <button id="btnSaveRefNumbers" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs rounded transition">
+                    Lưu Thay Đổi 6 Bảng
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT APP LOGIC -->
+    <script>
+        // Default Reference Array (Simulating collected numbers from muc_1 -> muc_6)
+        const DEFAULT_REF_NUMBERS = [
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 4123, 
+            28, 27, 30, 29, 32, 33, 31, 35, 4132, 34, 38, 36, 40, 37, 39, 43, 41, 45, 42, 44, 48, 49, 46, 47, 50, 53, 
+            51, 52, 54, 55, 58, 56, 60, 57, 59, 63, 61, 65, 62, 64, 68, 66, 67, 69, 72, 73, 74, 75, 70, 71, 78, 76, 
+            77, 79, 80, 83, 81, 82, 2134, 84, 88, 89, 90, 85, 86, 93, 87, 2143, 96, 91, 98, 92, 100, 101, 94, 103, 
+            95, 97, 99, 102, 108, 104, 105, 111, 106, 113, 107, 115, 109, 4213, 118, 110, 120, 112, 114, 123, 116, 
+            125, 117, 119, 128, 121, 130, 122, 132, 124, 126, 4231, 135, 129, 131, 133, 134, 136, 137, 138, 139, 
+            140, 141, 142, 143, 149, 150, 144, 145, 146, 147, 155, 148, 151, 152, 159, 160, 153, 154, 156, 164, 
+            165, 157, 158, 168, 161, 162, 163, 166, 167, 169, 170, 171, 172, 173, 174, 180, 175, 176, 177, 178, 
+            185, 186, 179, 181, 189, 182, 183, 192, 184, 187, 195, 188, 190, 198, 191, 193, 194, 196, 197, 199, 
+            200, 201, 202, 208, 209, 210, 203, 204, 213, 205, 206, 4312, 211, 212, 214, 220, 215, 222, 216, 217, 
+            4321, 225, 218, 219, 221, 230, 231, 232, 224, 234, 226, 227, 228, 229, 233, 240, 235, 236, 243, 237, 
+            238, 246, 239, 249, 250, 252, 255, 258, 260, 261, 264, 2314, 267, 270, 276, 278, 280, 285, 288, 290, 
+            2341, 294, 298, 299, 300, 304, 305, 307, 312, 315, 316, 321, 324, 327, 328, 330, 333, 335, 336, 342, 
+            345, 348, 350, 354, 357, 360, 2413, 365, 370, 375, 377, 380, 2431, 384, 385, 390, 395, 397, 398, 400, 
+            402, 405, 407, 408, 409, 415, 420, 423, 425, 429, 432, 435, 438, 440, 443, 444, 446, 450, 453, 456, 
+            458, 465, 480, 483, 485, 490, 492, 495, 498, 505, 510, 519, 525, 528, 529, 530, 534, 535, 537, 540, 
+            543, 546, 547, 550, 555, 556, 560, 564, 565, 567, 570, 573, 575, 576, 582, 584, 585, 587, 590, 591, 
+            594, 595, 603, 610, 615, 618, 620, 627, 630, 127, 640, 644, 645, 650, 654, 657, 660, 666, 672, 675, 
+            678, 681, 687, 688, 690, 699, 700, 703, 704, 705, 710, 713, 715, 720, 725, 726, 730, 735, 745, 753, 
+            756, 760, 762, 765, 768, 777, 786, 789, 790, 793, 795, 798, 808, 815, 816, 819, 825, 834, 838, 840, 
+            843, 845, 852, 855, 861, 867, 870, 876, 879, 880, 884, 888, 891, 897, 900, 912, 915, 918, 924, 925, 
+            930, 942, 945, 951, 960, 964, 973, 978, 981, 987, 995, 999, 1000, 1008, 1012, 1020, 1028, 1030, 207, 
+            1050, 1060, 1065, 3124, 1080, 1085, 1088, 3142, 1105, 1110, 1112, 1120, 223, 1125, 1135, 1140, 1148, 
+            3214, 1170, 1177, 1178, 1185, 1190, 3241, 1200, 1205, 1208, 1215, 1220, 1230, 1231, 1234, 1240, 1243, 
+            1245, 1255, 1260, 1268, 1275, 1290, 1295, 1305, 1320, 1324, 1335, 1342, 3412, 1369, 3421, 1375, 1410, 
+            1423, 1425, 1432
+        ];
+
+        // Global State Variable
+        let appState = {
+            tab1Data: [],
+            thuongluuData: [],
+            refNumbers: [...DEFAULT_REF_NUMBERS]
+        };
+
+        // Initialize Application
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFromLocalStorage();
+            initTabs();
+            initDefaults();
+            initEventHandlers();
+            renderAll();
+        });
+
+        // Load persisted data
+        function loadFromLocalStorage() {
+            try {
+                const savedT1 = localStorage.getItem('thuongluu_tab1');
+                const savedTL = localStorage.getItem('thuongluu_data');
+                const savedRef = localStorage.getItem('thuongluu_ref_numbers');
+
+                if (savedT1) appState.tab1Data = JSON.parse(savedT1);
+                else appState.tab1Data = [
+                    { ten: "NGUYỄN KHẮC NĂNG", timeStr: "Năm:1944 | Quý:2 | Tháng:6 | Tuần:23 | Ngày:4 | Giờ:11 | Phút:0", benh: "Bình thường" },
+                    { ten: "TÔ THỊ HÀ", timeStr: "Năm:1948 | Quý:3 | Tháng:8 | Tuần:35 | Ngày:29 | Giờ:10 | Phút:0", benh: "Cảm cúm" },
+                    { ten: "NGUYỄN MINH NAM", timeStr: "Năm:1971 | Quý:1 | Tháng:3 | Tuần:9 | Ngày:3 | Giờ:21 | Phút:0", benh: "Đau đầu" }
+                ];
+
+                if (savedTL) appState.thuongluuData = JSON.parse(savedTL);
+                if (savedRef) appState.refNumbers = JSON.parse(savedRef);
+            } catch (e) {
+                console.error("Lỗi nạp dữ liệu LocalStorage:", e);
+            }
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('thuongluu_tab1', JSON.stringify(appState.tab1Data));
+            localStorage.setItem('thuongluu_data', JSON.stringify(appState.thuongluuData));
+            localStorage.setItem('thuongluu_ref_numbers', JSON.stringify(appState.refNumbers));
+        }
+
+        // Set default values for time inputs
+        function initDefaults() {
+            const now = new Date();
+            document.getElementById('t1_nam').value = now.getFullYear();
+            document.getElementById('t1_quy').value = Math.floor((now.getMonth() + 3) / 3);
+            document.getElementById('t1_thang').value = now.getMonth() + 1;
+            document.getElementById('t1_tuan').value = getISOWeek(now);
+            document.getElementById('t1_ngay').value = now.getDate();
+            document.getElementById('t1_gio').value = now.getHours();
+            document.getElementById('t1_phut').value = now.getMinutes();
+
+            // Tab 2 Defaults
+            document.getElementById('t2_ngay').value = now.getDate();
+            document.getElementById('t2_thang').value = now.getMonth() + 1;
+            document.getElementById('t2_phut').value = now.getMinutes();
+        }
+
+        function getISOWeek(d) {
+            const date = new Date(d.getTime());
+            date.setHours(0, 0, 0, 0);
+            date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+            const week1 = new Date(date.getFullYear(), 0, 4);
+            return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+        }
+
+        // Tab navigation switching
+        function initTabs() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const target = btn.getAttribute('tab-target');
+
+                    tabBtns.forEach(b => {
+                        b.classList.remove('active', 'bg-slate-800', 'text-white', 'shadow-sm', 'border', 'border-slate-700');
+                        b.classList.add('text-slate-400');
+                    });
+                    btn.classList.add('active', 'bg-slate-800', 'text-white', 'shadow-sm', 'border', 'border-slate-700');
+                    btn.classList.remove('text-slate-400');
+
+                    tabContents.forEach(content => {
+                        if (content.id === target) content.classList.remove('hidden');
+                        else content.classList.add('hidden');
+                    });
+                });
+            });
+            // Initial click first tab
+            tabBtns[0].click();
+        }
+
+        // Event Handling Init
+        function initEventHandlers() {
+            // Tab 1 Save
+            document.getElementById('btnSaveTab1').addEventListener('click', saveTab1Item);
+            document.getElementById('t1_search').addEventListener('input', renderTab1Table);
+
+            // Tab 2 Preview Calculation Live Update
+            ['t2_gio', 't2_ngay', 't2_thang', 't2_nam'].forEach(id => {
+                document.getElementById(id).addEventListener('input', updateLivePreviewCalc);
+            });
+
+            // Tab 2 Main Action
+            document.getElementById('btnCalcAndSave').addEventListener('click', executeCalculationAndCheck);
+
+            // Export Actions
+            document.getElementById('btnExportJSON').addEventListener('click', exportJSONFile);
+            document.getElementById('btnExportTXT').addEventListener('click', exportTXTFile);
+
+            // Modal Reference Numbers Handlers
+            const modal = document.getElementById('refModal');
+            document.getElementById('btnOpenReferenceModal').addEventListener('click', () => {
+                document.getElementById('refNumbersInput').value = appState.refNumbers.join(', ');
+                document.getElementById('modalNumbersCount').textContent = appState.refNumbers.length;
+                modal.classList.remove('hidden');
+            });
+
+            document.getElementById('btnCloseRefModal').addEventListener('click', () => {
+                modal.classList.add('hidden');
+            });
+
+            document.getElementById('btnResetDefaultRef').addEventListener('click', () => {
+                appState.refNumbers = [...DEFAULT_REF_NUMBERS];
+                document.getElementById('refNumbersInput').value = appState.refNumbers.join(', ');
+                document.getElementById('modalNumbersCount').textContent = appState.refNumbers.length;
+            });
+
+            document.getElementById('btnSaveRefNumbers').addEventListener('click', () => {
+                const rawVal = document.getElementById('refNumbersInput').value;
+                const numbers = rawVal.split(/[\s,]+/).map(n => parseInt(n.trim(), 10)).filter(n => !isNaN(n));
+                const uniqueNumbers = [...new Set(numbers)];
+                
+                appState.refNumbers = uniqueNumbers;
+                saveToLocalStorage();
+                renderRefNumbersCount();
+                updateLivePreviewCalc();
+                modal.classList.add('hidden');
+                alert(`Đã cập nhật thành công ${uniqueNumbers.length} số tham chiếu vào hệ thống!`);
+            });
+        }
+
+        // Render functions
+        function renderAll() {
+            renderTab1Table();
+            renderNamesDropdown();
+            renderThuongluuTable();
+            renderRefNumbersCount();
+            updateLivePreviewCalc();
+        }
+
+        function renderRefNumbersCount() {
+            document.getElementById('refNumbersCount').textContent = appState.refNumbers.length;
+        }
+
+        // Tab 1 Operations
+        function saveTab1Item() {
+            const ten = document.getElementById('t1_ten').value.trim() || "Khuyết Danh";
+            const benh = document.getElementById('t1_benh').value.trim() || "Không có";
+
+            const nam = document.getElementById('t1_nam').value || "0";
+            const quy = document.getElementById('t1_quy').value || "0";
+            const thang = document.getElementById('t1_thang').value || "0";
+            const tuan = document.getElementById('t1_tuan').value || "0";
+            const ngay = document.getElementById('t1_ngay').value || "0";
+            const gio = document.getElementById('t1_gio').value || "0";
+            const phut = document.getElementById('t1_phut').value || "0";
+
+            const timeStr = `Năm:${nam} | Quý:${quy} | Tháng:${thang} | Tuần:${tuan} | Ngày:${ngay} | Giờ:${gio} | Phút:${phut}`;
+
+            appState.tab1Data.push({ ten, timeStr, benh });
+            saveToLocalStorage();
+            renderTab1Table();
+            renderNamesDropdown();
+
+            // Clear inputs
+            document.getElementById('t1_ten').value = '';
+            document.getElementById('t1_benh').value = '';
+        }
+
+        function deleteTab1Item(index) {
+            appState.tab1Data.splice(index, 1);
+            saveToLocalStorage();
+            renderTab1Table();
+            renderNamesDropdown();
+        }
+
+        function renderTab1Table() {
+            const tbody = document.getElementById('t1_tableBody');
+            const searchVal = document.getElementById('t1_search').value.toLowerCase().trim();
+            tbody.innerHTML = '';
+
+            const filtered = appState.tab1Data.filter(item => item.ten.toLowerCase().includes(searchVal));
+            document.getElementById('t1_count').textContent = `Tổng số mục: ${filtered.length}`;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-500 font-sans">Không tìm thấy bản ghi nào trong lịch sử</td></tr>`;
+                return;
+            }
+
+            filtered.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-900/80 transition';
+                tr.innerHTML = `
+                    <td class="py-2.5 px-4 text-center text-slate-500">${index + 1}</td>
+                    <td class="py-2.5 px-4 font-bold text-slate-200">${item.ten}</td>
+                    <td class="py-2.5 px-4 text-slate-400">${item.timeStr}</td>
+                    <td class="py-2.5 px-4 text-cyan-400">${item.benh}</td>
+                    <td class="py-2.5 px-4 text-center">
+                        <button onclick="deleteTab1Item(${index})" class="text-rose-500 hover:text-rose-400 p-1">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderNamesDropdown() {
+            const combo = document.getElementById('t2_comboTen');
+            combo.innerHTML = '';
+
+            const names = [...new Set(appState.tab1Data.map(i => i.ten))];
+            if (names.length === 0) names.push("Khuyết Danh");
+
+            names.forEach(name => {
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.textContent = name;
+                combo.appendChild(opt);
+            });
+        }
+
+        // ================= MAIN CORE CALCULATION LOGIC =================
+        function calculateCoreValues() {
+            const gioVal = parseInt(document.getElementById('t2_gio').value, 10) || 1;
+            const ngayVal = parseInt(document.getElementById('t2_ngay').value, 10) || 1;
+            const thangVal = parseInt(document.getElementById('t2_thang').value, 10) || 1;
+            const namVal = parseInt(document.getElementById('t2_nam').value, 10) || 2000;
+
+            const now = new Date();
+            const dtSinh = new Date(namVal, thangVal - 1, ngayVal);
+
+            // Compute difference in days: abs(now - birth)
+            const diffTime = Math.abs(now.getTime() - dtSinh.getTime());
+            const chenhLechNgay = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            const thuongNhan24 = chenhLechNgay * 24;
+            const phanNguyen = Math.floor(thuongNhan24 / gioVal);
+            const phanDu = thuongNhan24 % gioVal;
+
+            const duNguyen = phanNguyen % 1000;
+            const duDu = phanDu % 1000;
+
+            // Check duplicate numbers against 6 reference tables array
+            const refSet = new Set(appState.refNumbers);
+            const hasNguyen = refSet.has(duNguyen);
+            const hasDu = refSet.has(duDu);
+
+            const coTrung = hasNguyen || hasDu;
+
+            let ketQuaLoc = [];
+            if (hasNguyen) ketQuaLoc.push(`Trùng (${duNguyen}) -> Lấy`);
+            else ketQuaLoc.push(`Không trùng (${duNguyen}) -> Bỏ`);
+
+            if (hasDu) ketQuaLoc.push(`Trùng (${duDu}) -> Lấy`);
+            else ketQuaLoc.push(`Không trùng (${duDu}) -> Bỏ`);
+
+            const trangThaiStr = ketQuaLoc.join(' | ');
+
+            return {
+                gioVal, ngayVal, thangVal, namVal,
+                chenhLechNgay, thuongNhan24, phanNguyen, phanDu,
+                duNguyen, duDu, coTrung, trangThaiStr
+            };
+        }
+
+        // Live preview of formula in Tab 2
+        function updateLivePreviewCalc() {
+            const calc = calculateCoreValues();
+            document.getElementById('previewDays').textContent = calc.chenhLechNgay.toLocaleString();
+            document.getElementById('previewThuong').textContent = calc.thuongNhan24.toLocaleString();
+            document.getElementById('previewDuNguyen').textContent = calc.duNguyen;
+            document.getElementById('previewDuDu').textContent = calc.duDu;
+
+            const statusEl = document.getElementById('previewStatus');
+            if (calc.coTrung) {
+                statusEl.className = 'px-2.5 py-1 rounded text-[11px] font-sans font-bold bg-emerald-950 text-emerald-400 border border-emerald-800';
+                statusEl.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Có trùng số với 6 bảng (${calc.trangThaiStr})`;
+            } else {
+                statusEl.className = 'px-2.5 py-1 rounded text-[11px] font-sans font-bold bg-rose-950 text-rose-400 border border-rose-800';
+                statusEl.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> Không trùng với 6 bảng (${calc.trangThaiStr})`;
+            }
+        }
+
+        // Execute calculation & Save if duplicated (Python logic emulation)
+        function executeCalculationAndCheck() {
+            const calc = calculateCoreValues();
+
+            if (calc.gioVal < 1 || calc.gioVal > 1440) {
+                alert("Số thứ tự giờ/phút phải nằm trong khoảng từ 1 tới 1440!");
+                return;
+            }
+
+            const tenChon = document.getElementById('t2_comboTen').value || "Khuyết Danh";
+            const benhCustom = document.getElementById('t2_inputBenhCustom').value.trim();
+            const benhChon = benhCustom !== "" ? benhCustom : document.getElementById('t2_comboBenh').value;
+
+            // LOGIC CHECK: If NOT DUPLICATED -> Ignore & warn user!
+            if (!calc.coTrung) {
+                alert(`⚠️ [BỎ QUA KẾT QUẢ]\n\nNguyên (%1000) = ${calc.duNguyen}\nDư (%1000) = ${calc.duDu}\n\nCả 2 giá trị KHÔNG TRÙNG với bất kỳ số nào trong 6 bảng reference -> BỎ QUA không lưu!`);
+                return;
+            }
+
+            // IF DUPLICATED -> Save line to THUONGLUU
+            const cot1Val = `Thương: ${calc.thuongNhan24} | Nguyên:${calc.phanNguyen}(%1000=${calc.duNguyen}) | Dư:${calc.phanDu}(%1000=${calc.duDu})`;
+            const phutVal = document.getElementById('t2_phut').value || "0";
+            const thoiGianNhapStr = `Ngày ${calc.ngayVal}/${calc.thangVal}/${calc.namVal} - Giờ ${calc.gioVal}:${phutVal}`;
+
+            const record = {
+                cot1: cot1Val,
+                ten: tenChon,
+                thoiGian: thoiGianNhapStr,
+                benh: benhChon,
+                trangThai: calc.trangThaiStr,
+                timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19)
+            };
+
+            appState.thuongluuData.push(record);
+            saveToLocalStorage();
+            renderThuongluuTable();
+
+            alert(`🎉 [ĐÃ TÌM THẤY TRÙNG KHỚP VỚI 6 BẢNG!]\n\nĐã lưu thành công vào THUONGLUU.txt!\nTrạng thái: ${calc.trangThaiStr}`);
+        }
+
+        function deleteThuongluuItem(index) {
+            appState.thuongluuData.splice(index, 1);
+            saveToLocalStorage();
+            renderThuongluuTable();
+        }
+
+        function renderThuongluuTable() {
+            const tbody = document.getElementById('t2_tableBody');
+            tbody.innerHTML = '';
+
+            const data = appState.thuongluuData;
+            document.getElementById('t2_count').textContent = `Tổng bản ghi trùng: ${data.length}`;
+
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500 font-sans">Chưa có kết quả trùng khớp nào được lưu vào THUONGLUU</td></tr>`;
+                return;
+            }
+
+            data.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-900/80 transition';
+                tr.innerHTML = `
+                    <td class="py-2 px-3 text-slate-300 font-mono text-[11px]">${item.cot1}</td>
+                    <td class="py-2 px-3 font-bold text-slate-100">${item.ten}</td>
+                    <td class="py-2 px-3 text-slate-400">${item.thoiGian}</td>
+                    <td class="py-2 px-3 text-cyan-400">${item.benh}</td>
+                    <td class="py-2 px-3">
+                        <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950 text-emerald-400 border border-emerald-800">
+                            ${item.trangThai}
+                        </span>
+                    </td>
+                    <td class="py-2 px-3 text-center">
+                        <button onclick="deleteThuongluuItem(${index})" class="text-rose-500 hover:text-rose-400 p-1">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Export JSON payload according to Python format
+        function exportJSONFile() {
+            if (appState.thuongluuData.length === 0) {
+                alert("Chưa có bản ghi trùng nào trong THUONGLUU để xuất file JSON!");
+                return;
+            }
+
+            const now = new Date();
+            const timeStr = now.toISOString().replace('T', ' ').substring(0, 19);
+
+            const peopleTrung = appState.thuongluuData.map(item => ({
+                ten: item.ten,
+                thoi_gian_chi_tiet: item.thoiGian,
+                benh_mac: item.benh
+            }));
+
+            const ketQuaTongKet = appState.thuongluuData.map(item => ({
+                tab: "Tab_Trung_Khop_6_Bang",
+                ten: item.ten,
+                chi_tiet_tinh_toan: item.cot1,
+                thoi_gian: item.thoiGian,
+                benh_mac: item.benh,
+                trang_thai: item.trangThai,
+                moc_thoi_gian: item.timestamp || timeStr
+            }));
+
+            const payload = {
+                metadata: {
+                    script_su_dung: "script_quan_ly.py",
+                    timestamp: timeStr,
+                    thu_muc_nguon: "ThuMucGoc",
+                    tong_so_dong_trung_khop: appState.thuongluuData.length
+                },
+                people_trung: peopleTrung,
+                tabs_data: ["muc_1", "muc_2", "muc_3", "muc_4", "muc_5", "muc_6"],
+                ket_qua_tong_ket: ketQuaTongKet
+            };
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(payload, null, 4));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", `ket_qua_trung_khop_${now.toISOString().slice(0,10)}.json`);
+            dlAnchorElem.click();
+        }
+
+        // Export TXT file simulating THUONGLUU.txt
+        function exportTXTFile() {
+            if (appState.thuongluuData.length === 0) {
+                alert("Chưa có bản ghi trùng nào trong THUONGLUU!");
+                return;
+            }
+
+            let txtContent = "";
+            appState.thuongluuData.forEach(item => {
+                txtContent += `${item.cot1} | Tên:${item.ten} | ${item.thoiGian} | Bệnh:${item.benh} | TrạngThái:${item.trangThai}\n`;
+            });
+
+            const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'THUONGLUU.txt';
+            link.click();
+        }
+    </script>
+</body>
+</html>

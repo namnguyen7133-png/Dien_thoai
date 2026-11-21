@@ -1,0 +1,1295 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thuc don Ngu Hanh day du 5 Loai Cho Tri do 4</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-top: 20px;
+            max-width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            background: linear-gradient(90deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 25px 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #fff;
+            word-wrap: break-word;
+        }
+        
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+        
+        .warning-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 18px;
+            margin: 15px 0;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            width: 100%;
+        }
+        
+        /* TABS NGU HANH */
+        .element-tabs-container {
+            margin: 20px 0;
+            width: 100%;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+        
+        .element-tabs {
+            display: flex;
+            gap: 10px;
+            min-width: max-content;
+            padding: 5px;
+        }
+        
+        .element-tab {
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .element-tab.active {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .fire-tab { background: #f8d7da; color: #721c24; }
+        .water-tab { background: #d6d8f9; color: #1e2a5e; }
+        .metal-tab { background: #d1ecf1; color: #0c5460; }
+        .wood-tab { background: #d4edda; color: #155724; }
+        .earth-tab { background: #fff3cd; color: #856404; }
+        
+        .fire-tab.active { border-color: #721c24; }
+        .water-tab.active { border-color: #1e2a5e; }
+        .metal-tab.active { border-color: #0c5460; }
+        .wood-tab.active { border-color: #155724; }
+        .earth-tab.active { border-color: #856404; }
+        
+        /* THUC dON CARD */
+        .element-menu-section {
+            margin-top: 10px;
+        }
+        
+        .element-menu-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+            width: 100%;
+            margin-bottom: 25px;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .element-menu-card.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .element-menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        
+        .element-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+            flex-wrap: wrap;
+        }
+        
+        .element-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .element-icon {
+            font-size: 2.2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .fire-icon { background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%); }
+        .water-icon { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
+        .metal-icon { background: linear-gradient(135deg, #d1ecf1 0%, #a9d6e5 100%); }
+        .wood-icon { background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%); }
+        .earth-icon { background: linear-gradient(135deg, #fccb90 0%, #d57eeb 100%); }
+        
+        /* SYMPTOM BOX */
+        .symptom-box {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid;
+        }
+        
+        .fire-symptom {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            border-left-color: #721c24;
+        }
+        
+        .water-symptom {
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            border-left-color: #1e2a5e;
+        }
+        
+        .metal-symptom {
+            background: linear-gradient(135deg, #d1ecf1 0%, #a9d6e5 100%);
+            border-left-color: #0c5460;
+        }
+        
+        .wood-symptom {
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            border-left-color: #155724;
+        }
+        
+        .earth-symptom {
+            background: linear-gradient(135deg, #fccb90 0%, #d57eeb 100%);
+            border-left-color: #856404;
+        }
+        
+        .solution-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        @media (min-width: 768px) {
+            .solution-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .solution-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-top: 4px solid;
+        }
+        
+        .fire-box { border-top-color: #721c24; }
+        .water-box { border-top-color: #1e2a5e; }
+        .metal-box { border-top-color: #0c5460; }
+        .wood-box { border-top-color: #155724; }
+        .earth-box { border-top-color: #856404; }
+        
+        .solution-box h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+        
+        .solution-box h4::before {
+            content: "✦";
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .fire-box h4::before { color: #721c24; }
+        .water-box h4::before { color: #1e2a5e; }
+        .metal-box h4::before { color: #0c5460; }
+        .wood-box h4::before { color: #155724; }
+        .earth-box h4::before { color: #856404; }
+        
+        .western-med {
+            background: #e8f4fc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .western-med h5 {
+            color: #0c5460;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .western-med h5::before {
+            content: "💊";
+            margin-right: 8px;
+        }
+        
+        .portion-standard {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+        
+        .food-substitution {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .food-substitution h5 {
+            color: #856404;
+            margin-bottom: 8px;
+        }
+        
+        .expand-btn {
+            background: #4a6491;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            margin-top: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            font-weight: 600;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .expand-btn:hover {
+            background: #2c3e50;
+            transform: translateY(-2px);
+        }
+        
+        .extra-content {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f7ff;
+            border-radius: 10px;
+            border-left: 4px solid #4a6491;
+        }
+        
+        .extra-content.visible {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .day-meal-plan {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .meal-time-card {
+            padding: 15px;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .meal-time {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* DANH SACH MUA SAM */
+        .shopping-section {
+            margin-top: 40px;
+        }
+        
+        .shopping-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+        
+        .shopping-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .shopping-icon {
+            font-size: 2rem;
+            margin-right: 15px;
+        }
+        
+        .shopping-title {
+            font-size: 1.6rem;
+            color: #2c3e50;
+        }
+        
+        .shopping-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .shopping-table th {
+            background: #4a6491;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .shopping-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .shopping-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .easy-alternative {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .total-row {
+            font-weight: bold;
+            background: #e3f2fd !important;
+            font-size: 1rem;
+        }
+        
+        .footer-note {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: #e8f4fc;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .element-title {
+                font-size: 1.3rem;
+            }
+            
+            .element-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .element-icon {
+                margin-top: 10px;
+            }
+            
+            .expand-btn {
+                font-size: 0.9rem;
+                padding: 12px 15px;
+            }
+            
+            .shopping-table {
+                font-size: 0.8rem;
+            }
+            
+            .shopping-table th,
+            .shopping-table td {
+                padding: 8px 10px;
+            }
+            
+            .element-tab {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>🔥🌊⚔🌳⛰ THUC dON NGU HANH CHO TRI dO 4</h1>
+            <p>day du 5 loai: Hoa, Thuy, Kim, Moc, Tho - Tay Y thay the de mua</p>
+        </div>
+        
+        <!-- CANH BAO -->
+        <div class="warning-box">
+            ⚠ LUU Y: Thuc don nay ho tro dieu tri tri do 4, ket hop voi chi dinh cua bac si. Tham khao y kien chuyen gia truoc khi ap dung.
+        </div>
+        
+        <!-- TABS CHON NGU HANH -->
+        <div class="element-tabs-container">
+            <div class="element-tabs">
+                <div class="element-tab fire-tab active" onclick="showElement('fire')">
+                    <span>🔥</span> HOA VUONG
+                </div>
+                <div class="element-tab water-tab" onclick="showElement('water')">
+                    <span>🌊</span> THUY VUONG
+                </div>
+                <div class="element-tab metal-tab" onclick="showElement('metal')">
+                    <span>⚔</span> KIM VUONG
+                </div>
+                <div class="element-tab wood-tab" onclick="showElement('wood')">
+                    <span>🌳</span> MOC VUONG
+                </div>
+                <div class="element-tab earth-tab" onclick="showElement('earth')">
+                    <span>⛰</span> THO VUONG
+                </div>
+            </div>
+        </div>
+        
+        <!-- PHAN THUC dON MAU THEO NGU HANH -->
+        <div class="element-menu-section">
+            
+            <!-- === HOA VUONG === -->
+            <div id="fire-card" class="element-menu-card active">
+                <div class="element-header">
+                    <h2 class="element-title">
+                        <span>🔥</span> THUC dON HOA VUONG
+                    </h2>
+                    <div class="element-icon fire-icon">🔥</div>
+                </div>
+                
+                <div class="symptom-box fire-symptom">
+                    <h3 style="color: #721c24; margin-bottom: 10px;">Trieu chung Hoa vuong:</h3>
+                    <p>Bui tri sung nong do, chay mau tuoi, tao bon, khat nuoc, mat do, nuoc tieu vang</p>
+                </div>
+                
+                <div class="solution-grid">
+                    <div class="solution-box fire-box">
+                        <h4>DUNG THUY dE KHAC HOA</h4>
+                        <ul style="padding-left: 20px; margin-bottom: 15px;">
+                            <li><strong>Bua sang:</strong> Chao dau den + Trung luoc</li>
+                            <li><strong>Bua trua:</strong> Com gao lut (100g) + Canh rau ma + Ca hap</li>
+                            <li><strong>Bua toi:</strong> Mien dong + dau phu sot ca + Rau luoc</li>
+                        </ul>
+                        
+                        <div class="western-med">
+                            <h5>THAY THE TAY Y:</h5>
+                            <ul style="padding-left: 20px;">
+                                <li><strong>Daflon 500mg:</strong> 2 vien x 3 lan/ngay (cam mau, giam sung)</li>
+                                <li><strong>Paracetamol 500mg:</strong> 1 vien khi dau nhieu</li>
+                                <li><strong>Vitamin C 1000mg:</strong> 1 vien/ngay (tang suc ben mach mau)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="solution-box fire-box">
+                        <h4>DUNG KIM dE TIET HOA</h4>
+                        <ul style="padding-left: 20px; margin-bottom: 15px;">
+                            <li><strong>Bua sang:</strong> Ngu coc nguyen hat + Sua chua</li>
+                            <li><strong>Bua trua:</strong> Com gao lut (100g) + Canh bi dao + Thit ga hap</li>
+                            <li><strong>Bua toi:</strong> Sup bi do + Sandwich ca hoi</li>
+                        </ul>
+                        
+                        <div class="western-med">
+                            <h5>THAY THE TAY Y:</h5>
+                            <ul style="padding-left: 20px;">
+                                <li><strong>Macrogol 10g:</strong> 1-2 goi/ngay (chong tao bon)</li>
+                                <li><strong>Kem boi tri:</strong> Proctolog hoac Preparation H (giam ngua, sung)</li>
+                                <li><strong>Vitamin E 400 IU:</strong> 1 vien/ngay (duong am, chong viem)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="food-substitution">
+                    <h5>🔁 THAY THE DE MUA:</h5>
+                    <ul style="padding-left: 20px;">
+                        <li><strong>Gao lut → Gao luc tim than</strong> (de mua hon)</li>
+                        <li><strong>Rau ma → Rau diep ca</strong> (cung tac dung thanh nhiet)</li>
+                        <li><strong>dau den → dau xanh khong vo</strong> (de tieu hon)</li>
+                    </ul>
+                </div>
+                
+                <button class="expand-btn pulse" onclick="toggleContent('fireMenu')">
+                    📋 Xem thuc don chi tiet 1 ngay cho Hoa vuong
+                </button>
+                
+                <div id="fireMenu" class="extra-content">
+                    <h4>🍽 THUC dON 1 NGAY CHO HOA VUONG</h4>
+                    
+                    <div class="day-meal-plan">
+                        <div class="meal-time-card">
+                            <div class="meal-time">🌅 BUA SANG (7-8h)</div>
+                            <ul>
+                                <li>Chao dau den (tuong duong 100g com)</li>
+                                <li>Trung ga luoc (1 qua)</li>
+                                <li>Nuoc ep dua chuot (150ml)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="meal-time-card">
+                            <div class="meal-time">☀ BUA TRUA (12-13h)</div>
+                            <ul>
+                                <li>Com gao lut (100g)</li>
+                                <li>Ca diec hap (100g)</li>
+                                <li>Canh mong toi (200ml)</li>
+                                <li>Rau muong luoc (150g)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="meal-time-card">
+                            <div class="meal-time">🌆 BUA XE (16h)</div>
+                            <ul>
+                                <li>Sua chua khong duong (1 hop)</li>
+                                <li>Thanh long do (1/2 qua)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="meal-time-card">
+                            <div class="meal-time">🌙 BUA TOI (19-20h)</div>
+                            <ul>
+                                <li>Mien dong nau thit nac (tuong duong 100g com)</li>
+                                <li>dau phu sot ca chua (100g)</li>
+                                <li>Canh rau den (200ml)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- === THUY VUONG === -->
+            <div id="water-card" class="element-menu-card">
+                <div class="element-header">
+                    <h2 class="element-title">
+                        <span>🌊</span> THUC dON THUY VUONG
+                    </h2>
+                    <div class="element-icon water-icon">🌊</div>
+                </div>
+                
+                <div class="symptom-box water-symptom">
+                    <h3 style="color: #1e2a5e; margin-bottom: 10px;">Trieu chung Thuy vuong:</h3>
+                    <p>Troi ret lanh, nguoi on lanh, chay nuoc mui trong, tieu chay, bui tri sung lanh</p>
+                </div>
+                
+                <div class="solution-grid">
+                    <div class="solution-box water-box">
+                        <h4>DUNG THO dE KHAC THUY</h4>
+                        <ul style="padding-left: 20px; margin-bottom: 15px;">
+                            <li><strong>Bua sang:</strong> Chao gao nep + Thit ga xe</li>
+                            <li><strong>Bua trua:</strong> Com trang (100g) + Thit bo xao + Canh khoai tay</li>
+                            <li><strong>Bua toi:</strong> Com trang (100g) + Ca kho + Rau cu ham</li>
+                        </ul>
+                        
+                        <div class="western-med">
+                            <h5>THAY THE TAY Y:</h5>
+                            <ul style="padding-left: 20px;">
+                                <li><strong>Loperamide 2mg:</strong> 1-2 vien khi tieu chay (khong qua 8mg/ngay)</li>
+                                <li><strong>Vitamin B Complex:</strong> 1 vien/ngay (tang chuyen hoa)</li>
+                                <li><strong>Men vi sinh:</strong> Probiotic 1 goi/ngay (can bang he tieu hoa)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="solution-box water-box">
+                        <h4>DUNG HOA dE TIET THUY</h4>
+                        <ul style="padding-left: 20px; margin-bottom: 15px;">
+                            <li><strong>Bua sang:</strong> Banh mi nuong + Trung op la</li>
+                            <li><strong>Bua trua:</strong> Com trang (100g) + Canh rau den + Thit ga rang</li>
+                            <li><strong>Bua toi:</strong> Mi gao + Thit heo xao + Rau xao toi</li>
+                        </ul>
+                        
+                        <div class="western-med">
+                            <h5>THAY THE TAY Y:</h5>
+                            <ul style="padding-left: 20px;">
+                                <li><strong>Khang sinh (neu co nhiem khuan):</strong> Theo chi dinh bac si</li>
+                                <li><strong>Vitamin D3 1000 IU:</strong> 1 vien/ngay (tang mien dich)</li>
+                                <li><strong>Thuoc giam dau:</strong> Ibuprofen 400mg khi can (khang viem)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="food-substitution">
+                    <h5>🔁 THAY THE DE MUA:</h5>
+                    <ul style="padding-left: 20px;">
+                        <li><strong>Gao nep → Gao te thuong</strong> (de tieu hon)</li>
+                        <li><strong>Khoai tay → Khoai lang hoac Bi do</strong> (cung nhom)</li>
+                        <li><strong>Mi gao → Bun tuoi hoac Pho kho</strong> (de tim hon)</li>
+                    </ul>
+                </div>
+                
+                <button class="expand-btn" onclick="toggleContent('waterMenu')">
+                    📋 Xem thuc don chi tiet 1 ngay cho Thuy vuong
+                </button>
+                
+                <div id="waterMenu" class="extra-content">
+                    <h4>🍽 THUC dON 1 NGAY CHO THUY VUONG</h4>
+                    
+                    <div class="day-meal-plan">
+                        <div class="meal-time-card">
+                            <div class="meal-time">🌅 BUA SANG (7-8h)</div>
+                            <ul>
+                                <li>Chao gao nep thit ga (tuong duong 100g com)</li>
+                                <li>Banh mi nuong (1 lat)</li>
+                                <li>Tra gung mat ong (200ml)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="meal-time-card">
+                            <div class="meal-time">☀ BUA TRUA (12-13h)</div>
+                            <ul>
+                                <li>Com trang (100g)</li>
+                                <li>Thit bo xao hanh tay (80g thit)</li>
+                                <li>Canh khoai tay ca rot (200ml)</li>
+                                <li>Rau cai luoc (150g)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="meal-time-card">
+                            <div class="meal-time">🌆 BUA XE (16h)</div>
+                            <ul>
+                                <li>Khoai lang hap (1 cu nho)</li>
+                                <li>Sua am (200ml)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="meal-time-card">
+                            <div class="meal-time">🌙 BUA TOI (19-20h)</div>
+                            <ul>
+                                <li>Com trang (100g)</li>
+                                <li>Ca thu kho (1 khuc)</li>
+                                <li>Canh bi do (200ml)</li>
+                                <li>dau cove luoc (150g)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- === KIM VUONG === -->
+            <div id="metal-card" class="element-menu-card">
+                <div class="element-header">
+                    <h2 class="element-title">
+                        <span>⚔</span> THUC dON KIM VUONG
+                    </h2>
+                    <div class="element-icon metal-icon">⚔</div>
+                </div>
+                
+                <div class="symptom-box metal-symptom">
+                    <h3 style="color: #0c5460; margin-bottom: 10px;">Trieu chung Kim vuong:</h3>
+                    <p>Da kho, tao bon nang, ho khan, bui tri kho dau, tam trang buon ba, dau lung</p>
+                </div>
+                
+                <div class="solution-grid">
+                    <div class="solution-box metal-box">
+                        <h4>DUNG HOA dE KHAC KIM</h4>
+                        <ul style="padding-left: 20px; margin-bottom: 15px;">
+                            <li><strong>Bua sang:</strong> Chao hat sen + Trung chan</li>
+                            <li><strong>Bua trua:</strong> Com gao lut (100g) + Tim heo xao + Canh rau ngot</li>
+                            <li><strong>Bua toi:</strong> Sup bi do + Thit ga hap + Salad rau</li>
+                        </ul>
+                        
+                        <div class="western-med">
+                            <h5>THAY THE TAY Y:</h5>
+                            <ul style="padding-left: 20px;">
+                                <li><strong>Macrogol 10g:</strong> 1-2 goi/ngay (lam mem phan)</li>
+                                <li><strong>Vitamin E 400 IU:</strong> 1 vien/ngay (duong am niem mac)</li>
+                                <li><strong>Docusate sodium 100mg:</strong> 1 vien/ngay (chat lam mem phan)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="solution-box metal-box">
+                        <h4>DUNG THUY dE TIET KIM</h4>
+                        <ul style="padding-left: 20px; margin-bottom: 15px;">
+                            <li><strong>Bua sang:</strong> Ngu coc + Sua tuoi</li>
+                            <li><strong>Bua trua:</strong> Com gao lut (100g) + Canh mong toi + Ca kho</li>
+                            <li><strong>Bua toi:</strong> Chao ca + Rau cu hap + dau phu</li>
+                        </ul>
+                        
+                        <div class="western-med">
+                            <h5>THAY THE TAY Y:</h5>
+                            <ul style="padding-left: 20px;">
+                                <li><strong>Dau khoang:</strong> 15-30ml/ngay (boi tron ruot)</li>
+                                <li><strong>Vitamin C 1000mg:</strong> 1 vien/ngay (chong oxy hoa)</li>
+                                <li><strong>Kem duong am:</strong> Boi vung hau mon 2 lan/ngay</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="food-substitution">
+                    <h5>🔁 THAY THE DE MUA:</h5>
+                    <ul style="padding-left: 20px;">
+                        <li><strong>Hat sen → dau xanh khong vo</strong> (de nau hon)</li>
+                        <li><strong>Tim heo → Thit heo nac hoac Uc ga</strong> (de mua hon)</li>
+                        <li><strong>Ngu coc nguyen hat → Yen mach an lien</strong> (tien loi)</li>
+                    </ul>
+                </div>
+                
+                <button class="expand-btn" onclick="toggleContent('metalMenu')">
+                    📋 Xem thuc don chi tiet 1 ngay cho Kim vuong
+                </button>
+                
+                <div id="metalMenu" class="extra-content">
+                    <h4>🍽 THUC dON 1 NGAY CHO KIM VUONG</h4>
+                    
+                    <div class="day-meal-plan">
+                        <div class="meal-time-card">
+                            <div class="meal-time">🌅 BUA SANG (7-8h)</div>
+                            <ul>
+                                <li>Chao dau xanh (tuong duong 100g com)</li>
+                                <li>Trung chan (1 qua)</li>
+                                <li>Sua tuoi am (200ml)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="meal-time-card">
+                            <div class="meal-time">☀ BUA TRUA (12-13h)</div>
+                            <ul>
+                                <li>Com gao lut (100g)</li>
+                                <li>Thit ga hap (100g)</li>
+                                <li>Canh mong toi nau cua (200ml)</li>
+                                <li>Rau lang luoc (150g)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="meal-time-card">
+                            <div class="meal-time">🌆 BUA XE (16h)</div>
+                            <ul>
+                                <li>Chuoi tieu chin (1 qua)</li>
+                                <li>Nuoc ep le (150ml)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="meal-time-card">
+                            <div class="meal-time">🌙 BUA TOI (19-20h)</div>
+                            <ul>
+                                <li>Chao ca loc (tuong duong 100g com)</li>
+                                <li>dau phu sot ca (100g)</li>
+                                <li>Canh bau nau tom (200ml)</li>
+                                <li>Bi xanh hap (150g)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- === MOC VUONG === -->
+            <div id="wood-card" class="element-menu-card">
+                <div class="element-header">
+                    <h2 class="element-title">
+                        <span>🌳</span> THUC dON MOC VUONG
+                    </h2>
+                    <div class="element-icon wood-icon">🌳</div>
+                </div>
+                
+                <div class="symptom-box wood-symptom">
+                    <h3 style="color: #155724; margin-bottom: 10px;">Trieu chung Moc vuong:</h3>
+                    <p>Cang thang, de cau gat, dau dau, chuot rut, bui tri co that dau nhoi, phan dau cung duoi nat</p>
+                </div>
+                
+                <div class="solution-grid">
+                    <div class="solution-box wood-box">
+                        <h4>DUNG KIM dE KHAC MOC</h4>
+                        <ul style="padding-left: 20px; margin-bottom: 15px;">
+                            <li><strong>Bua sang:</strong> Chao gao lut + Cu cai trang ham</li>
+                            <li><strong>Bua trua:</strong> Com gao lut (100g) + Thit ga hap gung + Su hao xao</li>
+                            <li><strong>Bua toi:</strong> Mien gao + Ca thu kho + Rau cai chip</li>
+                        </ul>
+                        
+                        <div class="western-med">
+                            <h5>THAY THE TAY Y:</h5>
+                            <ul style="padding-left: 20px;">
+                                <li><strong>Spasmaverine (Alverine):</strong> 1 vien khi dau co that</li>
+                                <li><strong>Magnesium 250mg:</strong> 1 vien/ngay (gian co)</li>
+                                <li><strong>Vitamin B6 50mg:</strong> 1 vien/ngay (ho tro than kinh)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="solution-box wood-box">
+                        <h4>DUNG HOA dE TIET MOC</h4>
+                        <ul style="padding-left: 20px; margin-bottom: 15px;">
+                            <li><strong>Bua sang:</strong> Yen mach + Hat chia + Mat ong</li>
+                            <li><strong>Bua trua:</strong> Com gao lut (100g) + Tim lon xao can tay + Canh kho qua</li>
+                            <li><strong>Bua toi:</strong> Com gao lut (100g) + Ca hoi ap chao + Rau bina</li>
+                        </ul>
+                        
+                        <div class="western-med">
+                            <h5>THAY THE TAY Y:</h5>
+                            <ul style="padding-left: 20px;">
+                                <li><strong>Thuoc an than nhe:</strong> Rotunda hoac Seduxen (theo chi dinh)</li>
+                                <li><strong>Vitamin C 1000mg:</strong> 1 vien/ngay (giam stress oxy hoa)</li>
+                                <li><strong>Melatonin 3mg:</strong> Truoc khi ngu (neu mat ngu)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="food-substitution">
+                    <h5>🔁 THAY THE DE MUA:</h5>
+                    <ul style="padding-left: 20px;">
+                        <li><strong>Su hao → Cu cai trang</strong> (de tim hon)</li>
+                        <li><strong>Can tay → Rau can nuoc</strong> (pho bien hon)</li>
+                        <li><strong>Rau bina → Rau muong hoac Rau ngot</strong></li>
+                    </ul>
+                </div>
+                
+                <button class="expand-btn" onclick="toggleContent('woodMenu')">
+                    📋 Xem thuc don chi tiet 1 ngay cho Moc vuong
+                </button>
+                
+                <div id="woodMenu" class="extra-content">
+                    <h4>🍽 THUC dON 1 NGAY CHO MOC VUONG</h4>
+                    
+                    <div class="day-meal-plan">
+                        <div class="meal-time-card">
+                            <div class="meal-time">🌅 BUA SANG (7-8h) - Dung Kim khac Moc</div>
+                            <ul>
+                                <li>Chao gao lut cu cai trang (tuong duong 100g com)</li>
+                                <li>Trung ga luoc (1 qua)</li>
+                                <li>Nuoc ep le (150ml)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="meal-time-card">
+                            <div class="meal-time">☀ BUA TRUA (12-13h) - Dung Hoa tiet Moc</div>
+                            <ul>
+                                <li>Com gao lut (100g)</li>
+                                <li>Tim lon xao can tay (80g tim + 100g can)</li>
+                                <li>Canh kho qua nhoi thit (1 qua nho)</li>
+                                <li>Rau muong luoc (150g)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="meal-time-card">
+                            <div class="meal-time">🌆 BUA XE (16h) - Nhe nhang</div>
+                            <ul>
+                                <li>Sua chua khong duong + hat chia (1 hop 100g)</li>
+                                <li>Chuoi tieu chin (1 qua ≈ 80g)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="meal-time-card">
+                            <div class="meal-time">🌙 BUA TOI (19-20h) - Duong Am</div>
+                            <ul>
+                                <li>Chao ca loc + dau xanh (tuong duong 100g com)</li>
+                                <li>dau phu sot ca chua (100g)</li>
+                                <li>Canh rau ngot (200ml)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px; padding: 15px; background: #fff8e1; border-radius: 8px; font-size: 0.9rem;">
+                        <strong>📝 LUU Y dAC BIET CHO MOC VUONG:</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Tranh do chua nhieu (dua muoi, cam chua) - lam Moc cang vuong</li>
+                            <li>Tranh ruou bia, ca phe - kich thich Can hoa boc len</li>
+                            <li>Ngu truoc 23h - gio Ty (Thuy) duong Can (Moc)</li>
+                            <li>Tap tho sau, yoga nhe nhang de thu gian</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- === THO VUONG === -->
+            <div id="earth-card" class="element-menu-card">
+                <div class="element-header">
+                    <h2 class="element-title">
+                        <span>⛰</span> THUC dON THO VUONG
+                    </h2>
+                    <div class="element-icon earth-icon">⛰</div>
+                </div>
+                
+                <div class="symptom-box earth-symptom">
+                    <h3 style="color: #856404; margin-bottom: 10px;">Trieu chung Tho vuong:</h3>
+                    <p>Nguoi nang ne, day bung, an khong tieu, phan nhao dinh, bui tri sa xuong nang, co nhao</p>
+                </div>
+                
+                <div class="solution-grid">
+                    <div class="solution-box earth-box">
+                        <h4>DUNG MOC dE KHAC THO</h4>
+                        <ul style="padding-left: 20px; margin-bottom: 15px;">
+                            <li><strong>Bua sang:</strong> Chao yen mach + Hat chia</li>
+                            <li><strong>Bua trua:</strong> Com gao lut (100g) + Ca diec hap + Rau can xao</li>
+                            <li><strong>Bua toi:</strong> Mien gao + Thit bo xao mang + Rau muong</li>
+                        </ul>
+                        
+                        <div class="western-med">
+                            <h5>THAY THE TAY Y:</h5>
+                            <ul style="padding-left: 20px;">
+                                <li><strong>Men tieu hoa:</strong> Pancreatin 1-2 vien sau an</li>
+                                <li><strong>Domperidone 10mg:</strong> 1 vien truoc an 30 phut</li>
+                                <li><strong>Simethicone 125mg:</strong> 1-2 vien khi day bung</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="solution-box earth-box">
+                        <h4>DUNG KIM dE TIET THO</h4>
+                        <ul style="padding-left: 20px; margin-bottom: 15px;">
+                            <li><strong>Bua sang:</strong> Sup bi do hat ke</li>
+                            <li><strong>Bua trua:</strong> Com gao lut (100g) + Thit ga ham hat sen + Cu cai muoi</li>
+                            <li><strong>Bua toi:</strong> Chao gao lut + Tom hap + Rau lang luoc</li>
+                        </ul>
+                        
+                        <div class="western-med">
+                            <h5>THAY THE TAY Y:</h5>
+                            <ul style="padding-left: 20px;">
+                                <li><strong>Thuoc nhuan trang:</strong> Macrogol 10g 1 goi/ngay</li>
+                                <li><strong>Probiotic:</strong> 1 goi/ngay (can bang he vi sinh)</li>
+                                <li><strong>Vitamin B1 100mg:</strong> 1 vien/ngay (kich thich tieu hoa)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="food-substitution">
+                    <h5>🔁 THAY THE DE MUA:</h5>
+                    <ul style="padding-left: 20px;">
+                        <li><strong>Hat ke → Hat sen kho hoac dau xanh</strong></li>
+                        <li><strong>Cu cai muoi → Ca phao muoi hoac Dua chuot muoi</strong></li>
+                        <li><strong>Mang → Gia do hoac Nam</strong> (de tieu hon)</li>
+                    </ul>
+                </div>
+                
+                <button class="expand-btn" onclick="toggleContent('earthMenu')">
+                    📋 Xem thuc don chi tiet 1 ngay cho Tho vuong
+                </button>
+                
+                <div id="earthMenu" class="extra-content">
+                    <h4>🍽 THUC dON 1 NGAY CHO THO VUONG</h4>
+                    
+                    <div class="day-meal-plan">
+                        <div class="meal-time-card">
+                            <div class="meal-time">🌅 BUA SANG (7-8h) - Dung Moc khac Tho</div>
+                            <ul>
+                                <li>Chao yen mach + hat chia (tuong duong 100g com)</li>
+                                <li>Ca diec hap gung (1 con nho ≈ 80g)</li>
+                                <li>Nuoc ep buoi (150ml)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="meal-time-card">
+                            <div class="meal-time">☀ BUA TRUA (12-13h) - Dung Kim tiet Tho</div>
+                            <ul>
+                                <li>Com gao lut (100g)</li>
+                                <li>Thit ga ham hat sen (80g thit + 30g hat sen)</li>
+                                <li>Cu cai muoi chua nhe (100g)</li>
+                                <li>Rau cai xao toi (150g)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="meal-time-card">
+                            <div class="meal-time">🌆 BUA XE (16h) - Thanh nhiet</div>
+                            <ul>
+                                <li>Tra gung chanh mat ong (200ml)</li>
+                                <li>du du chin (100g)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="meal-time-card">
+                            <div class="meal-time">🌙 BUA TOI (19-20h) - Nhe nhang</div>
+                            <ul>
+                                <li>Sup bi do hat ke (tuong duong 100g com)</li>
+                                <li>Rau lang luoc (150g)</li>
+                                <li>Tau hu ky kho nam (100g)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 15px; padding: 15px; background: #fff8e1; border-radius: 8px; font-size: 0.9rem;">
+                        <strong>📝 LUU Y dAC BIET CHO THO VUONG:</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Tranh do ngot nhieu (banh keo, nuoc ngot) - lam Tho cang vuong</li>
+                            <li>Tranh do chien ran, nhieu dau mo - gay kho tieu</li>
+                            <li>An cham, nhai ky, khong an qua no</li>
+                            <li>di bo nhe nhang 30 phut sau an toi</li>
+                            <li>Massage bung theo chieu kim dong ho truoc khi ngu</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- DANH SACH MUA SAM CHUNG -->
+        <div class="shopping-section">
+            <div class="shopping-card">
+                <div class="shopping-header">
+                    <div class="shopping-icon">🛒</div>
+                    <h2 class="shopping-title">DANH SACH MUA SAM DE DANG CHO TAT CA 5 LOAI</h2>
+                </div>
+                
+                <p style="margin-bottom: 20px; color: #666;">
+                    Nguyen lieu chung de mua, thay the cac thanh phan kho tim bang thuc pham pho bien.
+                </p>
+                
+                <table class="shopping-table">
+                    <thead>
+                        <tr>
+                            <th width="30%">Nhom thuc pham</th>
+                            <th width="40%">Nguyen lieu de mua (Thay the)</th>
+                            <th width="30%">Dung cho Ngu Hanh</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Ngu coc & Tinh bot</strong></td>
+                            <td>
+                                • Gao lut tim than (thay gao lut do)<br>
+                                • Yen mach an lien (thay yen mach nguyen cam)<br>
+                                • Gao te thuong (thay gao nep)
+                            </td>
+                            <td class="easy-alternative">Tat ca 5 loai</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rau cu qua</strong></td>
+                            <td>
+                                • Rau mong toi (thay rau ma)<br>
+                                • Rau den (thay rau sam)<br>
+                                • Bi do, khoai lang, cu cai trang
+                            </td>
+                            <td class="easy-alternative">Tat ca 5 loai</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Thit ca</strong></td>
+                            <td>
+                                • Thit ga (uc, dui)<br>
+                                • Ca diec, ca loc<br>
+                                • Thit heo nac (thay tim heo)<br>
+                                • Trung ga
+                            </td>
+                            <td class="easy-alternative">Tat ca 5 loai</td>
+                        </tr>
+                        <tr>
+                            <td><strong>dau & Che pham</strong></td>
+                            <td>
+                                • dau phu trang<br>
+                                • dau xanh khong vo (thay hat sen)<br>
+                                • Sua chua khong duong<br>
+                                • dau den
+                            </td>
+                            <td class="easy-alternative">Tat ca 5 loai</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Thuoc Tay Y</strong></td>
+                            <td>
+                                • Daflon 500mg (tri)<br>
+                                • Macrogol 10g (tao bon)<br>
+                                • Loperamide 2mg (tieu chay)<br>
+                                • Vitamin C 1000mg
+                            </td>
+                            <td class="easy-alternative">Mua tai nha thuoc</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td colspan="3" style="text-align: center;">
+                                💰 UOC TINH CHI PHI: 700.000d - 1.000.000d/tuan cho 1 nguoi
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- FOOTER -->
+        <div class="footer-note">
+            <p><strong>🔥🌊⚔🌳⛰ THUC dON dAY dU 5 LOAI NGU HANH</strong></p>
+            <p>Hoa vuong • Thuy vuong • Kim vuong • Moc vuong • Tho vuong</p>
+            <p style="margin-top: 10px; font-size: 0.85rem; color: #666;">
+                da thay the thanh phan kho mua • Toi uu cho dien thoai • De ap dung
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // Ham chuyen doi giua cac Ngu Hanh
+        function showElement(element) {
+            // An tat ca cac card
+            const cards = ['fire', 'water', 'metal', 'wood', 'earth'];
+            cards.forEach(cardId => {
+                document.getElementById(cardId + '-card').classList.remove('active');
+            });
+            
+            // Hien card duoc chon
+            document.getElementById(element + '-card').classList.add('active');
+            
+            // Cap nhat tab active
+            const tabs = document.querySelectorAll('.element-tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector('.' + element + '-tab').classList.add('active');
+            
+            // dong tat ca extra content
+            const allContents = document.querySelectorAll('.extra-content');
+            allContents.forEach(item => {
+                item.classList.remove('visible');
+            });
+            
+            // Cuon den phan tu duoc chon
+            setTimeout(() => {
+                document.getElementById(element + '-card').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }, 100);
+        }
+        
+        // Ham toggle noi dung chi tiet
+        function toggleContent(contentId) {
+            const content = document.getElementById(contentId);
+            content.classList.toggle('visible');
+            
+            // Cuon den phan duoc mo
+            if (content.classList.contains('visible')) {
+                setTimeout(() => {
+                    content.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            }
+        }
+        
+        // Hieu ung tuong tac khi tai trang
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hieu ung cho cac nut mo rong
+            const expandButtons = document.querySelectorAll('.expand-btn');
+            expandButtons.forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-3px)';
+                    this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+                });
+                
+                btn.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'none';
+                });
+            });
+            
+            // Hieu ung cho cac hang trong bang
+            const tableRows = document.querySelectorAll('.shopping-table tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = '#e3f2fd';
+                    this.style.transition = 'background-color 0.3s ease';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    if (Array.from(tableRows).indexOf(this) % 2 === 0) {
+                        this.style.backgroundColor = '';
+                    } else {
+                        this.style.backgroundColor = '#f8f9fa';
+                    }
+                });
+            });
+            
+            // Tu dong chon tab dau tien
+            showElement('fire');
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

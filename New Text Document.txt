@@ -1,0 +1,40 @@
+# Đường dẫn đến thư mục chứa các tệp HTML (thay đổi cho phù hợp)
+$folderPath = "E:\HTML\github_data"
+
+# Hàm bỏ dấu tiếng Việt cho một đoạn văn bản
+function Remove-VietnameseDiacritics ($text) {
+    if ([string]::IsNullOrEmpty($text)) { return $text }
+    $normalized = $text.Normalize([System.Text.NormalizationForm]::FormD)
+    $sb = New-Object System.Text.StringBuilder
+    foreach ($char in $normalized.ToCharArray()) {
+        $uc = [System.Globalization.CharUnicodeInfo]::GetUnicodeCategory($char)
+        if ($uc -ne [System.Globalization.UnicodeCategory]::NonSpacingMark) {
+            [void]$sb.Append($char)
+        }
+    }
+    return $sb.ToString().Normalize([System.Text.NormalizationForm]::FormC) -replace 'đ', 'd' -replace 'Đ', 'D'
+}
+
+# Lấy tất cả các tệp .html và xử lý nội dung
+Get-ChildItem -Path $folderPath -Filter "*.html" | ForEach-Object {
+    $filePath = $_.FullName
+    $lines = Get-Content -Path $filePath -Encoding UTF8
+    
+    $newLines = foreach ($line in $lines) {
+        # Kiểm tra nếu dòng bắt đầu bằng dấu gạch ngang (có hoặc không có khoảng trắng) hoặc thẻ <li>
+        # Regex này tìm phần khoảng trắng/ký tự đầu dòng và loại bỏ dấu ở từ ngay sau đó
+        if ($line -match '^(\s*[-•*]?\s*|<li[^>]*>\s*)(.+)$') {
+            $prefix = $Matches[1]
+            $content = $Matches[2]
+            
+            # Xóa dấu của phần nội dung đứng sau gạch đầu dòng
+            $prefix + (Remove-VietnameseDiacritics $content)
+        } else {
+            $line
+        }
+    }
+    
+    # Ghi lại nội dung đã chuyển đổi vào tệp (chuẩn UTF-8)
+    Set-Content -Path $filePath -Value $newLines -Encoding UTF8
+    Write-Host "Đã xử lý bỏ dấu ở gạch đầu dòng: $($_.Name)" -ForegroundColor Green
+}

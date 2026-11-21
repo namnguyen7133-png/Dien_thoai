@@ -1,0 +1,1220 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra Cuu Quan Ao Theo Mau Sac & de Xuat Theo Nhiet do</title>
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #166088;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --card-bg: #ffffff;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --hot: #ff6b6b;
+            --cold: #4d96ff;
+            --warm: #ffa500;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .main-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+        }
+        
+        .search-card, .temperature-card, .statistics-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        
+        .search-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            transition: border-color 0.3s;
+            background-color: white;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        
+        .search-btn, .temperature-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+            font-weight: 600;
+        }
+        
+        .search-btn:hover, .temperature-btn:hover {
+            background-color: var(--secondary);
+        }
+        
+        .days-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .day-input {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        .day-label {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .temp-inputs {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .temp-input {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .results-section {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px var(--shadow);
+            margin-bottom: 40px;
+            display: none;
+        }
+        
+        .results-section.show {
+            display: block;
+        }
+        
+        .results-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .result-item {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid var(--primary);
+        }
+        
+        .color-display {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .color-box {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            margin-right: 15px;
+            border: 1px solid #ddd;
+        }
+        
+        .color-name {
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+        
+        .clothing-info {
+            margin-top: 15px;
+        }
+        
+        .clothing-row {
+            display: flex;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .clothing-label {
+            font-weight: 600;
+            min-width: 120px;
+        }
+        
+        .clothing-value {
+            flex: 1;
+        }
+        
+        .data-section {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        
+        .data-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .tables-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .data-table th {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .data-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .data-table tr:hover {
+            background-color: #e9ecef;
+        }
+        
+        .temperature-results {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .temperature-results.show {
+            display: block;
+        }
+        
+        .weather-day {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--primary);
+        }
+        
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .day-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+        
+        .day-temp {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+        
+        .temp-high {
+            color: var(--hot);
+        }
+        
+        .temp-low {
+            color: var(--cold);
+        }
+        
+        .clothing-suggestion {
+            margin-top: 10px;
+        }
+        
+        .clothing-item {
+            display: inline-block;
+            background-color: var(--secondary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .statistics-container {
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .stat-name {
+            font-weight: 600;
+        }
+        
+        .stat-count {
+            background-color: var(--primary);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .recommendation {
+            background-color: #e8f4ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-left: 4px solid var(--secondary);
+        }
+        
+        .recommendation-title {
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .main-sections {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .description {
+                font-size: 1rem;
+            }
+            
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tables-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .days-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .search-card, .results-section, .data-section, .temperature-card {
+                padding: 20px;
+            }
+            
+            select, input {
+                padding: 12px;
+                font-size: 1rem;
+            }
+            
+            .search-btn, .temperature-btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+            
+            .clothing-row {
+                flex-direction: column;
+            }
+            
+            .clothing-label {
+                min-width: auto;
+                margin-bottom: 5px;
+            }
+            
+            .days-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 TRA CUU QUAN AO THEO MAU SAC & dE XUAT THEO NHIET dO</h1>
+            <p class="description">Chon mau sac va chung loai de tim kiem quan ao phu hop. Nhap nhiet do 6 ngay tiep theo de nhan de xuat quan ao va thong ke.</p>
+        </header>
+        
+        <div class="main-sections">
+            <div class="search-card">
+                <div class="section-title">
+                    <i class="fas fa-palette"></i> Tim Kiem Theo Mau Sac
+                </div>
+                <div class="search-group">
+                    <label for="colorSelect">Chon mau sac:</label>
+                    <select id="colorSelect">
+                        <option value="">-- Chon mau sac --</option>
+                    </select>
+                </div>
+                <div class="color-preview" id="colorPreview" style="display: none;">
+                    <div style="display: flex; align-items: center; margin-top: 15px; padding: 10px; background-color: #f8f9fa; border-radius: 8px;">
+                        <div id="previewColorBox" style="width: 30px; height: 30px; border-radius: 5px; margin-right: 10px; border: 1px solid #ddd;"></div>
+                        <span id="previewColorName" style="font-weight: 600;"></span>
+                    </div>
+                </div>
+                <div class="search-group">
+                    <label for="categorySelect">Chon chung loai:</label>
+                    <select id="categorySelect">
+                        <option value="">-- Chon chung loai --</option>
+                    </select>
+                </div>
+                <button class="search-btn" onclick="searchClothing()">
+                    <i class="fas fa-search"></i> Tim Kiem Quan Ao
+                </button>
+            </div>
+            
+            <div class="temperature-card">
+                <div class="section-title">
+                    <i class="fas fa-thermometer-half"></i> Nhap Nhiet do 6 Ngay
+                </div>
+                <div class="days-container" id="daysContainer">
+                    <!-- Cac o nhap nhiet do se duoc tao bang JavaScript -->
+                </div>
+                <button class="temperature-btn" onclick="generateClothingSuggestions()">
+                    <i class="fas fa-magic"></i> Tao de Xuat Quan Ao
+                </button>
+            </div>
+        </div>
+        
+        <div class="results-section" id="resultsSection">
+            <div class="results-title">
+                <i class="fas fa-list"></i> Ket Qua Tim Kiem
+            </div>
+            <div id="resultsCount" style="margin-bottom: 20px; font-weight: 600; color: var(--primary);"></div>
+            <div class="results-grid" id="resultsGrid">
+                <!-- Ket qua se duoc hien thi o day -->
+            </div>
+        </div>
+        
+        <div class="temperature-results" id="temperatureResults">
+            <div class="results-title">
+                <i class="fas fa-calendar-alt"></i> de Xuat Quan Ao 6 Ngay Tiep Theo
+            </div>
+            <div id="temperatureResultsContainer">
+                <!-- Ket qua de xuat quan ao theo nhiet do -->
+            </div>
+            
+            <div class="statistics-card">
+                <div class="section-title">
+                    <i class="fas fa-chart-bar"></i> Thong Ke Loai Quan Ao de Xuat
+                </div>
+                <div class="statistics-container" id="statisticsContainer">
+                    <!-- Thong ke se duoc hien thi o day -->
+                </div>
+                
+                <div class="recommendation" id="recommendation">
+                    <div class="recommendation-title">📊 de Xuat Mua Sam:</div>
+                    <div id="recommendationText">Nhap nhiet do va nhan "Tao de Xuat Quan Ao" de xem de xuat mua sam</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="data-section">
+            <div class="data-title">
+                <i class="fas fa-database"></i> Du Lieu Tham Khao
+            </div>
+            <div class="tables-container">
+                <div>
+                    <h3>Bang Mau Sac</h3>
+                    <table class="data-table" id="colorTable">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Mau sac</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Du lieu se duoc them bang JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div>
+                    <h3>Bang Chung Loai</h3>
+                    <table class="data-table" id="categoryTable">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Chung loai</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Du lieu se duoc them bang JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Ung dung Tra Cuu Quan Ao & de Xuat Theo Nhiet do - Du lieu duoc sap xep theo mau, chung loai, quan ao</p>
+            <p>Nhap nhiet do cao nhat va thap nhat cho 6 ngay tiep theo de nhan de xuat quan ao phu hop</p>
+        </footer>
+    </div>
+
+    <script>
+        // Du lieu mau sac
+        const colorList = [
+            "dO", "VANG", "TRANG", "XANH BIEN", "XANH LA", "dEN", 
+            "XANH DA TROI", "TIM", "CAM", "HONG", "GHI", "CHAM", "KE CARO"
+        ];
+        
+        // Du lieu chung loai
+        const categoryList = [
+            "AO SO MIDT", "AO SO MICT", "DAY", "CA VAT", "QUAN DAI", "0",
+            "AFCT", "AO SAT NACH", "AO KHOAC DAY", "AO KHOAC MONG", "AO JILE",
+            "AO JILE BD", "AO LEN", "AO BUDONG", "AO SOI", "COI TRAN", "AFDT",
+            "AO COMPLE", "AV", "QUAN dUI", "QUAN SHORT", "GM", "GTT", "GCS",
+            "DEPSD", "MLT", "MBH", "AKDD", "QTT", "DIXE", "DITAT", "DEOTR",
+            "BOT", "KT", "QD", "QT"
+        ];
+        
+        // Du lieu quan ao day du
+        const clothingData = [
+            // Mau Xanh da troi
+            { color: "XANH DA TROI", clothing: "AO SOMI HB 1", category: "AO SO MIDT" },
+            { color: "XANH DA TROI", clothing: "AO SOMI KE HB 30 33", category: "AO SO MICT" },
+            { color: "XANH DA TROI", clothing: "AO KHOAC THE THAO SEAGAME", category: "AO KHOAC MONG" },
+            { color: "XANH DA TROI", clothing: "AO SOI O TRAM DEN VANG", category: "AO SOI" },
+            { color: "XANH DA TROI", clothing: "", category: "QUAN dUI" },
+            { color: "XANH DA TROI", clothing: "QUAN SHORT BO NHAT 27 33", category: "QUAN SHORT" },
+            { color: "XANH DA TROI", clothing: "AO KHOAC THE THAI SEAGAME", category: "AKDD" },
+            { color: "XANH DA TROI", clothing: "deo khau trang", category: "DEOTR" },
+            { color: "XANH DA TROI", clothing: "deo khau trang", category: "KT" },
+            
+            // Mau VANG
+            { color: "VANG", clothing: "AO SOMI VANG DT 30 33", category: "AO SO MICT" },
+            { color: "VANG", clothing: "CAVAT VANG", category: "CA VAT" },
+            { color: "VANG", clothing: "QUAN DAI VANG", category: "QUAN DAI" },
+            { color: "VANG", clothing: "AO CHO", category: "AFCT" },
+            { color: "VANG", clothing: "AO JILE VANG 24", category: "AO JILE" },
+            { color: "VANG", clothing: "AO MANGTO VANG", category: "AO BUDONG" },
+            { color: "VANG", clothing: "AO SOI KE NGANG VANG GHI", category: "AO SOI" },
+            { color: "VANG", clothing: "COI TRAN", category: "COI TRAN" },
+            { color: "VANG", clothing: "", category: "QUAN dUI" },
+            { color: "VANG", clothing: "QUAN SHORT VANG 27 33", category: "QUAN SHORT" },
+            { color: "VANG", clothing: "", category: "DEPSD" },
+            
+            // Mau DA CAM
+            { color: "DA CAM", clothing: "AO SOMI CAM DT30 33", category: "AO SO MICT" },
+            { color: "DA CAM", clothing: "CAVAT CAM", category: "CA VAT" },
+            { color: "DA CAM", clothing: "AO HO", category: "AFCT" },
+            
+            // Mau TRANG
+            { color: "TRANG", clothing: "AO SOMI TRANG 30 33", category: "AO SO MIDT" },
+            { color: "TRANG", clothing: "QUAN DAI KE TRANG", category: "QUAN DAI" },
+            { color: "TRANG", clothing: "QUAN DAI TRANG COMPLE", category: "QUAN DAI" },
+            { color: "TRANG", clothing: "AO CAPTAN", category: "AFCT" },
+            { color: "TRANG", clothing: "AO FONG TRANG SPORT", category: "AFCT" },
+            { color: "TRANG", clothing: "AO SAT NACH TRANG CU 33 37", category: "AO SAT NACH" },
+            { color: "TRANG", clothing: "AO KHOAC TRANG LUC", category: "AO KHOAC DAY" },
+            { color: "TRANG", clothing: "AO JILE VAI TRANG 20", category: "AO JILE" },
+            { color: "TRANG", clothing: "AO JILE LEN TRANG", category: "AO JILE BD" },
+            { color: "TRANG", clothing: "AO BU DONG TRANG", category: "AO BUDONG" },
+            { color: "TRANG", clothing: "AO LEN DEN TRANG", category: "AO LEN" },
+            { color: "TRANG", clothing: "AO SOI LONG VANG GHI", category: "AO SOI" },
+            { color: "TRANG", clothing: "COMPLE TRANG", category: "AO COMPLE" },
+            { color: "TRANG", clothing: "QUAN SHORT TRANG 27 33", category: "QUAN SHORT" },
+            { color: "TRANG", clothing: "MU BAO HIEM KIM", category: "MBH" },
+            { color: "TRANG", clothing: "di tat ngu", category: "DITAT" },
+            
+            // Mau dO
+            { color: "dO", clothing: "DAY CHU Y", category: "DAY" },
+            { color: "dO", clothing: "AO SOMI KE TRANG DO 30 33", category: "AO SO MICT" },
+            { color: "dO", clothing: "CAVAT DO KE", category: "CA VAT" },
+            { color: "dO", clothing: "AO KHOAC VAI DO DEN", category: "AO KHOAC DAY" },
+            { color: "dO", clothing: "MU BAO HIEM LUC DO", category: "MBH" },
+            { color: "dO", clothing: "MU BAO HIEM DO TRANG", category: "MBH" },
+            { color: "dO", clothing: "QUAN TT BONG DO DEN 1", category: "QTT" },
+            { color: "dO", clothing: "2 QUAN DAI", category: "QUAN DAI" },
+            { color: "dO", clothing: "DI XE MAY - 2 DO", category: "DIXE" },
+            
+            // Mau GHI
+            { color: "GHI", clothing: "AO SOMI KE DEN TO", category: "AO SO MICT" },
+            { color: "GHI", clothing: "CAVAT GHI 06 27", category: "CA VAT" },
+            { color: "GHI", clothing: "QUAN DAI TRANG COMPLE", category: "QUAN DAI" },
+            { color: "GHI", clothing: "AO FONG TRANG NGUA BONG", category: "AFCT" },
+            { color: "GHI", clothing: "AO SAT NACH GHI MOI", category: "AO SAT NACH" },
+            { color: "GHI", clothing: "AO KHOAC GHI DEN Khoa hong", category: "AO KHOAC MONG" },
+            { color: "GHI", clothing: "AO JILE GHI 26", category: "AO JILE" },
+            { color: "GHI", clothing: "AO BU DONG GHI", category: "AO BUDONG" },
+            { color: "GHI", clothing: "AO LEN GHI", category: "AO LEN" },
+            { color: "GHI", clothing: "AO SOI LONG GHI TRANG", category: "AO SOI" },
+            { color: "GHI", clothing: "COMPLE GUONG", category: "AO COMPLE" },
+            { color: "GHI", clothing: "MU LUOI TRAI XAM 25 33", category: "MLT" },
+            { color: "GHI", clothing: "BO TDTT GHI", category: "BOT" },
+            { color: "GHI", clothing: "QUAN THUN GHI", category: "QT" },
+            
+            // Mau XANH LA
+            { color: "XANH LA", clothing: "CAVAT LAM 06 27", category: "CA VAT" },
+            { color: "XANH LA", clothing: "QUAN DAI BO DOI 1", category: "QUAN DAI" },
+            { color: "XANH LA", clothing: "AO FONG LAM KE CHAM TRANG U2", category: "AFCT" },
+            { color: "XANH LA", clothing: "AO SAT NACH LUC MOI 33 37", category: "AO SAT NACH" },
+            { color: "XANH LA", clothing: "AO KHOAC THE THAO SEAGAME", category: "AO KHOAC MONG" },
+            { color: "XANH LA", clothing: "AO JILE BUDONG LAM", category: "AO JILE BD" },
+            { color: "XANH LA", clothing: "AO BU DONG LAM", category: "AO BUDONG" },
+            { color: "XANH LA", clothing: "AO LEN LAM", category: "AO LEN" },
+            { color: "XANH LA", clothing: "AO GIU NHIET LAM", category: "AFDT" },
+            { color: "XANH LA", clothing: "AO VET", category: "AV" },
+            { color: "XANH LA", clothing: "", category: "QUAN dUI" },
+            { color: "XANH LA", clothing: "QUAN SHORT LAM 27 33", category: "QUAN SHORT" },
+            { color: "XANH LA", clothing: "MU LUOI TRAI LAM TRANG 25 33", category: "MLT" },
+            { color: "XANH LA", clothing: "BO TT", category: "BOT" },
+            
+            // Mau TIM
+            { color: "TIM", clothing: "CAVAT TIM 06 27", category: "CA VAT" },
+            { color: "TIM", clothing: "AO NGUA", category: "AFCT" },
+            { color: "TIM", clothing: "AO BU DONG TIM", category: "AO BUDONG" },
+            { color: "TIM", clothing: "AO SOI LONG GHI TRANG", category: "AO SOI" },
+            { color: "TIM", clothing: "", category: "QUAN dUI" },
+            
+            // Mau XANH BIEN
+            { color: "XANH BIEN", clothing: "QUAN BO", category: "QUAN DAI" },
+            { color: "XANH BIEN", clothing: "AO FONG LUC TRANG NIKE", category: "AFCT" },
+            { color: "XANH BIEN", clothing: "AO FONG TRANG SPORT", category: "AFCT" },
+            { color: "XANH BIEN", clothing: "AO KHOAC LUC BV", category: "AO KHOAC DAY" },
+            { color: "XANH BIEN", clothing: "AO KHOAC TRANG LUC", category: "AO KHOAC DAY" },
+            { color: "XANH BIEN", clothing: "AO BU DONG LUC", category: "AO BUDONG" },
+            { color: "XANH BIEN", clothing: "COMPLE LUC", category: "AO COMPLE" },
+            { color: "XANH BIEN", clothing: "", category: "QUAN dUI" },
+            { color: "XANH BIEN", clothing: "QUAN SHORT BO 27 33L", category: "QUAN SHORT" },
+            { color: "XANH BIEN", clothing: "MU LUOI TRAI LUC 25 33", category: "MLT" },
+            { color: "XANH BIEN", clothing: "MU BAO HIEM LUC", category: "MBH" },
+            { color: "XANH BIEN", clothing: "BO TT", category: "BOT" },
+            { color: "XANH BIEN", clothing: "QUAN DAI BV", category: "QD" },
+            
+            // Mau dEN
+            { color: "dEN", clothing: "QUAN DAI DEN", category: "QUAN DAI" },
+            { color: "dEN", clothing: "AO FONG VANG SO 7", category: "AFCT" },
+            { color: "dEN", clothing: "AO SAT NACH DEN CU 33 37", category: "AO SAT NACH" },
+            { color: "dEN", clothing: "AO KHOAC DEN THE THAO", category: "AO KHOAC MONG" },
+            { color: "dEN", clothing: "AO KHOAC DEN DO", category: "AO KHOAC DAY" },
+            { color: "dEN", clothing: "AO BU DONG DEN", category: "AO BUDONG" },
+            { color: "dEN", clothing: "AO LEN DEN", category: "AO LEN" },
+            { color: "dEN", clothing: "AO SOI O TRAM DEN VANG", category: "AO SOI" },
+            { color: "dEN", clothing: "COI TRAN", category: "COI TRAN" },
+            { color: "dEN", clothing: "COMPLE TO", category: "AO COMPLE" },
+            { color: "dEN", clothing: "", category: "QUAN dUI" },
+            { color: "dEN", clothing: "QUAN SHORT DEN 27 33", category: "QUAN SHORT" },
+            { color: "dEN", clothing: "QUAN THE THAO DEN DO 13 21", category: "QUAN SHORT" },
+            { color: "dEN", clothing: "GIAY MOI", category: "GM" },
+            { color: "dEN", clothing: "", category: "GTT" },
+            { color: "dEN", clothing: "GIAY CONG SO dEN 21 33", category: "GCS" },
+            { color: "dEN", clothing: "", category: "DEPSD" },
+            { color: "dEN", clothing: "MU BAO HIEM DEN", category: "MBH" },
+            { color: "dEN", clothing: "QUAN TT BONG DO DEN 2", category: "QTT" },
+            { color: "dEN", clothing: "DI XE MAY - 2 DO", category: "DIXE" },
+            { color: "dEN", clothing: "di tat ngu", category: "DITAT" },
+            { color: "dEN", clothing: "QUAN TT BONG DO DEN", category: "QTT" },
+            
+            // Mau HONG
+            { color: "HONG", clothing: "CAVAT HONG", category: "CA VAT" },
+            { color: "HONG", clothing: "AO SAT NACH HONG 33 37", category: "AO SAT NACH" },
+            { color: "HONG", clothing: "COI TRAN", category: "COI TRAN" },
+            { color: "HONG", clothing: "COMPLE BE", category: "AO COMPLE" },
+            
+            // Mau NGOC
+            { color: "NGOC", clothing: "QUAN DAI XANH NGOC", category: "QUAN DAI" },
+            { color: "NGOC", clothing: "0", category: "0" },
+            
+            // Mau CAM
+            { color: "CAM", clothing: "AO HO", category: "AFCT" },
+            
+            // Mau CHAM (giu nguyen - khong co du lieu cu the)
+            { color: "CHAM", clothing: "", category: "" },
+            
+            // Mau KE CARO (giu nguyen - khong co du lieu cu the)
+            { color: "KE CARO", clothing: "", category: "" },
+            
+            // Mau LAM
+            { color: "LAM", clothing: "MU LUOI TRAI dO 25 38", category: "MLT" },
+            
+            // Mau LUC
+            { color: "LUC", clothing: "AO KHOAC THE THAO SEAGAME", category: "AO KHOAC MONG" },
+            
+            // Mau NAU
+            { color: "NAU", clothing: "GIAY MOI HE", category: "GM" },
+        ];
+        
+        // Ma HEX cho cac mau
+        const colorHex = {
+            "dO": "#FF0000", "VANG": "#FFFF00", "TRANG": "#FFFFFF", 
+            "XANH BIEN": "#0066CC", "XANH LA": "#00CC00", "dEN": "#000000",
+            "XANH DA TROI": "#87CEEB", "TIM": "#9933CC", "CAM": "#FF6600",
+            "DA CAM": "#FF6600", "HONG": "#FF66CC", "GHI": "#808080",
+            "CHAM": "#4B0082", "KE CARO": "#C0C0C0", "NGOC": "#00CCCC",
+            "LAM": "#0000FF", "LUC": "#00CC00", "NAU": "#8B4513"
+        };
+        
+        // de xuat quan ao theo nhiet do
+        const temperatureSuggestions = {
+            "RAT LANH": { // Duoi 15°C
+                categories: ["AO KHOAC DAY", "AO LEN", "AO BUDONG", "QUAN DAI", "AO SOI", "DITAT", "DEOTR"],
+                description: "Troi rat lanh, can mac nhieu lop va giu am toan than"
+            },
+            "LANH": { // 15-20°C
+                categories: ["AO KHOAC MONG", "AO LEN", "AO JILE", "AO SOI", "QUAN DAI", "AO BUDONG"],
+                description: "Troi lanh, nen mac ao khoac mong hoac ao len"
+            },
+            "MAT": { // 20-25°C
+                categories: ["AO SO MIDT", "AO SO MICT", "QUAN DAI", "AO JILE", "AO SAT NACH"],
+                description: "Thoi tiet mat me, thoai mai, phu hop voi ao so mi"
+            },
+            "AM": { // 25-30°C
+                categories: ["AO SAT NACH", "QUAN SHORT", "QUAN dUI", "AFCT", "AO SO MICT"],
+                description: "Thoi tiet am, co the mac ao coc tay va quan short"
+            },
+            "NONG": { // Tren 30°C
+                categories: ["COI TRAN", "QUAN dUI", "QUAN SHORT", "AO SAT NACH", "DEOTR"],
+                description: "Troi nong, nen mac do thoang mat, nhe nhang"
+            }
+        };
+        
+        // Ten cac ngay trong tuan
+        const dayNames = ["Thu 2", "Thu 3", "Thu 4", "Thu 5", "Thu 6", "Thu 7", "Chu nhat"];
+
+        // Khoi tao dropdown mau sac
+        function initializeColorDropdown() {
+            const colorSelect = document.getElementById('colorSelect');
+            
+            colorList.forEach(color => {
+                const option = document.createElement('option');
+                option.value = color;
+                option.textContent = color;
+                colorSelect.appendChild(option);
+            });
+            
+            // Them su kien thay doi
+            colorSelect.addEventListener('change', function() {
+                const selectedColor = this.value;
+                const preview = document.getElementById('colorPreview');
+                
+                if (selectedColor) {
+                    const colorBox = document.getElementById('previewColorBox');
+                    const colorName = document.getElementById('previewColorName');
+                    
+                    colorBox.style.backgroundColor = colorHex[selectedColor] || '#CCCCCC';
+                    colorName.textContent = selectedColor;
+                    
+                    preview.style.display = 'block';
+                } else {
+                    preview.style.display = 'none';
+                }
+            });
+        }
+        
+        // Khoi tao dropdown chung loai
+        function initializeCategoryDropdown() {
+            const categorySelect = document.getElementById('categorySelect');
+            
+            categoryList.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categorySelect.appendChild(option);
+            });
+        }
+        
+        // Khoi tao cac o nhap nhiet do
+        function initializeTemperatureInputs() {
+            const daysContainer = document.getElementById('daysContainer');
+            const today = new Date();
+            
+            for (let i = 0; i < 6; i++) {
+                const day = new Date();
+                day.setDate(today.getDate() + i + 1);
+                const dayName = dayNames[day.getDay()];
+                
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'day-input';
+                dayDiv.innerHTML = `
+                    <div class="day-label">${dayName} (Ngay ${i + 1})</div>
+                    <div class="temp-inputs">
+                        <div class="temp-input">
+                            <label style="font-size: 0.9rem; color: var(--hot);">Cao nhat</label>
+                            <input type="number" id="highTemp${i}" placeholder="°C" min="-20" max="50" step="0.1" style="text-align: center;">
+                        </div>
+                        <div class="temp-input">
+                            <label style="font-size: 0.9rem; color: var(--cold);">Thap nhat</label>
+                            <input type="number" id="lowTemp${i}" placeholder="°C" min="-20" max="50" step="0.1" style="text-align: center;">
+                        </div>
+                    </div>
+                `;
+                
+                daysContainer.appendChild(dayDiv);
+            }
+        }
+        
+        // Khoi tao bang du lieu
+        function initializeDataTables() {
+            // Bang mau sac
+            const colorTable = document.getElementById('colorTable').getElementsByTagName('tbody')[0];
+            
+            colorList.forEach((color, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>
+                        <div style="display: flex; align-items: center;">
+                            <div style="width: 20px; height: 20px; background-color: ${colorHex[color] || '#CCCCCC'}; border-radius: 3px; margin-right: 10px; border: 1px solid #ddd;"></div>
+                            ${color}
+                        </div>
+                    </td>
+                `;
+                colorTable.appendChild(row);
+            });
+            
+            // Bang chung loai
+            const categoryTable = document.getElementById('categoryTable').getElementsByTagName('tbody')[0];
+            
+            categoryList.forEach((category, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${category}</td>
+                `;
+                categoryTable.appendChild(row);
+            });
+        }
+        
+        // Ham tim kiem quan ao
+        function searchClothing() {
+            const selectedColor = document.getElementById('colorSelect').value;
+            const selectedCategory = document.getElementById('categorySelect').value;
+            
+            if (!selectedColor && !selectedCategory) {
+                alert("Vui long chon it nhat mot tieu chi (mau sac hoac chung loai)");
+                return;
+            }
+            
+            // Loc du lieu
+            let filteredData = clothingData;
+            
+            if (selectedColor) {
+                filteredData = filteredData.filter(item => item.color === selectedColor);
+            }
+            
+            if (selectedCategory) {
+                filteredData = filteredData.filter(item => item.category === selectedCategory);
+            }
+            
+            // Hien thi ket qua
+            displayResults(filteredData, selectedColor, selectedCategory);
+        }
+        
+        // Hien thi ket qua
+        function displayResults(data, selectedColor, selectedCategory) {
+            const resultsSection = document.getElementById('resultsSection');
+            const resultsGrid = document.getElementById('resultsGrid');
+            const resultsCount = document.getElementById('resultsCount');
+            
+            // Xoa ket qua cu
+            resultsGrid.innerHTML = '';
+            
+            // Hien thi so luong ket qua
+            let searchCriteria = [];
+            if (selectedColor) searchCriteria.push(`Mau: ${selectedColor}`);
+            if (selectedCategory) searchCriteria.push(`Loai: ${selectedCategory}`);
+            
+            resultsCount.textContent = `Tim thay ${data.length} ket qua cho ${searchCriteria.join(' va ')}`;
+            
+            if (data.length === 0) {
+                resultsGrid.innerHTML = '<div style="text-align: center; padding: 40px; color: #666; font-size: 1.2rem;">Khong tim thay ket qua phu hop</div>';
+                resultsSection.classList.add('show');
+                return;
+            }
+            
+            // Nhom ket qua theo mau sac
+            const groupedByColor = {};
+            data.forEach(item => {
+                if (!groupedByColor[item.color]) {
+                    groupedByColor[item.color] = [];
+                }
+                groupedByColor[item.color].push(item);
+            });
+            
+            // Hien thi ket qua theo nhom mau
+            Object.keys(groupedByColor).forEach(color => {
+                const colorGroup = groupedByColor[color];
+                
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                
+                let clothingHTML = '';
+                colorGroup.forEach(item => {
+                    clothingHTML += `
+                        <div class="clothing-row">
+                            <div class="clothing-label">Quan ao:</div>
+                            <div class="clothing-value">${item.clothing || '(Khong co thong tin)'}</div>
+                        </div>
+                        <div class="clothing-row">
+                            <div class="clothing-label">Loai:</div>
+                            <div class="clothing-value">${item.category || '(Khong co thong tin)'}</div>
+                        </div>
+                        <div style="height: 15px;"></div>
+                    `;
+                });
+                
+                resultItem.innerHTML = `
+                    <div class="color-display">
+                        <div class="color-box" style="background-color: ${colorHex[color] || '#CCCCCC'}"></div>
+                        <div class="color-name">${color}</div>
+                    </div>
+                    <div class="clothing-info">
+                        ${clothingHTML}
+                    </div>
+                `;
+                
+                resultsGrid.appendChild(resultItem);
+            });
+            
+            // Hien thi section ket qua
+            resultsSection.classList.add('show');
+            
+            // Cuon den ket qua
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Xac dinh loai thoi tiet tu nhiet do
+        function getWeatherType(temp) {
+            if (temp < 15) return "RAT LANH";
+            if (temp >= 15 && temp < 20) return "LANH";
+            if (temp >= 20 && temp < 25) return "MAT";
+            if (temp >= 25 && temp < 30) return "AM";
+            return "NONG";
+        }
+        
+        // Tao de xuat quan ao tu nhiet do
+        function generateClothingSuggestions() {
+            const temperatureResults = document.getElementById('temperatureResults');
+            const resultsContainer = document.getElementById('temperatureResultsContainer');
+            const statisticsContainer = document.getElementById('statisticsContainer');
+            const recommendationText = document.getElementById('recommendationText');
+            
+            // Xoa ket qua cu
+            resultsContainer.innerHTML = '';
+            statisticsContainer.innerHTML = '';
+            
+            // Lay du lieu nhiet do
+            const temperatureData = [];
+            let isValid = true;
+            
+            for (let i = 0; i < 6; i++) {
+                const highTemp = parseFloat(document.getElementById(`highTemp${i}`).value);
+                const lowTemp = parseFloat(document.getElementById(`lowTemp${i}`).value);
+                
+                if (isNaN(highTemp) || isNaN(lowTemp)) {
+                    alert(`Vui long nhap day du nhiet do cho ngay ${i + 1}`);
+                    isValid = false;
+                    break;
+                }
+                
+                if (highTemp < lowTemp) {
+                    alert(`Nhiet do cao nhat khong the thap hon nhiet do thap nhat o ngay ${i + 1}`);
+                    isValid = false;
+                    break;
+                }
+                
+                temperatureData.push({
+                    day: dayNames[(new Date().getDay() + i) % 7],
+                    dayNumber: i + 1,
+                    high: highTemp,
+                    low: lowTemp,
+                    avg: (highTemp + lowTemp) / 2
+                });
+            }
+            
+            if (!isValid) return;
+            
+            // Tao de xuat cho tung ngay
+            const allSuggestions = [];
+            const categoryCount = {};
+            
+            temperatureData.forEach(day => {
+                const weatherType = getWeatherType(day.avg);
+                const suggestions = temperatureSuggestions[weatherType];
+                
+                // Lay cac loai quan ao tu clothingData phu hop voi categories de xuat
+                const recommendedClothing = [];
+                suggestions.categories.forEach(category => {
+                    const matchingItems = clothingData.filter(item => 
+                        item.category === category && item.clothing.trim() !== ""
+                    );
+                    
+                    matchingItems.forEach(item => {
+                        recommendedClothing.push({
+                            name: item.clothing,
+                            category: item.category,
+                            color: item.color
+                        });
+                        
+                        // dem so lan xuat hien cua loai quan ao
+                        if (!categoryCount[item.category]) {
+                            categoryCount[item.category] = 0;
+                        }
+                        categoryCount[item.category]++;
+                    });
+                });
+                
+                // Luu de xuat
+                allSuggestions.push({
+                    day: day,
+                    weatherType: weatherType,
+                    description: suggestions.description,
+                    clothing: recommendedClothing
+                });
+                
+                // Hien thi ket qua cho ngay
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'weather-day';
+                
+                let clothingHTML = '';
+                const uniqueClothing = [];
+                recommendedClothing.forEach(item => {
+                    if (!uniqueClothing.includes(item.name) && item.name.trim() !== "") {
+                        clothingHTML += `<span class="clothing-item">${item.name}</span>`;
+                        uniqueClothing.push(item.name);
+                    }
+                });
+                
+                dayDiv.innerHTML = `
+                    <div class="day-header">
+                        <div class="day-name">${day.day} (Ngay ${day.dayNumber})</div>
+                        <div>
+                            <span class="day-temp temp-high">${day.high}°C</span> / 
+                            <span class="day-temp temp-low">${day.low}°C</span>
+                            <div style="font-size: 0.9rem; color: #666; margin-top: 5px;">Trung binh: ${day.avg.toFixed(1)}°C - ${weatherType}</div>
+                        </div>
+                    </div>
+                    <div>${suggestions.description}</div>
+                    <div class="clothing-suggestion">
+                        ${clothingHTML || '<div style="color: #666; font-style: italic;">Khong co de xuat cu the</div>'}
+                    </div>
+                `;
+                
+                resultsContainer.appendChild(dayDiv);
+            });
+            
+            // Hien thi thong ke
+            const sortedCategories = Object.entries(categoryCount)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 10); // Lay top 10 loai duoc de xuat nhieu nhat
+            
+            statisticsContainer.innerHTML = '<div style="font-weight: 600; margin-bottom: 15px; color: var(--primary);">Top loai quan ao duoc de xuat nhieu nhat:</div>';
+            
+            sortedCategories.forEach(([category, count], index) => {
+                const statDiv = document.createElement('div');
+                statDiv.className = 'stat-item';
+                statDiv.innerHTML = `
+                    <div class="stat-name">${index + 1}. ${category}</div>
+                    <div class="stat-count">${count} lan</div>
+                `;
+                statisticsContainer.appendChild(statDiv);
+            });
+            
+            // Tao de xuat mua sam
+            let recommendation = "Dua tren du bao thoi tiet 6 ngay toi, ban nen:";
+            
+            if (sortedCategories.length > 0) {
+                recommendation += "<ul style='margin-top: 10px; padding-left: 20px;'>";
+                sortedCategories.slice(0, 3).forEach(([category, count], index) => {
+                    recommendation += `<li>Uu tien mua/su dung <strong>${category}</strong> (duoc de xuat ${count} lan)</li>`;
+                });
+                recommendation += "</ul>";
+                
+                // Phan tich xu huong nhiet do
+                const avgTemps = temperatureData.map(d => d.avg);
+                const tempTrend = avgTemps[avgTemps.length - 1] - avgTemps[0];
+                
+                if (tempTrend > 2) {
+                    recommendation += "<p style='margin-top: 10px;'>📈 Xu huong nhiet do tang dan, chuan bi them quan ao mat me.</p>";
+                } else if (tempTrend < -2) {
+                    recommendation += "<p style='margin-top: 10px;'>📉 Xu huong nhiet do giam dan, chuan bi them quan ao giu am.</p>";
+                } else {
+                    recommendation += "<p style='margin-top: 10px;'>📊 Nhiet do on dinh, co the su dung cung loai quan ao trong cac ngay.</p>";
+                }
+            }
+            
+            recommendationText.innerHTML = recommendation;
+            
+            // Hien thi section ket qua nhiet do
+            temperatureResults.classList.add('show');
+            temperatureResults.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Khoi tao khi trang duoc tai
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeColorDropdown();
+            initializeCategoryDropdown();
+            initializeTemperatureInputs();
+            initializeDataTables();
+            
+            // dat gia tri mac dinh cho nhiet do
+            const today = new Date();
+            const defaultTemps = [
+                { high: 28, low: 22 },
+                { high: 29, low: 23 },
+                { high: 30, low: 24 },
+                { high: 31, low: 25 },
+                { high: 29, low: 23 },
+                { high: 27, low: 22 }
+            ];
+            
+            for (let i = 0; i < 6; i++) {
+                document.getElementById(`highTemp${i}`).value = defaultTemps[i].high;
+                document.getElementById(`lowTemp${i}`).value = defaultTemps[i].low;
+            }
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

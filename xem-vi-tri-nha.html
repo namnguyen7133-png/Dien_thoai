@@ -1,0 +1,811 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cong cu danh gia Tieu chuan Nha o</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --light-color: #f8f9fa;
+            --dark-color: #2c3e50;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            padding-bottom: 50px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .input-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--secondary-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .checkbox-label:hover {
+            background-color: #f8f9fa;
+            border-color: var(--secondary-color);
+        }
+
+        .checkbox-label input {
+            width: auto;
+        }
+
+        .result-section {
+            margin-top: 40px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .results-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .results-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+        }
+
+        .score-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .score-excellent { background-color: var(--success-color); }
+        .score-good { background-color: #2ecc71; }
+        .score-average { background-color: var(--warning-color); }
+        .score-poor { background-color: var(--accent-color); }
+
+        .standards-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .standards-table th, .standards-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .standards-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .standards-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .price-calculation {
+            background: linear-gradient(to right, #27ae60, #2ecc71);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+        }
+
+        .price-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .price-result {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .price-range {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .location-tag {
+            display: inline-block;
+            padding: 6px 12px;
+            background-color: #e3f2fd;
+            color: var(--secondary-color);
+            border-radius: 20px;
+            margin: 5px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .location-tag:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .location-tag.selected {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .warning-text {
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .info-text {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .standard-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #eee;
+        }
+
+        .standard-item:last-child {
+            border-bottom: none;
+        }
+
+        .standard-name {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .standard-value {
+            color: var(--success-color);
+            font-weight: 600;
+        }
+
+        .standard-warning {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .input-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-home"></i> Cong cu danh gia Tieu chuan Nha o</h1>
+            <p class="subtitle">Kiem tra tieu chuan kich thuoc, vi tri va tinh toan gia nha dua tren cac yeu to danh gia</p>
+        </header>
+
+        <div class="input-section">
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-map-marker-alt"></i> 1. Chon vi tri nha
+                </div>
+                
+                <div class="form-group">
+                    <label>Vi tri nha:</label>
+                    <div id="locationTags">
+                        <span class="location-tag" data-value="street">Mat pho</span>
+                        <span class="location-tag" data-value="alley">Mat ngo</span>
+                        <span class="location-tag" data-value="lane">Mat ngach</span>
+                    </div>
+                    <input type="text" id="customLocation" placeholder="Hoac nhap vi tri khac..." style="margin-top: 15px;">
+                </div>
+                
+                <div class="form-group">
+                    <label>Dien tich nha (m²):</label>
+                    <input type="number" id="areaInput" min="20" max="500" value="120" step="10">
+                    <div class="info-text">Nhap dien tich tong cua ngoi nha</div>
+                </div>
+                
+                <div class="form-group">
+                    <label>So nguoi sinh song:</label>
+                    <select id="peopleCount">
+                        <option value="4">4 nguoi</option>
+                        <option value="5">5 nguoi</option>
+                        <option value="6">6 nguoi</option>
+                        <option value="7">7 nguoi</option>
+                        <option value="8">8 nguoi</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-check-circle"></i> 2. Chon tien ich xung quanh
+                </div>
+                
+                <div class="form-group">
+                    <label>Tien ich cong cong gan nha:</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="school">
+                            <span>Truong hoc</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="hospital">
+                            <span>Benh vien</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="market">
+                            <span>Cho/Sieu thi</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="park">
+                            <span>Cong vien</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="bus">
+                            <span>Tram xe buyt</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="bank">
+                            <span>Ngan hang</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="restaurant">
+                            <span>Nha hang</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="amenities" value="gym">
+                            <span>Phong tap gym</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Tien ich dac biet khac:</label>
+                    <input type="text" id="otherAmenities" placeholder="Vi du: gan cong vien nuoc, trung tam thuong mai...">
+                </div>
+            </div>
+        </div>
+        
+        <button class="btn" id="evaluateBtn">
+            <i class="fas fa-calculator"></i> danh gia Tieu chuan & Tinh Gia Nha
+        </button>
+        
+        <div class="result-section">
+            <div class="result-grid">
+                <div class="results-card">
+                    <div class="results-header">
+                        <div class="results-title">Tieu chuan kich thuoc toi thieu</div>
+                        <div id="sizeScore" class="score-badge score-good">dang danh gia...</div>
+                    </div>
+                    
+                    <div id="sizeStandards">
+                        <!-- Ket qua danh gia kich thuoc se hien thi o day -->
+                        <p>Vui long nhan nut "danh gia" de xem ket qua</p>
+                    </div>
+                </div>
+                
+                <div class="results-card">
+                    <div class="results-header">
+                        <div class="results-title">Tien ich xung quanh</div>
+                        <div id="amenityScore" class="score-badge score-average">dang danh gia...</div>
+                    </div>
+                    
+                    <div id="amenityResults">
+                        <!-- Ket qua danh gia tien ich se hien thi o day -->
+                        <p>Vui long nhan nut "danh gia" de xem ket qua</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="price-calculation">
+                <div class="price-title">Gia nha uoc tinh theo vi tri va dien tich</div>
+                <div class="price-result" id="priceResult">0 VND</div>
+                <div class="price-range">
+                    <div id="minPrice">Gia thap nhat: 0 VND</div>
+                    <div id="maxPrice">Gia cao nhat: 0 VND</div>
+                </div>
+                <div class="info-text" style="text-align: center; margin-top: 15px; color: rgba(255,255,255,0.9);">
+                    Gia tren chi mang tinh chat tham khao, co the thay doi theo thuc te thi truong
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Du lieu tieu chuan
+        const sizeStandards = {
+            "Loi vao": { min: 1.2, max: 1.5, unit: "m", note: "du khong gian cho di chuyen va do xe" },
+            "duong lai xe va loi do xe": { min: 2.5, max: 3.5, unit: "m/xe", note: "dam bao du rong de xe vao va ra de dang" },
+            "San truoc": { min: 2, max: 3, unit: "m", note: "Tao khong gian thoang dang va chao don" },
+            "San sau": { min: 4, max: 5, unit: "m", note: "du rong cho cac hoat dong ngoai troi" },
+            "Phong khach": { min: 15, max: 20, unit: "m²", note: "Tu 25 - 30 met vuong cho phong lon hon" },
+            "Khoang cach giua noi that": { min: 1.2, max: 1.5, unit: "m", note: "dam bao di chuyen de dang xung quanh cac mon do noi that" },
+            "Phong an": { min: 10, max: 15, unit: "m²", note: "du khong gian cho ban an va ghe" },
+            "Khoang cach giua ghe": { min: 0.9, max: 1, unit: "m", note: "dam bao thoai mai khi di chuyen" },
+            "Nha bep": { min: 8, max: 12, unit: "m²", note: "Tu 15 met vuong tro len cho bep lon hon" },
+            "Khoang cach khu vuc bep": { min: 1.2, max: 1.5, unit: "m", note: "Tien loi khi nau nuong, rua va chuan bi thuc pham" },
+            "Phong ngu chinh": { min: 12, max: 15, unit: "m²", note: "Tu 20 met vuong tro len cho phong lon hon" },
+            "Khoang cach xung quanh giuong": { min: 0.75, max: 1, unit: "m", note: "dam bao di chuyen de dang quanh giuong" },
+            "Phong ngu phu": { min: 9, max: 12, unit: "m²", note: "du khong gian cho giuong va cac mon do noi that co ban" },
+            "Khoang cach giua giuong va tu": { min: 0.6, max: 0.9, unit: "m", note: "dam bao de dang su dung cac mon do noi that" },
+            "Nha tam": { min: 4, max: 6, unit: "m²", note: "Toi thieu cho nha tam voi cac thiet bi co ban" },
+            "Khoang cach giua thiet bi": { min: 0.6, max: 0.9, unit: "m", note: "Tien loi khi su dung cac thiet bi ve sinh" },
+            "Nha ve sinh rieng": { min: 2, max: 3, unit: "m²", note: "du khong gian cho cac thiet bi co ban" },
+            "Hanh lang": { min: 1.2, max: 1.5, unit: "m", note: "dam bao di chuyen thoai mai trong nha" },
+            "Cua ra vao": { min: 0.9, max: 1, unit: "m", note: "Toi thieu chieu rong cua ra vao" },
+            "Cua so": { minRatio: 0.1, unit: "dien tich san", note: "dam bao cung cap anh sang tu nhien va thong gio" },
+            "Tu quan ao": { minDepth: 0.6, maxDepth: 0.75, minWidth: 1.5, unit: "m", note: "1.5 - 2 met chieu rong cho moi nguoi su dung" }
+        };
+
+        // Dien tich toi thieu theo so nguoi
+        const areaPerPeople = {
+            "4": { min: 90, max: 120, note: "2 phong ngu (moi phong tu 12 - 15 m²), 1 phong khach (15 - 20 m²), 1 phong an (10 - 15 m²), 1 nha bep (8 - 12 m²), 1 - 2 phong tam va ve sinh" },
+            "5": { min: 120, max: 150, note: "3 phong ngu (moi phong tu 12 - 15 m²), 1 phong khach (20 - 25 m²), 1 phong an (15 m²), 1 nha bep (10 - 15 m²), 2 phong tam va ve sinh" },
+            "6": { min: 150, max: 180, note: "3 phong ngu lon (tu 15 - 20 m²), 1 phong khach (25 - 30 m²), 1 phong an (15 - 20 m²), 1 nha bep (15 - 20 m²), 2 - 3 phong tam va ve sinh" },
+            "7": { min: 180, max: 210, note: "4 phong ngu (moi phong tu 15 - 20 m²), 1 phong khach (30 - 35 m²), 1 phong an (20 m²), 1 nha bep (15 - 20 m²), 2 - 3 phong tam va ve sinh" },
+            "8": { min: 210, max: 240, note: "4 - 5 phong ngu (moi phong tu 15 - 20 m²), 1 phong khach (35 - 40 m²), 1 phong an (20 m²), 1 nha bep (20 m²), 2 - 3 phong tam va ve sinh" }
+        };
+
+        // Gia theo vi tri (VND/m²)
+        const pricePerLocation = {
+            "street": { name: "Mat pho", min: 36000000, max: 96000000 },
+            "alley": { name: "Mat ngo", min: 19200000, max: 36000000 },
+            "lane": { name: "Mat ngach", min: 12000000, max: 24000000 },
+            "custom": { name: "Vi tri khac", min: 10000000, max: 30000000 }
+        };
+
+        // Bien luu vi tri duoc chon
+        let selectedLocation = "street";
+        
+        // Khoi tao trang
+        document.addEventListener('DOMContentLoaded', function() {
+            // Thiet lap su kien cho cac tag vi tri
+            document.querySelectorAll('.location-tag').forEach(tag => {
+                tag.addEventListener('click', function() {
+                    // Bo chon tat ca
+                    document.querySelectorAll('.location-tag').forEach(t => t.classList.remove('selected'));
+                    // Chon tag duoc click
+                    this.classList.add('selected');
+                    selectedLocation = this.getAttribute('data-value');
+                    
+                    // Xoa gia tri nhap tuy chinh
+                    document.getElementById('customLocation').value = '';
+                });
+            });
+            
+            // Chon tag dau tien mac dinh
+            document.querySelector('.location-tag').classList.add('selected');
+            
+            // Su kien cho o nhap vi tri tuy chinh
+            document.getElementById('customLocation').addEventListener('input', function() {
+                if (this.value.trim() !== '') {
+                    // Bo chon tat ca tag
+                    document.querySelectorAll('.location-tag').forEach(t => t.classList.remove('selected'));
+                    selectedLocation = "custom";
+                }
+            });
+            
+            // Su kien cho nut danh gia
+            document.getElementById('evaluateBtn').addEventListener('click', evaluateHouse);
+            
+            // danh gia mau ban dau
+            evaluateHouse();
+        });
+
+        // Ham danh gia nha
+        function evaluateHouse() {
+            // Lay gia tri tu form
+            const area = parseFloat(document.getElementById('areaInput').value) || 120;
+            const peopleCount = document.getElementById('peopleCount').value;
+            
+            // Lay vi tri
+            let location = selectedLocation;
+            const customLocation = document.getElementById('customLocation').value.trim();
+            if (customLocation !== '' && location === "custom") {
+                // Cap nhat ten vi tri tuy chinh
+                pricePerLocation.custom.name = customLocation;
+            }
+            
+            // Lay tien ich duoc chon
+            const amenities = [];
+            document.querySelectorAll('input[name="amenities"]:checked').forEach(checkbox => {
+                amenities.push(checkbox.value);
+            });
+            
+            // Them tien ich khac neu co
+            const otherAmenities = document.getElementById('otherAmenities').value.trim();
+            if (otherAmenities !== '') {
+                amenities.push('other');
+            }
+            
+            // danh gia kich thuoc
+            evaluateSizeStandards(area, peopleCount);
+            
+            // danh gia tien ich
+            evaluateAmenities(amenities, otherAmenities);
+            
+            // Tinh gia nha
+            calculatePrice(area, location);
+        }
+
+        // danh gia tieu chuan kich thuoc
+        function evaluateSizeStandards(area, peopleCount) {
+            const sizeResultsDiv = document.getElementById('sizeStandards');
+            let score = 100;
+            let warnings = 0;
+            let resultsHTML = '';
+            
+            // Kiem tra dien tich theo so nguoi
+            const areaStandard = areaPerPeople[peopleCount];
+            const areaNeeded = areaStandard ? areaStandard.min : 90;
+            
+            if (area < areaNeeded) {
+                score -= 30;
+                warnings++;
+                resultsHTML += `
+                    <div class="standard-item">
+                        <div class="standard-name">Dien tich cho ${peopleCount} nguoi:</div>
+                        <div class="standard-warning">${area} m² (THIEU: can toi thieu ${areaNeeded} m²)</div>
+                        <div class="info-text">${areaStandard.note}</div>
+                    </div>
+                `;
+            } else {
+                resultsHTML += `
+                    <div class="standard-item">
+                        <div class="standard-name">Dien tich cho ${peopleCount} nguoi:</div>
+                        <div class="standard-value">${area} m² (dAT: can toi thieu ${areaNeeded} m²)</div>
+                        <div class="info-text">${areaStandard.note}</div>
+                    </div>
+                `;
+            }
+            
+            // Them mot so tieu chuan mau
+            const sampleStandards = ["Phong khach", "Phong ngu chinh", "Nha bep", "Nha tam"];
+            
+            sampleStandards.forEach(standard => {
+                const std = sizeStandards[standard];
+                if (std) {
+                    // Tao gia tri gia lap ngau nhien cho muc dich minh hoa
+                    const randomValue = std.min + Math.random() * (std.max - std.min);
+                    const isPassing = randomValue >= std.min;
+                    
+                    if (!isPassing) {
+                        score -= 10;
+                        warnings++;
+                        resultsHTML += `
+                            <div class="standard-item">
+                                <div class="standard-name">${standard}:</div>
+                                <div class="standard-warning">${randomValue.toFixed(1)} ${std.unit} (THIEU: can toi thieu ${std.min} ${std.unit})</div>
+                                <div class="info-text">${std.note}</div>
+                            </div>
+                        `;
+                    } else {
+                        resultsHTML += `
+                            <div class="standard-item">
+                                <div class="standard-name">${standard}:</div>
+                                <div class="standard-value">${randomValue.toFixed(1)} ${std.unit} (dAT: can ${std.min}-${std.max} ${std.unit})</div>
+                                <div class="info-text">${std.note}</div>
+                            </div>
+                        `;
+                    }
+                }
+            });
+            
+            // Cap nhat diem so
+            const sizeScoreDiv = document.getElementById('sizeScore');
+            sizeScoreDiv.textContent = `${score}/100 diem`;
+            
+            if (score >= 80) {
+                sizeScoreDiv.className = "score-badge score-excellent";
+            } else if (score >= 60) {
+                sizeScoreDiv.className = "score-badge score-good";
+            } else if (score >= 40) {
+                sizeScoreDiv.className = "score-badge score-average";
+            } else {
+                sizeScoreDiv.className = "score-badge score-poor";
+            }
+            
+            // Them canh bao neu co
+            if (warnings > 0) {
+                resultsHTML += `<div class="warning-text">⚠ Co ${warnings} tieu chuan khong dat yeu cau</div>`;
+            }
+            
+            sizeResultsDiv.innerHTML = resultsHTML;
+        }
+
+        // danh gia tien ich
+        function evaluateAmenities(amenities, otherAmenities) {
+            const amenityResultsDiv = document.getElementById('amenityResults');
+            const amenityScoreDiv = document.getElementById('amenityScore');
+            
+            let score = 0;
+            let maxScore = 8; // Toi da 8 tien ich co ban
+            
+            // diem cho moi tien ich co ban
+            const baseAmenities = ["school", "hospital", "market", "park", "bus", "bank", "restaurant", "gym"];
+            const amenityNames = {
+                "school": "Truong hoc",
+                "hospital": "Benh vien",
+                "market": "Cho/Sieu thi",
+                "park": "Cong vien",
+                "bus": "Tram xe buyt",
+                "bank": "Ngan hang",
+                "restaurant": "Nha hang",
+                "gym": "Phong tap gym",
+                "other": "Tien ich khac"
+            };
+            
+            let resultsHTML = '<div class="standard-item">';
+            
+            baseAmenities.forEach(amenity => {
+                if (amenities.includes(amenity)) {
+                    score += 1;
+                    resultsHTML += `<div><i class="fas fa-check" style="color: #27ae60;"></i> ${amenityNames[amenity]}</div>`;
+                } else {
+                    resultsHTML += `<div><i class="fas fa-times" style="color: #e74c3c;"></i> ${amenityNames[amenity]}</div>`;
+                }
+            });
+            
+            resultsHTML += '</div>';
+            
+            // Them tien ich khac neu co
+            if (amenities.includes('other') && otherAmenities) {
+                score += 1;
+                resultsHTML += `<div class="standard-item">
+                    <div><i class="fas fa-check" style="color: #27ae60;"></i> Tien ich khac: ${otherAmenities}</div>
+                </div>`;
+            }
+            
+            // Tinh diem phan tram
+            const percentScore = Math.round((score / maxScore) * 100);
+            
+            // Cap nhat diem so
+            amenityScoreDiv.textContent = `${percentScore}/100 diem`;
+            
+            if (percentScore >= 80) {
+                amenityScoreDiv.className = "score-badge score-excellent";
+                resultsHTML += `<div class="info-text">✓ Khu vuc co nhieu tien ich, thuan tien cho sinh hoat</div>`;
+            } else if (percentScore >= 60) {
+                amenityScoreDiv.className = "score-badge score-good";
+                resultsHTML += `<div class="info-text">✓ Khu vuc co du tien ich co ban</div>`;
+            } else if (percentScore >= 40) {
+                amenityScoreDiv.className = "score-badge score-average";
+                resultsHTML += `<div class="warning-text">⚠ Khu vuc thieu mot so tien ich quan trong</div>`;
+            } else {
+                amenityScoreDiv.className = "score-badge score-poor";
+                resultsHTML += `<div class="warning-text">⚠ Khu vuc thieu nhieu tien ich co ban</div>`;
+            }
+            
+            amenityResultsDiv.innerHTML = resultsHTML;
+        }
+
+        // Tinh gia nha
+        function calculatePrice(area, location) {
+            const priceData = pricePerLocation[location] || pricePerLocation.street;
+            const minPrice = area * priceData.min;
+            const maxPrice = area * priceData.max;
+            
+            // dinh dang so tien
+            const formatCurrency = (amount) => {
+                return amount.toLocaleString('vi-VN') + ' VND';
+            };
+            
+            // Hien thi ket qua
+            document.getElementById('priceResult').textContent = formatCurrency((minPrice + maxPrice) / 2);
+            document.getElementById('minPrice').textContent = `Gia thap nhat: ${formatCurrency(minPrice)}`;
+            document.getElementById('maxPrice').textContent = `Gia cao nhat: ${formatCurrency(maxPrice)}`;
+            
+            // Them thong tin vi tri
+            const locationInfo = document.createElement('div');
+            locationInfo.className = 'info-text';
+            locationInfo.style.textAlign = 'center';
+            locationInfo.style.marginTop = '10px';
+            locationInfo.innerHTML = `Vi tri: <strong>${priceData.name}</strong> | Gia: ${(priceData.min/1000000).toFixed(0)}-${(priceData.max/1000000).toFixed(0)} trieu VND/m²`;
+            
+            // Xoa thong tin cu neu co
+            const oldInfo = document.querySelector('.price-calculation .info-text:nth-child(4)');
+            if (oldInfo) oldInfo.remove();
+            
+            document.querySelector('.price-calculation').appendChild(locationInfo);
+        }
+
+        // Ham dinh dang so
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

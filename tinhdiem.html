@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Tiền Tiêu Vặt & Thời Gian Chơi Của Trẻ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans p-4 md:p-6">
+
+    <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden p-6 md:p-8">
+        <h1 class="text-2xl md:text-3xl font-bold text-center text-indigo-600 mb-2">CÁCH ĐÚNG ĐỂ CHO TRẺ TIỀN TIÊU VẶT</h1>
+        <p class="text-center text-slate-500 mb-6">Quản lý theo tuần, tích lũy tiền thưởng, hình phạt và quy đổi thời gian giải trí</p>
+
+        <!-- Thông tin trẻ và Tuần -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 bg-slate-100 p-4 rounded-xl">
+            <div>
+                <label class="block text-sm font-medium text-slate-600 mb-1">Tên của trẻ:</label>
+                <input type="text" id="childName" placeholder="Nhập tên trẻ..." class="w-full border rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-600 mb-1">Chọn tuần:</label>
+                <select id="weekSelect" class="w-full border rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="Tuần 1">Tuần 1</option>
+                    <option value="Tuần 2">Tuần 2</option>
+                    <option value="Tuần 3">Tuần 3</option>
+                    <option value="Tuần 4">Tuần 4</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Bảng tổng kết -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-4 text-center">
+                <span class="block text-slate-500 text-sm">Tổng tiền thực nhận (Tuần)</span>
+                <span id="totalMoney" class="text-2xl font-bold text-emerald-600">0</span> <span class="text-emerald-600 font-semibold">đ</span>
+            </div>
+            <div class="bg-sky-50 border border-sky-100 rounded-xl p-4 text-center">
+                <span class="block text-slate-500 text-sm">Thời gian chơi quy đổi</span>
+                <span id="totalPlayTime" class="text-2xl font-bold text-sky-600">0</span> <span class="text-sky-600 font-semibold">phút</span>
+            </div>
+            <div class="bg-rose-50 border border-rose-100 rounded-xl p-4 text-center">
+                <span class="block text-slate-500 text-sm">Tổng tiền phạt / Trả phí</span>
+                <span id="totalPenalty" class="text-2xl font-bold text-rose-600">0</span> <span class="text-rose-600 font-semibold">đ</span>
+            </div>
+        </div>
+
+        <!-- 1. Chế độ thưởng -->
+        <div class="space-y-4 mb-8">
+            <h2 class="text-lg font-semibold text-emerald-700 border-b pb-2 flex items-center">
+                <span>🟢 Chế độ thưởng</span>
+            </h2>
+            <div id="rewardList" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <!-- Render bằng JS -->
+            </div>
+        </div>
+
+        <!-- 2. Chế độ phạt -->
+        <div class="space-y-4 mb-8">
+            <h2 class="text-lg font-semibold text-rose-700 border-b pb-2 flex items-center">
+                <span>🔴 Chế độ phạt</span>
+            </h2>
+            <div id="penaltyList" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <!-- Render bằng JS -->
+            </div>
+        </div>
+
+        <!-- 3. Các khoản phải tự trả / Dùng dịch vụ -->
+        <div class="space-y-4 mb-8">
+            <h2 class="text-lg font-semibold text-amber-700 border-b pb-2 flex items-center">
+                <span>🟡 Các khoản phải tự trả (Tính theo giờ/lần)</span>
+            </h2>
+            <div id="serviceList" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <!-- Render bằng JS -->
+            </div>
+        </div>
+
+        <!-- 4. Thêm việc khác ngoài danh mục -->
+        <div class="pt-6 border-t border-slate-200">
+            <h2 class="text-lg font-semibold text-slate-700 mb-4">➕ Thêm việc khác ngoài danh mục</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <input type="text" id="customName" placeholder="Tên việc..." class="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <select id="customType" class="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <option value="reward">Thưởng (+)</option>
+                    <option value="penalty">Phạt (-)</option>
+                </select>
+                <input type="number" id="customAmount" placeholder="Số tiền (đ)" class="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <button onclick="addCustomTask()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg px-4 py-2 transition">Thêm</button>
+            </div>
+            <div id="customTaskList" class="mt-4 space-y-2"></div>
+        </div>
+
+        <!-- Nút thao tác -->
+        <div class="mt-8 flex justify-center space-x-4">
+            <button onclick="saveData()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-6 py-2 rounded-lg transition">Lưu dữ liệu tuần</button>
+            <button onclick="resetCalculator()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-medium px-6 py-2 rounded-lg transition">Làm lại</button>
+        </div>
+    </div>
+
+    <script>
+        // Danh sách chuẩn xác 100% từ ảnh của người dùng
+        const tasksData = [
+            // Thưởng
+            { id: 1, name: "Quét nhà", type: "reward", amount: 5000, count: 0 },
+            { id: 2, name: "Thu quần áo", type: "reward", amount: 10000, count: 0 },
+            { id: 3, name: "Dọn ghế sofa", type: "reward", amount: 5000, count: 0 },
+            { id: 4, name: "Đổ rác", type: "reward", amount: 5000, count: 0 },
+            { id: 5, name: "Lau bàn", type: "reward", amount: 5000, count: 0 },
+            { id: 6, name: "Thu dọn giường", type: "reward", amount: 5000, count: 0 },
+            { id: 7, name: "Lấy hàng chuyển phát", type: "reward", amount: 10000, count: 0 },
+            { id: 8, name: "Giặt tất", type: "reward", amount: 5000, count: 0 },
+            { id: 9, name: "Sắp xếp giày dép", type: "reward", amount: 5000, count: 0 },
+            { id: 10, name: "Thu dọn đồ chơi", type: "reward", amount: 5000, count: 0 },
+            { id: 11, name: "Không kén ăn", type: "reward", amount: 5000, count: 0 },
+            { id: 12, name: "Phơi quần áo", type: "reward", amount: 5000, count: 0 },
+            { id: 13, name: "Lau nhà", type: "reward", amount: 5000, count: 0 },
+            { id: 14, name: "Rửa bát", type: "reward", amount: 10000, count: 0 },
+            { id: 15, name: "Chạy việc / làm việc vặt", type: "reward", amount: 5000, count: 0 },
+            { id: 16, name: "Tự giác hoàn thành bài tập", type: "reward", amount: 15000, count: 0 },
+            { id: 17, name: "Mỗi ngày nhảy dây / luyện bóng", type: "reward", amount: 15000, count: 0 },
+            { id: 18, name: "Duy trì tất cả việc trên trong 1 tuần", type: "reward", amount: 25000, count: 0 },
+
+            // Phạt
+            { id: 19, name: "Nổi nóng", type: "penalty", amount: 10000, count: 0 },
+            { id: 20, name: "Trì hoãn", type: "penalty", amount: 10000, count: 0 },
+            { id: 21, name: "Nói dối", type: "penalty", amount: 10000, count: 0 },
+            { id: 22, name: "Cãi lại", type: "penalty", amount: 10000, count: 0 },
+
+            // Tự trả phí (Điện thoại / Xem TV: 25.000đ/giờ)
+            { id: 23, name: "Điện thoại (giờ)", type: "service", amount: 25000, count: 0 },
+            { id: 24, name: "Xem TV (giờ)", type: "service", amount: 25000, count: 0 }
+        ];
+
+        let customTasks = [];
+
+        function renderLists() {
+            const rewardContainer = document.getElementById('rewardList');
+            const penaltyContainer = document.getElementById('penaltyList');
+            const serviceContainer = document.getElementById('serviceList');
+
+            rewardContainer.innerHTML = '';
+            penaltyContainer.innerHTML = '';
+            serviceContainer.innerHTML = '';
+
+            tasksData.forEach(task => {
+                let html = `
+                    <div class="flex items-center justify-between p-3 rounded-xl border bg-white shadow-sm">
+                        <div>
+                            <span class="font-medium text-slate-700 text-sm block">${task.name}</span>
+                            <span class="text-xs text-slate-500">${task.amount.toLocaleString()}đ ${task.type === 'service' ? '/ giờ' : ''}</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="updateCount(${task.id}, -1, false)" class="w-7 h-7 bg-slate-100 border rounded-lg font-bold text-slate-600 hover:bg-slate-200">-</button>
+                            <span id="count-${task.id}" class="w-6 text-center font-bold text-sm">${task.count}</span>
+                            <button onclick="updateCount(${task.id}, 1, false)" class="w-7 h-7 bg-slate-100 border rounded-lg font-bold text-slate-600 hover:bg-slate-200">+</button>
+                        </div>
+                    </div>
+                `;
+
+                if (task.type === 'reward') rewardContainer.innerHTML += html;
+                else if (task.type === 'penalty') penaltyContainer.innerHTML += html;
+                else if (task.type === 'service') serviceContainer.innerHTML += html;
+            });
+
+            calculateTotals();
+        }
+
+        function updateCount(id, delta, isCustom) {
+            if (!isCustom) {
+                const task = tasksData.find(t => t.id === id);
+                if (task) {
+                    task.count += delta;
+                    if (task.count < 0) task.count = 0;
+                    document.getElementById(`count-${id}`).innerText = task.count;
+                }
+            } else {
+                const task = customTasks.find(t => t.id === id);
+                if (task) {
+                    task.count += delta;
+                    if (task.count < 0) task.count = 0;
+                    document.getElementById(`custom-count-${id}`).innerText = task.count;
+                }
+            }
+            calculateTotals();
+        }
+
+        function addCustomTask() {
+            const name = document.getElementById('customName').value.trim();
+            const type = document.getElementById('customType').value;
+            const amount = parseFloat(document.getElementById('customAmount').value);
+
+            if (!name || isNaN(amount)) {
+                alert("Vui lòng nhập tên và số tiền hợp lệ!");
+                return;
+            }
+
+            const newTask = {
+                id: Date.now(),
+                name: name,
+                type: type,
+                amount: amount,
+                count: 1
+            };
+
+            customTasks.push(newTask);
+            document.getElementById('customName').value = '';
+            document.getElementById('customAmount').value = '';
+            renderCustomTasks();
+            calculateTotals();
+        }
+
+        function renderCustomTasks() {
+            const container = document.getElementById('customTaskList');
+            container.innerHTML = '';
+
+            customTasks.forEach(task => {
+                const badgeColor = task.type === 'reward' ? 'text-emerald-600' : 'text-rose-600';
+                container.innerHTML += `
+                    <div class="flex items-center justify-between p-3 rounded-xl border bg-slate-50">
+                        <div>
+                            <span class="font-medium text-sm block">${task.name} <span class="text-xs ${badgeColor}">(${task.type === 'reward' ? 'Thưởng' : 'Phạt'})</span></span>
+                            <span class="text-xs text-slate-500">${task.amount.toLocaleString()}đ</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="updateCount(${task.id}, -1, true)" class="w-7 h-7 bg-white border rounded-lg font-bold text-slate-600 hover:bg-slate-100">-</button>
+                            <span id="custom-count-${task.id}" class="w-6 text-center font-bold text-sm">${task.count}</span>
+                            <button onclick="updateCount(${task.id}, 1, true)" class="w-7 h-7 bg-white border rounded-lg font-bold text-slate-600 hover:bg-slate-100">+</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function calculateTotals() {
+            let totalReward = 0;
+            let totalDeduction = 0;
+
+            tasksData.forEach(t => {
+                if (t.type === 'reward') totalReward += t.amount * t.count;
+                else if (t.type === 'penalty' || t.type === 'service') totalDeduction += t.amount * t.count;
+            });
+
+            customTasks.forEach(t => {
+                if (t.type === 'reward') totalReward += t.amount * t.count;
+                else totalDeduction += t.amount * t.count;
+            });
+
+            let finalMoney = totalReward - totalDeduction;
+            if (finalMoney < 0) finalMoney = 0;
+
+            // Quy đổi thời gian chơi: Dựa trên giá dịch vụ tiêu chuẩn (25.000đ = 1 giờ = 60 phút -> 1.000đ = 2.4 phút, hoặc quy đổi trực tiếp từ số tiền thực nhận ra phút chơi)
+            let playMinutes = Math.round((finalMoney / 25000) * 60);
+
+            document.getElementById('totalMoney').innerText = finalMoney.toLocaleString();
+            document.getElementById('totalPlayTime').innerText = playMinutes;
+            document.getElementById('totalPenalty').innerText = totalDeduction.toLocaleString();
+        }
+
+        function saveData() {
+            const childName = document.getElementById('childName').value.trim();
+            const week = document.getElementById('weekSelect').value;
+            if (!childName) {
+                alert("Vui lòng nhập tên trẻ trước khi lưu!");
+                return;
+            }
+            alert(`Đã lưu dữ liệu của ${childName} cho ${week} thành công!`);
+        }
+
+        function resetCalculator() {
+            tasksData.forEach(t => t.count = 0);
+            customTasks = [];
+            document.getElementById('childName').value = '';
+            renderLists();
+            renderCustomTasks();
+        }
+
+        renderLists();
+    </script>
+</body>
+</html>

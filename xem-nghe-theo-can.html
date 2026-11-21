@@ -1,0 +1,528 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Xem Tuoi Nghe Nghiep</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .input-section {
+            background-color: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: white;
+            transition: border-color 0.3s;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #6a11cb;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 100%;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.3);
+        }
+        
+        .result-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            display: none;
+        }
+        
+        .result-title {
+            color: #6a11cb;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+        
+        .result-career {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2575fc;
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #f0f5ff;
+            border-radius: 8px;
+        }
+        
+        .result-description {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #555;
+            text-align: justify;
+        }
+        
+        .career-list {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .career-list h2 {
+            color: #6a11cb;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            text-align: center;
+        }
+        
+        .career-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .career-item {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #6a11cb;
+        }
+        
+        .career-name {
+            font-weight: 700;
+            color: #2575fc;
+            margin-bottom: 5px;
+        }
+        
+        .career-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .note {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #fff8e1;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+            font-size: 0.9rem;
+            color: #856404;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.9rem;
+            padding: 20px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .career-items {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Game Xem Tuoi Nghe Nghiep</h1>
+            <p class="subtitle">Tra cuu nghe nghiep phu hop dua tren thien can va thang sinh am lich</p>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="thienCan">Thien can nam sinh</label>
+                    <select id="thienCan">
+                        <option value="">-- Chon thien can --</option>
+                        <option value="GIAP">GIAP</option>
+                        <option value="AT">AT</option>
+                        <option value="BINH">BINH</option>
+                        <option value="DINH">dINH</option>
+                        <option value="MAU">MAU</option>
+                        <option value="KY">KY</option>
+                        <option value="CANH">CANH</option>
+                        <option value="TAN">TAN</option>
+                        <option value="NHAM">NHAM</option>
+                        <option value="QUY">QUY</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="thangSinh">Thang sinh am lich</label>
+                    <select id="thangSinh">
+                        <option value="">-- Chon thang --</option>
+                        <option value="1">Thang 1</option>
+                        <option value="2">Thang 2</option>
+                        <option value="3">Thang 3</option>
+                        <option value="4">Thang 4</option>
+                        <option value="5">Thang 5</option>
+                        <option value="6">Thang 6</option>
+                        <option value="7">Thang 7</option>
+                        <option value="8">Thang 8</option>
+                        <option value="9">Thang 9</option>
+                        <option value="10">Thang 10</option>
+                        <option value="11">Thang 11</option>
+                        <option value="12">Thang 12</option>
+                    </select>
+                </div>
+                
+                <button id="traCuuBtn">Tra Cuu Nghe Nghiep</button>
+            </div>
+            
+            <div class="result-section" id="resultSection">
+                <h2 class="result-title">Nghe nghiep phu hop voi ban:</h2>
+                <div class="result-career" id="resultCareer"></div>
+                <div class="result-description" id="resultDescription"></div>
+            </div>
+            
+            <div class="career-list">
+                <h2>Y Nghia Cac Nghe Nghiep</h2>
+                <div class="career-items">
+                    <div class="career-item">
+                        <div class="career-name">QUAN NHAN</div>
+                        <div class="career-desc">So manh ve kinh doanh, an lam an khap bon phuong. Thich hop voi cong viec kinh doanh hoac van chuong.</div>
+                    </div>
+                    <div class="career-item">
+                        <div class="career-name">TRUNG TE</div>
+                        <div class="career-desc">Thich hop voi nghe ky nghe (ky su co khi, sua chua) hoac cac nghe ky thuat nhu lam moc, lam do ky thuat.</div>
+                    </div>
+                    <div class="career-item">
+                        <div class="career-name">TU TAI</div>
+                        <div class="career-desc">Co so nguoi van chuong, duoc nho cay. Rat thinh vuong voi cac cong viec cong chuc lien quan den phap luat.</div>
+                    </div>
+                    <div class="career-item">
+                        <div class="career-name">dA THAT</div>
+                        <div class="career-desc">Thich hop lam cac nghe lien quan den kim loai, co khi, duc khuon, san xuat.</div>
+                    </div>
+                    <div class="career-item">
+                        <div class="career-name">SU THUAT</div>
+                        <div class="career-desc">So co phuoc, co tai. Co the lam thay (thay boi, thay phong thuy) hoac lam quan trong trieu dinh.</div>
+                    </div>
+                    <div class="career-item">
+                        <div class="career-name">SU QUAN</div>
+                        <div class="career-desc">Kheo tay, co nhieu muu ke. Thich hop buon ban do go, do moc, quan ao, hoac cac san pham thuoc da.</div>
+                    </div>
+                    <div class="career-item">
+                        <div class="career-name">AM NHAC</div>
+                        <div class="career-desc">So co nang khieu dan hat. Thich hop voi cac nghe lien quan den nghe thuat, MC, ca nhac.</div>
+                    </div>
+                    <div class="career-item">
+                        <div class="career-name">TIEM DUOC</div>
+                        <div class="career-desc">So nen lam thay thuoc, tiem thuoc hoac lam thay boi.</div>
+                    </div>
+                    <div class="career-item">
+                        <div class="career-name">TANG dAO</div>
+                        <div class="career-desc">So co thien huong tu hanh (tai gia hoac di tu). Kho giau, nhung neu tu dac dao se noi danh.</div>
+                    </div>
+                    <div class="career-item">
+                        <div class="career-name">TAI PHUNG</div>
+                        <div class="career-desc">Thich hop lam tho may, cong nhan may, hoac cac nghe lien quan den kim chi, tay keo.</div>
+                    </div>
+                    <div class="career-item">
+                        <div class="career-name">HOANG QUY</div>
+                        <div class="career-desc">Lam an sinh song cung hang xom, nen theo cong mon hoac lam nha van chuong gan que nha.</div>
+                    </div>
+                    <div class="career-item">
+                        <div class="career-name">THU TAC</div>
+                        <div class="career-desc">Thich hop voi nghe nha khoa (trong rang, nho rang) hoac bac si da khoa.</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="note">
+                <strong>Luu y:</strong> day la kien thuc trich dan tu sach co, chi mang tinh chat tham khao tuong doi (dung khoang 70-80%). de luan doan chinh xac can phai dua vao la so tu vi day du (gom ngay, gio, thang, nam sinh).
+            </div>
+        </div>
+        
+        <footer>
+            <p>Game Xem Tuoi Nghe Nghiep - Tham khao tu kenh Tien Thinh Tu Vi</p>
+        </footer>
+    </div>
+
+    <script>
+        // Du lieu tra cuu nghe nghiep
+        const careerData = [
+            { career: "QUAN NHAN", can: "GIAP", month: 1 },
+            { career: "TRUNG TE", can: "GIAP", month: 2 },
+            { career: "TU TAI", can: "GIAP", month: 3 },
+            { career: "dA THAT", can: "GIAP", month: 4 },
+            { career: "SU THUAT", can: "GIAP", month: 5 },
+            { career: "SU QUAN", can: "GIAP", month: 6 },
+            { career: "AM NHAC", can: "GIAP", month: 7 },
+            { career: "TIEM DUOC", can: "GIAP", month: 8 },
+            { career: "TANG dAO", can: "GIAP", month: 9 },
+            { career: "TAI PHUNG", can: "GIAP", month: 10 },
+            { career: "HOANG QUY", can: "GIAP", month: 11 },
+            { career: "THU TAC", can: "GIAP", month: 12 },
+            { career: "QUAN NHAN", can: "AT", month: 2 },
+            { career: "TRUNG TE", can: "AT", month: 3 },
+            { career: "TU TAI", can: "AT", month: 4 },
+            { career: "dA THAT", can: "AT", month: 5 },
+            { career: "SU THUAT", can: "AT", month: 6 },
+            { career: "SU QUAN", can: "AT", month: 7 },
+            { career: "AM NHAC", can: "AT", month: 8 },
+            { career: "TIEM DUOC", can: "AT", month: 9 },
+            { career: "TANG dAO", can: "AT", month: 10 },
+            { career: "TAI PHUNG", can: "AT", month: 11 },
+            { career: "HOANG QUY", can: "AT", month: 12 },
+            { career: "THU TAC", can: "AT", month: 1 },
+            { career: "QUAN NHAN", can: "BINH", month: 3 },
+            { career: "TRUNG TE", can: "BINH", month: 4 },
+            { career: "TU TAI", can: "BINH", month: 5 },
+            { career: "dA THAT", can: "BINH", month: 6 },
+            { career: "SU THUAT", can: "BINH", month: 7 },
+            { career: "SU QUAN", can: "BINH", month: 8 },
+            { career: "AM NHAC", can: "BINH", month: 9 },
+            { career: "TIEM DUOC", can: "BINH", month: 10 },
+            { career: "TANG dAO", can: "BINH", month: 11 },
+            { career: "TAI PHUNG", can: "BINH", month: 12 },
+            { career: "HOANG QUY", can: "BINH", month: 1 },
+            { career: "THU TAC", can: "BINH", month: 2 },
+            { career: "QUAN NHAN", can: "DINH", month: 4 },
+            { career: "TRUNG TE", can: "DINH", month: 5 },
+            { career: "TU TAI", can: "DINH", month: 6 },
+            { career: "dA THAT", can: "DINH", month: 7 },
+            { career: "SU THUAT", can: "DINH", month: 8 },
+            { career: "SU QUAN", can: "DINH", month: 9 },
+            { career: "AM NHAC", can: "DINH", month: 10 },
+            { career: "TIEM DUOC", can: "DINH", month: 11 },
+            { career: "TANG dAO", can: "DINH", month: 12 },
+            { career: "TAI PHUNG", can: "DINH", month: 1 },
+            { career: "HOANG QUY", can: "DINH", month: 2 },
+            { career: "THU TAC", can: "DINH", month: 3 },
+            { career: "QUAN NHAN", can: "MAU", month: 5 },
+            { career: "TRUNG TE", can: "MAU", month: 6 },
+            { career: "TU TAI", can: "MAU", month: 7 },
+            { career: "dA THAT", can: "MAU", month: 8 },
+            { career: "SU THUAT", can: "MAU", month: 9 },
+            { career: "SU QUAN", can: "MAU", month: 10 },
+            { career: "AM NHAC", can: "MAU", month: 11 },
+            { career: "TIEM DUOC", can: "MAU", month: 12 },
+            { career: "TANG dAO", can: "MAU", month: 1 },
+            { career: "TAI PHUNG", can: "MAU", month: 2 },
+            { career: "HOANG QUY", can: "MAU", month: 3 },
+            { career: "THU TAC", can: "MAU", month: 4 },
+            { career: "QUAN NHAN", can: "KY", month: 6 },
+            { career: "TRUNG TE", can: "KY", month: 7 },
+            { career: "TU TAI", can: "KY", month: 8 },
+            { career: "dA THAT", can: "KY", month: 9 },
+            { career: "SU THUAT", can: "KY", month: 10 },
+            { career: "SU QUAN", can: "KY", month: 11 },
+            { career: "AM NHAC", can: "KY", month: 12 },
+            { career: "TIEM DUOC", can: "KY", month: 1 },
+            { career: "TANG dAO", can: "KY", month: 2 },
+            { career: "TAI PHUNG", can: "KY", month: 3 },
+            { career: "HOANG QUY", can: "KY", month: 4 },
+            { career: "THU TAC", can: "KY", month: 5 },
+            { career: "QUAN NHAN", can: "CANH", month: 7 },
+            { career: "TRUNG TE", can: "CANH", month: 8 },
+            { career: "TU TAI", can: "CANH", month: 9 },
+            { career: "dA THAT", can: "CANH", month: 10 },
+            { career: "SU THUAT", can: "CANH", month: 11 },
+            { career: "SU QUAN", can: "CANH", month: 12 },
+            { career: "AM NHAC", can: "CANH", month: 1 },
+            { career: "TIEM DUOC", can: "CANH", month: 2 },
+            { career: "TANG dAO", can: "CANH", month: 3 },
+            { career: "TAI PHUNG", can: "CANH", month: 4 },
+            { career: "HOANG QUY", can: "CANH", month: 5 },
+            { career: "THU TAC", can: "CANH", month: 6 },
+            { career: "QUAN NHAN", can: "TAN", month: 8 },
+            { career: "TRUNG TE", can: "TAN", month: 9 },
+            { career: "TU TAI", can: "TAN", month: 10 },
+            { career: "dA THAT", can: "TAN", month: 11 },
+            { career: "SU THUAT", can: "TAN", month: 12 },
+            { career: "SU QUAN", can: "TAN", month: 1 },
+            { career: "AM NHAC", can: "TAN", month: 2 },
+            { career: "TIEM DUOC", can: "TAN", month: 3 },
+            { career: "TANG dAO", can: "TAN", month: 4 },
+            { career: "TAI PHUNG", can: "TAN", month: 5 },
+            { career: "HOANG QUY", can: "TAN", month: 6 },
+            { career: "THU TAC", can: "TAN", month: 7 },
+            { career: "QUAN NHAN", can: "NHAM", month: 9 },
+            { career: "TRUNG TE", can: "NHAM", month: 10 },
+            { career: "TU TAI", can: "NHAM", month: 11 },
+            { career: "dA THAT", can: "NHAM", month: 12 },
+            { career: "SU THUAT", can: "NHAM", month: 1 },
+            { career: "SU QUAN", can: "NHAM", month: 2 },
+            { career: "AM NHAC", can: "NHAM", month: 3 },
+            { career: "TIEM DUOC", can: "NHAM", month: 4 },
+            { career: "TANG dAO", can: "NHAM", month: 5 },
+            { career: "TAI PHUNG", can: "NHAM", month: 6 },
+            { career: "HOANG QUY", can: "NHAM", month: 7 },
+            { career: "THU TAC", can: "NHAM", month: 8 },
+            { career: "QUAN NHAN", can: "QUY", month: 10 },
+            { career: "TRUNG TE", can: "QUY", month: 11 },
+            { career: "TU TAI", can: "QUY", month: 12 },
+            { career: "dA THAT", can: "QUY", month: 1 },
+            { career: "SU THUAT", can: "QUY", month: 2 },
+            { career: "SU QUAN", can: "QUY", month: 3 },
+            { career: "AM NHAC", can: "QUY", month: 4 },
+            { career: "TIEM DUOC", can: "QUY", month: 5 },
+            { career: "TANG dAO", can: "QUY", month: 6 },
+            { career: "TAI PHUNG", can: "QUY", month: 7 },
+            { career: "HOANG QUY", can: "QUY", month: 8 },
+            { career: "THU TAC", can: "QUY", month: 9 }
+        ];
+
+        // Mo ta nghe nghiep
+        const careerDescriptions = {
+            "QUAN NHAN": "So manh ve kinh doanh, an lam an khap bon phuong. Thich hop voi cong viec kinh doanh hoac van chuong (cong chuc nha nuoc, van phong).",
+            "TRUNG TE": "Thich hop voi nghe ky nghe (ky su co khi, sua chua o to, nhom kinh, dieu hoa) hoac cac nghe ky thuat nhu lam moc, lam do ky thuat.",
+            "TU TAI": "Co so nguoi van chuong, duoc nho cay. Rat thinh vuong voi cac cong viec cong chuc lien quan den phap luat (cong an, toa an).",
+            "dA THAT": "Thich hop lam cac nghe lien quan den kim loai, co khi, duc khuon, san xuat.",
+            "SU THUAT": "So co phuoc, co tai. Co the lam thay (thay boi, thay phong thuy) hoac lam quan trong trieu dinh, giu vi tri chu tich tinh/huyen, tiep xuc voi nguoi sang trong.",
+            "SU QUAN": "Kheo tay, co nhieu muu ke. Thich hop buon ban do go, do moc, quan ao, hoac cac vat lieu, san pham thuoc da.",
+            "AM NHAC": "So co nang khieu dan hat. Thich hop voi cac nghe lien quan den nghe thuat, MC, ca nhac, de noi tieng.",
+            "TIEM DUOC": "So nen lam thay thuoc, tiem thuoc hoac lam thay boi.",
+            "TANG dAO": "So co thien huong tu hanh (tai gia hoac di tu). Kho giau, nhung neu tu dac dao se noi danh.",
+            "TAI PHUNG": "Thich hop lam tho may, cong nhan may, hoac cac nghe lien quan den kim chi, tay keo.",
+            "HOANG QUY": "Lam an sinh song cung hang xom, nen theo cong mon (chu tich xa, van thu trong xa) hoac lam nha van chuong gan que nha.",
+            "THU TAC": "Thich hop voi nghe nha khoa (trong rang, nho rang) hoac bac si da khoa."
+        };
+
+        // Ham tra cuu nghe nghiep
+        function lookupCareer(can, month) {
+            const result = careerData.find(item => item.can === can && item.month == month);
+            return result ? result.career : null;
+        }
+
+        // Xu ly su kien khi nhan nut tra cuu
+        document.getElementById('traCuuBtn').addEventListener('click', function() {
+            const can = document.getElementById('thienCan').value;
+            const month = document.getElementById('thangSinh').value;
+            
+            if (!can || !month) {
+                alert('Vui long chon day du thien can va thang sinh!');
+                return;
+            }
+            
+            const career = lookupCareer(can, month);
+            
+            if (career) {
+                document.getElementById('resultCareer').textContent = career;
+                document.getElementById('resultDescription').textContent = careerDescriptions[career];
+                document.getElementById('resultSection').style.display = 'block';
+            } else {
+                alert('Khong tim thay ket qua phu hop. Vui long kiem tra lai thong tin!');
+            }
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

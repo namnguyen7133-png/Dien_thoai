@@ -1,0 +1,210 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>NPV Thuc Chien – Tai Chinh Doanh Nghiep</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{font-family:Arial;background:#f4f6f8;margin:0;line-height:1.6}
+header{background:#1b5e20;color:#fff;padding:20px;text-align:center}
+section{background:#fff;margin:15px;padding:20px;border-radius:8px}
+h2{color:#1b5e20}
+.term{background:#e8f5e9;padding:10px;border-left:5px solid #43a047;margin-bottom:10px}
+.example{background:#f1f8e9;padding:10px;border-left:5px solid #7cb342}
+.warning{background:#fff3e0;padding:10px;border-left:5px solid #fb8c00}
+input{padding:6px;margin:4px;width:120px}
+button{padding:8px 14px;margin:5px;border:none;background:#43a047;color:#fff;border-radius:5px;cursor:pointer}
+button:hover{background:#2e7d32}
+.result{margin-top:10px;font-weight:bold}
+nav{
+position:fixed;right:10px;top:80px;background:#fff;
+padding:10px;border-radius:8px;box-shadow:0 0 8px rgba(0,0,0,.2)
+}
+nav button{display:block;width:100%}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>📈 NPV – GIA TRI HIEN TAI THUAN</h1>
+<p>Hieu – Tinh – Ung dung – Tranh dau tu sai lam</p>
+</header>
+
+<nav>
+<button onclick="go('thuatngu')">Thuat ngu</button>
+<button onclick="go('dunggi')">Dung cai nao?</button>
+<button onclick="go('thoidiem')">Thoi diem</button>
+<button onclick="go('tinhnpv')">Tinh NPV</button>
+<button onclick="go('tinhhuong')">Tinh huong</button>
+</nav>
+
+<!-- 2.1 -->
+<section id="thuatngu">
+<h2>2.1 Thuat ngu & Cong thuc NPV (giai thich de hieu)</h2>
+
+<div class="term">
+<b>Dong tien dau tu (CF₀):</b><br>
+Tien bo ra luc dau (may moc + von luu dong). Luon la so am.
+</div>
+
+<div class="term">
+<b>Dong tien thuan (CFₜ):</b><br>
+Tien that thu ve moi nam sau thue (KHONG phai loi nhuan ke toan).
+</div>
+
+<div class="term">
+<b>Ty suat chiet khau (r):</b><br>
+Chi phi von / lai suat ky vong / muc rui ro.
+</div>
+
+<div class="term">
+<b>Cong thuc NPV:</b><br>
+NPV = CF₀ + Σ CFₜ / (1+r)ᵗ
+</div>
+
+<div class="warning">
+📌 NPV > 0 → Du an lam ban GIAU LEN<br>
+📌 NPV < 0 → Du an lam ban NGHEO dI
+</div>
+</section>
+
+<!-- 2.2 -->
+<section id="dunggi">
+<h2>2.2 Ca nhan & Doanh nghiep – dung cai nao?</h2>
+
+<div class="example">
+<b>CA NHAN:</b><br>
+✔ Mua nha tra gop → NPV<br>
+✔ dau tu hoc nghe dai han → NPV
+</div>
+
+<div class="example">
+<b>DOANH NGHIEP:</b><br>
+✔ dau tu nha xuong, day chuyen → NPV (bat buoc)<br>
+✔ So du an lon → chon NPV cao nhat
+</div>
+
+<div class="warning">
+⛔ Khong dung NPV khi ban <b>khong chiu noi thieu tien ngan han</b>
+</div>
+</section>
+
+<!-- 3.2 -->
+<section id="thoidiem">
+<h2>3.2 Lam gi truoc – sau? Khi nao moi nen dau tu?</h2>
+
+<div class="term">
+<b>Thi truong xau / rui ro cao:</b><br>
+→ Chi chon du an NPV duong & thu tien som
+</div>
+
+<div class="term">
+<b>Thi truong on dinh:</b><br>
+→ Chap nhan NPV duong nhung tien ve cham
+</div>
+
+<div class="term">
+<b>Thuan loi:</b><br>
+→ dau tu dai han, NPV rat lon
+</div>
+
+<div class="warning">
+⛔ Du an NPV duong nhung <b>khong du tien song</b> → van chet
+</div>
+</section>
+
+<!-- TINH NPV -->
+<section id="tinhnpv">
+<h2>3.2 Bai toan NPV – nhap so & ra quyet dinh</h2>
+
+Von dau tu ban dau (CF₀): <input id="cf0" type="number"><br>
+Dong tien moi nam (CF): <input id="cf" type="number"><br>
+So nam: <input id="n" type="number"><br>
+Ty suat chiet khau (%): <input id="r" type="number"><br>
+
+<button onclick="tinhNPV()">Tinh NPV</button>
+
+<div id="kq" class="result"></div>
+</section>
+
+<!-- 4.2 -->
+<section id="tinhhuong">
+<h2>4.2 Nhap tinh huong & chon huong xu ly</h2>
+
+<input id="caseInput" placeholder="VD: mua nha, mo xuong, dau tu may"><br>
+
+<button onclick="xuLy('ca_nhan')">Ca nhan</button>
+<button onclick="xuLy('doanh_nghiep')">Doanh nghiep</button>
+<button onclick="xuLy('nguy_hiem')">Rui ro cao</button>
+
+<div id="caseResult" class="result"></div>
+</section>
+
+<script>
+function go(id){
+document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+
+function tinhNPV(){
+let cf0 = Number(document.getElementById("cf0").value);
+let cf = Number(document.getElementById("cf").value);
+let n = Number(document.getElementById("n").value);
+let r = Number(document.getElementById("r").value)/100;
+
+let npv = -cf0;
+for(let t=1;t<=n;t++){
+    npv += cf / Math.pow(1+r,t);
+}
+document.getElementById("kq").innerText =
+"👉 NPV ≈ " + npv.toFixed(2) + 
+(npv>0 ? " (NEN LAM)" : " (KHONG NEN)");
+}
+
+function xuLy(type){
+let t = document.getElementById("caseInput").value;
+let msg="";
+if(type==="ca_nhan"){
+msg="✔ Ca nhan: chi lam neu NPV duong & van du tien sinh hoat.";
+}
+if(type==="doanh_nghiep"){
+msg="✔ DN: du an bat buoc NPV > 0, uu tien cao nhat.";
+}
+if(type==="nguy_hiem"){
+msg="⛔ NPV duong nhung tien ve qua cham → rat de pha san.";
+}
+document.getElementById("caseResult").innerText =
+"Tinh huong: "+t+"\n"+msg;
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

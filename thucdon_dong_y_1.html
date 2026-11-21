@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>32 Món Ăn Bài Thuốc Đông Y & Dưỡng Sinh</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --panel-bg: #161b22;
+            --text-color: #c9d1d9;
+            --highlight-price: #79c0ff;
+            --highlight-stt: #ffa657;
+            --border-color: #30363d;
+            --font-size: 18px;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Thanh điều khiển cố định phía trên */
+        .control-bar {
+            background-color: var(--panel-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 10px 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #21262d;
+            padding: 5px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        button {
+            background-color: #238636;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        button:hover { background-color: #2ea043; }
+        button.btn-secondary { background-color: #30363d; }
+        button.btn-secondary:hover { background-color: #484f58; }
+        button.btn-rewind { background-color: #d97706; }
+        button.btn-rewind:hover { background-color: #b45309; }
+
+        input[type="range"] { cursor: pointer; }
+
+        /* Khu vực cuộn chữ */
+        .scroll-container {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .scroll-content {
+            position: absolute;
+            width: 100%;
+            padding: 10px 5% 50px 5%;
+            box-sizing: border-box;
+            will-change: transform;
+        }
+
+        .section-title {
+            color: #f0883e;
+            font-size: calc(var(--font-size) * 1.3);
+            font-weight: bold;
+            margin: 20px 0 15px 0;
+            text-align: center;
+            border-bottom: 2px dashed var(--border-color);
+            padding-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .group-title {
+            color: #d2a8ff;
+            font-size: calc(var(--font-size) * 1.1);
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            border-left: 4px solid #d2a8ff;
+            padding-left: 10px;
+        }
+
+        .menu-item {
+            font-size: var(--font-size);
+            line-height: 1.6;
+            margin: 8px 0;
+            padding: 8px 12px;
+            background: rgba(22, 27, 34, 0.8);
+            border-radius: 4px;
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            border-bottom: 1px solid rgba(48, 54, 61, 0.4);
+        }
+
+        .item-price {
+            color: var(--highlight-price);
+            font-weight: bold;
+            min-width: 85px;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .item-stt {
+            color: var(--highlight-stt);
+            font-weight: bold;
+            min-width: 40px;
+            text-align: center;
+            flex-shrink: 0;
+            background: #30363d;
+            border-radius: 3px;
+            padding: 1px 4px;
+        }
+
+        .item-name {
+            color: var(--text-color);
+            flex-grow: 1;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #8b949e;
+            text-align: center;
+            padding: 4px;
+            background: #010409;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Thanh điều khiển -->
+    <div class="control-bar">
+        <button id="btnToggle" onclick="toggleScroll()">⏸ Tạm dừng</button>
+        <button class="btn-rewind" onclick="rewindToTop()">↺ Tua lại</button>
+        
+        <div class="control-group">
+            <label for="speedRange">Tốc độ:</label>
+            <input type="range" id="speedRange" min="1" max="10" value="3" step="0.5" oninput="updateSpeed(this.value)">
+            <span id="speedVal">Mức 3</span>
+        </div>
+
+        <div class="control-group">
+            <label>Cỡ chữ:</label>
+            <button class="btn-secondary" onclick="changeFontSize(-2)">A-</button>
+            <span id="fontSizeVal">18px</span>
+            <button class="btn-secondary" onclick="changeFontSize(2)">A+</button>
+        </div>
+    </div>
+    <div class="hint">💡 Bấm ↺ Tua lại để phát lại từ đầu. Chạm màn hình để Tạm dừng / Tiếp tục.</div>
+
+    <!-- Khung chứa chữ chạy -->
+    <div class="scroll-container" id="scrollContainer" onclick="toggleScroll()">
+        <div class="scroll-content" id="scrollContent">
+            
+            <div class="section-title">32 MÓN ĂN BÀI THUỐC ĐÔNG Y & DƯỠNG SINH</div>
+
+            <div class="group-title">--- 1. Chữa Mồ Hôi Dầu, Hôi Nách do Thấp Nhiệt ---</div>
+            <div class="menu-item"><span class="item-price">20.000</span><span class="item-stt">1</span><span class="item-name">Canh Đậu Phụ Nấu Giá Đỗ: Đậu phụ tính mát, giá đỗ thanh nhiệt, giúp giải độc, tiết thấp nhiệt.</span></div>
+            <div class="menu-item"><span class="item-price">20.000</span><span class="item-stt">2</span><span class="item-name">Chè Đậu Xanh: Đậu xanh có tính mát, vị ngọt, giúp thanh nhiệt, giải độc rất tốt. Nấu với ít đường.</span></div>
+            <div class="menu-item"><span class="item-price">15.000</span><span class="item-stt">3</span><span class="item-name">Nước Râu Ngô, Mã Đề: Uống nước sắc từ râu ngô và mã đề giúp lợi tiểu, đào thải nhiệt độc qua đường tiểu.</span></div>
+            <div class="menu-item"><span class="item-price">20.000</span><span class="item-stt">4</span><span class="item-name">Trà Thảo Mộc: Trà atiso, trà hoa cúc, trà cỏ ngọt đều có tác dụng thanh nhiệt, mát gan.</span></div>
+
+            <div class="group-title">--- 2. Cải Thiện Ấn Đường U Ám, Khí Huyết Lưu Thông Kém ---</div>
+            <div class="menu-item"><span class="item-price">25.000</span><span class="item-stt">5</span><span class="item-name">Cháo Hành Táo (Cháo Hành Giải Cảm): Hành tía có tác dụng thông dương, hành khí, giúp khí huyết lưu thông. Ăn cháo nóng sẽ làm ấm cơ thể, giải cảm, đánh tan sự u ám.</span></div>
+            <div class="menu-item"><span class="item-price">65.000</span><span class="item-stt">6</span><span class="item-name">Canh Gà Thuốc Bắc (nhẹ): Một số vị thuốc bắc như Kỷ tử, Đương quy (với lượng nhỏ) giúp bổ khí huyết. Tuy nhiên, nên tham khảo thầy thuốc.</span></div>
+            <div class="menu-item"><span class="item-price">15.000</span><span class="item-stt">7</span><span class="item-name">Trà Gừng: Gừng có tính ấm, giúp thông mạch, hành khí. Uống trà gừng ấm vào buổi sáng rất tốt.</span></div>
+            <div class="menu-item"><span class="item-price">65.000</span><span class="item-stt">8</span><span class="item-name">Ngải Cứu Hầm Chân Giò: Món ăn bài thuốc kinh điển giúp bổ huyết, trừ hàn, thông khí. Nhưng người có nhiệt (nóng trong) nên ăn ít.</span></div>
+
+            <div class="group-title">--- 3. Mùi Cơ Thể Quá Thơm - Cẩn Thận Tỳ (Lá Lách) Suy ---</div>
+            <div class="menu-item"><span class="item-price">25.000</span><span class="item-stt">9</span><span class="item-name">Cháo Ý Dĩ (Bo Bo): Ý dĩ có tác dụng kiện tỳ, trừ thấp, là lựa chọn hàng đầu.</span></div>
+            <div class="menu-item"><span class="item-price">35.000</span><span class="item-stt">10</span><span class="item-name">Canh Bí Đao Hầm Xương: Bí đao lợi tiểu, trừ thấp, giúp giảm gánh nặng cho Tỳ.</span></div>
+            <div class="menu-item"><span class="item-price">30.000</span><span class="item-stt">11</span><span class="item-name">Cháo Hạt Sen, Tai Voi (Bạch Biển Đậu): Hạt sen bổ tỳ, dưỡng tâm. Bạch biển đậu kiện tỳ, hóa thấp.</span></div>
+            <div class="menu-item"><span class="item-price">15.000</span><span class="item-stt">12</span><span class="item-name">Trần Bì (Vỏ Quýt): Dùng trần bì trong nấu ăn hoặc pha trà giúp hành khí, kiện tỳ, tiêu đờm thấp.</span></div>
+
+            <div class="group-title">--- 4. Hay Nằm Sấp - Bệnh Đường Tiêu Hóa ---</div>
+            <div class="menu-item"><span class="item-price">15.000</span><span class="item-stt">13</span><span class="item-name">Cháo Trắng/Cơm Nát: Các món mềm, loãng giúp dạ dày nghỉ ngơi và dễ hấp thu.</span></div>
+            <div class="menu-item"><span class="item-price">15.000</span><span class="item-stt">14</span><span class="item-name">Sữa Chua (Yaourt): Cung cấp men vi sinh tự nhiên, hỗ trợ hệ đường ruột khỏe mạnh.</span></div>
+            <div class="menu-item"><span class="item-price">25.000</span><span class="item-stt">15</span><span class="item-name">Súp Hầm Từ Rau Củ (Cà Rốt, Khoai Tây, Bí Đỏ): Cung cấp dinh dưỡng dễ tiêu và chất xơ mềm.</span></div>
+            <div class="menu-item"><span class="item-price">10.000</span><span class="item-stt">16</span><span class="item-name">Gừng Tươi: Thêm gừng vào các món ăn để ấm tỳ vị, chống đầy hơi, khó tiêu.</span></div>
+
+            <div class="group-title">--- 5. Chảy Máu Chân Răng, Lợi Đỏ & Hơi Thở Có Mùi Thối Khẩn do Dạ Dày Nóng ---</div>
+            <div class="menu-item"><span class="item-price">20.000</span><span class="item-stt">17</span><span class="item-name">Nước Rau Má, Diếp Cá: Hai loại rau này có tính hàn rất mạnh, giúp thanh nhiệt, giải độc, làm mát máu, rất tốt cho chứng chảy máu chân răng và hôi miệng do vị nhiệt.</span></div>
+            <div class="menu-item"><span class="item-price">35.000</span><span class="item-stt">18</span><span class="item-name">Canh Khổ Qua (Mướp Đắng) Nhồi Thịt: Khổ qua là vị thuốc thanh nhiệt số 1. Món này giúp giảm nóng trong người và dạ dày rõ rệt.</span></div>
+            <div class="menu-item"><span class="item-price">15.000</span><span class="item-stt">19</span><span class="item-name">Nước Mía Lau: Mía lau tính mát, giúp thanh nhiệt, sinh tân dịch.</span></div>
+            <div class="menu-item"><span class="item-price">20.000</span><span class="item-stt">20</span><span class="item-name">Trà Atiso, Trà Hoa Cúc: Tiếp tục duy trì để làm mát cơ thể.</span></div>
+
+            <div class="group-title">--- 6. Hơi Thở Có Mùi Chua do Dạ Dày Lạnh (Vị Hàn) ---</div>
+            <div class="menu-item"><span class="item-price">20.000</span><span class="item-stt">21</span><span class="item-name">Cháo Tía Tô, Hành: Tía tô và hành có tính ấm, giúp giải cảm, tán hàn, làm ấm bụng.</span></div>
+            <div class="menu-item"><span class="item-price">15.000</span><span class="item-stt">22</span><span class="item-name">Trà Gừng Mật Ong: Gừng ấm, mật ong bổ tỳ vị. Đây là bài thuốc đơn giản và hiệu quả cho dạ dày lạnh.</span></div>
+            <div class="menu-item"><span class="item-price">65.000</span><span class="item-stt">23</span><span class="item-name">Canh Thịt Bò Hầm Gừng, Hồ Tiêu: Thịt bò bổ khí huyết, gừng và hồ tiêu giúp làm ấm tỳ vị, trừ hàn.</span></div>
+            <div class="menu-item"><span class="item-price">20.000</span><span class="item-stt">24</span><span class="item-name">Ăn Súp Nóng, Uống Nước Ấm: Tránh tuyệt đối đồ uống lạnh, đồ sống nguội.</span></div>
+
+            <div class="group-title">--- 7. Hay Tức Giận, Mắt Đỏ, Nhiều Rỉ Mắt do Gan Nóng (Can Hỏa Vượng) ---</div>
+            <div class="menu-item"><span class="item-price">25.000</span><span class="item-stt">25</span><span class="item-name">Canh Cà Rốt, Củ Cải Trắng: Cà rốt bổ gan, củ cải trắng giúp hành khí, giải độc.</span></div>
+            <div class="menu-item"><span class="item-price">10.000</span><span class="item-stt">26</span><span class="item-name">Nhân Trần Hãm Nước Uống: Nhân trần là vị thuốc mát gan, lợi mật nổi tiếng.</span></div>
+            <div class="menu-item"><span class="item-price">20.000</span><span class="item-stt">27</span><span class="item-name">Canh Rau Ngót: Rau ngót tính mát, giúp thanh nhiệt, giải độc, mát huyết.</span></div>
+            <div class="menu-item"><span class="item-price">20.000</span><span class="item-stt">28</span><span class="item-name">Trà Hoa Cúc, Cúc Vạn Thọ (Kim Cúc): Đặc biệt tốt để làm mát gan, thanh nhiệt, giảm mẩn ngứa, đỏ mắt.</span></div>
+
+            <div class="group-title">--- 8. Hay Chảy Nước Mắt Khi Xúc Động do Gan và Thận Lạnh (Can Thận Hàn) ---</div>
+            <div class="menu-item"><span class="item-price">30.000</span><span class="item-stt">29</span><span class="item-name">Cháo Kỷ Tử Hạt Sen: Kỷ tử bổ can thận, hạt sen bổ tỳ thận. Đây là món bổ âm nhưng tính ôn ấm.</span></div>
+            <div class="menu-item"><span class="item-price">25.000</span><span class="item-stt">30</span><span class="item-name">Chè Đỗ Đen, Kỷ Tử, Táo Tàu: Đỗ đen bổ thận, kỷ tử bổ gan, táo tàu bổ tỳ. Nên thêm một vài lát gừng để tăng tính ấm.</span></div>
+            <div class="menu-item"><span class="item-price">80.000</span><span class="item-stt">31</span><span class="item-name">Ba Kích Tím Ngâm Rượu/Hầm Thịt (dùng với lượng nhỏ): Ba kích là vị thuốc ôn bổ thận dương mạnh, giúp trừ hàn. Nên tham khảo ý kiến thầy thuốc.</span></div>
+            <div class="menu-item"><span class="item-price">120.000</span><span class="item-stt">32</span><span class="item-name">Các Món Hầm từ Thịt Dê, Cá Chép: Có tính ấm, bổ khí, trợ dương.</span></div>
+
+        </div>
+    </div>
+
+    <script>
+        const content = document.getElementById('scrollContent');
+        const container = document.getElementById('scrollContainer');
+        
+        let posY = 0;
+        let speed = 1.5;
+        let isRunning = true;
+        let currentFontSize = 18;
+        let animationFrameId = null;
+
+        function step() {
+            if (isRunning) {
+                posY -= speed;
+                if (Math.abs(posY) >= content.offsetHeight) {
+                    posY = container.offsetHeight;
+                }
+                content.style.transform = `translateY(${posY}px)`;
+            }
+            animationFrameId = requestAnimationFrame(step);
+        }
+
+        function toggleScroll() {
+            isRunning = !isRunning;
+            document.getElementById('btnToggle').innerText = isRunning ? '⏸ Tạm dừng' : '▶ Tiếp tục';
+        }
+
+        function rewindToTop() {
+            posY = 0;
+            content.style.transform = `translateY(0px)`;
+            if (!isRunning) {
+                isRunning = true;
+                document.getElementById('btnToggle').innerText = '⏸ Tạm dừng';
+            }
+        }
+
+        function updateSpeed(val) {
+            speed = parseFloat(val) * 0.5;
+            document.getElementById('speedVal').innerText = 'Mức ' + val;
+        }
+
+        function changeFontSize(delta) {
+            currentFontSize += delta;
+            if (currentFontSize < 12) currentFontSize = 12;
+            if (currentFontSize > 36) currentFontSize = 36;
+            document.documentElement.style.setProperty('--font-size', currentFontSize + 'px');
+            document.getElementById('fontSizeVal').innerText = currentFontSize + 'px';
+        }
+
+        window.onload = function() {
+            posY = 0;
+            content.style.transform = `translateY(0px)`;
+            step();
+        };
+    </script>
+</body>
+</html>

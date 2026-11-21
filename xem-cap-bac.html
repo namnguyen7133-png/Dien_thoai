@@ -1,0 +1,609 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinh Bat Quai va Ngu Hanh</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        
+        .form-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .form-section {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .result-section {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+        
+        .result-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .result-item {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-title {
+            font-weight: 600;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+        
+        .result-value {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .military-rank {
+            color: #e74c3c;
+        }
+        
+        .bagua-element {
+            color: #27ae60;
+        }
+        
+        .gender-male {
+            color: #3498db;
+        }
+        
+        .gender-female {
+            color: #e84393;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        #calculateBtn {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        #calculateBtn:hover {
+            background-color: #27ae60;
+        }
+        
+        #resetBtn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        #resetBtn:hover {
+            background-color: #c0392b;
+        }
+        
+        .note {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #fffde7;
+            border-left: 4px solid #f1c40f;
+            font-size: 0.95em;
+        }
+        
+        .canchi-table {
+            margin-top: 30px;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .highlight {
+            background-color: #e8f4fc !important;
+            font-weight: 600;
+        }
+        
+        .data-source {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #7f8c8d;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>UNG DUNG TINH BAT QUAI VA NGU HANH</h1>
+            <p class="subtitle">Tinh cap bac (Tuong, Si, Tuong, Xe, Phao, Ma, Tot) theo bat quai va ap dung vao kinh doanh</p>
+        </header>
+        
+        <div class="form-section">
+            <div class="input-column">
+                <div class="input-group">
+                    <label for="currentDate">1. Ngay thang nam hien tai</label>
+                    <input type="date" id="currentDate" value="">
+                </div>
+                
+                <div class="input-group">
+                    <label for="fullName">2. Ho va ten</label>
+                    <input type="text" id="fullName" placeholder="Nhap ho va ten">
+                </div>
+                
+                <div class="input-group">
+                    <label for="gender">4. Gioi tinh</label>
+                    <select id="gender">
+                        <option value="">Chon gioi tinh</option>
+                        <option value="Nam">Nam</option>
+                        <option value="Nu">Nu</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="input-column">
+                <div class="input-group">
+                    <label for="birthDate">3. Ngay thang nam sinh</label>
+                    <input type="date" id="birthDate">
+                </div>
+                
+                <div class="input-group">
+                    <label for="personList">5. Danh sach nguoi (chon de tu dong dien)</label>
+                    <select id="personList" size="5">
+                        <!-- Danh sach se duoc them bang JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="yearMod60">Nam sinh mod 60 (tu dong tinh)</label>
+                    <input type="text" id="yearMod60" readonly>
+                </div>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <button id="calculateBtn">Tinh Toan</button>
+            <button id="resetBtn">Nhap Lai</button>
+        </div>
+        
+        <div class="result-section" id="resultSection" style="display: none;">
+            <h2>KET QUA TINH TOAN</h2>
+            
+            <div class="result-grid">
+                <div class="result-item">
+                    <div class="result-title">Ho va ten</div>
+                    <div class="result-value" id="resultName">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title">Gioi tinh</div>
+                    <div class="result-value">
+                        <span id="resultGender" class="gender-male">-</span>
+                    </div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title">Tuoi hien tai</div>
+                    <div class="result-value" id="resultAge">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title">Cap bac Bat Quai</div>
+                    <div class="result-value military-rank" id="resultRank">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title">Can Chi</div>
+                    <div class="result-value" id="resultCanChi">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title">Menh Ngu Hanh</div>
+                    <div class="result-value bagua-element" id="resultElement">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title">Huong Bat Quai</div>
+                    <div class="result-value" id="resultDirection">-</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title">Ung dung trong kinh doanh</div>
+                    <div class="result-value" id="resultBusiness">-</div>
+                </div>
+            </div>
+            
+            <div class="note">
+                <p><strong>Luu y:</strong> Ket qua tinh toan dua tren thuat toan Bat Quai va Ngu Hanh. Cac cap bac (Tuong, Si, Tuong, Xe, Phao, Ma, Tot) duoc xac dinh dua tren nam sinh va gioi tinh, co the ap dung de phan tich xu huong trong kinh doanh va dau tu.</p>
+            </div>
+        </div>
+        
+        <div class="canchi-table">
+            <h3>Bang Tra Cuu Can Chi va Ngu Hanh</h3>
+            <table id="canChiTable">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Can Chi</th>
+                        <th>Nghia</th>
+                        <th>Menh</th>
+                        <th>Ngu Hanh</th>
+                        <th>Menh Nu</th>
+                        <th>Menh Nam</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Bang se duoc them bang JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="data-source">
+            <p>Du lieu duoc tong hop tu bang Can Chi va thuat Bat Quai truyen thong.</p>
+        </div>
+    </div>
+
+    <script>
+        // Du lieu danh sach nguoi
+        const personList = [
+            { id: 1, name: "NGUYENKHACNANG", dob: "1944-06-04" },
+            { id: 2, name: "TOTHIHA", dob: "1948-08-29" },
+            { id: 3, name: "NGUYENMINHNAM", dob: "1971-03-03" },
+            { id: 4, name: "THANTHIKIMANH", dob: "1981-09-23" },
+            { id: 5, name: "NGUYENTONGANAN", dob: "2014-09-28" },
+            { id: 6, name: "NGUYENTOMINHCHAU", dob: "2016-07-25" },
+            { id: 7, name: "NGUYENTOBICHNGOC", dob: "2020-02-05" },
+            { id: 8, name: "NGUYENTHIMINHHANG", dob: "1974-01-07" },
+            { id: 9, name: "NGOQUYCUONG", dob: "1973-05-23" },
+            { id: 10, name: "NGOGIABACH", dob: "2000-10-12" },
+            { id: 11, name: "NGOGIALINH", dob: "2005-04-05" },
+            { id: 12, name: "NGUYENTHIMINHPHUONG", dob: "1978-11-06" },
+            { id: 13, name: "HOANGANHDUNG", dob: "1978-09-21" },
+            { id: 14, name: "HOANGHAIVINH", dob: "2010-06-03" },
+            { id: 15, name: "HOANGTHIENBACHANH", dob: "2015-11-14" },
+            { id: 16, name: "TO KIM HUE", dob: "1960-08-09" },
+            { id: 17, name: "NGUYEN TUAN ANH", dob: "1983-10-23" },
+            { id: 18, name: "NGUYEN THE ANH", dob: "2001-03-24" },
+            { id: 19, name: "NGO THI MAI", dob: "1948-12-12" },
+            { id: 20, name: "TO VIET HUNG", dob: "1996-06-17" },
+            { id: 21, name: "TO THI HONG", dob: "1964-10-10" },
+            { id: 22, name: "VU VAN HIEP", dob: "1974-04-24" },
+            { id: 23, name: "NGUYEN THI CHI", dob: "1946-02-08" },
+            { id: 24, name: "NGUYEN TAN BAC", dob: "1957-11-30" },
+            { id: 25, name: "NGUYEN THI TAM", dob: "1954-08-08" }
+        ];
+
+        // Du lieu bang Can Chi (rut gon cho de hien thi)
+        const canChiData = [
+            { canChi: "Giap Ty", nghia: "Oc Thuong Chi Thu", menh: "Kim +", nguHanh: "Hai Trung Kim", menhNu: "doai Kim", menhNam: "Can Tho" },
+            { canChi: "At Suu", nghia: "Hai Noi Chi Nguu", menh: "Kim -", nguHanh: "Hai Trung Kim", menhNu: "Can Kim", menhNam: "Ly Hoa" },
+            { canChi: "Binh Dan", nghia: "Son Lam Chi Ho", menh: "Hoa +", nguHanh: "Lu Trung Hoa", menhNu: "Khon Tho", menhNam: "Kham Thuy" },
+            { canChi: "dinh Mao", nghia: "Vong Nguyet Chi Tho", menh: "Hoa -", nguHanh: "Lu Trung Hoa", menhNu: "Ton Moc", menhNam: "Khon Tho" },
+            { canChi: "Mau Thin", nghia: "Thanh On Chi Long", menh: "Moc +", nguHanh: "dai Lam Moc", menhNu: "Chan Moc", menhNam: "Chan Moc" },
+            { canChi: "Ky Ty", nghia: "Phuc Khi Chi Xa", menh: "Moc -", nguHanh: "dai Lam Moc", menhNu: "Khon Tho", menhNam: "Ton Moc" },
+            { canChi: "Canh Ngo", nghia: "That Ly Chi Ma", menh: "Tho +", nguHanh: "Lo Bang Tho", menhNu: "Kham Thuy", menhNam: "Can Tho" },
+            { canChi: "Tan Mui", nghia: "dac Loc Chi Duong", menh: "Tho -", nguHanh: "Lo Bang Tho", menhNu: "Ly Hoa", menhNam: "Can Kim" }
+        ];
+
+        // Du lieu cap bac Bat Quai
+        const baguaRanks = ["Tuong", "Si", "Tuong", "Xe", "Phao", "Ma", "Tot"];
+        
+        // Du lieu ung dung kinh doanh
+        const businessApplications = {
+            "Tuong": "Lanh dao, chien luoc, ra quyet dinh quan trong",
+            "Si": "Co van, hoach dinh, phan tich chien luoc",
+            "Tuong": "Bao ve, quan ly rui ro, on dinh he thong",
+            "Xe": "Tien phong, mo rong thi truong, tan cong manh me",
+            "Phao": "Sang tao, dot pha, cach tan san pham/dich vu",
+            "Ma": "Linh hoat, da dang hoa, thich ung nhanh",
+            "Tot": "Kien tri, tich luy, phat trien tung buoc vung chac"
+        };
+
+        // Khoi tao khi trang duoc tai
+        document.addEventListener('DOMContentLoaded', function() {
+            // dat ngay hien tai
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('currentDate').value = formattedDate;
+            
+            // dien danh sach nguoi vao select
+            const personSelect = document.getElementById('personList');
+            personList.forEach(person => {
+                const option = document.createElement('option');
+                option.value = person.id;
+                option.textContent = `${person.id}. ${person.name} - ${formatDateDisplay(person.dob)}`;
+                personSelect.appendChild(option);
+            });
+            
+            // dien du lieu vao bang Can Chi
+            const tableBody = document.getElementById('canChiTable').getElementsByTagName('tbody')[0];
+            canChiData.forEach((item, index) => {
+                const row = tableBody.insertRow();
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.canChi}</td>
+                    <td>${item.nghia}</td>
+                    <td>${item.menh}</td>
+                    <td>${item.nguHanh}</td>
+                    <td>${item.menhNu}</td>
+                    <td>${item.menhNam}</td>
+                `;
+            });
+            
+            // Su kien khi chon nguoi tu danh sach
+            personSelect.addEventListener('change', function() {
+                const selectedId = parseInt(this.value);
+                if (selectedId) {
+                    const selectedPerson = personList.find(p => p.id === selectedId);
+                    if (selectedPerson) {
+                        document.getElementById('fullName').value = selectedPerson.name;
+                        document.getElementById('birthDate').value = selectedPerson.dob;
+                        
+                        // Tinh toan nam mod 60
+                        const birthYear = new Date(selectedPerson.dob).getFullYear();
+                        const yearMod60 = birthYear % 60;
+                        document.getElementById('yearMod60').value = yearMod60;
+                    }
+                }
+            });
+            
+            // Su kien tinh toan
+            document.getElementById('calculateBtn').addEventListener('click', calculate);
+            
+            // Su kien nhap lai
+            document.getElementById('resetBtn').addEventListener('click', resetForm);
+            
+            // Tu dong tinh toan khi thay doi ngay sinh
+            document.getElementById('birthDate').addEventListener('change', function() {
+                if (this.value) {
+                    const birthYear = new Date(this.value).getFullYear();
+                    const yearMod60 = birthYear % 60;
+                    document.getElementById('yearMod60').value = yearMod60;
+                }
+            });
+        });
+        
+        // Ham dinh dang ngay thang de hien thi
+        function formatDateDisplay(dateString) {
+            const date = new Date(dateString);
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+        
+        // Ham tinh toan chinh
+        function calculate() {
+            const fullName = document.getElementById('fullName').value;
+            const birthDate = document.getElementById('birthDate').value;
+            const gender = document.getElementById('gender').value;
+            const currentDate = document.getElementById('currentDate').value;
+            
+            // Kiem tra du lieu dau vao
+            if (!fullName || !birthDate || !gender || !currentDate) {
+                alert("Vui long dien day du thong tin truoc khi tinh toan!");
+                return;
+            }
+            
+            // Tinh tuoi
+            const birth = new Date(birthDate);
+            const current = new Date(currentDate);
+            let age = current.getFullYear() - birth.getFullYear();
+            const monthDiff = current.getMonth() - birth.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && current.getDate() < birth.getDate())) {
+                age--;
+            }
+            
+            // Tinh nam mod 60
+            const birthYear = birth.getFullYear();
+            const yearMod60 = birthYear % 60;
+            
+            // Xac dinh Can Chi dua tren nam mod 60
+            const canChiIndex = yearMod60 % canChiData.length;
+            const canChi = canChiData[canChiIndex];
+            
+            // Xac dinh cap bac Bat Quai
+            const rankIndex = yearMod60 % baguaRanks.length;
+            const rank = baguaRanks[rankIndex];
+            
+            // Xac dinh menh theo gioi tinh
+            let element = "";
+            if (gender === "Nam") {
+                element = canChi.menhNam;
+            } else {
+                element = canChi.menhNu;
+            }
+            
+            // Xac dinh huong Bat Quai
+            const directions = ["Bac", "dong Bac", "dong", "dong Nam", "Nam", "Tay Nam", "Tay", "Tay Bac"];
+            const directionIndex = yearMod60 % directions.length;
+            const direction = directions[directionIndex];
+            
+            // Xac dinh ung dung trong kinh doanh
+            const businessApp = businessApplications[rank];
+            
+            // Hien thi ket qua
+            document.getElementById('resultName').textContent = fullName;
+            document.getElementById('resultGender').textContent = gender;
+            document.getElementById('resultGender').className = gender === "Nam" ? "gender-male" : "gender-female";
+            document.getElementById('resultAge').textContent = age + " tuoi";
+            document.getElementById('resultRank').textContent = rank;
+            document.getElementById('resultCanChi').textContent = canChi.canChi;
+            document.getElementById('resultElement').textContent = element;
+            document.getElementById('resultDirection').textContent = direction;
+            document.getElementById('resultBusiness').textContent = businessApp;
+            
+            // Lam noi bat dong trong bang Can Chi
+            const tableRows = document.querySelectorAll('#canChiTable tbody tr');
+            tableRows.forEach(row => {
+                row.classList.remove('highlight');
+                if (row.cells[1].textContent === canChi.canChi) {
+                    row.classList.add('highlight');
+                }
+            });
+            
+            // Hien thi phan ket qua
+            document.getElementById('resultSection').style.display = 'block';
+            
+            // Cuon den phan ket qua
+            document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Ham nhap lai form
+        function resetForm() {
+            document.getElementById('fullName').value = "";
+            document.getElementById('birthDate').value = "";
+            document.getElementById('gender').value = "";
+            document.getElementById('personList').value = "";
+            document.getElementById('yearMod60').value = "";
+            
+            // An phan ket qua
+            document.getElementById('resultSection').style.display = 'none';
+            
+            // Bo highlight trong bang
+            const tableRows = document.querySelectorAll('#canChiTable tbody tr');
+            tableRows.forEach(row => {
+                row.classList.remove('highlight');
+            });
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

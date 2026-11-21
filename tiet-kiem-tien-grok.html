@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cong Cu Quan Ly Tai Chinh Ca Nhan</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1, h2 { color: #333; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        form { margin-bottom: 20px; }
+        input[type="number"], button { padding: 8px; margin-right: 10px; }
+        .result { font-weight: bold; color: green; }
+        .explanation { margin-top: 10px; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<h1>Cong Cu Tinh Toan Va Giai Thich Quan Ly Tai Chinh Ca Nhan</h1>
+<p>Dua tren cac tai lieu tu cac video YouTube cung cap, trang nay cung cap ma HTML de tinh toan va giai thich cac phuong phap quan ly tai chinh. Cac muc chua co thuat toan chi tiet da duoc hoan thien voi cong thuc cu the, su dung JavaScript de tinh toan dong.</p>
+
+<h2>Phan 1: Phuong Phap 6 Lo Tiet Kiem</h2>
+<p>Phuong phap nay giup phan chia thu nhap thanh 6 lo voi ty le co dinh de quan ly chi tieu va tiet kiem. Dua tren video "Chi tieu thong minh: 6 Lo Tiet Kiem".</p>
+
+<table>
+    <tr><th>Lo So</th><th>Ten Quy</th><th>Ty le (%)</th><th>Muc dich</th></tr>
+    <tr><td>1</td><td>Chi tieu Can thiet</td><td>55%</td><td>Chi tieu thiet yeu hang ngay: an uong, dien nuoc, v.v.</td></tr>
+    <tr><td>2</td><td>Tiet kiem Dai han</td><td>10%</td><td>Muc tieu lon: mua nha, xe, huu tri.</td></tr>
+    <tr><td>3</td><td>Quy Giao duc</td><td>10%</td><td>Phat trien ban than: hoc ky nang, moi quan he.</td></tr>
+    <tr><td>4</td><td>Quy Huong thu</td><td>10%</td><td>Cai thien doi song tinh than.</td></tr>
+    <tr><td>5</td><td>Quy Tu do Tai chinh</td><td>10%</td><td>dau tu thu dong: tiet kiem, kinh doanh.</td></tr>
+    <tr><td>6</td><td>Quy Tu thien</td><td>5%</td><td>Giup do nguoi khac.</td></tr>
+</table>
+
+<h3>Tinh Toan Phan Bo Thu Nhap</h3>
+<form id="sixJarsForm">
+    <label for="income">Nhap thu nhap hang thang (VND):</label>
+    <input type="number" id="income" required>
+    <button type="button" onclick="calculateSixJars()">Tinh Toan</button>
+</form>
+<div id="sixJarsResult" class="result"></div>
+<div class="explanation">Thuat toan: Moi lo = (Thu nhap * Ty le %) / 100. Tong phai bang thu nhap. Neu vuot chi tieu can thiet, khuyen nghi dieu chinh loi song.</div>
+
+<script>
+function calculateSixJars() {
+    const income = parseFloat(document.getElementById('income').value);
+    if (isNaN(income) || income <= 0) {
+        alert('Vui long nhap thu nhap hop le.');
+        return;
+    }
+    const ratios = [0.55, 0.10, 0.10, 0.10, 0.10, 0.05];
+    const jars = ['Chi tieu Can thiet', 'Tiet kiem Dai han', 'Quy Giao duc', 'Quy Huong thu', 'Quy Tu do Tai chinh', 'Quy Tu thien'];
+    let result = '<h4>Ket Qua Phan Bo:</h4><ul>';
+    ratios.forEach((ratio, index) => {
+        const amount = income * ratio;
+        result += `<li>${jars[index]}: ${amount.toLocaleString('vi-VN')} VND (${(ratio * 100)}%)</li>`;
+    });
+    result += '</ul>';
+    if (income * 0.55 < 0) { // Vi du kiem tra, nhung logic don gian
+        result += '<p>Canh bao: Chi tieu can thiet co the vuot, hay xem xet lai loi song.</p>';
+    }
+    document.getElementById('sixJarsResult').innerHTML = result;
+}
+</script>
+
+<h2>Phan 2: Cac Loai Deals Trong Cashflow Game</h2>
+<p>Dua tren video "GIAI THICH CAC LOAI DEALS (BIG 4) TRONG CASHFLOW GAME". Khong co thuat toan tinh toan cu the o day, chi giai thich chi tiet cac loai the.</p>
+
+<ul>
+    <li><strong>The Doodads:</strong> Chi phi bat ngo, phai tra ngay ma khong lua chon.</li>
+    <li><strong>The Small Deal:</strong> Co hoi nho (von < 5000$), bao gom bat dong san (gia, the chap, tra truoc, cashflow), co phieu (gia bien dong 5-40$), kim loai quy, doanh nghiep lien doanh.</li>
+    <li><strong>The Big Deal:</strong> Co hoi lon, von cao hon, loi nhuan lon hon.</li>
+    <li><strong>The Market:</strong> Tac dong thi truong chung: mua ban bat dong san, nhan/chia co phieu, tang cashflow doanh nghiep.</li>
+</ul>
+<div class="explanation">Khong co thuat toan moi vi phan nay chu yeu mo ta. Su dung trong game de quyet dinh dau tu.</div>
+
+<h2>Phan 3: Cong Thuc Bi Mat Trong Cashflow Game</h2>
+<p>Dua tren video "CONG THUC "BI MAT" TRONG CASHFLOW GAME". Hoan thien thuat toan cho ROI va Tien mat can thiet de dat tu do tai chinh.</p>
+
+<h3>Cong Thuc 1: Ty Le Loi Nhuan Tren Von dau Tu (ROI)</h3>
+<p>ROI = (Cashflow hang thang / Down Payment) * 12 * 100% (de tinh % hang nam). Phan loai: <4% trung binh, 4-5% tot, >5% tot hon.</p>
+<form id="roiForm">
+    <label for="cashflow">Cashflow hang thang ($):</label>
+    <input type="number" id="cashflow" required>
+    <label for="downPayment">Down Payment ($):</label>
+    <input type="number" id="downPayment" required>
+    <button type="button" onclick="calculateROI()">Tinh ROI</button>
+</form>
+<div id="roiResult" class="result"></div>
+<div class="explanation">Thuat toan hoan thien: ROI hang nam = (Cashflow / Down Payment) * 12 * 100. danh gia dua tren nguong trong video.</div>
+
+<script>
+function calculateROI() {
+    const cashflow = parseFloat(document.getElementById('cashflow').value);
+    const downPayment = parseFloat(document.getElementById('downPayment').value);
+    if (isNaN(cashflow) || isNaN(downPayment) || downPayment <= 0) {
+        alert('Vui long nhap gia tri hop le.');
+        return;
+    }
+    const roi = (cashflow / downPayment) * 12 * 100;
+    let classification = '';
+    if (roi < 4) classification = 'Trung binh';
+    else if (roi < 5) classification = 'Tot';
+    else classification = 'Tot hon (hoac dac biet neu >10%)';
+    const result = `ROI hang nam: ${roi.toFixed(2)}% - ${classification}`;
+    document.getElementById('roiResult').innerHTML = result;
+}
+</script>
+
+<h3>Cong Thuc 2: So Luong Tien Mat Can Thiet de dat Tu Do Tai Chinh</h3>
+<p>Tien mat can = Chi phi hang thang (Thu nhap thu dong can) / (ROI mong muon / 100). Muc tieu: Thu nhap thu dong > Chi phi.</p>
+<form id="freedomForm">
+    <label for="expenses">Chi phi hang thang ($):</label>
+    <input type="number" id="expenses" required>
+    <label for="desiredROI">ROI mong muon (% hang nam):</label>
+    <input type="number" id="desiredROI" required>
+    <button type="button" onclick="calculateFreedom()">Tinh Toan</button>
+</form>
+<div id="freedomResult" class="result"></div>
+<div class="explanation">Thuat toan hoan thien: Tien mat = Expenses / (ROI / 100). Dua tren vi du: 6000$ / 0.05 = 120000$.</div>
+
+<script>
+function calculateFreedom() {
+    const expenses = parseFloat(document.getElementById('expenses').value);
+    const desiredROI = parseFloat(document.getElementById('desiredROI').value) / 100;
+    if (isNaN(expenses) || isNaN(desiredROI) || desiredROI <= 0) {
+        alert('Vui long nhap gia tri hop le.');
+        return;
+    }
+    const capitalNeeded = expenses / desiredROI;
+    const result = `Tien mat can tich luy: ${capitalNeeded.toFixed(2)}$ de dat thu nhap thu dong ${expenses}$ voi ROI ${desiredROI * 100}%`;
+    document.getElementById('freedomResult').innerHTML = result;
+}
+</script>
+
+<h2>Phan 4: 3 Bi Quyet Lam Giau don Gian</h2>
+<p>Dua tren video "3 Bi Quyet Lam Giau don Gian Ma Hau Het Thuong Bo Qua". Khong co thuat toan so cu the, nhung hoan thien voi vi du tinh tich luy 10%.</p>
+
+<ul>
+    <li><strong>Tran trong dieu nho be:</strong> Ton trong tung dong nho de quan ly lon.</li>
+    <li><strong>Ky luat Tich luy:</strong> Giu lai it nhat 10% thu nhap.</li>
+    <li><strong>dat Muc tieu len tren Cam xuc:</strong> Tap trung muc tieu dai han.</li>
+</ul>
+<p>Them: 10 Quy Tac Kinh Doanh (phuc vu dung doi tuong, da dang thu nhap, v.v.). Bon Loai Tien Nen Chi: Cha me, Vo/Chong, Con cai, Chinh minh.</p>
+
+<h3>Vi Du Tinh Toan Tich Luy 10%</h3>
+<form id="accumulateForm">
+    <label for="monthlyIncome">Thu nhap hang thang (VND):</label>
+    <input type="number" id="monthlyIncome" required>
+    <label for="months">So thang tich luy:</label>
+    <input type="number" id="months" required>
+    <button type="button" onclick="calculateAccumulate()">Tinh Toan</button>
+</form>
+<div id="accumulateResult" class="result"></div>
+<div class="explanation">Thuat toan bo sung: Tich luy hang thang = Income * 0.1. Tong = Hang thang * So thang (khong lai suat don gian hoa).</div>
+
+<script>
+function calculateAccumulate() {
+    const income = parseFloat(document.getElementById('monthlyIncome').value);
+    const months = parseInt(document.getElementById('months').value);
+    if (isNaN(income) || isNaN(months) || months <= 0) {
+        alert('Vui long nhap gia tri hop le.');
+        return;
+    }
+    const monthlySave = income * 0.1;
+    const total = monthlySave * months;
+    const result = `Tich luy hang thang: ${monthlySave.toLocaleString('vi-VN')} VND. Tong sau ${months} thang: ${total.toLocaleString('vi-VN')} VND.`;
+    document.getElementById('accumulateResult').innerHTML = result;
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

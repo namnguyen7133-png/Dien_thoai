@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tú Lơ Khơ - Thẻ Bài Thị Trường Cashflow</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        cash: {
+                            green: '#10B981',
+                            darkGreen: '#047857',
+                            red: '#EF4444',
+                            darkRed: '#B91C1C',
+                            gold: '#F59E0B'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: radial-gradient(circle at top center, #1e293b 0%, #0f172a 100%);
+            min-height: 100vh;
+            color: #f8fafc;
+        }
+
+        /* Card Flip & Hover Animations */
+        .card-perspective {
+            perspective: 1000px;
+        }
+        
+        .card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .card-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Rotated View Toggle */
+        .board-rotated {
+            transform: rotate(180deg);
+            transition: transform 0.5s ease;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased pb-12">
+
+    <!-- Top Navigation -->
+    <header class="bg-slate-900/90 border-b border-slate-800 sticky top-0 z-40 backdrop-blur px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-emerald-500 flex items-center justify-center font-bold text-slate-950 text-xl shadow-lg">
+                    ♠♥
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-white leading-tight">Tú Lơ Khơ - Thẻ Bài Cashflow</h1>
+                    <p class="text-xs text-slate-400">Mô Phỏng Thị Trường Tài Chính: Đen (Xấu / Thăm Dò) - Đỏ (Tốt / Tăng Trưởng)</p>
+                </div>
+            </div>
+
+            <!-- Global Action Controls -->
+            <div class="flex items-center gap-2">
+                <button id="rotateBoardBtn" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-rotate"></i>
+                    <span>Xoay Góc Nhìn 180°</span>
+                </button>
+                <button id="resetGameBtn" class="bg-rose-950/80 hover:bg-rose-900 border border-rose-800 text-rose-300 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-power-off"></i>
+                    <span>Ván Mới</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div id="mainAppContainer" class="max-w-7xl mx-auto px-4 mt-6 transition-transform duration-500">
+        <!-- Main Grid Layout -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- LEFT COLUMN: FINANCIAL STATEMENT & DASHBOARD (4 Cols) -->
+            <div class="lg:col-span-4 space-y-4">
+                
+                <!-- Player & Cashflow Summary Card -->
+                <div class="bg-slate-900/80 rounded-2xl border border-slate-800 p-5 shadow-xl backdrop-blur">
+                    <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+                        <div>
+                            <span class="text-[10px] text-amber-400 font-bold uppercase tracking-wider">Người Chơi Hiện Tại</span>
+                            <input type="text" id="playerNameInput" value="Nhà Đầu Tư Thông Thái" class="bg-transparent font-bold text-lg text-white border-b border-dashed border-slate-600 focus:outline-none focus:border-emerald-400 w-full mt-0.5">
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[10px] font-semibold text-slate-400 uppercase block">Vòng Đấu</span>
+                            <span id="turnCounter" class="text-lg font-mono font-bold text-amber-400">#1</span>
+                        </div>
+                    </div>
+
+                    <!-- Key Financial Metrics -->
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+                            <span class="text-[11px] text-slate-400 font-medium block">Tiền Mặt Available</span>
+                            <span id="cashValue" class="text-lg font-bold font-mono text-emerald-400">$10,000</span>
+                        </div>
+                        <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800">
+                            <span class="text-[11px] text-slate-400 font-medium block">Dòng Tiền/Lượt (Payday)</span>
+                            <span id="cashflowValue" class="text-lg font-bold font-mono text-amber-400">+$2,000</span>
+                        </div>
+                    </div>
+
+                    <!-- Financial Income Statement Breakdown -->
+                    <div class="space-y-2 text-xs">
+                        <div class="flex justify-between p-2 rounded bg-slate-800/50">
+                            <span class="text-slate-400"><i class="fa-solid fa-arrow-trend-up text-emerald-400 mr-1.5"></i>Thu Nhập Thụ Động:</span>
+                            <span id="passiveIncomeValue" class="font-mono font-bold text-emerald-300">$2,000</span>
+                        </div>
+                        <div class="flex justify-between p-2 rounded bg-slate-800/50">
+                            <span class="text-slate-400"><i class="fa-solid fa-arrow-trend-down text-rose-400 mr-1.5"></i>Chi Phí Cố Định:</span>
+                            <span id="expensesValue" class="font-mono font-bold text-rose-400">$0</span>
+                        </div>
+                        <div class="flex justify-between p-2 rounded bg-slate-800/50">
+                            <span class="text-slate-400"><i class="fa-solid fa-building-columns text-cyan-400 mr-1.5"></i>Tổng Giá Trị Tài Sản:</span>
+                            <span id="totalAssetsValue" class="font-mono font-bold text-cyan-300">$0</span>
+                        </div>
+                        <div class="flex justify-between p-2 rounded bg-slate-800/50">
+                            <span class="text-slate-400"><i class="fa-solid fa-hand-holding-dollar text-purple-400 mr-1.5"></i>Tổng Nợ Vay:</span>
+                            <span id="totalLiabilitiesValue" class="font-mono font-bold text-purple-300">$0</span>
+                        </div>
+                    </div>
+
+                    <!-- Payday Action Button -->
+                    <button id="collectPaydayBtn" class="w-full mt-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-2.5 rounded-xl text-xs sm:text-sm shadow-lg flex items-center justify-center gap-2 transition active:scale-98">
+                        <i class="fa-solid fa-coins"></i>
+                        <span>Nhận Tiền Lương / Dòng Tiền (Payday)</span>
+                    </button>
+                </div>
+
+                <!-- Asset Portfolio List -->
+                <div class="bg-slate-900/80 rounded-2xl border border-slate-800 p-4 shadow-xl backdrop-blur">
+                    <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-3 flex items-center justify-between">
+                        <span><i class="fa-solid fa-wallet text-amber-400 mr-1.5"></i>Danh Mục Đầu Tư</span>
+                        <span id="assetCountBadge" class="bg-slate-800 text-amber-400 px-2 py-0.5 rounded-full font-mono text-[10px]">0 tài sản</span>
+                    </h3>
+                    
+                    <div id="assetList" class="space-y-2 max-h-48 overflow-y-auto pr-1">
+                        <div id="emptyAssetMsg" class="text-center py-6 text-slate-500 text-xs italic">
+                            Chưa có tài sản nào. Hãy rút thẻ bài Đỏ để tìm kiếm cơ hội đầu tư!
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- CENTER COLUMN: DECK & CARD DRAW AREA (5 Cols) -->
+            <div class="lg:col-span-5 flex flex-col items-center">
+                
+                <!-- Deck Info Header -->
+                <div class="w-full bg-slate-900/60 rounded-xl p-3 border border-slate-800 text-center mb-4 flex justify-between items-center text-xs">
+                    <span class="text-slate-400">Bộ bài còn lại: <b id="deckRemaining" class="text-amber-400 font-mono text-sm">52</b> lá</span>
+                    <div class="flex items-center gap-3">
+                        <span class="flex items-center gap-1 text-rose-400 font-bold"><i class="fa-solid fa-heart"></i><i class="fa-solid fa-diamond"></i> Đỏ (Tốt)</span>
+                        <span class="flex items-center gap-1 text-slate-300 font-bold"><i class="fa-solid fa-spade"></i><i class="fa-solid fa-club"></i> Đen (Xấu)</span>
+                    </div>
+                </div>
+
+                <!-- Card Perspective Container -->
+                <div class="card-perspective w-full max-w-xs aspect-[2.5/3.5] relative mb-6">
+                    <div id="cardInner" class="card-inner w-full h-full relative rounded-2xl shadow-2xl">
+                        
+                        <!-- CARD BACK (DECK FACE DOWN) -->
+                        <div class="card-front absolute inset-0 bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-950 border-4 border-amber-500/40 rounded-2xl flex flex-col items-center justify-between p-6 shadow-2xl cursor-pointer group" id="drawCardDeckBtn">
+                            <div class="w-full flex justify-between text-amber-500/50 text-xl font-bold">
+                                <span>♠</span><span>♥</span>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-20 h-20 mx-auto rounded-full bg-amber-500/10 border-2 border-amber-500/30 flex items-center justify-center mb-3 group-hover:scale-110 transition duration-300">
+                                    <i class="fa-solid fa-hand-holding-hand text-3xl text-amber-400"></i>
+                                </div>
+                                <h3 class="text-base font-bold text-amber-300">RÚT BÀI THỊ TRƯỜNG</h3>
+                                <p class="text-[11px] text-slate-400 mt-1">Bấm để rút lá bài Tú Lơ Khơ</p>
+                            </div>
+                            <div class="w-full flex justify-between text-amber-500/50 text-xl font-bold">
+                                <span>♣</span><span>♦</span>
+                            </div>
+                        </div>
+
+                        <!-- CARD FRONT (DRAWN CARD CONTENT) -->
+                        <div id="cardBackContent" class="card-back absolute inset-0 bg-slate-900 border-4 border-slate-700 rounded-2xl p-5 flex flex-col justify-between shadow-2xl overflow-hidden">
+                            <!-- Header: Suit & Value -->
+                            <div class="flex justify-between items-center">
+                                <div id="cardCornerTop" class="text-left leading-none font-bold">
+                                    <!-- Dynamic -->
+                                </div>
+                                <span id="marketTypeTag" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                                    <!-- Dynamic Badge -->
+                                </span>
+                            </div>
+
+                            <!-- Card Main Content / Situation Description -->
+                            <div class="my-auto text-center space-y-2 py-2">
+                                <div id="cardBigSymbol" class="text-4xl my-1">
+                                    <!-- Big Icon -->
+                                </div>
+                                <h3 id="cardTitle" class="text-base font-bold text-white font-serif leading-snug">
+                                    <!-- Card Title -->
+                                </h3>
+                                <p id="cardDescription" class="text-xs text-slate-300 leading-relaxed max-h-32 overflow-y-auto px-1">
+                                    <!-- Situation Text -->
+                                </p>
+                            </div>
+
+                            <!-- Financial Impact Badge -->
+                            <div id="cardImpactBox" class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 text-xs text-center font-mono font-semibold">
+                                <!-- Dynamic Impact -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Action Controls for Drawn Card -->
+                <div id="actionControlsArea" class="w-full max-w-xs space-y-2 hidden">
+                    <button id="acceptActionBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs sm:text-sm shadow-lg transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check"></i>
+                        <span id="acceptBtnText">Chấp Nhận / Thực Hiện</span>
+                    </button>
+                    <button id="declineActionBtn" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold py-2 rounded-xl text-xs transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-xmark"></i>
+                        <span>Bỏ Qua / Không Thực Hiện</span>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: TRANSACTION HISTORY LOG (3 Cols) -->
+            <div class="lg:col-span-3 space-y-4">
+                <div class="bg-slate-900/80 rounded-2xl border border-slate-800 p-4 shadow-xl backdrop-blur h-[600px] flex flex-col">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                        <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                            <i class="fa-solid fa-receipt text-emerald-400"></i> Nhật Ký Giao Dịch
+                        </h3>
+                        <span id="logCount" class="bg-slate-800 text-slate-400 text-[10px] px-2 py-0.5 rounded-full font-mono">0</span>
+                    </div>
+
+                    <!-- History Scroll Container -->
+                    <div id="historyLogList" class="flex-1 overflow-y-auto mt-3 space-y-2 pr-1 text-xs">
+                        <div id="emptyLogState" class="text-center text-slate-500 py-20 text-xs italic">
+                            Chưa có hoạt động nào.<br>Hãy bấm vào bộ bài để bắt đầu!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT GAME ENGINE -->
+    <script>
+        /* -------------------------------------------------------------
+           1. DECK DATA & SITUATION DEFINITIONS (52 CARDS)
+           - RED CARDS (♥, ♦): Market Growth, Opportunity, Investment, Profit
+           - BLACK CARDS (♠, ♣): Market Drop, Crisis, Risk, Probing, Loss, Expense
+           ------------------------------------------------------------- */
+        
+        const SUITS = [
+            { symbol: '♠', name: 'Bích', color: 'black', type: 'RISK' },
+            { symbol: '♣', name: 'Nhép', color: 'black', type: 'RISK' },
+            { symbol: '♥', name: 'Cơ', color: 'red', type: 'GOOD' },
+            { symbol: '♦', name: 'Rô', color: 'red', type: 'GOOD' }
+        ];
+
+        const RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+
+        // Card Scenarios Mapping Engine
+        function getScenarioForCard(rank, suit) {
+            const isRed = suit.color === 'red';
+            const value = getRankValue(rank);
+
+            if (isRed) {
+                // RED CARDS: GOOD MARKET & OPPORTUNITIES
+                if (suit.symbol === '♦') {
+                    // DIAMONDS: Real Estate & High ROI Assets
+                    if (['A', 'K', 'Q'].includes(rank)) {
+                        return {
+                            title: "Cơn Sốt Bất Động Sản Ven Đô",
+                            desc: "Bán thành công lô đất nền tích lũy. Thị trường giao dịch sôi động gấp đôi dự kiến.",
+                            cashChange: value * 3000,
+                            cashflowChange: 500,
+                            asset: { name: `Lô đất Kim Cương (${rank}♦)`, cost: value * 2000, cashflow: 800 },
+                            actionText: "Đầu tư mua tài sản BĐS"
+                        };
+                    } else if (['10', '9', '8'].includes(rank)) {
+                        return {
+                            title: "Cổ Phổi Tăng Trưởng Đột Biến",
+                            desc: "Cổ phiếu công nghệ bạn nắm giữ chốt lời vượt kỳ vọng nhờ kết quả kinh doanh quý rực rỡ.",
+                            cashChange: value * 1500,
+                            cashflowChange: 300,
+                            asset: null,
+                            actionText: "Chốt lời thu tiền mặt"
+                        };
+                    } else {
+                        return {
+                            title: "Giao Dịch Bán Lẻ Thu Thuần",
+                            desc: "Cửa hàng bán bán lẻ ghi nhận doanh số kỷ lục trong đợt khuyến mãi cuối tuần.",
+                            cashChange: value * 800,
+                            cashflowChange: 150,
+                            asset: null,
+                            actionText: "Thu lợi nhuận kinh doanh"
+                        };
+                    }
+                } else {
+                    // HEARTS: Business Partnerships & Passive Cashflow
+                    if (['A', 'K', 'Q'].includes(rank)) {
+                        return {
+                            title: "Gặp Nhà Đầu Tư Mát Tay",
+                            desc: "Đối tác rót vốn mở rộng chuỗi nhượng quyền. Tăng mạnh dòng tiền hàng tháng.",
+                            cashChange: 5000,
+                            cashflowChange: value * 200,
+                            asset: { name: `Chuỗi Nhượng Quyền (${rank}♥)`, cost: 4000, cashflow: value * 200 },
+                            actionText: "Góp vốn mở chuỗi"
+                        };
+                    } else {
+                        return {
+                            title: "Cho Thuê Nhà Nghỉ / Căn Hộ",
+                            desc: "Lượng khách du lịch tăng mạnh, tỷ lệ lấp đầy phòng đạt 95%.",
+                            cashChange: value * 600,
+                            cashflowChange: 200,
+                            asset: null,
+                            actionText: "Thu tiền thuê phòng"
+                        };
+                    }
+                }
+            } else {
+                // BLACK CARDS: BAD MARKET & RISKS & PROBING
+                if (suit.symbol === '♠') {
+                    // SPADES: Major Disruption & Sudden Expenses
+                    if (['A', 'K', 'Q'].includes(rank)) {
+                        return {
+                            title: "Sự Cố Mất Điện & Cắt Nước Diện Rộng",
+                            desc: "Toàn bộ hệ thống tòa nhà quản lý ngưng hoạt động 3 ngày. Chi phí khắc phục sự cố và bồi thường khách thuê.",
+                            cashChange: -(value * 1500),
+                            cashflowChange: -200,
+                            asset: null,
+                            actionText: "Chi tiền sửa chữa & bồi thường"
+                        };
+                    } else if (['10', '9', '8'].includes(rank)) {
+                        return {
+                            title: "Khủng Hoảng Lạm Phát & Chi Phí Tăng",
+                            desc: "Giá nguyên vật liệu đầu vào mở xưởng mạ kim loại & sơn tượng tăng vọt 30%.",
+                            cashChange: -(value * 800),
+                            cashflowChange: -100,
+                            asset: null,
+                            actionText: "Thanh toán chênh lệch chi phí"
+                        };
+                    } else {
+                        return {
+                            title: "Thăm Dò Thị Trường Thất Bại",
+                            desc: "Mở thử nghiệm quán luộc lòng tiết canh tại địa điểm mới nhưng vắng khách.",
+                            cashChange: -(value * 400),
+                            cashflowChange: 0,
+                            asset: null,
+                            actionText: "Chấp nhận bù lỗ thử nghiệm"
+                        };
+                    }
+                } else {
+                    // CLUBS: Partner Loss & Asset Depreciation
+                    if (['A', 'K', 'Q'].includes(rank)) {
+                        return {
+                            title: "Mất Nguồn Thúc Đẩy / Chỗ Dựa Tài Chính",
+                            desc: "Đối tác kinh doanh rút vốn đột ngột. Bạn phải tự gánh khoản nợ đọng.",
+                            cashChange: -(value * 2000),
+                            cashflowChange: -300,
+                            asset: null,
+                            actionText: "Trích quỹ xử lý nợ đọng"
+                        };
+                    } else {
+                        return {
+                            title: "Thiết Bị Hư Hỏng / Sửa Chữa Xưởng",
+                            desc: "Máy móc xưởng mạ kim loại bị hỏng hóc cần bảo trì khẩn cấp.",
+                            cashChange: -(value * 500),
+                            cashflowChange: 0,
+                            asset: null,
+                            actionText: "Chi trả tiền bảo trì"
+                        };
+                    }
+                }
+            }
+        }
+
+        function getRankValue(rank) {
+            if (rank === 'A') return 14;
+            if (rank === 'K') return 13;
+            if (rank === 'Q') return 12;
+            if (rank === 'J') return 11;
+            return parseInt(rank);
+        }
+
+        /* -------------------------------------------------------------
+           2. GAME STATE MANAGEMENT
+           ------------------------------------------------------------- */
+        let deck = [];
+        let drawnCard = null;
+        let currentTurn = 1;
+
+        let gameState = {
+            cash: 10000,
+            passiveIncome: 2000,
+            expenses: 0,
+            assets: [],
+            liabilities: 0
+        };
+
+        let moveLogs = [];
+
+        /* -------------------------------------------------------------
+           3. INITIALIZATION & DECK BUILDER
+           ------------------------------------------------------------- */
+        function initDeck() {
+            deck = [];
+            SUITS.forEach(suit => {
+                RANKS.forEach(rank => {
+                    deck.push({
+                        rank,
+                        suit,
+                        scenario: getScenarioForCard(rank, suit)
+                    });
+                });
+            });
+            // Shuffle Deck
+            for (let i = deck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [deck[i], deck[j]] = [deck[j], deck[i]];
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initDeck();
+            updateUI();
+            setupEventListeners();
+        });
+
+        /* -------------------------------------------------------------
+           4. DRAW CARD & ACTION LOGIC
+           ------------------------------------------------------------- */
+        function drawCard() {
+            if (deck.length === 0) {
+                alert('Bộ bài đã hết! Hãy bấm "Ván Mới" để xáo lại bộ bài.');
+                return;
+            }
+
+            if (drawnCard !== null) {
+                alert('Bạn cần đưa ra quyết định cho lá bài hiện tại trước khi rút lá tiếp theo!');
+                return;
+            }
+
+            drawnCard = deck.pop();
+            document.getElementById('deckRemaining').innerText = deck.length;
+
+            // Render Drawn Card View
+            renderCardView(drawnCard);
+
+            // Flip Card Animation
+            const cardInner = document.getElementById('cardInner');
+            cardInner.classList.add('card-flipped');
+
+            // Show Action Controls
+            document.getElementById('actionControlsArea').classList.remove('hidden');
+        }
+
+        function renderCardView(card) {
+            const isRed = card.suit.color === 'red';
+            const suitClass = isRed ? 'text-rose-500' : 'text-slate-200';
+            const tagBg = isRed ? 'bg-emerald-950 text-emerald-300 border border-emerald-700' : 'bg-rose-950 text-rose-300 border border-rose-700';
+            const tagText = isRed ? 'Thị Trường Tốt / Cơ Hội' : 'Thị Trường Xấu / Rủi Ro';
+
+            // Top Corner
+            document.getElementById('cardCornerTop').className = `text-left leading-none font-bold ${suitClass}`;
+            document.getElementById('cardCornerTop').innerHTML = `
+                <div class="text-lg">${card.rank}</div>
+                <div class="text-sm">${card.suit.symbol}</div>
+            `;
+
+            // Market Badge
+            const tagEl = document.getElementById('marketTypeTag');
+            tagEl.className = `px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${tagBg}`;
+            tagEl.innerText = tagText;
+
+            // Big Symbol
+            document.getElementById('cardBigSymbol').className = `text-5xl my-1 ${suitClass}`;
+            document.getElementById('cardBigSymbol').innerText = card.suit.symbol;
+
+            // Title & Desc
+            document.getElementById('cardTitle').innerText = `${card.rank}${card.suit.symbol} - ${card.scenario.title}`;
+            document.getElementById('cardDescription').innerText = card.scenario.desc;
+
+            // Impact Box
+            const sc = card.scenario;
+            let impactStr = "";
+            if (sc.cashChange !== 0) impactStr += `Tiền mặt: ${sc.cashChange > 0 ? '+' : ''}$${sc.cashChange.toLocaleString()} `;
+            if (sc.cashflowChange !== 0) impactStr += `| Dòng tiền: ${sc.cashflowChange > 0 ? '+' : ''}$${sc.cashflowChange.toLocaleString()}/lượt`;
+            if (sc.asset) impactStr += ` | Mua TS: $${sc.asset.cost.toLocaleString()}`;
+
+            document.getElementById('cardImpactBox').innerText = impactStr || "Không ảnh hưởng tài chính trực tiếp";
+            document.getElementById('acceptBtnText').innerText = sc.actionText || "Thực Hiện";
+        }
+
+        function handleCardDecision(accepted) {
+            if (!drawnCard) return;
+
+            const sc = drawnCard.scenario;
+            const cardName = `${drawnCard.rank}${drawnCard.suit.symbol}`;
+
+            if (accepted) {
+                // If accepting requires buying asset, check cash
+                if (sc.asset && gameState.cash < sc.asset.cost) {
+                    alert(`Bạn không đủ tiền mặt ($${gameState.cash.toLocaleString()}) để mua tài sản trị giá $${sc.asset.cost.toLocaleString()}!`);
+                    return;
+                }
+
+                // Apply Financial Changes
+                if (sc.asset) {
+                    gameState.cash -= sc.asset.cost;
+                    gameState.passiveIncome += sc.asset.cashflow;
+                    gameState.assets.push(sc.asset);
+                } else {
+                    gameState.cash += sc.cashChange;
+                    gameState.passiveIncome += sc.cashflowChange;
+                }
+
+                logMove(cardName, sc.title, 'Chấp nhận', sc.cashChange, sc.cashflowChange);
+            } else {
+                logMove(cardName, sc.title, 'Bỏ qua', 0, 0);
+            }
+
+            // Reset Card View
+            drawnCard = null;
+            currentTurn++;
+            document.getElementById('turnCounter').innerText = `#${currentTurn}`;
+
+            const cardInner = document.getElementById('cardInner');
+            cardInner.classList.remove('card-flipped');
+
+            document.getElementById('actionControlsArea').classList.add('hidden');
+            updateUI();
+        }
+
+        function collectPayday() {
+            const netCashflow = gameState.passiveIncome - gameState.expenses;
+            gameState.cash += netCashflow;
+            
+            logMove('PAYDAY', 'Nhận Lương & Dòng Tiền Thu Hồi', 'Thu nhập', netCashflow, 0);
+            updateUI();
+        }
+
+        /* -------------------------------------------------------------
+           5. UI UPDATE ENGINE
+           ------------------------------------------------------------- */
+        function updateUI() {
+            // Metrics
+            document.getElementById('cashValue').innerText = `$${gameState.cash.toLocaleString()}`;
+            
+            const netCashflow = gameState.passiveIncome - gameState.expenses;
+            document.getElementById('cashflowValue').innerText = `${netCashflow >= 0 ? '+' : ''}$${netCashflow.toLocaleString()}`;
+            document.getElementById('cashflowValue').className = `text-lg font-bold font-mono ${netCashflow >= 0 ? 'text-amber-400' : 'text-rose-400'}`;
+
+            document.getElementById('passiveIncomeValue').innerText = `$${gameState.passiveIncome.toLocaleString()}`;
+            document.getElementById('expensesValue').innerText = `$${gameState.expenses.toLocaleString()}`;
+
+            // Calculate total asset value
+            const totalAssetVal = gameState.assets.reduce((acc, curr) => acc + curr.cost, 0);
+            document.getElementById('totalAssetsValue').innerText = `$${totalAssetVal.toLocaleString()}`;
+            document.getElementById('totalLiabilitiesValue').innerText = `$${gameState.liabilities.toLocaleString()}`;
+
+            // Asset List Rendering
+            const assetList = document.getElementById('assetList');
+            const assetBadge = document.getElementById('assetCountBadge');
+            assetBadge.innerText = `${gameState.assets.length} tài sản`;
+
+            if (gameState.assets.length === 0) {
+                assetList.innerHTML = `
+                    <div id="emptyAssetMsg" class="text-center py-6 text-slate-500 text-xs italic">
+                        Chưa có tài sản nào. Hãy rút thẻ bài Đỏ để tìm kiếm cơ hội đầu tư!
+                    </div>
+                `;
+            } else {
+                assetList.innerHTML = gameState.assets.map((ast, idx) => `
+                    <div class="bg-slate-950 p-2 rounded-lg border border-slate-800 flex justify-between items-center text-xs">
+                        <div>
+                            <span class="font-bold text-amber-300 block">${ast.name}</span>
+                            <span class="text-[10px] text-slate-400">Giá mua: $${ast.cost.toLocaleString()}</span>
+                        </div>
+                        <span class="font-mono font-bold text-emerald-400">+$${ast.cashflow}/lượt</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function logMove(cardTag, title, actionStr, cashDiff, cfDiff) {
+            const time = new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            moveLogs.unshift({
+                turn: currentTurn,
+                time,
+                cardTag,
+                title,
+                actionStr,
+                cashDiff,
+                cfDiff
+            });
+
+            renderLogs();
+        }
+
+        function renderLogs() {
+            const logContainer = document.getElementById('historyLogList');
+            const logCount = document.getElementById('logCount');
+            logCount.innerText = moveLogs.length;
+
+            if (moveLogs.length === 0) return;
+
+            logContainer.innerHTML = moveLogs.map(log => `
+                <div class="bg-slate-950 border-l-2 ${log.cashDiff >= 0 ? 'border-emerald-500' : 'border-rose-500'} p-2 rounded text-[11px] space-y-0.5">
+                    <div class="flex justify-between text-[10px] text-slate-500 font-mono">
+                        <span>Lượt #${log.turn} • ${log.time}</span>
+                        <span class="font-bold text-amber-400">${log.cardTag}</span>
+                    </div>
+                    <p class="font-semibold text-slate-200">${log.title}</p>
+                    <div class="flex justify-between items-center pt-1 text-[10px]">
+                        <span class="px-1.5 py-0.2 rounded ${log.actionStr === 'Chấp nhận' ? 'bg-emerald-950 text-emerald-300' : 'bg-slate-800 text-slate-400'} font-semibold">
+                            ${log.actionStr}
+                        </span>
+                        <span class="font-mono font-bold ${log.cashDiff >= 0 ? 'text-emerald-400' : 'text-rose-400'}">
+                            ${log.cashDiff !== 0 ? (log.cashDiff > 0 ? '+' : '') + '$' + log.cashDiff.toLocaleString() : ''}
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /* -------------------------------------------------------------
+           6. EVENT LISTENERS
+           ------------------------------------------------------------- */
+        function setupEventListeners() {
+            document.getElementById('drawCardDeckBtn').addEventListener('click', drawCard);
+            document.getElementById('acceptActionBtn').addEventListener('click', () => handleCardDecision(true));
+            document.getElementById('declineActionBtn').addEventListener('click', () => handleCardDecision(false));
+            document.getElementById('collectPaydayBtn').addEventListener('click', collectPayday);
+
+            // Rotate Board View
+            let isRotated = false;
+            document.getElementById('rotateBoardBtn').addEventListener('click', () => {
+                isRotated = !isRotated;
+                const container = document.getElementById('mainAppContainer');
+                if (isRotated) {
+                    container.classList.add('board-rotated');
+                } else {
+                    container.classList.remove('board-rotated');
+                }
+            });
+
+            // Reset Game
+            document.getElementById('resetGameBtn').addEventListener('click', () => {
+                if (confirm('Bạn có chắc chắn muốn khởi tạo lại ván chơi mới?')) {
+                    gameState = {
+                        cash: 10000,
+                        passiveIncome: 2000,
+                        expenses: 0,
+                        assets: [],
+                        liabilities: 0
+                    };
+                    currentTurn = 1;
+                    drawnCard = null;
+                    moveLogs = [];
+                    initDeck();
+                    
+                    document.getElementById('turnCounter').innerText = '#1';
+                    document.getElementById('deckRemaining').innerText = '52';
+                    document.getElementById('cardInner').classList.remove('card-flipped');
+                    document.getElementById('actionControlsArea').classList.add('hidden');
+                    document.getElementById('historyLogList').innerHTML = `
+                        <div id="emptyLogState" class="text-center text-slate-500 py-20 text-xs italic">
+                            Chưa có hoạt động nào.<br>Hãy bấm vào bộ bài để bắt đầu!
+                        </div>
+                    `;
+                    updateUI();
+                }
+            });
+        }
+    </script>
+</body>
+</html>

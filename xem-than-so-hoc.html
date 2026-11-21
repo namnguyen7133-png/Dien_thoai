@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tool Than So Hoc Toan Dien – Tu van & Huan luyen</title>
+
+<style>
+body{font-family:Arial;background:#f2f2f2;padding:20px}
+.container{max-width:1200px;background:#fff;padding:25px;border-radius:10px;margin:auto}
+h1,h2,h3{color:#7a4a00}
+input,button{padding:10px;width:100%;margin:8px 0}
+button{background:#c99700;color:#fff;border:none;border-radius:5px;font-size:16px}
+.result{background:#fafafa;border-left:5px solid #c99700;padding:20px;margin-top:20px}
+.block{margin-top:25px}
+.note{background:#fff8e6;padding:15px;border-left:5px solid #ffcc00;margin-top:20px}
+ul{padding-left:20px}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h1>TOOL THAN SO HOC TOAN DIEN</h1>
+
+<input id="name" placeholder="Ho va ten">
+<input id="dob" placeholder="Ngay sinh (dd/mm/yyyy)">
+
+<button onclick="analyze()">Xem phan tich</button>
+
+<div id="output" class="result"></div>
+
+</div>
+
+<script>
+/* =========================
+   DU LIEU
+========================= */
+
+const soChuDaoInfo = {
+1:"Lanh dao, khoi dau, doc lap",
+2:"Hoa hop, ket noi, ngoai giao",
+3:"Sang tao, giao tiep, bieu dat",
+4:"Ky luat, xay dung, ben vung",
+5:"Tu do, linh hoat, trai nghiem",
+6:"Gia dinh, trach nhiem, cham soc",
+7:"Noi tam, tri tue, tam linh",
+8:"Tai chinh, quyen luc, thanh tuu",
+9:"Nhan van, cho di, ly tuong",
+11:"Truc giac cao, truyen cam hung",
+22:"Kien tao lon, xay he thong",
+33:"Yeu thuong vo dieu kien, chua lanh"
+};
+
+const nhomSo = {
+1:"Tri nao",3:"Tri nao",5:"Tri nao",
+2:"Cam xuc",4:"Cam xuc",6:"Cam xuc",
+7:"Tinh than",8:"Tinh than",9:"Tinh than"
+};
+
+const chotBaoHiem = {
+1:"Giu quyen chu dong truoc rui ro.",
+2:"Bao ve cam xuc de lo cho nguoi khac.",
+3:"Nen an tam cho tu do sang tao.",
+4:"Bao hiem la quan tri rui ro.",
+5:"Tu do hon khi khong so bien co.",
+6:"Yeu gia dinh la co ke hoach.",
+7:"Binh than truoc vo thuong.",
+8:"Bao toan tai san.",
+9:"Cho di ben vung."
+};
+
+const noiNhe = {
+1:"Anh/chi la nguoi tu quyet, thich chu dong.",
+2:"Anh/chi song tinh cam, hay nghi cho nguoi khac.",
+3:"Anh/chi giao tiep tot, de tao thien cam.",
+4:"Anh/chi lam viec chac chan, can trong.",
+5:"Anh/chi thich tu do, linh hoat.",
+6:"Anh/chi co trach nhiem voi gia dinh.",
+7:"Anh/chi suy nghi sau, noi tam.",
+8:"Anh/chi chiu ap luc thanh cong lon.",
+9:"Anh/chi song vi gia tri cong dong."
+};
+
+const noiSau = {
+1:"Nguoi ganh nhieu nhat thuong la nguoi it duoc bao ve.",
+2:"Neu minh met truoc thi khong ai thay minh lo duoc.",
+3:"Tu do that su la khong lo lang phia sau.",
+4:"Chuan bi de yen tam buoc tiep.",
+5:"Co nen vung thi tu do moi ben.",
+6:"Bao ve minh la yeu gia dinh.",
+7:"Hieu vo thuong de song an nhien.",
+8:"Giu tien kho hon kiem tien.",
+9:"Cho di lau dai can bao ve ban than."
+};
+
+const banDoDongTien=[
+"Thu nhap chu dong",
+"Hoa hong tai tuc",
+"doi nhom – he thong",
+"dau tu an toan",
+"Tu do tai chinh"
+];
+
+/* =========================
+   HAM TINH
+========================= */
+
+function reduceNumber(n){
+while(n>9 && ![11,22,33].includes(n)){
+n=n.toString().split('').reduce((a,b)=>a+Number(b),0)
+}
+return n
+}
+
+function tinhSoChuDao(dob){
+const nums=dob.replace(/\D/g,'')
+if(nums.length<8) return null
+return reduceNumber(nums.split('').reduce((a,b)=>a+Number(b),0))
+}
+
+function soThieu(dob){
+const nums=dob.replace(/\D/g,'').split('')
+let miss=[]
+for(let i=1;i<=9;i++){
+if(!nums.includes(String(i))) miss.push(i)
+}
+return miss
+}
+
+/* =========================
+   HIEN THI
+========================= */
+
+function analyze(){
+const name=document.getElementById("name").value
+const dob=document.getElementById("dob").value
+if(!name||!dob){alert("Nhap du thong tin");return}
+
+const so=tinhSoChuDao(dob)
+if(!so){alert("Ngay sinh khong hop le");return}
+
+const thieu=soThieu(dob)
+
+document.getElementById("output").innerHTML=`
+<h2>${name}</h2>
+
+<div class="block">
+<h3>🔢 So chu dao: ${so}</h3>
+<p>${soChuDaoInfo[so]}</p>
+<p><strong>Nhom:</strong> ${nhomSo[so]}</p>
+</div>
+
+<div class="block">
+<h3>🧩 So thieu</h3>
+<p>${thieu.length?thieu.join(", "):"Khong thieu so nao"}</p>
+</div>
+
+<div class="block">
+<h3>🗣 Kich ban noi chuyen</h3>
+<p><strong>Noi nhe:</strong> ${noiNhe[so]}</p>
+<p><strong>Noi sau:</strong> ${noiSau[so]}</p>
+</div>
+
+<div class="block">
+<h3>💼 Chot bao hiem</h3>
+<p>${chotBaoHiem[so]}</p>
+</div>
+
+<div class="block">
+<h3>💰 Ban do dong tien</h3>
+<ul>${banDoDongTien.map(i=>`<li>${i}</li>`).join("")}</ul>
+</div>
+
+<div class="block">
+<h3>🔄 Chu ky cuoc doi</h3>
+<ul>
+<li>0–27 tuoi: Hoc & trai nghiem</li>
+<li>28–54 tuoi: Xay dung & but pha</li>
+<li>55+: Thu hoach & truyen lai</li>
+</ul>
+</div>
+
+<div class="note">
+📌 Dung DUONG lich – Truoc Tet gieo quan he, sau Tet mo viec.<br>
+Khong khoi 2 viec quan trong cung ngay.
+</div>
+`
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

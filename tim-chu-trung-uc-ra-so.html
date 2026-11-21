@@ -1,0 +1,821 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyen doi Tieng Viet sang So Thu Tu Tieng Trung & Tieng duc</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 25px 30px;
+        }
+        
+        h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2a5298;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5eb;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+        
+        .language-selector {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .lang-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .lang-option input {
+            margin: 0;
+        }
+        
+        .lang-flag {
+            font-size: 24px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 24px;
+            background-color: #2a5298;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        button:hover {
+            background-color: #1e3c72;
+            transform: translateY(-2px);
+        }
+        
+        button#clearBtn {
+            background-color: #6c757d;
+        }
+        
+        button#clearBtn:hover {
+            background-color: #545b62;
+        }
+        
+        .results-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .result-section {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border-top: 5px solid;
+        }
+        
+        .china-result {
+            border-top-color: #d32f2f;
+        }
+        
+        .germany-result {
+            border-top-color: #ff9800;
+        }
+        
+        .result-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 0;
+            border-bottom: 2px solid #e1e5eb;
+            padding-bottom: 10px;
+        }
+        
+        .result-output {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e3c72;
+            min-height: 30px;
+            word-break: break-word;
+            padding: 10px 0;
+        }
+        
+        .tables-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .table-section {
+            overflow-x: auto;
+        }
+        
+        h3 {
+            color: #2a5298;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        
+        th {
+            background-color: #2a5298;
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e1e5eb;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        tr:hover {
+            background-color: #e9ecef;
+        }
+        
+        .china-table th {
+            background-color: #d32f2f;
+        }
+        
+        .germany-table th {
+            background-color: #ff9800;
+        }
+        
+        .explanation {
+            background-color: #e8f4fd;
+            border-left: 4px solid #2a5298;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .note {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .chinese-char {
+            font-family: 'SimSun', 'STKaiti', serif;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        
+        .german-char {
+            font-family: 'Times New Roman', serif;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e5eb;
+            color: #6c757d;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .results-container, .tables-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Chuyen doi Tieng Viet sang So Thu Tu Tieng Trung & Tieng duc</h1>
+            <p class="subtitle">Nhap van ban tieng Viet, chuong trinh se do tim trong bang chu cai va hien thi so thu tu theo quy tac da cho</p>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <label for="vietnameseText">Nhap van ban tieng Viet:</label>
+                <textarea id="vietnameseText" rows="4" placeholder="Nhap van ban tieng Viet vao day..."></textarea>
+                
+                <div class="language-selector">
+                    <div class="lang-option">
+                        <input type="radio" id="chinaRadio" name="language" value="china" checked>
+                        <label for="chinaRadio">
+                            <span class="lang-flag">🇨🇳</span> Tieng Trung
+                        </label>
+                    </div>
+                    <div class="lang-option">
+                        <input type="radio" id="germanyRadio" name="language" value="germany">
+                        <label for="germanyRadio">
+                            <span class="lang-flag">🇩🇪</span> Tieng duc
+                        </label>
+                    </div>
+                    <div class="lang-option">
+                        <input type="radio" id="bothRadio" name="language" value="both">
+                        <label for="bothRadio">
+                            <span class="lang-flag">🌍</span> Ca hai
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button id="convertBtn">Chuyen doi</button>
+                    <button id="clearBtn">Xoa noi dung</button>
+                </div>
+            </div>
+            
+            <div class="results-container">
+                <div class="result-section china-result">
+                    <h3 class="result-title">
+                        <span class="lang-flag">🇨🇳</span> Ket qua tieng Trung:
+                    </h3>
+                    <div id="chinaResult" class="result-output">Chua co ket qua</div>
+                </div>
+                
+                <div class="result-section germany-result">
+                    <h3 class="result-title">
+                        <span class="lang-flag">🇩🇪</span> Ket qua tieng duc:
+                    </h3>
+                    <div id="germanyResult" class="result-output">Chua co ket qua</div>
+                </div>
+            </div>
+            
+            <div class="explanation">
+                <h3>Quy tac chuyen doi:</h3>
+                <p>Voi moi ky tu tieng Viet nhap vao, chuong trinh se:</p>
+                <ol>
+                    <li>Tim trong bang chu cai de xac dinh so thu tu cua chu cai co am tuong tu</li>
+                    <li>Neu so thu tu lon hon 9, chia cho 9 va lay phan du</li>
+                    <li>Neu ket qua la 0, lay gia tri 9</li>
+                </ol>
+                <p><strong>Vi du tieng duc:</strong> Chu "a" co so thu tu la 1 → Ket qua: 1</p>
+                <p><strong>Vi du tieng duc:</strong> Chu "k" co so thu tu la 11 → 11 > 9 nen 11 % 9 = 2 → Ket qua: 2</p>
+                <p><strong>Vi du tieng Trung:</strong> Chu "a" (啊) co so thu tu la 1 → Ket qua: 1</p>
+            </div>
+            
+            <div class="tables-container">
+                <div class="table-section">
+                    <h3>
+                        <span class="lang-flag">🇨🇳</span> Bang chu cai tieng Trung (Pinyin) va am tieng Viet tuong tu
+                    </h3>
+                    <table class="china-table">
+                        <thead>
+                            <tr>
+                                <th>Thu tu</th>
+                                <th>Chu cai tieng Trung (Pinyin)</th>
+                                <th>Chu Han vi du</th>
+                                <th>Am tieng Viet tuong tu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="chinaTableBody">
+                            <!-- Bang se duoc tao bang JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="table-section">
+                    <h3>
+                        <span class="lang-flag">🇩🇪</span> Bang chu cai tieng duc va am tieng Viet tuong tu
+                    </h3>
+                    <table class="germany-table">
+                        <thead>
+                            <tr>
+                                <th>Thu tu</th>
+                                <th>Chu cai tieng duc</th>
+                                <th>Am tieng Viet tuong tu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="germanyTableBody">
+                            <!-- Bang se duoc tao bang JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="note">
+                <h3>Luu y quan trong:</h3>
+                <p>Am tuong duong chi mang tinh gan dung. Tieng Trung su dung he thong chu Han va phien am Pinyin. Tieng duc co mot so ky tu dac biet nhu a, o, u, ß.</p>
+                <p>Cac ky tu dac biet, dau cau va khoang trang se duoc bo qua trong qua trinh chuyen doi.</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Ung dung chuyen doi Tieng Viet sang So Thu Tu Tieng Trung & Tieng duc</p>
+        </footer>
+    </div>
+
+    <script>
+        // Du lieu bang chu cai tieng Trung (Pinyin)
+        const chineseAlphabet = [
+            {order: 1, pinyin: 'a', character: '啊', vietnameseSound: 'a'},
+            {order: 2, pinyin: 'o', character: '哦', vietnameseSound: 'o'},
+            {order: 3, pinyin: 'e', character: '鹅', vietnameseSound: 'e'},
+            {order: 4, pinyin: 'i', character: '一', vietnameseSound: 'i'},
+            {order: 5, pinyin: 'u', character: '五', vietnameseSound: 'u'},
+            {order: 6, pinyin: 'u', character: '雨', vietnameseSound: 'uy'},
+            {order: 7, pinyin: 'b', character: '不', vietnameseSound: 'b'},
+            {order: 8, pinyin: 'p', character: '怕', vietnameseSound: 'p'},
+            {order: 9, pinyin: 'm', character: '妈', vietnameseSound: 'm'},
+            {order: 10, pinyin: 'f', character: '飞', vietnameseSound: 'ph'},
+            {order: 11, pinyin: 'd', character: '的', vietnameseSound: 'd'},
+            {order: 12, pinyin: 't', character: '他', vietnameseSound: 'th'},
+            {order: 13, pinyin: 'n', character: '你', vietnameseSound: 'n'},
+            {order: 14, pinyin: 'l', character: '来', vietnameseSound: 'l'},
+            {order: 15, pinyin: 'g', character: '个', vietnameseSound: 'g'},
+            {order: 16, pinyin: 'k', character: '看', vietnameseSound: 'kh'},
+            {order: 17, pinyin: 'h', character: '好', vietnameseSound: 'h'},
+            {order: 18, pinyin: 'j', character: '家', vietnameseSound: 'ch'},
+            {order: 19, pinyin: 'q', character: '去', vietnameseSound: 'tr'},
+            {order: 20, pinyin: 'x', character: '小', vietnameseSound: 'x'},
+            {order: 21, pinyin: 'zh', character: '这', vietnameseSound: 'tr'},
+            {order: 22, pinyin: 'ch', character: '吃', vietnameseSound: 's'},
+            {order: 23, pinyin: 'sh', character: '是', vietnameseSound: 's'},
+            {order: 24, pinyin: 'r', character: '人', vietnameseSound: 'r'},
+            {order: 25, pinyin: 'z', character: '子', vietnameseSound: 'ch'},
+            {order: 26, pinyin: 'c', character: '从', vietnameseSound: 'x'},
+            {order: 27, pinyin: 's', character: '四', vietnameseSound: 'x'},
+            {order: 28, pinyin: 'y', character: '也', vietnameseSound: 'i'},
+            {order: 29, pinyin: 'w', character: '我', vietnameseSound: 'u'}
+        ];
+
+        // Du lieu bang chu cai tieng duc
+        const germanAlphabet = [
+            {order: 1, letter: 'A a', vietnameseSound: 'a'},
+            {order: 2, letter: 'B b', vietnameseSound: 'b'},
+            {order: 3, letter: 'C c', vietnameseSound: 'k (truoc a, o, u) / ts (truoc e, i)'},
+            {order: 4, letter: 'D d', vietnameseSound: 'd'},
+            {order: 5, letter: 'E e', vietnameseSound: 'e'},
+            {order: 6, letter: 'F f', vietnameseSound: 'ph'},
+            {order: 7, letter: 'G g', vietnameseSound: 'g'},
+            {order: 8, letter: 'H h', vietnameseSound: 'h'},
+            {order: 9, letter: 'I i', vietnameseSound: 'i'},
+            {order: 10, letter: 'J j', vietnameseSound: 'i (nhu "i" trong "ia")'},
+            {order: 11, letter: 'K k', vietnameseSound: 'k'},
+            {order: 12, letter: 'L l', vietnameseSound: 'l'},
+            {order: 13, letter: 'M m', vietnameseSound: 'm'},
+            {order: 14, letter: 'N n', vietnameseSound: 'n'},
+            {order: 15, letter: 'O o', vietnameseSound: 'o'},
+            {order: 16, letter: 'P p', vietnameseSound: 'p'},
+            {order: 17, letter: 'Q q', vietnameseSound: 'k (luon di voi u thanh "qu")'},
+            {order: 18, letter: 'R r', vietnameseSound: 'r (rung co hong)'},
+            {order: 19, letter: 'S s', vietnameseSound: 'x (o dau tu) / s (o cuoi tu)'},
+            {order: 20, letter: 'T t', vietnameseSound: 't'},
+            {order: 21, letter: 'U u', vietnameseSound: 'u'},
+            {order: 22, letter: 'V v', vietnameseSound: 'ph'},
+            {order: 23, letter: 'W w', vietnameseSound: 'v'},
+            {order: 24, letter: 'X x', vietnameseSound: 'ks'},
+            {order: 25, letter: 'Y y', vietnameseSound: 'uy'},
+            {order: 26, letter: 'Z z', vietnameseSound: 'ts'},
+            {order: 27, letter: 'A a', vietnameseSound: 'e (nhu "e" trong "em")'},
+            {order: 28, letter: 'O o', vietnameseSound: 'o (moi tron)'},
+            {order: 29, letter: 'U u', vietnameseSound: 'uy'},
+            {order: 30, letter: 'ẞ ß', vietnameseSound: 's (dai)'}
+        ];
+
+        // Tao bang chu cai tieng Trung
+        function createChineseTable() {
+            const tableBody = document.getElementById('chinaTableBody');
+            
+            chineseAlphabet.forEach(item => {
+                const row = document.createElement('tr');
+                
+                const orderCell = document.createElement('td');
+                orderCell.textContent = item.order;
+                
+                const pinyinCell = document.createElement('td');
+                pinyinCell.textContent = item.pinyin;
+                
+                const charCell = document.createElement('td');
+                charCell.innerHTML = `<span class="chinese-char">${item.character}</span>`;
+                
+                const soundCell = document.createElement('td');
+                soundCell.textContent = item.vietnameseSound;
+                
+                row.appendChild(orderCell);
+                row.appendChild(pinyinCell);
+                row.appendChild(charCell);
+                row.appendChild(soundCell);
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Tao bang chu cai tieng duc
+        function createGermanTable() {
+            const tableBody = document.getElementById('germanyTableBody');
+            
+            germanAlphabet.forEach(item => {
+                const row = document.createElement('tr');
+                
+                const orderCell = document.createElement('td');
+                orderCell.textContent = item.order;
+                
+                const letterCell = document.createElement('td');
+                letterCell.innerHTML = `<span class="german-char">${item.letter}</span>`;
+                
+                const soundCell = document.createElement('td');
+                soundCell.textContent = item.vietnameseSound;
+                
+                row.appendChild(orderCell);
+                row.appendChild(letterCell);
+                row.appendChild(soundCell);
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Tao ban do anh xa tu am tieng Viet sang thu tu tieng Trung
+        function createChineseSoundToOrderMap() {
+            const map = {};
+            
+            chineseAlphabet.forEach(item => {
+                const sound = item.vietnameseSound.toLowerCase();
+                const pinyin = item.pinyin.toLowerCase();
+                
+                // Anh xa truc tiep tu pinyin
+                map[pinyin] = item.order;
+                
+                // Anh xa tu am tieng Viet
+                const soundKey = sound.split(' ')[0];
+                map[soundKey] = item.order;
+                
+                // Anh xa dac biet
+                if (pinyin === 'zh' || pinyin === 'ch' || pinyin === 'sh') {
+                    map['tr'] = item.order; // zh, ch tuong tu "tr"
+                }
+                if (pinyin === 'q') {
+                    map['tr'] = item.order;
+                }
+                if (pinyin === 'x') {
+                    map['x'] = item.order;
+                    map['s'] = item.order; // x va s tuong tu
+                }
+                if (pinyin === 'c') {
+                    map['x'] = item.order;
+                }
+                if (pinyin === 'j') {
+                    map['ch'] = item.order;
+                }
+                if (pinyin === 'u') {
+                    map['uy'] = item.order;
+                    map['u'] = item.order; // u gan voi u
+                }
+                if (pinyin === 'y') {
+                    map['i'] = item.order;
+                }
+                if (pinyin === 'w') {
+                    map['u'] = item.order;
+                }
+            });
+            
+            // Bo sung them cac anh xa co ban
+            map['a'] = 1;
+            map['o'] = 2;
+            map['e'] = 3;
+            map['i'] = 4;
+            map['u'] = 5;
+            map['b'] = 7;
+            map['p'] = 8;
+            map['m'] = 9;
+            map['ph'] = 10;
+            map['d'] = 11;
+            map['th'] = 12;
+            map['n'] = 13;
+            map['l'] = 14;
+            map['g'] = 15;
+            map['kh'] = 16;
+            map['h'] = 17;
+            map['r'] = 24;
+            
+            return map;
+        }
+
+        // Tao ban do anh xa tu am tieng Viet sang thu tu tieng duc
+        function createGermanSoundToOrderMap() {
+            const map = {};
+            
+            germanAlphabet.forEach(item => {
+                const letter = item.letter.toLowerCase().split(' ')[0];
+                const sound = item.vietnameseSound.toLowerCase();
+                
+                // Anh xa truc tiep tu chu cai
+                map[letter] = item.order;
+                
+                // Anh xa tu am tieng Viet
+                const soundKey = sound.split(' ')[0];
+                map[soundKey] = item.order;
+                
+                // Anh xa dac biet
+                if (letter === 'c') {
+                    map['k'] = item.order;
+                    map['ts'] = item.order;
+                }
+                if (letter === 'j') {
+                    map['i'] = item.order;
+                }
+                if (letter === 'q') {
+                    map['k'] = item.order;
+                    map['qu'] = item.order;
+                }
+                if (letter === 's') {
+                    map['x'] = item.order;
+                    map['s'] = item.order;
+                }
+                if (letter === 'v') {
+                    map['ph'] = item.order;
+                }
+                if (letter === 'w') {
+                    map['v'] = item.order;
+                }
+                if (letter === 'x') {
+                    map['ks'] = item.order;
+                }
+                if (letter === 'y') {
+                    map['uy'] = item.order;
+                    map['i'] = item.order;
+                }
+                if (letter === 'z') {
+                    map['ts'] = item.order;
+                }
+                if (letter === 'a') {
+                    map['e'] = item.order;
+                }
+                if (letter === 'o') {
+                    map['o'] = item.order;
+                    map['o'] = item.order;
+                }
+                if (letter === 'u') {
+                    map['uy'] = item.order;
+                    map['u'] = item.order;
+                }
+                if (letter === 'ß') {
+                    map['s'] = item.order;
+                }
+            });
+            
+            // Bo sung them cac anh xa co ban
+            map['a'] = 1;
+            map['b'] = 2;
+            map['d'] = 4;
+            map['e'] = 5;
+            map['ph'] = 6;
+            map['g'] = 7;
+            map['h'] = 8;
+            map['i'] = 9;
+            map['k'] = 11;
+            map['l'] = 12;
+            map['m'] = 13;
+            map['n'] = 14;
+            map['o'] = 15;
+            map['p'] = 16;
+            map['r'] = 18;
+            map['t'] = 20;
+            map['u'] = 21;
+            
+            return map;
+        }
+
+        // Ap dung quy tac xu ly so
+        function processOrder(order) {
+            let processedOrder = order;
+            if (processedOrder > 9) {
+                processedOrder = processedOrder % 9;
+                if (processedOrder === 0) {
+                    processedOrder = 9;
+                }
+            }
+            return processedOrder;
+        }
+
+        // Ham xu ly chuyen doi
+        function convertText() {
+            const inputText = document.getElementById('vietnameseText').value.toLowerCase();
+            const selectedLanguage = document.querySelector('input[name="language"]:checked').value;
+            
+            if (!inputText.trim()) {
+                document.getElementById('chinaResult').textContent = "Vui long nhap van ban tieng Viet";
+                document.getElementById('germanyResult').textContent = "Vui long nhap van ban tieng Viet";
+                return;
+            }
+            
+            const chineseMap = createChineseSoundToOrderMap();
+            const germanMap = createGermanSoundToOrderMap();
+            
+            let chinaResult = "";
+            let germanyResult = "";
+            
+            for (let i = 0; i < inputText.length; i++) {
+                const char = inputText[i];
+                
+                // Bo qua khoang trang va dau cau
+                if (char === ' ' || /[.,!?;:'"()\[\]{}]/.test(char)) {
+                    chinaResult += " ";
+                    germanyResult += " ";
+                    continue;
+                }
+                
+                // Bo qua dau tieng Viet (chi lay chu cai khong dau)
+                const baseChar = char.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                
+                // Xu ly cho tieng Trung
+                let chinaOrder = chineseMap[baseChar];
+                
+                // Thu tim voi 2 ky tu cho cac am ghep
+                if (!chinaOrder && i < inputText.length - 1) {
+                    const twoChars = baseChar + inputText[i + 1].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    chinaOrder = chineseMap[twoChars];
+                }
+                
+                // Xu ly cho tieng duc
+                let germanyOrder = germanMap[baseChar];
+                
+                // Thu tim voi 2 ky tu cho cac am ghep
+                if (!germanyOrder && i < inputText.length - 1) {
+                    const twoChars = baseChar + inputText[i + 1].normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    germanyOrder = germanMap[twoChars];
+                }
+                
+                // Xu ly ket qua tieng Trung
+                if (chinaOrder) {
+                    chinaResult += processOrder(chinaOrder) + " ";
+                } else {
+                    chinaResult += "? ";
+                }
+                
+                // Xu ly ket qua tieng duc
+                if (germanyOrder) {
+                    germanyResult += processOrder(germanyOrder) + " ";
+                } else {
+                    germanyResult += "? ";
+                }
+            }
+            
+            // Hien thi ket qua theo lua chon
+            if (selectedLanguage === 'china' || selectedLanguage === 'both') {
+                document.getElementById('chinaResult').textContent = chinaResult.trim() || "Khong tim thay ky tu tuong ung";
+            } else {
+                document.getElementById('chinaResult').textContent = "Vui long chon Tieng Trung hoac Ca hai";
+            }
+            
+            if (selectedLanguage === 'germany' || selectedLanguage === 'both') {
+                document.getElementById('germanyResult').textContent = germanyResult.trim() || "Khong tim thay ky tu tuong ung";
+            } else {
+                document.getElementById('germanyResult').textContent = "Vui long chon Tieng duc hoac Ca hai";
+            }
+        }
+
+        // Ham xoa noi dung
+        function clearContent() {
+            document.getElementById('vietnameseText').value = '';
+            document.getElementById('chinaResult').textContent = 'Chua co ket qua';
+            document.getElementById('germanyResult').textContent = 'Chua co ket qua';
+        }
+
+        // Khoi tao khi trang duoc tai
+        document.addEventListener('DOMContentLoaded', function() {
+            createChineseTable();
+            createGermanTable();
+            
+            // Gan su kien cho cac nut
+            document.getElementById('convertBtn').addEventListener('click', convertText);
+            document.getElementById('clearBtn').addEventListener('click', clearContent);
+            
+            // Cho phep nhan Enter de chuyen doi (nhung khong submit form)
+            document.getElementById('vietnameseText').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    convertText();
+                    e.preventDefault();
+                }
+            });
+            
+            // Hien thi vi du
+            document.getElementById('vietnameseText').value = "xin chao the gioi";
+            
+            // Chuyen doi ngay khi trang tai
+            convertText();
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

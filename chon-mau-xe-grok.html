@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRA MAU XE HOP MENH - CHUAN 100%</title>
+<style>
+  body {font-family: Arial; background: linear-gradient(135deg, #1e3c72, #2a5298); margin:0; padding:15px; color:#fff;}
+  .box {background: rgba(0,0,0,0.75); border-radius:25px; padding:25px; max-width:700px; margin:0 auto; box-shadow:0 15px 40px rgba(0,0,0,0.8);}
+  h1 {font-size:3em; text-align:center; color:#ffeb3b; text-shadow:0 0 20px #fff; margin:0 0 25px;}
+  input {width:100%; padding:20px; margin:10px 0; font-size:1.5em; border-radius:15px; border:none; box-sizing:border-box;}
+  button {width:100%; padding:22px; font-size:1.8em; background:#ff1744; color:white; border:none; border-radius:15px; font-weight:bold; margin-top:15px 0;}
+  button:hover {background:#c4001d;}
+  #ketqua {margin-top:30px; padding:25px; background:rgba(255,255,255,0.15); border-radius:20px; font-size:1.6em; line-height:2.3;}
+  .color {width:100px; height:100px; border-radius:50%; display:inline-block; margin:12px; border:6px solid #fff; box-shadow:0 8px 20px #000;}
+  .note {text-align:center; font-size:1.4em; color:#ffeb3b; margin-top:25px; font-weight:bold;}
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h1>TRA MAU XE HOP MENH</h1>
+
+  <input type="text" id="tenxe" placeholder="Ten xe (VD: SRC, Wave, Exciter)">
+  <input type="number" id="dungtich" placeholder="Dung tich xi-lanh (VD: 110)">
+  <input type="text" id="acquy" placeholder="Acquy / Ma so (VD: YTX5L)">
+  <input type="text" id="tenchu" placeholder="Ten chu giay to (VD: NAM)">
+
+  <button onclick="tinhMauChuan()">XEM KET QUA</button>
+
+  <div id="ketqua"></div>
+  <div class="note">Mau nao xuat hien nhieu lan nhat = HOP MENH NHAT!</div>
+</div>
+
+<script>
+// Bang chu cai B24 - XUOI & NGUOC
+const B24 = {
+  xuoi: {A:1,B:2,C:3,D:4,E:5,F:6,G:7,H:8,I:9,J:10,K:11,L:12,M:13,N:14,O:15,P:16,R:17,S:18,T:19,U:20,V:21,W:22,X:23,Y:24},
+  nguoc:{A:24,B:23,C:22,D:21,E:20,F:19,G:18,H:17,I:16,J:15,K:14,L:13,M:12,N:11,O:10,P:9,R:8,S:7,T:6,U:5,V:4,W:3,X:2,Y:1}
+};
+
+// Them chu thuong + co dau
+Object.assign(B24.xuoi, {
+  a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,j:10,k:11,l:12,m:13,n:14,o:15,p:16,r:17,s:18,t:19,u:20,v:21,w:22,x:23,y:24,
+  a:1,a:1,a:1,a:1,a:1,a:1,a:1,a:1,a:1,a:1,a:1,a:1,a:1,a:1,a:1,a:1,a:1,
+  e:5,e:5,e:5,e:5,e:5,e:5,e:5,e:5,e:5,e:5,e:5,
+  i:9,i:9,i:9,i:9,i:9,
+  o:15,o:15,o:15,o:15,o:15,o:15,o:15,o:15,o:15,o:15,o:15,o:15,o:15,o:15,o:15,o:15,o:15,
+  u:20,u:20,u:20,u:20,u:20,u:20,u:20,u:20,u:20,u:20,u:20,
+  y:24,y:24,y:24,y:24
+});
+Object.assign(B24.nguoc, {
+  a:24,b:23,c:22,d:21,e:20,f:19,g:18,h:17,i:16,j:15,k:14,l:13,m:12,n:11,o:10,p:9,r:8,s:7,t:6,u:5,v:4,w:3,x:2,y:1,
+  a:24,a:24,a:24,a:24,a:24,a:24,a:24,a:24,a:24,a:24,a:24,a:24,a:24,a:24,a:24,a:24,a:24,
+  e:20,e:20,e:20,e:20,e:20,e:20,e:20,e:20,e:20,e:20,e:20,
+  i:16,i:16,i:16,i:16,i:16,
+  o:10,o:10,o:10,o:10,o:10,o:10,o:10,o:10,o:10,o:10,o:10,o:10,o:10,o:10,o:10,o:10,o:10,
+  u:5,u:5,u:5,u:5,u:5,u:5,u:5,u:5,u:5,u:5,u:5,
+  y:1,y:1,y:1,y:1
+});
+
+// 6 BANG MAU dung thu tu ban dua
+const bangMau = [
+  // Bang 1
+  ["dO","#ff0000"],["VANG","#ffff00"],["TRANG","#ffffff"],["LUC","#00ff00"],["LAM","#0000ff"],
+  ["dO","#ff0000"],["VANG","#ffff00"],["TRANG","#ffffff"],["LUC","#00ff00"],["LAM","#0000ff"],
+  ["dO","#ff0000"],["VANG","#ffff00"],["TRANG","#ffffff"],["LUC","#00ff00"],
+  // Bang 2
+  ["dEN","#000000"],["TRANG","#ffffff"],["HB","#ff00ff"],["LAM","#0000ff"],["LUC","#00ff00"],
+  ["TIM","#800080"],["dO","#ff0000"],["CAM","#ff8c00"],["VANG","#ffff00"],["dEN","#000000"],
+  ["TRANG","#ffffff"],["HB","#ff00ff"],["LAM","#0000ff"],["LUC","#00ff00"],
+  // Bang 3
+  ["VANG","#ffff00"],["dO","#ff0000"],["HONG","#ff69b4"],["GHI","#808080"],["TRANG","#ffffff"],
+  ["dEN","#000000"],["HB","#ff00ff"],["LAM","#0000ff"],["VANG","#ffff00"],["dO","#ff0000"],
+  ["HONG","#ff69b4"],["GHI","#808080"],["TRANG","#ffffff"],["dEN","#000000"],
+  // Bang 4
+  ["dO","#ff0000"],["VANG","#ffff00"],["CAM","#ff8c00"],["LUC","#00ff00"],["LAM","#0000ff"],
+  ["CHAM","#4b0082"],["TIM","#800080"],["dO","#ff0000"],["VANG","#ffff00"],["CAM","#ff8c00"],
+  ["LUC","#00ff00"],["LAM","#0000ff"],["CHAM","#4b0082"],["TIM","#800080"],
+  // Bang 5
+  ["dO","#ff0000"],["VANG","#ffff00"],["LAM","#0000ff"],["dO","#ff0000"],["VANG","#ffff00"],
+  ["LAM","#0000ff"],["dO","#ff0000"],["VANG","#ffff00"],["LAM","#0000ff"],["dO","#ff0000"],
+  ["VANG","#ffff00"],["LAM","#0000ff"],["dO","#ff0000"],["VANG","#ffff00"],
+  // Bang 6
+  ["LAM","#0000ff"],["dO","#ff0000"],["VANG","#ffff00"],["dEN","#000000"],["LAM","#0000ff"],
+  ["dO","#ff0000"],["VANG","#ffff00"],["dEN","#000000"],["LAM","#0000ff"],["dO","#ff0000"],
+  ["VANG","#ffff00"],["dEN","#000000"],["LAM","#0000ff"],["dO","#ff0000"]
+];
+
+// Ham ghep so tung chu cai → 14113
+function ghepSo(ten, xuoiHayNguoc) {
+  let str = "";
+  ten = ten.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  for (let c of ten) {
+    let val = B24[xuoiHayNguoc][c];
+    if (val) str += val;
+  }
+  return str; // "14113"
+}
+
+// Lay chu so cuoi (hang don vi)
+function layChuSoCuoi(so) {
+  if (so == 0) return 0;
+  return so % 10;
+}
+
+// Tra mau theo so (1-14)
+function traBangMau(so) {
+  if (so <= 0) return null;
+  let idx = (so - 1) % 14; // 1→0, 2→1, ..., 14→13, 15→0
+  return bangMau[idx];
+}
+
+function tinhMauChuan() {
+  const tenxe = document.getElementById("tenxe").value.trim();
+  const dt = parseInt(document.getElementById("dungtich").value);
+  const tenchu = document.getElementById("tenchu").value.trim();
+
+  if (!tenchu || !dt) {
+    alert("Nhap day du Ten chu va Dung tich xi-lanh!");
+    return;
+  }
+
+  let html = `<b style="color:#ffeb3b;font-size:1.8em">KET QUA</b><br><br>`;
+  html += `Ten chu: <b>${tenchu}</b> | Xe: <b>${tenxe||"-"}</b> | Dung tich: <b>${dt}cc</b><br><br>`;
+
+  const ketQuaMau = {};
+
+  ["xuoi","nguoc"].forEach(loai => {
+    const daySo = ghepSo(tenchu, loai);           // "14113"
+    const soLon = parseInt(daySo);                  // 14113
+    const thuong = Math.floor(soLon / dt);          // 128
+    const du = soLon % dt;                          // 33
+    const so1 = layChuSoCuoi(thuong);              // 8
+    const so2 = layChuSoCuoi(du);                  // 3
+
+    html += `<b>${loai==="xuoi"?"XUOI":"NGUOC"}</b><br>`;
+    html += `${tenchu} = <b>${daySo}</b><br>`;
+    html += `${daySo} ÷ ${dt} = ${thuong} du ${du}<br>`;
+    html += `→ Chu so cuoi: <b>${so1}</b> va <b>${so2}</b><br><br>`;
+
+    // Tra 2 so nay trong 6 bang
+    [so1, so2].forEach(n => {
+      if (n > 0) {
+        const mau = traBangMau(n);
+        if (mau) {
+          const [ten, hex] = mau;
+          if (!ketQuaMau[ten]) ketQuaMau[ten] = {hex, count:0};
+          ketQuaMau[ten].count++;
+        }
+      }
+    });
+  });
+
+  // Hien thi mau hop
+  html += `<b style="font-size:2em;color:#ffeb3b">MAU HOP MENH</b><br><br>`;
+  const sorted = Object.entries(ketQuaMau).sort((a,b)=>b[1].count - a[1].count);
+  sorted.forEach(([ten, info]) => {
+    html += `<span class="color" style="background:${info.hex}"></span> `;
+    html += `<b>${ten}</b> (${info.count} lan)<br>`;
+    html += `<code style="background:#000;padding:8px;border-radius:10px">${info.hex}</code><br><br>`;
+  });
+
+  document.getElementById("ketqua").innerHTML = html;
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

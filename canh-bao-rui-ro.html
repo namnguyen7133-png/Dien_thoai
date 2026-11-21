@@ -1,0 +1,379 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinh Rui Ro Tai Nan</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        .result-box {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border-left: 4px solid #3498db;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .calculate-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+        
+        .calculate-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .warning {
+            color: #e74c3c;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #ffeaea;
+            border: 1px solid #e74c3c;
+            display: none;
+        }
+        
+        .info {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #e8f4fc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .divider {
+            height: 1px;
+            background-color: #eee;
+            margin: 20px 0;
+        }
+        
+        .alert-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .alert-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
+        .alert-success {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .result-item {
+            margin-bottom: 5px;
+            padding: 3px 0;
+        }
+        
+        .zero-remainder {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .near-zero {
+            color: #e67e22;
+            font-weight: bold;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tinh Rui Ro Tai Nan</h1>
+        
+        <div class="input-group">
+            <label for="birthDate">1. Ngay thang nam sinh:</label>
+            <input type="date" id="birthDate">
+        </div>
+        
+        <div class="input-group">
+            <label for="pregnancyDate">2. Ngay thang nam mang thai (sinh nhat - 285 ngay):</label>
+            <input type="date" id="pregnancyDate" readonly>
+        </div>
+        
+        <div class="input-group">
+            <label for="checkDate">3. Ngay thang nam muon xem:</label>
+            <input type="date" id="checkDate">
+        </div>
+        
+        <button class="calculate-btn" onclick="calculateRisk()">Tinh Toan Rui Ro</button>
+        
+        <div class="section-title">Ket qua tinh toan</div>
+        
+        <div class="result-box">
+            <label>4. Ket qua phep chia (phan nguyen):</label>
+            <div id="divisionResults"></div>
+        </div>
+        
+        <div class="result-box">
+            <label>5. Ket qua phep chia (so du):</label>
+            <div id="remainderResults"></div>
+        </div>
+        
+        <div class="result-box">
+            <label>6. Ket qua chia phan nguyen tiep (so du):</label>
+            <div id="quotientRemainderResults"></div>
+        </div>
+        
+        <div class="alert-box alert-danger" id="warningMessage">
+            <strong>CANH BAO:</strong> Co nguy co tai nan xay ra! Cac so co so du bang 0:
+            <div id="zeroRemainders"></div>
+        </div>
+        
+        <div class="alert-box alert-warning" id="nearZeroMessage">
+            <strong>LUU Y:</strong> Cac so co so du sap bang 0 (duoi 5):
+            <div id="nearZeroRemainders"></div>
+        </div>
+        
+        <div class="alert-box alert-success" id="safeMessage">
+            <strong>AN TOAN:</strong> Khong co so du nao bang 0. Nguy co tai nan thap.
+        </div>
+        
+        <div class="info">
+            <p><strong>Huong dan su dung:</strong></p>
+            <p>1. Nhap ngay sinh cua ban vao o so 1.</p>
+            <p>2. O so 2 se tu dong tinh ngay mang thai (ngay sinh tru 285 ngay).</p>
+            <p>3. Nhap ngay ban muon kiem tra rui ro vao o so 3.</p>
+            <p>4. Nhan nut "Tinh Toan Rui Ro" de xem ket qua.</p>
+            <p>5. Neu co bat ky phep chia nao co so du bang 0, he thong se canh bao nguy co tai nan.</p>
+            <p>6. He thong cung canh bao cac so co so du gan bang 0 (duoi 5).</p>
+        </div>
+    </div>
+
+    <script>
+        // Danh sach cac so chia
+        const divisors = [
+            14,15,21,23,28,33,38,43,48,53,58,63,68,73,78,83,88,93,98,103,108,
+            183,188,283,288,293,298,313,318,644,756,924,763,768,1690,1911,4850,
+            111,222,333,444,555,666,777,888,999,159,195,168,186,276,267,294,249,
+            285,258,348,384,357,375,438,483,429,492,519,591,537,573,618,681,627,
+            672,726,762,735,753,816,861,825,852,843,834,915,951,924,942
+        ];
+        
+        // Cap nhat ngay mang thai khi ngay sinh thay doi
+        document.getElementById('birthDate').addEventListener('change', function() {
+            const birthDate = new Date(this.value);
+            if (!isNaN(birthDate.getTime())) {
+                const pregnancyDate = new Date(birthDate);
+                pregnancyDate.setDate(pregnancyDate.getDate() - 285);
+                document.getElementById('pregnancyDate').valueAsDate = pregnancyDate;
+            }
+        });
+        
+        // Ham tinh toan rui ro
+        function calculateRisk() {
+            const birthDate = new Date(document.getElementById('birthDate').value);
+            const pregnancyDate = new Date(document.getElementById('pregnancyDate').value);
+            const checkDate = new Date(document.getElementById('checkDate').value);
+            
+            // Kiem tra du lieu dau vao
+            if (isNaN(birthDate.getTime()) || isNaN(pregnancyDate.getTime()) || isNaN(checkDate.getTime())) {
+                alert('Vui long nhap day du cac ngay!');
+                return;
+            }
+            
+            // Tinh so ngay giua ngay kiem tra va ngay mang thai
+            const timeDiff = checkDate.getTime() - pregnancyDate.getTime();
+            const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+            
+            let divisionHTML = '';
+            let remainderHTML = '';
+            let quotientRemainderHTML = '';
+            let zeroRemainders = [];
+            let nearZeroRemainders = [];
+            
+            // Thuc hien cac phep chia
+            for (let divisor of divisors) {
+                const quotient = Math.floor(dayDiff / divisor);
+                const remainder = dayDiff % divisor;
+                
+                // Kiem tra so du cua phep chia ban dau
+                if (remainder === 0) {
+                    zeroRemainders.push(`${dayDiff} ÷ ${divisor} = ${quotient} (du ${remainder})`);
+                    divisionHTML += `<div class="result-item zero-remainder">${dayDiff} ÷ ${divisor} = ${quotient}</div>`;
+                    remainderHTML += `<div class="result-item zero-remainder">${dayDiff} ÷ ${divisor} du ${remainder}</div>`;
+                } else if (remainder < 5) {
+                    nearZeroRemainders.push(`${dayDiff} ÷ ${divisor} = ${quotient} (du ${remainder})`);
+                    divisionHTML += `<div class="result-item near-zero">${dayDiff} ÷ ${divisor} = ${quotient}</div>`;
+                    remainderHTML += `<div class="result-item near-zero">${dayDiff} ÷ ${divisor} du ${remainder}</div>`;
+                } else {
+                    divisionHTML += `<div class="result-item">${dayDiff} ÷ ${divisor} = ${quotient}</div>`;
+                    remainderHTML += `<div class="result-item">${dayDiff} ÷ ${divisor} du ${remainder}</div>`;
+                }
+                
+                // Thuc hien phep chia tiep voi phan nguyen
+                for (let divisor2 of divisors) {
+                    const quotient2 = Math.floor(quotient / divisor2);
+                    const remainder2 = quotient % divisor2;
+                    
+                    // Kiem tra so du cua phep chia phan nguyen
+                    if (remainder2 === 0) {
+                        zeroRemainders.push(`(${dayDiff} ÷ ${divisor}) ÷ ${divisor2} = ${quotient2} (du ${remainder2})`);
+                        quotientRemainderHTML += `<div class="result-item zero-remainder">(${dayDiff} ÷ ${divisor}) ÷ ${divisor2} du ${remainder2}</div>`;
+                    } else if (remainder2 < 5) {
+                        nearZeroRemainders.push(`(${dayDiff} ÷ ${divisor}) ÷ ${divisor2} = ${quotient2} (du ${remainder2})`);
+                        quotientRemainderHTML += `<div class="result-item near-zero">(${dayDiff} ÷ ${divisor}) ÷ ${divisor2} du ${remainder2}</div>`;
+                    } else {
+                        quotientRemainderHTML += `<div class="result-item">(${dayDiff} ÷ ${divisor}) ÷ ${divisor2} du ${remainder2}</div>`;
+                    }
+                }
+            }
+            
+            // Hien thi ket qua
+            document.getElementById('divisionResults').innerHTML = divisionHTML;
+            document.getElementById('remainderResults').innerHTML = remainderHTML;
+            document.getElementById('quotientRemainderResults').innerHTML = quotientRemainderHTML;
+            
+            // Hien thi canh bao
+            const warningMessage = document.getElementById('warningMessage');
+            const nearZeroMessage = document.getElementById('nearZeroMessage');
+            const safeMessage = document.getElementById('safeMessage');
+            const zeroRemaindersDiv = document.getElementById('zeroRemainders');
+            const nearZeroRemaindersDiv = document.getElementById('nearZeroRemainders');
+            
+            if (zeroRemainders.length > 0) {
+                warningMessage.style.display = 'block';
+                nearZeroMessage.style.display = 'none';
+                safeMessage.style.display = 'none';
+                
+                let zeroHTML = '';
+                for (let item of zeroRemainders) {
+                    zeroHTML += `<div>${item}</div>`;
+                }
+                zeroRemaindersDiv.innerHTML = zeroHTML;
+            } else if (nearZeroRemainders.length > 0) {
+                warningMessage.style.display = 'none';
+                nearZeroMessage.style.display = 'block';
+                safeMessage.style.display = 'none';
+                
+                let nearZeroHTML = '';
+                for (let item of nearZeroRemainders) {
+                    nearZeroHTML += `<div>${item}</div>`;
+                }
+                nearZeroRemaindersDiv.innerHTML = nearZeroHTML;
+            } else {
+                warningMessage.style.display = 'none';
+                nearZeroMessage.style.display = 'none';
+                safeMessage.style.display = 'block';
+            }
+        }
+        
+        // dat ngay mac dinh cho de kiem tra
+        window.onload = function() {
+            const today = new Date();
+            document.getElementById('checkDate').valueAsDate = today;
+            
+            // Tinh ngay sinh mac dinh (20 nam truoc)
+            const defaultBirthDate = new Date();
+            defaultBirthDate.setFullYear(today.getFullYear() - 20);
+            document.getElementById('birthDate').valueAsDate = defaultBirthDate;
+            
+            // Tinh ngay mang thai
+            const pregnancyDate = new Date(defaultBirthDate);
+            pregnancyDate.setDate(pregnancyDate.getDate() - 285);
+            document.getElementById('pregnancyDate').valueAsDate = pregnancyDate;
+        };
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

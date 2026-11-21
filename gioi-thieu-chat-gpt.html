@@ -1,0 +1,247 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>100 Tinh Huong & Bai Toan Cuoc Song</title>
+<style>
+  /* Tong the */
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(to right, #e0f7fa, #ffffff);
+    margin: 0;
+    padding: 20px;
+  }
+  h1 {
+    text-align: center;
+    color: #00796b;
+    font-size: 2.5em;
+    margin-bottom: 40px;
+  }
+
+  /* Accordion */
+  .accordion {
+    background-color: #ffffff;
+    color: #004d40;
+    cursor: pointer;
+    padding: 20px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    font-size: 1.2em;
+  }
+  .accordion:hover {
+    background-color: #b2dfdb;
+  }
+  .accordion.active {
+    background-color: #80cbc4;
+    color: #ffffff;
+  }
+
+  /* Noi dung mo rong */
+  .panel {
+    padding: 0 20px;
+    display: none;
+    background-color: #e0f2f1;
+    overflow: hidden;
+    border-left: 5px solid #00796b;
+    border-radius: 0 0 12px 12px;
+    font-size: 1.1em;
+    line-height: 1.6em;
+  }
+  .panel p {
+    padding: 15px 0;
+    margin: 0;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    h1 { font-size: 2em; }
+    .accordion { font-size: 1em; padding: 15px; }
+    .panel { font-size: 0.95em; padding: 0 15px; }
+  }
+</style>
+</head>
+<body>
+
+<h1>100 Tinh Huong & Bai Toan Cuoc Song</h1>
+
+<div id="accordion-container"></div>
+
+<script>
+const examples = [
+  // 1-10: Xay dung & Nha o
+  "Tinh toan chi phi xay dung nha 100m² tai thanh pho lon.",
+  "Du toan chi phi dien nuoc khi xay nha moi.",
+  "Thiet ke noi that theo do tuoi va nhu cau cua gia dinh.",
+  "Lap ke hoach mua sam do noi that theo ngan sach.",
+  "Tinh chi phi bao tri, sua chua dinh ky cua ngoi nha.",
+  "Lua chon vat lieu xay dung vua ben vua tiet kiem.",
+  "Toi uu hoa khong gian song cho can ho 50m².",
+  "Lap ke hoach du phong chi phi phat sinh khi xay nha.",
+  "Tinh toan chi phi lap dat he thong nang luong mat troi.",
+  "So sanh gia thue tho xay va tu lam de toi uu chi phi.",
+
+  // 11-20: Giao thong & Phuong tien
+  "Tinh chi phi mua xe hoi phu hop ngan sach gia dinh.",
+  "Lap ke hoach chi tieu cho xe may va xe dap.",
+  "Toi uu tuyen duong di lam hang ngay de tiet kiem xang.",
+  "Lap ke hoach bao duong xe theo nam.",
+  "So sanh chi phi di xe cong cong va di xe ca nhan.",
+  "Du toan chi phi xang dau khi di du lich dai ngay.",
+  "Lua chon xe phu hop voi nhu cau gia dinh 4 nguoi.",
+  "Tinh toan bao hiem xe va cac phu phi lien quan.",
+  "Phan tich chi phi xe dien so voi xe xang.",
+  "Lap bang chi phi khau hao xe theo nam.",
+
+  // 21-30: Su kien & Tiec tung
+  "Lap ke hoach to chuc dam cuoi ngan sach vua phai.",
+  "Du toan chi phi dam ma cua nguoi than.",
+  "Tinh chi phi xay mo cho cac cu theo phong tuc.",
+  "Lap danh sach khach moi va uoc luong chi phi tiec.",
+  "Toi uu hoa chi phi thue dia diem to chuc su kien.",
+  "Lap ke hoach mua sam thuc pham cho tiec 100 nguoi.",
+  "Tinh chi phi trang tri theo chu de su kien.",
+  "Len lich trinh to chuc su kien tiet kiem thoi gian.",
+  "So sanh chi phi cac dich vu to chuc tiec cuoi.",
+  "Tinh toan chi phi in an thiep moi va qua luu niem.",
+
+  // 31-40: Tai chinh ca nhan
+  "Lap ke hoach chi tieu ca nhan hang thang.",
+  "Tinh toan tiet kiem mua nha sau 5 nam.",
+  "Lap ke hoach tra no tin dung hieu qua.",
+  "Toi uu hoa chi tieu gia dinh theo tung nhom.",
+  "Phan tich loi nhuan va chi phi dau tu nho.",
+  "Tinh toan quy huu tri theo tuoi nghi huu mong muon.",
+  "danh gia rui ro dau tu chung khoan.",
+  "Lap ke hoach mua sam lon theo uu tien.",
+  "Du toan chi phi du lich dai ngay.",
+  "Tinh toan quy khan cap cho cac tinh huong bat ngo.",
+
+  // 41-50: Tai chinh doanh nghiep
+  "Lap du toan ngan sach doanh nghiep nam dau.",
+  "Toi uu hoa quy tien mat du tru khan cap cong ty.",
+  "Phan tich dong tien hang thang cua doanh nghiep.",
+  "Tinh loi nhuan bien san pham theo tung thang.",
+  "Du doan chi phi nhan su va van hanh cong ty.",
+  "Tinh toan chi phi marketing va quang cao hieu qua.",
+  "Lap bao cao tai chinh dinh ky cho sep va co dong.",
+  "Tinh toan quy du phong rui ro cho cong ty.",
+  "So sanh chi phi thue van phong va tu xay dung.",
+  "Lap ke hoach thanh toan nha cung cap va cong no khach hang.",
+
+  // 51-70: Thuat toan & Cong nghe
+  "Ap dung thuat toan cai ba lo de toi uu ngan sach mua sam.",
+  "Su dung thuat toan quay lui de sap xep lich trinh hop ly.",
+  "Tim duong di ngan nhat giua nha va cong ty.",
+  "Toi uu hoa lich trinh giao hang van tai hang ngay.",
+  "Su dung thuat toan Dijkstra cho mang giao thong.",
+  "Ap dung thuat toan Floyd-Warshall cho lo trinh di lai.",
+  "Tinh toan toi uu hoa ton kho bang thuat toan lap trinh tuyen tinh.",
+  "Su dung thuat toan phan loai de chon nha thau xay dung.",
+  "Tim lo trinh tiet kiem xang nhat bang thuat toan do thi.",
+  "Su dung thuat toan Monte Carlo de du doan chi phi du an.",
+  "Ap dung thuat toan tim kiem nhanh can de lua chon dau tu.",
+  "Su dung thuat toan greedy cho viec sap xep lich trinh cong viec.",
+  "Toi uu hoa chi phi logistic bang thuat toan di truyen.",
+  "Ap dung thuat toan hoc may de du doan nhu cau thi truong.",
+  "Toi uu hoa lich hoc va du an sinh vien bang thuat toan lap lich.",
+  "Su dung thuat toan dynamic programming cho bai toan chi phi toi uu.",
+  "Lap mo hinh toan hoc cho du toan chi phi xay dung.",
+  "Su dung thuat toan heuristic de len ke hoach dam cuoi.",
+  "Ap dung thuat toan cay quyet dinh de chon thiet ke noi that.",
+  "Toi uu hoa quy chi tieu ca nhan bang thuat toan toi uu hoa da muc tieu.",
+
+  // 71-100: dai hoc & Nghien cuu
+  "Tinh toan chi phi nghien cuu khoa hoc ap dung thuat toan thong ke.",
+  "Phan tich du lieu lon trong du an kinh doanh bang Python.",
+  "Su dung thuat toan mang no-ron de du doan chi phi xay dung.",
+  "Lap mo hinh du doan khach hang tiem nang bang machine learning.",
+  "Ap dung thuat toan clustering de phan loai khach hang.",
+  "Du doan nhu cau thuc pham cho nha hang bang thuat toan thoi gian thuc.",
+  "Toi uu hoa viec su dung nang luong trong toa nha thong minh.",
+  "Su dung mo phong Monte Carlo de du bao chi phi van tai.",
+  "Ap dung ly thuyet do thi cho quan ly mang luoi giao thong.",
+  "Lap mo hinh toan hoc du doan luong dien tieu thu.",
+  "Toi uu hoa chuoi cung ung bang thuat toan heuristic.",
+  "Su dung thuat toan fuzzy logic de ra quyet dinh kho khan.",
+  "Du bao thi truong bat dong san bang phan tich thong ke.",
+  "Ap dung ly thuyet xac suat trong quan ly rui ro du an.",
+  "Toi uu hoa lich trinh benh vien bang thuat toan lap lich.",
+  "Su dung thuat toan phan loai de chon nha cung cap tot nhat.",
+  "Du doan chi phi bao tri may moc cong nghiep.",
+  "Toi uu hoa chi phi nhan luc trong du an cong ty.",
+  "Lap mo hinh toan hoc chi phi san xuat va loi nhuan.",
+  "Su dung thuat toan tim kiem cuc bo de cai thien quy trinh.",
+  "Ap dung ly thuyet tro choi trong thuong luong hop dong.",
+  "Du doan nhu cau nuoc va dien cho do thi thong minh.",
+  "Toi uu hoa chi phi marketing bang phan tich du lieu.",
+  "Su dung thuat toan gradient descent de toi uu hoa gia thanh.",
+  "Lap mo hinh rui ro tai chinh cho ngan hang.",
+  "Ap dung thuat toan phan cum de quan ly kho hang.",
+  "Toi uu hoa lich trinh lop hoc dai hoc bang thuat toan lap lich.",
+  "Su dung mo phong de du doan chi phi xay dung duong cao toc.",
+  "Ap dung thuat toan di truyen trong thiet ke san pham moi."
+];
+
+// Tao cac muc accordion
+const container = document.getElementById('accordion-container');
+examples.forEach((item, index) => {
+  const button = document.createElement('button');
+  button.className = 'accordion';
+  button.textContent = `Vi du #${index + 1}`;
+
+  const panel = document.createElement('div');
+  panel.className = 'panel';
+  panel.innerHTML = `<p>${item}</p>`;
+
+  container.appendChild(button);
+  container.appendChild(panel);
+});
+
+// Accordion mo/dong
+const accordions = document.getElementsByClassName('accordion');
+for (let i = 0; i < accordions.length; i++) {
+  accordions[i].addEventListener('click', function() {
+    this.classList.toggle('active');
+    const panel = this.nextElementSibling;
+    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+  });
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

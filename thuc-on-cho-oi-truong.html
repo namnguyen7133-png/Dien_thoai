@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thuc don 2 ngay — Lanh dao, Chi huy, doi truong, Quan ly</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #0f172a; color: #f8fafc; }
+        h1, h2 { color: #38bdf8; }
+        .card { background: #1e293b; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: 1px solid #334155; }
+        .emergency { background: #450a0a; border-left: 6px solid #ef4444; padding: 20px; margin-bottom: 20px; border-radius: 4px; color: #fecaca; }
+        .emergency h3 { color: #f87171; margin-top: 0; }
+        .emergency ul { margin: 10px 0 0 20px; line-height: 1.6; }
+        .grid-2days { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        @media(max-width: 900px) { .grid-2days { grid-template-columns: 1fr; } }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; background: #1e293b; }
+        th, td { border: 1px solid #334155; padding: 12px; text-align: left; vertical-align: top; color: #f8fafc; }
+        th { background-color: #334155; color: #38bdf8; }
+        .system-box { background: #1e293b; color: #f8fafc; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #334155; }
+        .system-box h2 { color: #38bdf8; margin-top: 0; }
+        .highlight { color: #f43f5e; font-weight: bold; }
+        .success { color: #10b981; font-weight: bold; }
+        .btn-menu { display: inline-block; background: #334155; color: #f8fafc; padding: 8px 14px; text-decoration: none; border-radius: 4px; font-weight: bold; margin-right: 5px; border: 1px solid #475569; }
+        .btn-menu.active { background: #eab308; color: #0f172a; }
+    </style>
+</head>
+<body>
+
+    <h1>🛡 Thuc don 2 ngay — Lanh dao, Chi huy, doi truong, Quan ly</h1>
+    
+    <!-- Menu dieu huong -->
+    <div style="margin-bottom: 20px;">
+        <a href="file:///E:/HTML/github_data/index.html" class="btn-menu">🏠 Trang Chu</a>
+        <a href="file:///E:/HTML/github_data/025-thuc-on-i-linh.html" class="btn-menu">di linh</a>
+        <a href="file:///E:/HTML/github_data/286-an-benh-tri.html" class="btn-menu">Benh tri</a>
+        <a href="file:///E:/HTML/github_data/029-thuc-on-cho-oi-truong.html" class="btn-menu active">doi truong</a>
+    </div>
+
+    <!-- BANG dIEU KHIEN dA HE SO -->
+    <div class="system-box">
+        <h2>⚡ BANG dIEU KHIEN dA HE SO TU dONG</h2>
+        <p>Hom nay: <span id="current-date" style="color: #38bdf8;">dang cap nhat...</span></p>
+        <hr style="border-color: #334155; margin: 15px 0;">
+        <p><b>1. He Nhi Phan (Trang thai):</b> <span id="binary-status" class="success">BAT (1 - Lam viec sau)</span> 
+           <button onclick="toggleBinary()" style="margin-left: 15px; padding: 4px 10px; background: #38bdf8; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">doi Bat/Tat</button>
+        </p>
+        <p><b>2. He 10 Phan (10 Tac Vu Van Hanh / Cong Viec):</b> Ngay <span id="thien-can" class="highlight">---</span> → Tac vu chu dao: <span id="tac-vu-cong-viec" style="color: #fbbf24;">---</span></p>
+        <p><b>3. He 12 dia Chi (Phan bo 2 May san xuat theo gio & 12 Thuc don an uong):</b> Gio <span id="dia-chi" class="highlight">---</span> → <span id="may-status">dang tinh toan tai...</span></p>
+        <p><b>4. He 9 Cung & 900 Trang Web:</b> dang chay tu dong qua ma tran thoi gian, phan bo 1440 phut (Cong viec, Gia dinh vo con, Hoc tap, Giai tri).</p>
+    </div>
+
+    <!-- GOC CAP CUU NHANH -->
+    <div class="emergency">
+        <h3>🚨 GOC CAP CUU NHANH: KHI BI CAM LANH, MET MOI, dAY BUNG</h3>
+        <ul>
+            <li><b>Truong hop Cam lanh, Trung gio, Sot nhe:</b> Nghi ngoi hoan toan, dap chan giu am co the, xoa dau gio vao long ban chan, thai duong va co. Uong ngay mot coc nuoc gung tuoi pha mat ong am, an chao hanh tia to nong de ra mo hoi giai doc. Dung thuoc ha sot/giam dau theo chi dinh neu can thiet.</li>
+            <li><b>Truong hop day bung, Kho tieu, An uong kem:</b> Tuyet doi khong nap them do dau mo, do ngot hay tinh bot nang. Dung nuoc am pha vai lat gung hoac tra vo quyt/tra tia to. Xoa bung nhe nhang theo chieu kim dong ho de kich thich tieu hoa tu nhien.</li>
+            <li><b>Quy trinh tu dong hoa Pushbullet:</b> He thong se tu dong quet trang thai va ban canh bao khan cap truoc 1 tieng neu phat hien chi so thoi tiet thay doi dot ngot hoac lich trinh lich su lap lai nguy co cam mao.</li>
+        </ul>
+    </div>
+
+    <!-- KHU VUC HIEN THI SONG SONG 2 NGAY -->
+    <div class="card">
+        <h2>📜 KHO THUC dON CHI TIET (Hien thi song song 2 ngay)</h2>
+        <div class="grid-2days">
+            <!-- Cot Ngay 1 & 2 -->
+            <div>
+                <div style="background: #334155; padding: 10px 15px; font-weight: bold; border-radius: 6px 6px 0 0; color: #38bdf8;">📅 Ngay 1 — Chi tiet bua an (~2.700 kcal)</div>
+                <div style="border: 1px solid #475569; padding: 15px; margin-bottom: 20px; border-radius: 0 0 6px 6px; background: #0f172a;">
+                    <p><b>08:00 — Sang (~800 kcal):</b> Banh mi + trung op la + Trai cay tuoi.</p>
+                    <p><b>12:00 — Trua (~900 kcal):</b> Com 1.5 chen + Thit bo xao hanh tay 150g + Canh rau ngot thit bam.</p>
+                    <p><b>16:00 — Toi nhe (~1000 kcal):</b> Salad ca hoi + Snack hat dinh duong + Nuoc khoang.</p>
+                </div>
+
+                <div style="background: #334155; padding: 10px 15px; font-weight: bold; border-radius: 6px 6px 0 0; color: #38bdf8;">📅 Ngay 2 — Chi tiet bua an (~2.750 kcal)</div>
+                <div style="border: 1px solid #475569; padding: 15px; border-radius: 0 0 6px 6px; background: #0f172a;">
+                    <p><b>08:00 — Sang (~850 kcal):</b> Hu tieu nam vang + Tra gung am.</p>
+                    <p><b>12:00 — Trua (~950 kcal):</b> Com gao lut + Ga kho sa ot + Canh bi do nau tom.</p>
+                    <p><b>16:00 — Toi nhe (~950 kcal):</b> Chao yen mach thit bam + Trai cay trang mieng.</p>
+                </div>
+            </div>
+
+            <!-- Cot Danh sach di cho & Y te -->
+            <div>
+                <div style="background: #1e293b; border: 1px solid #475569; padding: 15px; border-radius: 8px;">
+                    <h3 style="margin-top: 0; color: #38bdf8; font-size: 16px; border-bottom: 2px solid #334155; padding-bottom: 8px;">🛒 Danh sach di cho & Y te</h3>
+                    <p style="margin: 8px 0;">Gao / Gao lut 5kg — <b style="color: #10b981;">110000d</b></p>
+                    <p style="margin: 8px 0;">Thit ga / Bo 2kg — <b style="color: #10b981;">220000d</b></p>
+                    <p style="margin: 8px 0;">Ca hoi / Hai san 2kg — <b style="color: #10b981;">180000d</b></p>
+                    <p style="margin: 8px 0;">Trung ga 20 qua — <b style="color: #10b981;">60000d</b></p>
+                    <hr style="border: 0; border-top: 1px dashed #334155; margin: 12px 0;">
+                    <p style="margin: 8px 0;"><b>Y te du phong:</b></p>
+                    <p style="margin: 8px 0;">Paracetamol 500mg — <b style="color: #60a5fa;">30000d</b></p>
+                    <p style="margin: 8px 0;">ORS bu nuoc — <b style="color: #60a5fa;">45000d</b></p>
+                    <hr style="border: 0; border-top: 1px solid #334155; margin: 12px 0;">
+                    <p style="font-size: 15px;"><b>TONG CONG: <span style="color: #f43f5e;">645000d</span></b></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script tinh toan tu dong -->
+    <script>
+        const THIEN_CAN_CONG_VIEC = [
+            "Giap (Tac vu: Kiem tra he thong Git & Pushbullet)",
+            "At (Tac vu: dong bo co so du lieu KHOPHIM.db)",
+            "Binh (Tac vu: Tu dong hoa bao cao Affiliate 32 shop)",
+            "dinh (Tac vu: Quet log he thong & Don dep rac web)",
+            "Mau (Tac vu: Cap nhat thong tin thoi tiet & Tu dong nhac nho)",
+            "Ky (Tac vu: Kiem tra phan bo ma tran 1440 phut)",
+            "Canh (Tac vu: Kiem tra bao mat & Phan quyen may chu)",
+            "Tan (Tac vu: Sao luu du lieu CSV & Gui tep tu dong)",
+            "Nham (Tac vu: Xu ly phu de & Phan tich van ban folklore)",
+            "Quy (Tac vu: Tong ket hieu suat van hanh toan he thong)"
+        ];
+        
+        const DIA_CHI = ["Ty", "Suu", "Dan", "Mao", "Thin", "Ty", "Ngo", "Mui", "Than", "Dau", "Tuat", "Hoi"];
+
+        let binaryState = 1;
+        function toggleBinary() {
+            binaryState = binaryState === 1 ? 0 : 1;
+            const el = document.getElementById("binary-status");
+            if(binaryState === 1) {
+                el.className = "success";
+                el.innerText = "BAT (1 - Lam viec sau)";
+            } else {
+                el.className = "highlight";
+                el.innerText = "TAT (0 - Nghi ngoi hoan toan)";
+            }
+        }
+
+        function runSystem() {
+            const now = new Date();
+            document.getElementById("current-date").innerText = now.toLocaleString('vi-VN');
+
+            const moc0 = new Date(2026, 0, 1);
+            const diffDays = Math.floor((now - moc0) / (1000 * 60 * 60 * 24));
+            
+            const canIndex = Math.abs(diffDays) % 10;
+            const chiIndex = now.getHours() % 12;
+
+            document.getElementById("thien-can").innerText = THIEN_CAN_CONG_VIEC[canIndex].split(" ")[0];
+            document.getElementById("tac-vu-cong-viec").innerText = THIEN_CAN_CONG_VIEC[canIndex];
+            document.getElementById("dia-chi").innerText = DIA_CHI[chiIndex];
+
+            const mayStatus = document.getElementById("may-status");
+            if(["Ty", "Dan", "Thin", "Ngo", "Than", "Tuat"].includes(DIA_CHI[chiIndex])) {
+                mayStatus.innerHTML = "⚡ <b>May 1 (Duong):</b> Chay tac vu nang. | 🛡 <b>May 2 (Am):</b> Quet web/Bao tri.";
+            } else {
+                mayStatus.innerHTML = "🛡 <b>May 2 (Am):</b> Chay uu tien. | ⚡ <b>May 1 (Duong):</b> Quet tu dong.";
+            }
+        }
+        runSystem();
+    </script>
+</body>
+</html>

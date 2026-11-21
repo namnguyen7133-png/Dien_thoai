@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Trò Chơi Thực Dưỡng: Chuyến Đò Cân Bằng</title>
+    <style>
+        body { font-family: sans-serif; background: #fdfdfd; padding: 15px; }
+        .game-app { max-width: 650px; margin: auto; background: white; border: 3px solid #2c3e50; border-radius: 15px; padding: 20px; }
+        .screen { display: flex; gap: 10px; margin-bottom: 20px; }
+        .side { flex: 1; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; min-height: 100px; display: flex; flex-direction: column; justify-content: center; }
+        .side-su { background: #e3f2fd; border: 2px solid #2196f3; color: #0d47a1; }
+        .side-quy { background: #ffebee; border: 2px solid #f44336; color: #b71c1c; }
+        
+        .tab-btn { padding: 10px; cursor: pointer; border: none; background: #eee; margin-right: 5px; border-radius: 5px 5px 0 0; }
+        .active-tab { background: #2c3e50; color: white; }
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #eee; padding: 10px; border-radius: 0 0 10px 10px; }
+        button { padding: 10px; border: 1px solid #ccc; border-radius: 5px; cursor: pointer; font-size: 0.9em; text-align: left; }
+        .desc { margin-top: 15px; font-size: 0.85em; background: #fff9c4; padding: 10px; border-radius: 5px; border-left: 5px solid #fbc02d; }
+    </style>
+</head>
+<body>
+
+<div class="game-app">
+    <h2 style="text-align:center;">🚢 CHUYẾN ĐÒ ÂM DƯƠNG</h2>
+    
+    <div class="screen">
+        <div class="side side-su">
+            <span>NHÀ SƯ (+)</span>
+            <div id="su-item" style="font-size: 1.2em; margin-top:10px;">---</div>
+        </div>
+        <div style="font-size: 2em; align-self:center;">⇄</div>
+        <div class="side side-quy">
+            <span>QUỶ (-)</span>
+            <div id="quy-item" style="font-size: 1.2em; margin-top:10px;">---</div>
+        </div>
+    </div>
+
+    <div>
+        <button id="tab1" class="tab-btn active-tab" onclick="switchTab(1)">Đồ mua sẵn (Viện/Tạp hóa)</button>
+        <button id="tab2" class="tab-btn" onclick="switchTab(2)">Đồ nấu tại nhà (Chợ)</button>
+    </div>
+
+    <div id="menu" class="menu-grid">
+        </div>
+
+    <div id="instruction" class="desc">
+        <strong>Luật chơi:</strong> Chọn một món bạn chuẩn bị cho người bệnh ăn. Tôi sẽ báo đó là Nhà sư hay Quỷ và cần "đối tác" nào để qua sông an toàn.
+    </div>
+</div>
+
+<script>
+const shopData = [
+    {n: "Ngô luộc / Cơm trắng", s: "+", p: "Sư 1", target: "Bánh mì / Rau luộc (Quỷ 1)"},
+    {n: "Khoai luộc / Phở / Bánh mì", s: "-", p: "Quỷ 1", target: "Ngô luộc / Cơm trắng (Sư 1)"},
+    {n: "Trứng luộc / Bí đỏ luộc", s: "++", p: "Sư 2", target: "Sữa / Trái cây (Quỷ 2)"},
+    {n: "Sữa / Trái cây chua", s: "--", p: "Quỷ 2", target: "Trứng gà luộc (Sư 2)"},
+    {n: "Muối mè / Tương hầm", s: "+++", p: "Sư 3", target: "Nước ngọt / Cháo loãng (Quỷ 3)"},
+    {n: "Cháo trắng loãng / Nước ngọt", s: "---", p: "Quỷ 3", target: "Muối mè / Tương (Sư 3)"}
+];
+
+const homeData = [
+    {n: "Gạo lứt / Kê", s: "+", p: "Sư 1", target: "Su hào / Đậu ván (Quỷ 1)"},
+    {n: "Su hào / Đậu ván", s: "-", p: "Quỷ 1", target: "Gạo lứt / Kê (Sư 1)"},
+    {n: "Cà rốt / Bí đỏ / Đậu đỏ", s: "++", p: "Sư 2", target: "Khoai lang / Sữa đậu (Quỷ 2)"},
+    {n: "Khoai lang / Đậu nành", s: "--", p: "Quỷ 2", target: "Cà rốt / Bí đỏ (Sư 2)"},
+    {n: "Ngưu bàng / Sắn dây", s: "+++", p: "Sư 3", target: "Cà chua / Măng / Giá (Quỷ 3)"},
+    {n: "Cà chua / Măng / Giá / Nấm", s: "---", p: "Quỷ 3", target: "Ngưu bàng / Sắn dây (Sư 3)"}
+];
+
+function loadMenu(data) {
+    const menu = document.getElementById('menu');
+    menu.innerHTML = data.map(item => `
+        <button onclick="playGame('${item.s}', '${item.p}', '${item.n}', '${item.target}')">
+            ${item.n} (${item.s})
+        </button>
+    `).join('');
+}
+
+function switchTab(t) {
+    document.getElementById('tab1').className = t===1 ? 'tab-btn active-tab' : 'tab-btn';
+    document.getElementById('tab2').className = t===2 ? 'tab-btn active-tab' : 'tab-btn';
+    loadMenu(t===1 ? shopData : homeData);
+}
+
+function playGame(sign, role, name, target) {
+    const isDuong = sign.includes('+');
+    if(isDuong) {
+        document.getElementById('su-item').innerText = `${name} (${role})`;
+        document.getElementById('quy-item').innerText = "???";
+        document.getElementById('instruction').innerHTML = `<strong>Lái đò báo:</strong> Bạn đang đưa <strong>${role}</strong> lên thuyền. Để cân bằng, hãy tìm thêm <strong>${target}</strong> cho chuyến đò này!`;
+    } else {
+        document.getElementById('quy-item').innerText = `${name} (${role})`;
+        document.getElementById('su-item').innerText = "???";
+        document.getElementById('instruction').innerHTML = `<strong>Lái đò báo:</strong> <strong>${role}</strong> đã lên thuyền! Cẩn thận, hãy mời ngay <strong>${target}</strong> đi cùng để nhà sư không bị ăn thịt!`;
+    }
+}
+
+// Khởi tạo
+loadMenu(shopData);
+</script>
+
+</body>
+</html>

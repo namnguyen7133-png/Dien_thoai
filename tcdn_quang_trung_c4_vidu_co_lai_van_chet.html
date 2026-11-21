@@ -1,0 +1,649 @@
+﻿<!-- ======================= CASE 5 ======================= -->
+<div class="section" id="case5">
+<h3>💀 Case 5 – Co lai nhung van chet (Dong tien)</h3>
+
+<p><b>Tinh huong:</b> Doanh nghiep ban hang co lai nhung cho khach no dai ngay.</p>
+
+<label>Doanh thu (d):</label><br>
+<input type="number" id="c5_revenue"><br>
+
+<label>Gia von (d):</label><br>
+<input type="number" id="c5_cogs"><br>
+
+<label>Khoan phai thu binh quan (d):</label><br>
+<input type="number" id="c5_receivable"><br>
+
+<button onclick="calcCase5()">Phan tich</button>
+
+<div class="result" id="result5"></div>
+</div>
+
+<script>
+function calcCase5() {
+    let rev = Number(c5_revenue.value);
+    let cogs = Number(c5_cogs.value);
+    let rec = Number(c5_receivable.value);
+
+    let profit = rev - cogs;
+    let turnover = rev / rec;
+    let days = 360 / turnover;
+
+    result5.innerHTML = `
+    Loi nhuan ke toan: <b>${profit.toLocaleString()}</b><br>
+    Ky thu tien: <b>${days.toFixed(0)}</b> ngay<br><br>
+
+    ${days > 90
+        ? "💀 <b>NGUY HIEM:</b> Lai tren giay nhung tien ve qua cham → de pha san"
+        : "✅ Dong tien on dinh"}
+    `;
+}
+</script>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>25 Vi du thuc te - Co lai nhung van chet</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .case-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 5px solid #764ba2;
+        }
+        
+        .case-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .case-title {
+            font-size: 1.3rem;
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .case-title i {
+            font-size: 1.5rem;
+        }
+        
+        .case-description {
+            color: #555;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+        
+        .case-data {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .data-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .data-label {
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .data-value {
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .btn-analyze {
+            background-color: #764ba2;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        
+        .btn-analyze:hover {
+            background-color: #5a3780;
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .result-danger {
+            background-color: #fff5f5;
+            border-left: 5px solid #f56565;
+            color: #c53030;
+        }
+        
+        .result-safe {
+            background-color: #f0fff4;
+            border-left: 5px solid #48bb78;
+            color: #22543d;
+        }
+        
+        .result-warning {
+            background-color: #fffaf0;
+            border-left: 5px solid #ed8936;
+            color: #9c4221;
+        }
+        
+        .profit-positive {
+            color: #48bb78;
+        }
+        
+        .profit-negative {
+            color: #f56565;
+        }
+        
+        .key-metric {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin: 8px 0;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .conclusion {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            border-top: 5px solid #667eea;
+        }
+        
+        .conclusion h2 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #f6e05e;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-chart-line"></i> 25 Vi du thuc te "Co lai nhung van chet"</h1>
+        <p class="subtitle">Phan tich tinh huong doanh nghiep co lai nhung gap van de dong tien</p>
+    </header>
+    
+    <div class="container" id="casesContainer">
+        <!-- Cac vi du se duoc them bang JavaScript -->
+    </div>
+    
+    <div class="conclusion">
+        <h2><i class="fas fa-lightbulb"></i> Bai hoc kinh nghiem</h2>
+        <p>Qua 25 vi du tren, chung ta thay ro rang rang <strong>"lai tren giay" khong phai la "tien trong tui"</strong>. Nhieu doanh nghiep pha san khong phai vi kinh doanh lo, ma vi het tien mat de duy tri hoat dong.</p>
+        
+        <div class="highlight">
+            <p><i class="fas fa-exclamation-triangle"></i> <strong>Nguyen nhan chinh:</strong> Cho khach hang no qua dai trong khi phai tra nha cung cap, nhan vien va cac chi phi khac ngay lap tuc.</p>
+        </div>
+        
+        <p><strong>Giai phap:</strong></p>
+        <ul style="padding-left: 20px; margin-top: 10px;">
+            <li>Quan ly chat che cac khoan phai thu</li>
+            <li>dam phan ky han thanh toan voi nha cung cap</li>
+            <li>Co du phong tien mat cho it nhat 3-6 thang chi phi hoat dong</li>
+            <li>Khong ngai tu choi nhung hop dong co dieu kien thanh toan qua bat loi</li>
+            <li>Su dung cac cong cu tai chinh nhu chiet khau thanh toan som cho khach hang</li>
+        </ul>
+    </div>
+    
+    <footer>
+        <p>© 2023 - Phan tich tai chinh doanh nghiep | Luu y: Cac vi du chi mang tinh chat minh hoa</p>
+    </footer>
+
+    <script>
+        // Du lieu 25 vi du thuc te
+        const cases = [
+            {
+                id: 1,
+                title: "Cua hang van phong pham",
+                description: "Ban hang cho cac truong hoc, duoc thanh toan cuoi hoc ky",
+                revenue: 800000000,
+                cogs: 520000000,
+                receivable: 200000000,
+                icon: "fas fa-store"
+            },
+            {
+                id: 2,
+                title: "Cong ty xay dung dan dung",
+                description: "Nhan thau xay nha, thu tien theo tien do nhung phai ung von truoc",
+                revenue: 5000000000,
+                cogs: 3500000000,
+                receivable: 1800000000,
+                icon: "fas fa-hard-hat"
+            },
+            {
+                id: 3,
+                title: "dai ly vat lieu xay dung",
+                description: "Ban vat lieu cho cac cong trinh, chu thau thanh toan cham 90-120 ngay",
+                revenue: 3000000000,
+                cogs: 2100000000,
+                receivable: 1000000000,
+                icon: "fas fa-tools"
+            },
+            {
+                id: 4,
+                title: "Cong ty thiet bi y te",
+                description: "Cung cap thiet bi cho benh vien, thanh toan theo quy",
+                revenue: 12000000000,
+                cogs: 8400000000,
+                receivable: 4500000000,
+                icon: "fas fa-hospital"
+            },
+            {
+                id: 5,
+                title: "Nha phan phoi thuc pham",
+                description: "Phan phoi cho sieu thi, sieu thi tra tien sau 60 ngay",
+                revenue: 20000000000,
+                cogs: 16000000000,
+                receivable: 5000000000,
+                icon: "fas fa-utensils"
+            },
+            {
+                id: 6,
+                title: "Cong ty san xuat noi that",
+                description: "San xuat theo don dat hang, thu tien sau khi giao hang 30 ngay",
+                revenue: 8000000000,
+                cogs: 5600000000,
+                receivable: 2500000000,
+                icon: "fas fa-couch"
+            },
+            {
+                id: 7,
+                title: "dai ly o to",
+                description: "Ban o to tra gop, ngan hang thanh toan sau 15 ngay",
+                revenue: 50000000000,
+                cogs: 42500000000,
+                receivable: 12000000000,
+                icon: "fas fa-car"
+            },
+            {
+                id: 8,
+                title: "Cong ty quang cao",
+                description: "Thuc hien chien dich quang cao, khach hang thanh toan sau 45 ngay",
+                revenue: 3000000000,
+                cogs: 1800000000,
+                receivable: 1500000000,
+                icon: "fas fa-ad"
+            },
+            {
+                id: 9,
+                title: "Xuong may gia cong",
+                description: "Nhan gia cong cho thuong hieu thoi trang, thanh toan sau 60 ngay",
+                revenue: 5000000000,
+                cogs: 3500000000,
+                receivable: 2000000000,
+                icon: "fas fa-tshirt"
+            },
+            {
+                id: 10,
+                title: "Cua hang dien may",
+                description: "Ban hang tra gop, cong ty tai chinh thanh toan sau 7-14 ngay",
+                revenue: 15000000000,
+                cogs: 12000000000,
+                receivable: 4000000000,
+                icon: "fas fa-tv"
+            },
+            {
+                id: 11,
+                title: "Nha thau co dien",
+                description: "Lap dat he thong dien cho toa nha, thanh toan theo giai doan",
+                revenue: 12000000000,
+                cogs: 8400000000,
+                receivable: 5000000000,
+                icon: "fas fa-bolt"
+            },
+            {
+                id: 12,
+                title: "Cong ty phan mem",
+                description: "Phat trien phan mem theo yeu cau, thanh toan sau nghiem thu",
+                revenue: 5000000000,
+                cogs: 2000000000,
+                receivable: 3000000000,
+                icon: "fas fa-laptop-code"
+            },
+            {
+                id: 13,
+                title: "dai ly thiet bi van phong",
+                description: "Cung cap cho doanh nghiep, thanh toan cuoi thang",
+                revenue: 6000000000,
+                cogs: 4200000000,
+                receivable: 2000000000,
+                icon: "fas fa-print"
+            },
+            {
+                id: 14,
+                title: "Cong ty su kien",
+                description: "To chuc su kien, khach hang thanh toan sau su kien 30 ngay",
+                revenue: 2000000000,
+                cogs: 1200000000,
+                receivable: 1000000000,
+                icon: "fas fa-calendar-alt"
+            },
+            {
+                id: 15,
+                title: "Nha phan phoi duoc pham",
+                description: "Phan phoi thuoc cho nha thuoc, thanh toan sau 45-60 ngay",
+                revenue: 30000000000,
+                cogs: 24000000000,
+                receivable: 9000000000,
+                icon: "fas fa-pills"
+            },
+            {
+                id: 16,
+                title: "Xuong in an",
+                description: "In an bao bi, khach hang thanh toan sau 30 ngay",
+                revenue: 3000000000,
+                cogs: 2100000000,
+                receivable: 1200000000,
+                icon: "fas fa-print"
+            },
+            {
+                id: 17,
+                title: "Cua hang trang tri noi that",
+                description: "Ban va thi cong noi that, thu tien sau khi hoan thanh",
+                revenue: 4000000000,
+                cogs: 2800000000,
+                receivable: 1800000000,
+                icon: "fas fa-paint-roller"
+            },
+            {
+                id: 18,
+                title: "Cong ty van tai",
+                description: "Van chuyen hang hoa, khach hang thanh toan theo thang",
+                revenue: 10000000000,
+                cogs: 7000000000,
+                receivable: 3500000000,
+                icon: "fas fa-truck"
+            },
+            {
+                id: 19,
+                title: "Cua hang may tinh",
+                description: "Ban may tinh va thiet bi van phong, cho doanh nghiep no 60 ngay",
+                revenue: 8000000000,
+                cogs: 6400000000,
+                receivable: 3000000000,
+                icon: "fas fa-desktop"
+            },
+            {
+                id: 20,
+                title: "Cong ty thiet bi cong nghiep",
+                description: "Nhap khau va phan phoi thiet bi, thanh toan sau 90 ngay",
+                revenue: 20000000000,
+                cogs: 16000000000,
+                receivable: 8000000000,
+                icon: "fas fa-industry"
+            },
+            {
+                id: 21,
+                title: "dai ly vat tu nong nghiep",
+                description: "Ban phan bon, thuoc tru sau cho nong dan, thu tien sau thu hoach",
+                revenue: 5000000000,
+                cogs: 3500000000,
+                receivable: 2500000000,
+                icon: "fas fa-tractor"
+            },
+            {
+                id: 22,
+                title: "Cong ty thi cong xay dung",
+                description: "Thi cong cong trinh dan dung, thanh toan theo tien do",
+                revenue: 15000000000,
+                cogs: 10500000000,
+                receivable: 7000000000,
+                icon: "fas fa-building"
+            },
+            {
+                id: 23,
+                title: "Nha phan phoi sua",
+                description: "Phan phoi sua cho dai ly, thanh toan sau 30 ngay",
+                revenue: 25000000000,
+                cogs: 20000000000,
+                receivable: 6000000000,
+                icon: "fas fa-wine-bottle"
+            },
+            {
+                id: 24,
+                title: "Cua hang do choi tre em",
+                description: "Ban si cho cac dai ly, thanh toan sau 45 ngay",
+                revenue: 3000000000,
+                cogs: 2100000000,
+                receivable: 1200000000,
+                icon: "fas fa-gamepad"
+            },
+            {
+                id: 25,
+                title: "Cong ty dich vu ve sinh",
+                description: "Cung cap dich vu ve sinh van phong, thanh toan cuoi thang",
+                revenue: 2000000000,
+                cogs: 1200000000,
+                receivable: 800000000,
+                icon: "fas fa-broom"
+            }
+        ];
+
+        // Ham dinh dang so tien
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('vi-VN').format(amount) + ' d';
+        }
+
+        // Ham tinh toan ket qua
+        function analyzeCase(revenue, cogs, receivable) {
+            let profit = revenue - cogs;
+            let turnover = receivable > 0 ? revenue / receivable : 0;
+            let days = turnover > 0 ? 360 / turnover : 0;
+            
+            return {
+                profit: profit,
+                days: days,
+                turnover: turnover
+            };
+        }
+
+        // Ham hien thi ket qua
+        function showResult(caseId, revenue, cogs, receivable) {
+            const result = analyzeCase(revenue, cogs, receivable);
+            const resultElement = document.getElementById(`result${caseId}`);
+            
+            let resultClass = 'result-safe';
+            let statusText = '✅ Dong tien on dinh';
+            
+            if (result.days > 120) {
+                resultClass = 'result-danger';
+                statusText = '💀 <b>NGUY HIEM CAO:</b> Tien ve qua cham, nguy co pha san rat cao';
+            } else if (result.days > 90) {
+                resultClass = 'result-danger';
+                statusText = '⚠ <b>NGUY HIEM:</b> Lai tren giay nhung tien ve qua cham → de pha san';
+            } else if (result.days > 60) {
+                resultClass = 'result-warning';
+                statusText = '⚠ <b>CANH BAO:</b> Tien ve cham, can quan ly chat khoan phai thu';
+            }
+            
+            const profitClass = result.profit >= 0 ? 'profit-positive' : 'profit-negative';
+            const profitText = result.profit >= 0 ? 'Co lai' : 'Lo';
+            
+            resultElement.innerHTML = `
+                <div class="data-item">
+                    <span class="data-label">Loi nhuan gop:</span>
+                    <span class="data-value ${profitClass}">${formatCurrency(result.profit)}</span>
+                </div>
+                <div class="key-metric">Ky thu tien trung binh: <span style="color: ${result.days > 90 ? '#f56565' : (result.days > 60 ? '#ed8936' : '#48bb78')}">${result.days.toFixed(0)} ngay</span></div>
+                <p>${statusText}</p>
+            `;
+            
+            resultElement.className = `result ${resultClass}`;
+            resultElement.style.display = 'block';
+        }
+
+        // Tao cac the vi du
+        function createCaseCards() {
+            const container = document.getElementById('casesContainer');
+            
+            cases.forEach(caseData => {
+                const caseElement = document.createElement('div');
+                caseElement.className = 'case-card';
+                caseElement.innerHTML = `
+                    <div class="case-title">
+                        <i class="${caseData.icon}"></i>
+                        <span>${caseData.id}. ${caseData.title}</span>
+                    </div>
+                    <p class="case-description">${caseData.description}</p>
+                    <div class="case-data">
+                        <div class="data-item">
+                            <span class="data-label">Doanh thu (d):</span>
+                            <span class="data-value">${formatCurrency(caseData.revenue)}</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Gia von (d):</span>
+                            <span class="data-value">${formatCurrency(caseData.cogs)}</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">Phai thu binh quan (d):</span>
+                            <span class="data-value">${formatCurrency(caseData.receivable)}</span>
+                        </div>
+                    </div>
+                    <button class="btn-analyze" onclick="showResult(${caseData.id}, ${caseData.revenue}, ${caseData.cogs}, ${caseData.receivable})">
+                        <i class="fas fa-calculator"></i> Phan tich dong tien
+                    </button>
+                    <div class="result" id="result${caseData.id}"></div>
+                `;
+                
+                container.appendChild(caseElement);
+            });
+        }
+
+        // Khoi tao khi trang tai xong
+        document.addEventListener('DOMContentLoaded', function() {
+            createCaseCards();
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

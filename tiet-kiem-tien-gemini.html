@@ -1,0 +1,317 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinh Toan & Tu Duy Tai Chinh Ca Nhan Hoan Chinh</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            margin-top: 25px;
+        }
+        h3 {
+            color: #28a745;
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input[type="number"] {
+            padding: 10px;
+            margin: 5px 0 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 95%;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #28a745;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        ul li {
+            background: #e9ecef;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+        }
+        .note {
+            font-style: italic;
+            color: #6c757d;
+            margin-top: 15px;
+        }
+        .result-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>CONG CU TINH TOAN VA TU DUY TAI CHINH CA NHAN</h2>
+
+    <label for="thuNhap">Nhap Thu Nhap Hang Thang (VNd):</label>
+    <input type="number" id="thuNhap" value="20000000" min="0" oninput="tinhToan()">
+
+    ---
+
+    <h3>1. Phuong phap Quan ly Tai chinh 6 Lo</h3>
+    <table id="ketQua6Lo">
+        </table>
+    <div class="note">* Nguon: Video "Chi tieu thong minh: 6 Lo Tiet Kiem".</div>
+
+    ---
+    
+    <h3>2. Cong thuc Tu do Tai chinh & ROI (Cashflow Game)</h3>
+
+    <h4>2.1. Tinh Ty le Loi nhuan tren Von dau tu (ROI)</h4>
+    <label for="vonDauTu">Von dau tu Ban dau (Down Payment/Price - VNd):</label>
+    <input type="number" id="vonDauTu" value="50000000" min="0" oninput="tinhToan()">
+    <label for="loiNhuanThuan">Loi nhuan Thuan/Dong tien hang thang (Cashflow - VNd):</label>
+    <input type="number" id="loiNhuanThuan" value="200000" min="0" oninput="tinhToan()">
+    <div id="ketQuaROI" class="result-box"></div>
+
+    <h4>2.2. Von Can Thiet de dat Tu do Tai chinh</h4>
+    <p>Su dung "Chi tieu Can thiet" (Lo 1 - 55%) lam Thu nhap Thu dong Can thiet.</p>
+    <label for="roiMongMuon">Ty le Loi nhuan Mong muon (ROI, %/nam):</label>
+    <input type="number" id="roiMongMuon" value="5" min="0.1" max="100" step="0.1" oninput="tinhToan()">
+    <div id="ketQuaTdtc" class="result-box"></div>
+
+    ---
+    
+    <h3>3. Ke hoach Tich luy Von Tu do Tai chinh</h3>
+    <p>Thoi gian can thiet de dat duoc so von can thiet o muc 2.2, chi dung Lo 5 (Quy Tu do Tai chinh) ma chua tinh lai kep/loi nhuan dau tu.</p>
+    <div id="ketQuaThoiGian" class="result-box"></div>
+
+    ---
+
+    <h3>4. Tu duy Cot loi ve Tien bac (Tu video "3 Bi Quyet Lam Giau")</h3>
+    <p>Ba Bi quyet Lam giau don gian ma nguoi Do Thai ap dung:</p>
+    <ul>
+        <li>**Tran trong dieu nho be:** Quan ly tot 1000 dong truoc khi nghi den 1 ty dong.</li>
+        <li>**Ky luat Tich luy (Giu lai 10%):** Bat buoc phai giu lai mot phan tien kiem duoc.</li>
+        <li>**dat Muc tieu len tren Cam xuc:** Muc tieu la kim chi nam.</li>
+    </ul>
+    <p style="font-weight: bold; margin-top: 15px;">4 Khoan Tien Nen Hao Phong Chi Tieu (dau tu gia tri):</p>
+    <ul>
+        <li>Tien danh cho **Cha me**.</li>
+        <li>Tien danh cho **Vo/Chong**.</li>
+        <li>Tien danh cho **Con cai** (Giao duc).</li>
+        <li>Tien danh cho **Chinh minh** (Suc khoe/Phat trien ban than).</li>
+    </ul>
+</div>
+
+<script>
+    function tinhToan() {
+        // Lay gia tri input
+        const thuNhapEl = document.getElementById('thuNhap');
+        const roiEl = document.getElementById('roiMongMuon');
+        const vonDauTuEl = document.getElementById('vonDauTu');
+        const loiNhuanThuanEl = document.getElementById('loiNhuanThuan');
+        
+        const thuNhap = parseFloat(thuNhapEl.value);
+        const roiPhanTram = parseFloat(roiEl.value);
+        const vonDauTu = parseFloat(vonDauTuEl.value);
+        const loiNhuanThuan = parseFloat(loiNhuanThuanEl.value);
+
+        // Thiet lap dinh dang tien te
+        const formatter = new Intl.NumberFormat('vi-VN', { 
+            style: 'currency', 
+            currency: 'VND', 
+            minimumFractionDigits: 0 
+        });
+
+        if (isNaN(thuNhap) || thuNhap <= 0) {
+            document.getElementById('ketQua6Lo').innerHTML = '<tr><td colspan="3">Vui long nhap thu nhap hop le.</td></tr>';
+            document.getElementById('ketQuaTdtc').innerHTML = '';
+            document.getElementById('ketQuaROI').innerHTML = '';
+            document.getElementById('ketQuaThoiGian').innerHTML = '';
+            return;
+        }
+
+        const percentages = {
+            'Lo 1: Chi tieu Can thiet (55%)': { tyLe: 0.55, mucDich: 'Chi tieu thiet yeu, tra no.' },
+            'Lo 5: Quy Tu do Tai chinh (10%)': { tyLe: 0.10, mucDich: 'dau tu, kinh doanh de tao thu nhap thu dong.' },
+            'Lo 2: Tiet kiem Dai han (10%)': { tyLe: 0.10, mucDich: 'Muc tieu lon (nha, xe, huu tri).' },
+            'Lo 3: Quy Giao duc (10%)': { tyLe: 0.10, mucDich: 'Phat trien ban than, hoc tap.' },
+            'Lo 4: Quy Huong thu (10%)': { tyLe: 0.10, mucDich: 'Cai thien doi song tinh than.' },
+            'Lo 6: Quy Tu thien (5%)': { tyLe: 0.05, mucDich: 'Giup do nguoi khac.' }
+        };
+
+        let chiPhiCanThiet = 0;
+        let contributionFFJar = 0;
+        
+        // --- 1. Tinh toan 6 Lo ---
+        let html6Lo = '<tr><th>Lo So</th><th>Ten Quy</th><th>Muc Phan bo (VNd)</th></tr>';
+        for (const [tenLo, data] of Object.entries(percentages)) {
+            const soTien = thuNhap * data.tyLe;
+            const tenLoNgan = tenLo.split(':')[1].split('(')[0].trim();
+            const soLo = tenLo.split(':')[0].replace('Lo ', '');
+
+            html6Lo += `<tr>
+                <td>${soLo}</td>
+                <td>${tenLoNgan} (${data.tyLe * 100}%)</td>
+                <td><span style="font-weight: bold;">${formatter.format(soTien)}</span><br><span style="font-size: 0.9em; font-style: italic;">(${data.mucDich})</span></td>
+            </tr>`;
+            
+            if (soLo === '1') {
+                chiPhiCanThiet = soTien;
+            } else if (soLo === '5') {
+                contributionFFJar = soTien; // Lo 5 cho muc dich tich luy von
+            }
+        }
+        
+        const tongSoTien = thuNhap; 
+        html6Lo += `<tr style="font-weight: bold; background-color: #ffe0b2;"><td>TONG</td><td></td><td>${formatter.format(tongSoTien)}</td></tr>`;
+        document.getElementById('ketQua6Lo').innerHTML = html6Lo;
+
+        // --- 2.1. Tinh ROI cua mot Deal ---
+        let htmlROI = '';
+        if (vonDauTu > 0 && loiNhuanThuan >= 0) {
+            const loiNhuanNam = loiNhuanThuan * 12; 
+            const roi = (loiNhuanNam / vonDauTu) * 100;
+            
+            let phanLoai = '';
+            if (roi >= 10) { phanLoai = 'dAC BIET (>10%)'; }
+            else if (roi > 5) { phanLoai = 'TOT HON (5% - 10%)'; }
+            else if (roi >= 4) { phanLoai = 'TOT (4% - 5%)'; }
+            else if (roi > 0) { phanLoai = 'TRUNG BINH (0% - <4%)'; }
+            else { phanLoai = 'XAU/Khong co loi nhuan'; }
+
+            htmlROI = `
+                <p><strong>Loi nhuan Nam (Dong tien):</strong> ${formatter.format(loiNhuanNam)}</p>
+                <p style="font-size: 1.1em; font-weight: bold;">
+                    Ty le ROI = <span style="color: #007bff;">${roi.toFixed(2)}%</span>
+                </p>
+                <p><strong>Phan loai Deal:</strong> <span style="color: darkred; font-weight: bold;">${phanLoai}</span></p>
+            `;
+        } else {
+            htmlROI = '<p>Vui long nhap Von dau tu va Loi nhuan thuan hop le.</p>';
+        }
+        document.getElementById('ketQuaROI').innerHTML = htmlROI;
+
+
+        // --- 2.2. Tinh Von Can Thiet de dat TDTTC ---
+        let tienMatCanThietNam = 0;
+        if (chiPhiCanThiet > 0 && roiPhanTram > 0) {
+            const roiThapPhan = roiPhanTram / 100;
+            const tndtCanThietNam = chiPhiCanThiet * 12;
+            tienMatCanThietNam = tndtCanThietNam / roiThapPhan; // Von Can Thiet
+            
+            let ketQuaTdtcHtml = `
+                <p><strong>Chi phi Can thiet (Lo 1/thang):</strong> ${formatter.format(chiPhiCanThiet)}</p>
+                <p><strong>Ty le Loi nhuan Mong muon (ROI/nam):</strong> ${roiPhanTram}%</p>
+                <p style="font-size: 1.1em; font-weight: bold;">
+                    Von Toi thieu Can Thiet: 
+                    <br>
+                    = ${formatter.format(tndtCanThietNam)} / ${roiPhanTram}%
+                    <br>
+                    = <span style="font-size: 1.3em; color: darkred;">${formatter.format(tienMatCanThietNam)}</span> VNd
+                </p>
+            `;
+            document.getElementById('ketQuaTdtc').innerHTML = ketQuaTdtcHtml;
+        } else {
+            document.getElementById('ketQuaTdtc').innerHTML = '<p>Vui long nhap du Thu nhap va ROI mong muon.</p>';
+        }
+
+        // --- 3. Ke hoach Tich luy Von TDTTC ---
+        let htmlThoiGian = '';
+        if (tienMatCanThietNam > 0 && contributionFFJar > 0) {
+            const thoiGianThang = tienMatCanThietNam / contributionFFJar;
+            const thoiGianNam = thoiGianThang / 12;
+            
+            htmlThoiGian = `
+                <p><strong>Von can tich luy (A):</strong> ${formatter.format(tienMatCanThietNam)}</p>
+                <p><strong>Tiet kiem/dau tu hang thang (Lo 5 - B):</strong> ${formatter.format(contributionFFJar)}</p>
+                <p style="font-size: 1.1em; font-weight: bold;">
+                    Thoi gian de tich luy (A/B):
+                    <br>
+                    <span style="color: darkred; font-size: 1.2em;">${Math.ceil(thoiGianThang)} thang</span> 
+                    (khoang ${thoiGianNam.toFixed(1)} nam)
+                </p>
+                <p class="note">
+                    *Luu y: Tinh toan nay **chua bao gom lai kep/loi nhuan** tu viec dau tu Lo 5 trong qua trinh tich luy. Neu ban dau tu hieu qua, thoi gian thuc te se ngan hon.
+                </p>
+            `;
+        } else {
+            htmlThoiGian = '<p>Khong the tinh toan. Von can thiet hoac khoan dong gop hang thang khong hop le.</p>';
+        }
+        document.getElementById('ketQuaThoiGian').innerHTML = htmlThoiGian;
+
+    }
+
+    // Tu dong tinh toan khi trang duoc tai lan dau tien
+    document.addEventListener('DOMContentLoaded', tinhToan);
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

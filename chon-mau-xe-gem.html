@@ -1,0 +1,395 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚗 Cong Cu Tra Cuu Mau Hop & Gia Xe</title>
+    <style>
+        /* CSS cho Mobile-First Design */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f4f8; /* Nen nhe nhang */
+            color: #333;
+            font-size: 18px; /* Chu to de xem */
+        }
+        h1 {
+            color: #007bff; /* Mau tieu de noi bat */
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 2em; /* To hon nua cho tieu de */
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+            font-size: 1.1em;
+        }
+        input[type="text"], input[type="number"], input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box; /* dam bao padding khong lam tran o */
+            font-size: 1.1em;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #28a745; /* Mau nut noi bat */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #result-container {
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px dashed #ffc107; /* Vien noi bat cho ket qua */
+            border-radius: 8px;
+            background-color: #fffbe6;
+        }
+        .color-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .color-box {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #333;
+            margin-right: 15px;
+            border-radius: 4px;
+        }
+        .color-score {
+            font-size: 1.2em;
+            color: #dc3545; /* Mau diem noi bat */
+            margin-left: auto;
+        }
+        p {
+            line-height: 1.5;
+        }
+
+        /* dam bao khong mat chu, khong chen hang */
+        .input-group, .color-item {
+            white-space: normal; /* Cho phep chu xuong hang */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🛠 Tra Cuu Mau Hop Xe Co Theo Phong Thuy</h1>
+
+        <div class="input-group">
+            <label for="owner-name">Ten Nguoi Chu Giay To (Vi du: NAM, TRUNG):</label>
+            <input type="text" id="owner-name" placeholder="Nhap ten nguoi chu">
+        </div>
+        
+        <div class="input-group">
+            <label for="dob">Ngay Thang Nam Sinh (D/M/Y) (Vi du: 03/03/1971):</label>
+            <input type="text" id="dob" placeholder="Nhap Ngay/Thang/Nam, VD: 3/3/1971">
+        </div>
+        <div class="input-group">
+            <label for="car-name">Ten Loai Xe (Vi du: SRC, SH):</label>
+            <input type="text" id="car-name" placeholder="Nhap ten loai xe">
+        </div>
+
+        <div class="input-group">
+            <label for="cylinder-capacity">Dung Tich Xi-lanh (cc) (Vi du: 110, 150):</label>
+            <input type="number" id="cylinder-capacity" placeholder="Nhap dung tich xi-lanh">
+        </div>
+
+        <div class="input-group">
+            <label for="battery-info">Dung Ac Quy & Ma So (Vi du: YB9-B):</label>
+            <input type="text" id="battery-info" placeholder="Nhap thong tin ac quy va ma so">
+        </div>
+
+        <button onclick="calculateColors()">🔍 Bat dau Tra Cuu</button>
+
+        <div id="result-container">
+            <p>🌟 **KET QUA TRA CUU:**</p>
+            <div id="price-analysis"></div> <div id="analysis-steps"></div>
+            <p style="margin-top: 15px;">🌈 **CAC MAU PHU HOP NHAT:**</p>
+            <div id="final-colors"></div>
+        </div>
+    </div>
+
+    <script>
+        // Bang quy doi ky tu (giu nguyen tu ma goc)
+        const CHAR_MAP = {
+            // ... (Bang CHAR_MAP va CHAR_MAP_REVERSE giu nguyen)
+            'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7, 'H': 8, 'I': 9, 'J': 10, 'K': 11, 'L': 12,
+            'M': 1, 'N': 2, 'O': 3, 'P': 4, 'R': 5, 'S': 6, 'T': 7, 'U': 8, 'V': 9, 'W': 10, 'X': 11, 'Y': 12,
+            'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1,
+            'E': 5, 'E': 5, 'E': 5, 'E': 5, 'E': 5, 'E': 5, 'E': 5, 'E': 5, 'E': 5, 'E': 5, 'E': 5, 'E': 5, 'e': 5, 'e': 5, 'e': 5, 'e': 5, 'e': 5, 'e': 5, 'e': 5, 'e': 5, 'e': 5, 'e': 5, 'e': 5, 'e': 5,
+            'I': 9, 'I': 9, 'I': 9, 'I': 9, 'I': 9, 'I': 9, 'i': 9, 'i': 9, 'i': 9, 'i': 9, 'i': 9, 'i': 9,
+            'O': 3, 'O': 3, 'O': 3, 'O': 3, 'O': 3, 'O': 3, 'O': 3, 'O': 3, 'O': 3, 'O': 3, 'O': 3, 'O': 3, 'O': 3, 'O': 3, 'O': 3, 'O': 3, 'O': 3, 'O': 3, 'o': 3, 'o': 3, 'o': 3, 'o': 3, 'o': 3, 'o': 3, 'o': 3, 'o': 3, 'o': 3, 'o': 3, 'o': 3, 'o': 3, 'o': 3, 'o': 3, 'o': 3, 'o': 3, 'o': 3, 'o': 3,
+            'U': 8, 'U': 8, 'U': 8, 'U': 8, 'U': 8, 'U': 8, 'U': 8, 'U': 8, 'U': 8, 'U': 8, 'U': 8, 'U': 8, 'u': 8, 'u': 8, 'u': 8, 'u': 8, 'u': 8, 'u': 8, 'u': 8, 'u': 8, 'u': 8, 'u': 8, 'u': 8, 'u': 8,
+            'Y': 12, 'Y': 12, 'Y': 12, 'Y': 12, 'Y': 12, 'Y': 12, 'y': 12, 'y': 12, 'y': 12, 'y': 12, 'y': 12, 'y': 12,
+            'b': 2, 'c': 3, 'd': 4, 'f': 6, 'g': 7, 'h': 8, 'j': 10, 'k': 11, 'l': 12, 'm': 1, 'n': 2, 'p': 4, 'r': 5, 's': 6, 't': 7, 'v': 9, 'w': 10, 'x': 11,
+        };
+
+        const CHAR_MAP_REVERSE = {
+            'A': 12, 'B': 11, 'C': 10, 'D': 9, 'E': 8, 'F': 7, 'G': 6, 'H': 5, 'I': 4, 'J': 3, 'K': 2, 'L': 1, 'M': 12, 'N': 11, 'O': 10, 'P': 9, 'R': 8, 'S': 7, 'T': 6, 'U': 5, 'V': 4, 'W': 3, 'X': 2, 'Y': 1,
+            'a': 12, 'b': 11, 'c': 10, 'd': 9, 'e': 8, 'f': 7, 'g': 6, 'h': 5, 'i': 4, 'j': 3, 'k': 2, 'l': 1, 'm': 12, 'n': 11, 'o': 10, 'p': 9, 'r': 8, 's': 7, 't': 6, 'u': 5, 'v': 4, 'w': 3, 'x': 2, 'y': 1,
+            'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12,
+            'E': 8, 'E': 8, 'E': 8, 'E': 8, 'E': 8, 'E': 8, 'E': 8, 'E': 8, 'E': 8, 'E': 8, 'E': 8, 'E': 8, 'e': 8, 'e': 8, 'e': 8, 'e': 8, 'e': 8, 'e': 8, 'e': 8, 'e': 8, 'e': 8, 'e': 8, 'e': 8, 'e': 8,
+            'I': 4, 'I': 4, 'I': 4, 'I': 4, 'I': 4, 'I': 4, 'i': 4, 'i': 4, 'i': 4, 'i': 4, 'i': 4, 'i': 4,
+            'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10,
+            'U': 5, 'U': 5, 'U': 5, 'U': 5, 'U': 5, 'U': 5, 'U': 5, 'U': 5, 'U': 5, 'U': 5, 'U': 5, 'U': 5, 'u': 5, 'u': 5, 'u': 5, 'u': 5, 'u': 5, 'u': 5, 'u': 5, 'u': 5, 'u': 5, 'u': 5, 'u': 5, 'u': 5,
+            'Y': 1, 'Y': 1, 'Y': 1, 'Y': 1, 'Y': 1, 'Y': 1, 'y': 1, 'y': 1, 'y': 1, 'y': 1, 'y': 1, 'y': 1,
+        };
+
+        const COLOR_HEX = {
+            'dO': '#DC3545', 'VANG': '#FFC107', 'LAM': '#007BFF', 'dEN': '#343A40', 'TRANG': '#F8F9FA',
+            'LUC': '#28A745', 'CAM': '#FD7E14', 'HONG': '#E83E8C', 'GHI': '#6C757D', 'HB': '#6F42C1',
+            'TIM': '#6610F2', 'KIM LOAI': '#A9A9A9', 'XANH BIEN': '#17A2B8', 'CHAM': '#4B0082',
+        };
+        
+        const RAW_COLOR_MAPS = [
+            "1dO2VANG3KIM LOAI4XANH BIEN5LA6DO7VANG8TRANG9LUC10LAM11DO12VANG13TRANG14LUC",
+            "1DEN2TRANG3HB4LAM5LUC6TIM7DO8CAM9VANG10DEN11TRANG12HB13LAM14LUC",
+            "1VANG2DO3HONG4GHI5TRANG6DEN7HB8LAM9VANG10DO11HONG12GHI13TRANG14DEN",
+            "1DO2VANG3CAM4LUC5LAM6CHAM7TIM8DO9VANG10CAM11LUC12LAM13CHAM14TIM",
+            "1DO2VANG3LAM4DO5VANG6LAM7DO8VANG9LAM10DO11VANG12LAM13DO14VANG",
+            "1LAM2DO3VANG4DEN5LAM6DO7VANG8DEN9LAM10DO11VANG12DEN13LAM14DO"
+        ];
+        
+        function getNameCode(name) {
+            let code = "";
+            let chars = name.toUpperCase().split('');
+            for (const char of chars) {
+                const value = CHAR_MAP[char];
+                if (value !== undefined) {
+                    code += value.toString();
+                }
+            }
+            return code;
+        }
+
+        function lookupColor(number, tableIndex) {
+            const rawMap = RAW_COLOR_MAPS[tableIndex].toUpperCase().replace(/\s/g, ''); // Xoa khoang trang
+            const pattern = new RegExp(number + '([A-ZAAAAAAAAAAAAAAAAAEEEEEEEEEEEIIIIIOOOOOOOOOOOOOOOOOUUUUUUUUUUUYYYYY]+?)(?=[0-9]|$)', 'g');
+            let matches = [...rawMap.matchAll(pattern)];
+            
+            return matches.map(match => {
+                let colorName = match[1].trim();
+                // Chuan hoa ten mau
+                colorName = colorName.replace('LA', 'LUC').replace('DO', 'dO').replace('VANG', 'VANG').replace('TIM', 'TIM');
+                colorName = colorName.replace('DEN', 'dEN').replace('TRANG', 'TRANG').replace('CHAM', 'CHAM').replace('LOAI', 'LOAI').replace('BIEN', 'BIEN');
+                return colorName;
+            });
+        }
+        
+        /**
+         * Ham MOI: Tinh toan Muc gia tot tu Ngay/Thang/Nam sinh
+         * Vi du: 3/3/1971 -> 33 -> 33,000,000
+         */
+        function calculateBestPrice(dobString) {
+            // Chuan hoa chuoi nhap: loai bo khoang trang, thay / hoac - bang ''
+            const parts = dobString.split(/[\/-]/).map(p => p.trim()).filter(p => p !== '');
+            
+            if (parts.length < 2) return null;
+
+            const day = parseInt(parts[0]);
+            const month = parseInt(parts[1]);
+
+            if (isNaN(day) || isNaN(month) || day < 1 || month < 1 || month > 12) return null;
+
+            // Ghep Ngay va Thang, loai bo so 0 o dau neu co
+            const dmString = `${day}${month}`; 
+            
+            // Them 6 so 0 de co gia tri hang trieu
+            const priceNum = parseInt(dmString) * 1000000;
+
+            if (isNaN(priceNum) || priceNum === 0) return null;
+
+            return priceNum;
+        }
+
+        // dinh dang so thanh tien te Viet Nam (VND)
+        function formatVND(number) {
+            if (number === null || isNaN(number)) return 'N/A';
+            return number.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+        }
+
+
+        function calculateColors() {
+            const ownerName = document.getElementById('owner-name').value.trim();
+            const capacity = document.getElementById('cylinder-capacity').value.trim();
+            const dob = document.getElementById('dob').value.trim(); // Lay ngay sinh
+            
+            const priceAnalysisDiv = document.getElementById('price-analysis');
+            const resultDiv = document.getElementById('analysis-steps');
+            const finalColorsDiv = document.getElementById('final-colors');
+            
+            priceAnalysisDiv.innerHTML = '';
+            resultDiv.innerHTML = '';
+            finalColorsDiv.innerHTML = '';
+
+            if (!ownerName || !capacity || !dob) {
+                alert('⚠ Vui long nhap Ten nguoi chu, Ngay sinh, va Dung tich Xi-lanh.');
+                return;
+            }
+
+            // --- 1. Xu ly Gia Tot ---
+            const bestPrice = calculateBestPrice(dob);
+            if (bestPrice) {
+                const dobParts = dob.split(/[\/-]/).map(p => p.trim()).filter(p => p !== '');
+                const dmString = `${parseInt(dobParts[0])}${parseInt(dobParts[1])}`;
+                
+                priceAnalysisDiv.innerHTML = `
+                    <p>💰 **1. MUC GIA TOT CUA XE:**</p>
+                    <ul>
+                        <li>Ngay/Thang sinh: **${dob}** $\rightarrow$ Ma so **${dmString}**</li>
+                        <li>Muc gia tot: **${formatVND(bestPrice)}** ($\approx$ ${dmString} Trieu dong)</li>
+                    </ul>
+                `;
+            } else {
+                 priceAnalysisDiv.innerHTML = `<p>💰 **1. MUC GIA TOT CUA XE:** Khong tinh duoc muc gia. Vui long kiem tra dinh dang Ngay/Thang/Nam (VD: 3/3/1971).</p>`;
+            }
+
+            // --- 2. Xu ly Mau Sac (Giu nguyen logic cu) ---
+            const nameCode = getNameCode(ownerName);
+            const capacityNum = parseInt(capacity);
+
+            if (!nameCode || isNaN(capacityNum) || capacityNum <= 0) {
+                 resultDiv.innerHTML = '<p style="color: red;">Du lieu nhap cho viec tinh mau khong hop le (Ten chu hoac Dung tich xi-lanh).</p>';
+                return;
+            }
+
+            let analysisHtml = `
+                <p>🔢 **2. PHAN TICH TIM MAU:**</p>
+                <ul>
+                    <li>Ten Nguoi Chu: **${ownerName.toUpperCase()}**</li>
+                    <li>Ma Chu Cai (Xuoi): **${nameCode}**</li>
+                    <li>Dung Tich Xi-lanh: **${capacityNum}**</li>
+                </ul>
+            `;
+            
+            const nameNum = parseInt(nameCode);
+            const quotient = Math.floor(nameNum / capacityNum);
+            const remainder = nameNum % capacityNum;
+
+            analysisHtml += `
+                <p>➗ **Phep Tinh Can Ban:**</p>
+                <ul>
+                    <li>Phep chia: ${nameNum} : ${capacityNum} = **${quotient}** (Thuong) du **${remainder}** (So du)</li>
+                </ul>
+            `;
+
+            let selectedColors = [];
+            
+            // Tap hop cac so de tra cuu (bao gom Thuong, Du, va cac chu so cau thanh)
+            const otherNumbers = [quotient, remainder, ...capacity.split('').map(Number), ...nameCode.split('').map(Number)];
+            const uniqueNumbers = [...new Set(otherNumbers)].filter(n => n >= 1 && n <= 14);
+
+            analysisHtml += `
+                <p>🎨 **3. Tra Cuu Mau Sac Bo Sung:**</p>
+                <ul>
+                    <li>Cac so tra cuu: **${uniqueNumbers.join(', ')}**</li>
+                </ul>
+            `;
+            
+            // Tim kiem trong tat ca cac bang
+            uniqueNumbers.forEach(num => {
+                for (let i = 0; i < RAW_COLOR_MAPS.length; i++) {
+                    const colors = lookupColor(num, i);
+                    selectedColors.push(...colors);
+                }
+            });
+
+            // dem tan suat
+            let allColors = {};
+            selectedColors.forEach(color => {
+                const normalizedColor = color.toUpperCase().replace(/\s/g, '');
+                // Tim Key trong COLOR_HEX de dem
+                let colorKey = Object.keys(COLOR_HEX).find(key => key.toUpperCase().replace(/\s/g, '') === normalizedColor);
+
+                if (colorKey) {
+                    allColors[colorKey] = (allColors[colorKey] || 0) + 1;
+                }
+            });
+
+            // Sap xep ket qua theo tan suat giam dan
+            const sortedColors = Object.entries(allColors)
+                .sort(([, countA], [, countB]) => countB - countA);
+
+            // Hien thi ket qua tim duoc
+            let finalColorsHtml = '<div>';
+            if (sortedColors.length > 0) {
+                sortedColors.forEach(([colorName, count]) => {
+                    const hexCode = COLOR_HEX[colorName] || '#000000';
+                    finalColorsHtml += `
+                        <div class="color-item">
+                            <div class="color-box" style="background-color: ${hexCode};"></div>
+                            <span>${colorName} (${hexCode})</span>
+                            <span class="color-score">(${count} lan)</span>
+                        </div>
+                    `;
+                });
+            } else {
+                finalColorsHtml = '<p style="color: #6c757d;">Khong tim thay mau phu hop nao theo quy tac tra cuu.</p>';
+            }
+            finalColorsHtml += '</div>';
+
+            resultDiv.innerHTML = analysisHtml;
+            finalColorsDiv.innerHTML = finalColorsHtml;
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

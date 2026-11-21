@@ -1,0 +1,991 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tra So Bang Chu Cai 25 Xuoi Nguoc</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .logo i {
+            font-size: 2.8rem;
+            color: #FFD700;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .app-card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            margin-bottom: 30px;
+            width: 100%;
+        }
+        
+        .input-section {
+            margin-bottom: 25px;
+        }
+        
+        .input-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        #textInput {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            font-size: 1.1rem;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            outline: none;
+            transition: all 0.3s ease;
+            min-height: 120px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        #textInput:focus {
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.5);
+            background: white;
+        }
+        
+        .input-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .char-count {
+            font-weight: bold;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .search-btn {
+            padding: 15px 25px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(to right, #FFD700, #FFA500);
+            color: #333;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 200px;
+            justify-content: center;
+        }
+        
+        .search-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(255, 215, 0, 0.4);
+        }
+        
+        .search-btn:active {
+            transform: translateY(0);
+        }
+        
+        .clear-btn {
+            padding: 15px 25px;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 150px;
+            justify-content: center;
+        }
+        
+        .clear-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .mode-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            min-width: 150px;
+        }
+        
+        .mode-btn.active {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #FFD700;
+        }
+        
+        .result-section {
+            margin-top: 20px;
+            transition: all 0.5s ease;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .result-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+        
+        .result-summary {
+            display: flex;
+            gap: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .summary-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 10px;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .result-item {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .result-item:hover {
+            transform: translateY(-5px);
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .result-char {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 5px;
+            min-height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .space-char {
+            color: #aaa;
+            font-size: 1.5rem;
+        }
+        
+        .result-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #4DFF4D;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            margin-bottom: 5px;
+        }
+        
+        .result-mod {
+            font-size: 1.1rem;
+            color: #FF9966;
+            opacity: 0.9;
+        }
+        
+        .history-section {
+            margin-top: 30px;
+        }
+        
+        .history-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        .history-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .history-text {
+            max-width: 60%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .history-info {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .history-number {
+            font-weight: bold;
+            color: #4DFF4D;
+        }
+        
+        .history-mode {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            opacity: 0.8;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.95rem;
+        }
+        
+        .instructions h3 {
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .app-card {
+                padding: 20px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .search-btn, .clear-btn {
+                width: 100%;
+                min-width: unset;
+            }
+            
+            .result-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+            
+            .result-char {
+                font-size: 1.5rem;
+                min-height: 35px;
+            }
+            
+            .result-number {
+                font-size: 1.5rem;
+            }
+            
+            .result-summary {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .mode-selector {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .result-grid {
+                grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-magic"></i>
+                <h1>Tra So Bang Chu Cai 25 Xuoi Nguoc</h1>
+            </div>
+            <p class="subtitle">Nhap chu cai, tu, cau hoac doan van de tra so tuong ung theo bang 25 xuoi nguoc. Cac so lon hon 9 se duoc tinh them so du khi chia cho 9.</p>
+        </header>
+        
+        <main class="app-card">
+            <div class="input-section">
+                <label class="input-label" for="textInput">Nhap van ban (toi da 500 ky tu):</label>
+                <div class="input-container">
+                    <textarea id="textInput" placeholder="Vi du: Tinh yeu, Hanh phuc, hoac ca mot doan van dai..."></textarea>
+                    <div class="input-info">
+                        <span>Nhap chu cai, tu, cau hoac doan van</span>
+                        <span class="char-count">So ky tu: <span id="charCount">0</span>/500</span>
+                    </div>
+                </div>
+                
+                <div class="mode-selector">
+                    <button class="mode-btn active" data-mode="xuoi">Bang Xuoi (1-25)</button>
+                    <button class="mode-btn" data-mode="nguoc">Bang Nguoc (25-1)</button>
+                </div>
+                
+                <div class="controls">
+                    <button class="search-btn" id="searchBtn">
+                        <i class="fas fa-calculator"></i> Tinh Toan
+                    </button>
+                    <button class="clear-btn" id="clearBtn">
+                        <i class="fas fa-eraser"></i> Xoa
+                    </button>
+                </div>
+            </div>
+            
+            <div class="result-section" id="resultSection" style="display: none;">
+                <div class="result-header">
+                    <div class="result-title">Ket Qua Tinh Toan</div>
+                    <div class="result-summary">
+                        <div class="summary-item">Tong so: <span id="totalSum">0</span></div>
+                        <div class="summary-item">So du /9: <span id="totalMod">0</span></div>
+                        <div class="summary-item">Ky tu: <span id="totalChars">0</span></div>
+                    </div>
+                </div>
+                <div class="result-grid" id="resultGrid">
+                    <!-- Ket qua se duoc them vao day -->
+                </div>
+            </div>
+            
+            <div class="instructions">
+                <h3><i class="fas fa-info-circle"></i> Huong dan su dung:</h3>
+                <ul>
+                    <li>Nhap bat ky chu cai, tu, cau hoac doan van nao</li>
+                    <li>Moi chu cai se duoc tra theo bang xuoi (1-25) hoac nguoc (25-1)</li>
+                    <li>Cac so lon hon 9 se duoc tinh them so du khi chia cho 9 (ghi trong ngoac)</li>
+                    <li>Khoang trang va ky tu dac biet se duoc bo qua</li>
+                    <li><strong>Bang 25:</strong> A=1, B=2, ..., Y=25; Nguoc: A=25, B=24, ..., Y=1</li>
+                </ul>
+            </div>
+            
+            <div class="history-section">
+                <div class="history-title">
+                    <span>Lich su tra cuu</span>
+                    <button id="clearHistory" style="background: none; border: none; color: #FFD700; cursor: pointer;">
+                        <i class="fas fa-trash-alt"></i> Xoa lich su
+                    </button>
+                </div>
+                <div class="history-list" id="historyList">
+                    <!-- Lich su se duoc them vao day -->
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Ung dung tra so theo Bang 25 Xuoi Nguoc - Ho tro nhap doan van dai</p>
+            <p>© 2023 - Thiet ke cho thiet bi di dong</p>
+        </footer>
+    </div>
+
+    <script>
+        // Bang du lieu chu cai 25 XUOI
+        const bangXuoi = {
+            // Chu hoa co ban
+            'A': 1, 'B': 2, 'C': 3, 'D': 4, 'd': 4, 'E': 5, 'E': 5,
+            'G': 7, 'H': 8, 'I': 9, 'K': 11, 'L': 12, 'M': 13, 'N': 14,
+            'O': 15, 'O': 15, 'O': 15, 'P': 16, 'Q': 17, 'R': 18, 'S': 19,
+            'T': 20, 'U': 21, 'U': 21, 'V': 22, 'X': 24, 'Y': 25,
+            
+            // Chu A voi dau
+            'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1,
+            'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1,
+            'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1,
+            
+            // Chu E voi dau
+            'E': 5, 'E': 5, 'E': 5, 'E': 5, 'E': 5,
+            'E': 5, 'E': 5, 'E': 5, 'E': 5, 'E': 5, 'E': 5,
+            
+            // Chu I voi dau
+            'I': 9, 'I': 9, 'I': 9, 'I': 9, 'I': 9,
+            
+            // Chu O voi dau
+            'O': 15, 'O': 15, 'O': 15, 'O': 15, 'O': 15,
+            'O': 15, 'O': 15, 'O': 15, 'O': 15, 'O': 15, 'O': 15,
+            'O': 15, 'O': 15, 'O': 15, 'O': 15, 'O': 15, 'O': 15,
+            
+            // Chu U voi dau
+            'U': 21, 'U': 21, 'U': 21, 'U': 21, 'U': 21,
+            'U': 21, 'U': 21, 'U': 21, 'U': 21, 'U': 21, 'U': 21,
+            
+            // Chu Y voi dau
+            'Y': 25, 'Y': 25, 'Y': 25, 'Y': 25, 'Y': 25,
+            
+            // Chu thuong co ban
+            'a': 1, 'b': 2, 'c': 3, 'd': 4, 'd': 4, 'e': 5, 'e': 5,
+            'g': 7, 'h': 8, 'i': 9, 'k': 11, 'l': 12, 'm': 13, 'n': 14,
+            'o': 15, 'o': 15, 'o': 15, 'p': 16, 'q': 17, 'r': 18, 's': 19,
+            't': 20, 'u': 21, 'u': 21, 'v': 22, 'x': 24, 'y': 25,
+            
+            // Chu a thuong voi dau
+            'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1,
+            'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1,
+            'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1,
+            
+            // Chu e thuong voi dau
+            'e': 5, 'e': 5, 'e': 5, 'e': 5, 'e': 5,
+            'e': 5, 'e': 5, 'e': 5, 'e': 5, 'e': 5, 'e': 5,
+            
+            // Chu i thuong voi dau
+            'i': 9, 'i': 9, 'i': 9, 'i': 9, 'i': 9,
+            
+            // Chu o thuong voi dau
+            'o': 15, 'o': 15, 'o': 15, 'o': 15, 'o': 15,
+            'o': 15, 'o': 15, 'o': 15, 'o': 15, 'o': 15, 'o': 15,
+            'o': 15, 'o': 15, 'o': 15, 'o': 15, 'o': 15, 'o': 15,
+            
+            // Chu u thuong voi dau
+            'u': 21, 'u': 21, 'u': 21, 'u': 21, 'u': 21,
+            'u': 21, 'u': 21, 'u': 21, 'u': 21, 'u': 21, 'u': 21,
+            
+            // Chu y thuong voi dau
+            'y': 25, 'y': 25, 'y': 25, 'y': 25, 'y': 25
+        };
+
+        // Bang du lieu chu cai 25 NGUOC
+        const bangNguoc = {
+            // Chu hoa co ban
+            'A': 25, 'B': 24, 'C': 23, 'D': 22, 'd': 23, 'E': 21, 'E': 22,
+            'G': 19, 'H': 18, 'I': 17, 'K': 15, 'L': 14, 'M': 13, 'N': 12,
+            'O': 11, 'O': 12, 'O': 12, 'P': 10, 'Q': 9, 'R': 8, 'S': 7,
+            'T': 6, 'U': 5, 'U': 6, 'V': 4, 'X': 2, 'Y': 1,
+            
+            // Chu A voi dau
+            'A': 26, 'A': 26, 'A': 26, 'A': 26, 'A': 26,
+            'A': 26, 'A': 26, 'A': 26, 'A': 26, 'A': 26, 'A': 26,
+            'A': 26, 'A': 26, 'A': 26, 'A': 26, 'A': 26, 'A': 26,
+            
+            // Chu E voi dau
+            'E': 22, 'E': 22, 'E': 22, 'E': 22, 'E': 22,
+            'E': 22, 'E': 22, 'E': 22, 'E': 22, 'E': 22, 'E': 22,
+            
+            // Chu I voi dau
+            'I': 18, 'I': 18, 'I': 18, 'I': 18, 'I': 18,
+            
+            // Chu O voi dau
+            'O': 12, 'O': 12, 'O': 12, 'O': 12, 'O': 12,
+            'O': 12, 'O': 12, 'O': 12, 'O': 12, 'O': 12, 'O': 12,
+            'O': 12, 'O': 12, 'O': 12, 'O': 12, 'O': 12, 'O': 12,
+            
+            // Chu U voi dau
+            'U': 6, 'U': 6, 'U': 6, 'U': 6, 'U': 6,
+            'U': 6, 'U': 6, 'U': 6, 'U': 6, 'U': 6, 'U': 6,
+            
+            // Chu Y voi dau
+            'Y': 2, 'Y': 2, 'Y': 2, 'Y': 2, 'Y': 2,
+            
+            // Chu thuong co ban
+            'a': 25, 'b': 24, 'c': 23, 'd': 22, 'd': 23, 'e': 21, 'e': 22,
+            'g': 19, 'h': 18, 'i': 17, 'k': 15, 'l': 14, 'm': 13, 'n': 12,
+            'o': 11, 'o': 12, 'o': 12, 'p': 10, 'q': 9, 'r': 8, 's': 7,
+            't': 6, 'u': 5, 'u': 6, 'v': 4, 'x': 2, 'y': 1,
+            
+            // Chu a thuong voi dau
+            'a': 26, 'a': 26, 'a': 26, 'a': 26, 'a': 26,
+            'a': 26, 'a': 26, 'a': 26, 'a': 26, 'a': 26, 'a': 26,
+            'a': 26, 'a': 26, 'a': 26, 'a': 26, 'a': 26, 'a': 26,
+            
+            // Chu e thuong voi dau
+            'e': 22, 'e': 22, 'e': 22, 'e': 22, 'e': 22,
+            'e': 22, 'e': 22, 'e': 22, 'e': 22, 'e': 22, 'e': 22,
+            
+            // Chu i thuong voi dau
+            'i': 18, 'i': 18, 'i': 18, 'i': 18, 'i': 18,
+            
+            // Chu o thuong voi dau
+            'o': 12, 'o': 12, 'o': 12, 'o': 12, 'o': 12,
+            'o': 12, 'o': 12, 'o': 12, 'o': 12, 'o': 12, 'o': 12,
+            'o': 12, 'o': 12, 'o': 12, 'o': 12, 'o': 12, 'o': 12,
+            
+            // Chu u thuong voi dau
+            'u': 6, 'u': 6, 'u': 6, 'u': 6, 'u': 6,
+            'u': 6, 'u': 6, 'u': 6, 'u': 6, 'u': 6, 'u': 6,
+            
+            // Chu y thuong voi dau
+            'y': 2, 'y': 2, 'y': 2, 'y': 2, 'y': 2
+        };
+
+        // Bien luu tru
+        let currentMode = 'xuoi';
+        let searchHistory = JSON.parse(localStorage.getItem('bang25History')) || [];
+
+        // DOM Elements
+        const textInput = document.getElementById('textInput');
+        const charCount = document.getElementById('charCount');
+        const searchBtn = document.getElementById('searchBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const modeBtns = document.querySelectorAll('.mode-btn');
+        const resultSection = document.getElementById('resultSection');
+        const resultGrid = document.getElementById('resultGrid');
+        const totalSum = document.getElementById('totalSum');
+        const totalMod = document.getElementById('totalMod');
+        const totalChars = document.getElementById('totalChars');
+        const historyList = document.getElementById('historyList');
+        const clearHistoryBtn = document.getElementById('clearHistory');
+
+        // Tinh so du khi chia 9
+        function calculateMod9(number) {
+            if (number > 9) {
+                return number % 9 === 0 ? 9 : number % 9;
+            }
+            return 0; // Khong hien thi cho so <= 9
+        }
+
+        // Xu ly van ban va tinh toan
+        function processText(text) {
+            const data = currentMode === 'xuoi' ? bangXuoi : bangNguoc;
+            const results = [];
+            let sum = 0;
+            let charCount = 0;
+            
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                
+                // Bo qua khoang trang va ky tu khong co trong bang
+                if (char === ' ' || char === '\n' || char === '\t') {
+                    results.push({
+                        char: '␣',
+                        number: 0,
+                        mod9: 0,
+                        isSpace: true
+                    });
+                    continue;
+                }
+                
+                if (data.hasOwnProperty(char)) {
+                    const number = data[char];
+                    const mod9 = calculateMod9(number);
+                    
+                    results.push({
+                        char: char,
+                        number: number,
+                        mod9: mod9
+                    });
+                    
+                    sum += number;
+                    charCount++;
+                } else {
+                    // Ky tu khong co trong bang (dau cau, so, ky tu dac biet)
+                    results.push({
+                        char: char,
+                        number: 0,
+                        mod9: 0,
+                        isSpecial: true
+                    });
+                }
+            }
+            
+            return {
+                results: results,
+                sum: sum,
+                charCount: charCount,
+                mod9: calculateMod9(sum)
+            };
+        }
+
+        // Hien thi ket qua
+        function displayResults(processed) {
+            resultGrid.innerHTML = '';
+            
+            if (processed.charCount === 0) {
+                resultGrid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; opacity: 0.7;">Khong co chu cai hop le de tinh toan</div>';
+                return;
+            }
+            
+            processed.results.forEach((item, index) => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item';
+                
+                let charDisplay = item.char;
+                let charClass = 'result-char';
+                
+                if (item.isSpace) {
+                    charClass += ' space-char';
+                } else if (item.isSpecial) {
+                    charClass += ' space-char';
+                }
+                
+                let numberDisplay = item.number > 0 ? item.number : '—';
+                let modDisplay = item.mod9 > 0 ? `(${item.mod9})` : '';
+                
+                resultItem.innerHTML = `
+                    <div class="${charClass}">${charDisplay}</div>
+                    <div class="result-number">${numberDisplay}</div>
+                    ${item.mod9 > 0 ? `<div class="result-mod">${modDisplay}</div>` : ''}
+                `;
+                
+                resultGrid.appendChild(resultItem);
+            });
+            
+            // Cap nhat tong ket
+            totalSum.textContent = processed.sum;
+            totalMod.textContent = processed.mod9;
+            totalChars.textContent = processed.charCount;
+            
+            // Hien thi phan ket qua
+            resultSection.style.display = 'block';
+        }
+
+        // Them vao lich su
+        function addToHistory(text, result, mode) {
+            const historyItem = {
+                text: text.substring(0, 50) + (text.length > 50 ? '...' : ''),
+                sum: result.sum,
+                mod9: result.mod9,
+                charCount: result.charCount,
+                mode: mode,
+                timestamp: new Date().toLocaleTimeString('vi-VN')
+            };
+            
+            searchHistory.push(historyItem);
+            
+            // Gioi han lich su toi da 20 muc
+            if (searchHistory.length > 20) {
+                searchHistory = searchHistory.slice(-20);
+            }
+            
+            localStorage.setItem('bang25History', JSON.stringify(searchHistory));
+            updateHistoryDisplay();
+        }
+
+        // Cap nhat hien thi lich su
+        function updateHistoryDisplay() {
+            historyList.innerHTML = '';
+            
+            if (searchHistory.length === 0) {
+                historyList.innerHTML = '<div style="padding: 20px; text-align: center; opacity: 0.7;">Chua co lich su tra cuu</div>';
+                return;
+            }
+            
+            // Hien thi tu moi nhat den cu nhat
+            const reversedHistory = [...searchHistory].reverse();
+            
+            reversedHistory.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div class="history-text" title="${item.text}">${item.text}</div>
+                    <div class="history-info">
+                        <span class="history-number">${item.sum}</span>
+                        ${item.mod9 > 0 ? `<span>(${item.mod9})</span>` : ''}
+                        <span class="history-mode">${item.mode === 'xuoi' ? 'Xuoi' : 'Nguoc'}</span>
+                    </div>
+                `;
+                
+                // Them su kien click de tai lai ket qua
+                historyItem.addEventListener('click', function() {
+                    textInput.value = item.text;
+                    updateCharCount();
+                    changeMode(item.mode);
+                    handleCalculate();
+                });
+                
+                historyList.appendChild(historyItem);
+            });
+        }
+
+        // Xoa lich su
+        function clearHistory() {
+            if (confirm('Ban co chac muon xoa toan bo lich su tra cuu?')) {
+                searchHistory = [];
+                localStorage.removeItem('bang25History');
+                updateHistoryDisplay();
+            }
+        }
+
+        // Xu ly tinh toan
+        function handleCalculate() {
+            const text = textInput.value.trim();
+            
+            if (!text) {
+                alert('Vui long nhap van ban de tinh toan!');
+                textInput.focus();
+                return;
+            }
+            
+            // Xu ly van ban
+            const processed = processText(text);
+            
+            // Hien thi ket qua
+            displayResults(processed);
+            
+            // Them vao lich su
+            addToHistory(text, processed, currentMode);
+            
+            // Cuon den ket qua
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Xoa noi dung
+        function handleClear() {
+            textInput.value = '';
+            charCount.textContent = '0';
+            resultSection.style.display = 'none';
+            textInput.focus();
+        }
+
+        // Thay doi che do
+        function changeMode(mode) {
+            currentMode = mode;
+            
+            // Cap nhat nut che do
+            modeBtns.forEach(btn => {
+                if (btn.dataset.mode === mode) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Neu co ket qua dang hien thi, tinh toan lai
+            if (resultSection.style.display === 'block' && textInput.value.trim()) {
+                const text = textInput.value.trim();
+                const processed = processText(text);
+                displayResults(processed);
+            }
+        }
+
+        // Cap nhat so ky tu
+        function updateCharCount() {
+            const count = textInput.value.length;
+            charCount.textContent = count;
+            
+            // Gioi han 500 ky tu
+            if (count > 500) {
+                textInput.value = textInput.value.substring(0, 500);
+                charCount.textContent = '500';
+                charCount.style.color = '#ff6b6b';
+            } else if (count > 450) {
+                charCount.style.color = '#ff9966';
+            } else {
+                charCount.style.color = 'white';
+            }
+        }
+
+        // Them vi du mau
+        function addExamples() {
+            const examples = [
+                {text: "Tinh yeu", desc: "Cum tu pho bien"},
+                {text: "Hanh phuc", desc: "Tu co dau day du"},
+                {text: "Viet Nam", desc: "Ten dat nuoc"},
+                {text: "Thanh cong", desc: "Tu co dau hoi, huyen"}
+            ];
+            
+            const examplesDiv = document.createElement('div');
+            examplesDiv.style.marginTop = '15px';
+            examplesDiv.style.padding = '10px';
+            examplesDiv.style.background = 'rgba(255,255,255,0.1)';
+            examplesDiv.style.borderRadius = '8px';
+            
+            let examplesHtml = '<div style="font-weight: bold; margin-bottom: 8px; color: #FFD700;">Vi du nhanh:</div>';
+            examples.forEach(example => {
+                examplesHtml += `
+                    <div style="margin: 5px 0; padding: 5px; background: rgba(255,255,255,0.1); border-radius: 4px; cursor: pointer;" 
+                         onclick="textInput.value='${example.text}'; updateCharCount(); handleCalculate();">
+                        <strong>${example.text}</strong> - ${example.desc}
+                    </div>
+                `;
+            });
+            
+            examplesDiv.innerHTML = examplesHtml;
+            document.querySelector('.input-section').appendChild(examplesDiv);
+        }
+
+        // Khoi tao su kien
+        function initEvents() {
+            searchBtn.addEventListener('click', handleCalculate);
+            clearBtn.addEventListener('click', handleClear);
+            
+            textInput.addEventListener('input', updateCharCount);
+            
+            textInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    handleCalculate();
+                }
+            });
+            
+            modeBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    changeMode(this.dataset.mode);
+                });
+            });
+            
+            clearHistoryBtn.addEventListener('click', clearHistory);
+            
+            // Tu dong tinh toan khi thay doi che do neu co van ban
+            modeBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (textInput.value.trim() && resultSection.style.display === 'block') {
+                        setTimeout(handleCalculate, 100);
+                    }
+                });
+            });
+        }
+
+        // Khoi tao ung dung
+        function initApp() {
+            initEvents();
+            updateHistoryDisplay();
+            addExamples();
+            textInput.focus();
+            
+            // Them vi du mau vao lich su neu chua co
+            if (searchHistory.length === 0) {
+                const exampleText = "Tinh yeu";
+                const processed = processText(exampleText);
+                addToHistory(exampleText, processed, 'xuoi');
+            }
+        }
+
+        // Chay ung dung khi trang da tai xong
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

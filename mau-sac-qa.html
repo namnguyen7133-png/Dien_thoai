@@ -1,0 +1,1449 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mau sac – BPM – Cam xuc – Tone da (Ma HEX day du)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.97);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        h1 {
+            color: #4a4a9c;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        h1 i {
+            color: #ff6b8b;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* Grid chinh cho 9 o */
+        .scroll-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 1400px) {
+            .scroll-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .scroll-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .scroll-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .scroll-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+        }
+
+        /* O danh sach cuon */
+        .scroll-box {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            height: 280px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .scroll-box:hover {
+            border-color: #7c7ce0;
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(124, 124, 224, 0.2);
+        }
+
+        .scroll-box.active {
+            border-color: #ff6b8b;
+            box-shadow: 0 0 0 3px rgba(255, 107, 139, 0.3);
+        }
+
+        .box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            flex-shrink: 0;
+        }
+
+        .box-header h3 {
+            color: #4a4a9c;
+            font-size: 1rem;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .box-count {
+            background: #7c7ce0;
+            color: white;
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .scroll-list-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scroll-list {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow-y: auto;
+            padding-right: 6px;
+            display: none;
+        }
+
+        .scroll-list.active {
+            display: block;
+        }
+
+        .scroll-list::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .scroll-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 8px;
+        }
+
+        .scroll-list::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 8px;
+        }
+
+        .scroll-list::-webkit-scrollbar-thumb:hover {
+            background: #a1a1a1;
+        }
+
+        .scroll-item {
+            padding: 8px 10px;
+            margin-bottom: 5px;
+            background: #f9f9ff;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .scroll-item:hover {
+            background: #e6e6ff;
+            transform: translateX(3px);
+        }
+
+        .scroll-item.selected {
+            background: #e6e6ff;
+            border-left-color: #ff6b8b;
+            font-weight: 600;
+        }
+
+        .item-details {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* O giai thich tu kho */
+        .explanation-box {
+            grid-column: 1 / -1;
+            background: linear-gradient(to right, #fff9e6, #fff3cc);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #ffd966;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .explanation-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #b36b00;
+        }
+
+        .explanation-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .explanation-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .term-item {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #7c7ce0;
+            transition: transform 0.3s ease;
+        }
+
+        .term-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .term-title {
+            font-weight: 600;
+            color: #4a4a9c;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .term-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* Nut xoa va dieu khien */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .clear-btn {
+            background: linear-gradient(to right, #ff416c, #ff4b2b);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            box-shadow: 0 6px 12px rgba(255, 65, 108, 0.3);
+        }
+
+        .clear-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 65, 108, 0.4);
+        }
+
+        .selection-info {
+            background: #f0f7ff;
+            padding: 10px 16px;
+            border-radius: 10px;
+            color: #4a4a9c;
+            font-weight: 600;
+            border-left: 4px solid #7c7ce0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* Bang du lieu */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 15px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            background: white;
+        }
+
+        th {
+            background: linear-gradient(to right, #4a4a9c, #7c7ce0);
+            color: white;
+            font-weight: 600;
+            text-align: left;
+            padding: 15px 12px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s ease;
+        }
+
+        tr:hover td {
+            background-color: #f9f9ff;
+        }
+
+        .color-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .color-preview {
+            width: 60px;
+            height: 35px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .color-hex {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            font-size: 0.95rem;
+            background: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #e0e0e0;
+        }
+
+        /* PATTERN */
+        .caro-den {
+            background:
+                linear-gradient(45deg, #000 25%, transparent 25%),
+                linear-gradient(-45deg, #000 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #000 75%),
+                linear-gradient(-45deg, transparent 75%, #000 75%);
+            background-size: 10px 10px;
+            background-color: #fff;
+        }
+
+        .ke-ngang-xanh {
+            background: repeating-linear-gradient(
+                to bottom,
+                #2e8b57,
+                #2e8b57 6px,
+                #ffffff 6px,
+                #ffffff 12px
+            );
+        }
+
+        .ke-ngang-den {
+            background: repeating-linear-gradient(
+                to bottom,
+                #000,
+                #000 6px,
+                #fff 6px,
+                #fff 12px
+            );
+        }
+
+        .highlighted {
+            background-color: #fffacd !important;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { background-color: #fffacd; }
+            50% { background-color: #fff6b3; }
+            100% { background-color: #fffacd; }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #777;
+            font-size: 0.85rem;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        /* Thong bao */
+        .notification {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            background: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Bo loc */
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+
+        .filter-controls label {
+            font-weight: 600;
+            color: #4a4a9c;
+            font-size: 0.9rem;
+        }
+
+        .filter-controls input, .filter-controls select {
+            padding: 8px 12px;
+            border: 2px solid #d1d1e9;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-controls input:focus, .filter-controls select:focus {
+            border-color: #7c7ce0;
+            box-shadow: 0 0 0 3px rgba(124, 124, 224, 0.2);
+            outline: none;
+        }
+
+        .filter-controls button {
+            background: linear-gradient(to right, #4a4a9c, #7c7ce0);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-controls button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(124, 124, 224, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-palette"></i> Mau sac – BPM – Cam xuc – Tone da <span style="color:#ff6b8b;">(Ma HEX day du)</span></h1>
+            <p class="subtitle">Nhap vao tung o de hien thi danh sach cuon. Chon muc tu danh sach de loc bang du lieu. Su dung nut "Xoa nhap lai" de dat lai tat ca lua chon.</p>
+        </header>
+
+        <div class="controls">
+            <div class="selection-info">
+                <i class="fas fa-mouse-pointer"></i>
+                <span id="selectedCount">0 muc duoc chon</span>
+            </div>
+            <button class="clear-btn" onclick="clearAllSelections()">
+                <i class="fas fa-eraser"></i> Xoa nhap lai
+            </button>
+        </div>
+
+        <!-- 9 o danh sach cuon -->
+        <div class="scroll-grid">
+            <!-- O 1: Ten mau -->
+            <div class="scroll-box" id="box-color" onclick="toggleScrollList('color')">
+                <div class="box-header">
+                    <h3><i class="fas fa-fill-drip"></i> Ten mau</h3>
+                    <span class="box-count" id="count-color">15</span>
+                </div>
+                <div class="scroll-list-container">
+                    <div class="scroll-list" id="list-color">
+                        <!-- Danh sach ten mau se duoc them bang JS -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- O 2: Tone da -->
+            <div class="scroll-box" id="box-tone" onclick="toggleScrollList('tone')">
+                <div class="box-header">
+                    <h3><i class="fas fa-user"></i> Tone da</h3>
+                    <span class="box-count" id="count-tone">3</span>
+                </div>
+                <div class="scroll-list-container">
+                    <div class="scroll-list" id="list-tone">
+                        <!-- Danh sach tone da se duoc them bang JS -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- O 3: BPM -->
+            <div class="scroll-box" id="box-bpm" onclick="toggleScrollList('bpm')">
+                <div class="box-header">
+                    <h3><i class="fas fa-heartbeat"></i> BPM</h3>
+                    <span class="box-count" id="count-bpm">11</span>
+                </div>
+                <div class="scroll-list-container">
+                    <div class="scroll-list" id="list-bpm">
+                        <!-- Danh sach BPM se duoc them bang JS -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- O 4: Trang thai -->
+            <div class="scroll-box" id="box-state" onclick="toggleScrollList('state')">
+                <div class="box-header">
+                    <h3><i class="fas fa-brain"></i> Trang thai</h3>
+                    <span class="box-count" id="count-state">15</span>
+                </div>
+                <div class="scroll-list-container">
+                    <div class="scroll-list" id="list-state">
+                        <!-- Danh sach trang thai se duoc them bang JS -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- O 5: Ma HEX -->
+            <div class="scroll-box" id="box-hex" onclick="toggleScrollList('hex')">
+                <div class="box-header">
+                    <h3><i class="fas fa-hashtag"></i> Ma HEX</h3>
+                    <span class="box-count" id="count-hex">12</span>
+                </div>
+                <div class="scroll-list-container">
+                    <div class="scroll-list" id="list-hex">
+                        <!-- Danh sach ma HEX se duoc them bang JS -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- O 6: Phan loai BPM -->
+            <div class="scroll-box" id="box-bpm-category" onclick="toggleScrollList('bpm-category')">
+                <div class="box-header">
+                    <h3><i class="fas fa-heart"></i> Phan loai BPM</h3>
+                    <span class="box-count" id="count-bpm-category">4</span>
+                </div>
+                <div class="scroll-list-container">
+                    <div class="scroll-list" id="list-bpm-category">
+                        <!-- Danh sach phan loai BPM se duoc them bang JS -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- O 7: Loai hoa van -->
+            <div class="scroll-box" id="box-pattern" onclick="toggleScrollList('pattern')">
+                <div class="box-header">
+                    <h3><i class="fas fa-shapes"></i> Loai hoa van</h3>
+                    <span class="box-count" id="count-pattern">3</span>
+                </div>
+                <div class="scroll-list-container">
+                    <div class="scroll-list" id="list-pattern">
+                        <!-- Danh sach hoa van se duoc them bang JS -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- O 8: Nhom cam xuc -->
+            <div class="scroll-box" id="box-emotion" onclick="toggleScrollList('emotion')">
+                <div class="box-header">
+                    <h3><i class="fas fa-smile"></i> Nhom cam xuc</h3>
+                    <span class="box-count" id="count-emotion">5</span>
+                </div>
+                <div class="scroll-list-container">
+                    <div class="scroll-list" id="list-emotion">
+                        <!-- Danh sach nhom cam xuc se duoc them bang JS -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- O 9: Moi truong -->
+            <div class="scroll-box" id="box-environment" onclick="toggleScrollList('environment')">
+                <div class="box-header">
+                    <h3><i class="fas fa-globe-asia"></i> Moi truong</h3>
+                    <span class="box-count" id="count-environment">6</span>
+                </div>
+                <div class="scroll-list-container">
+                    <div class="scroll-list" id="list-environment">
+                        <!-- Danh sach moi truong se duoc them bang JS -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- O giai thich tu kho -->
+            <div class="explanation-box">
+                <div class="explanation-header">
+                    <i class="fas fa-book-open"></i>
+                    <h3>Giai thich cac tu kho / thuat ngu</h3>
+                </div>
+                <div class="explanation-content">
+                    <div class="term-item">
+                        <div class="term-title"><i class="fas fa-fire"></i> Nhiet huyet</div>
+                        <div class="term-description">Su nhiet tinh, dam me va tran day nang luong.</div>
+                    </div>
+                    <div class="term-item">
+                        <div class="term-title"><i class="fas fa-water"></i> Binh tinh</div>
+                        <div class="term-description">Trang thai tinh lang, khong xao dong, binh tinh.</div>
+                    </div>
+                    <div class="term-item">
+                        <div class="term-title"><i class="fas fa-brain"></i> Tinh tao</div>
+                        <div class="term-description">Trang thai thuc tinh, nhan thuc ro rang, minh man.</div>
+                    </div>
+                    <div class="term-item">
+                        <div class="term-title"><i class="fas fa-leaf"></i> Can bang</div>
+                        <div class="term-description">Trang thai on dinh, hai hoa giua cac yeu to.</div>
+                    </div>
+                    <div class="term-item">
+                        <div class="term-title"><i class="fas fa-moon"></i> Huong noi</div>
+                        <div class="term-description">Trang thai tap trung vao noi tam, suy tu.</div>
+                    </div>
+                    <div class="term-item">
+                        <div class="term-title"><i class="fas fa-star"></i> Tinh khiet</div>
+                        <div class="term-description">Su trong sang, thuan khiet, khong pha tron.</div>
+                    </div>
+                    <div class="term-item">
+                        <div class="term-title"><i class="fas fa-bolt"></i> Nang luong</div>
+                        <div class="term-description">Suc manh va kha nang hoat dong tich cuc.</div>
+                    </div>
+                    <div class="term-item">
+                        <div class="term-title"><i class="fas fa-lightbulb"></i> Sang tao</div>
+                        <div class="term-description">Kha nang tao ra cai moi, y tuong doc dao.</div>
+                    </div>
+                    <div class="term-item">
+                        <div class="term-title"><i class="fas fa-train"></i> Moi truong tau hoa</div>
+                        <div class="term-description">Mau sac phu hop voi khong gian di chuyen tren tau hoa.</div>
+                    </div>
+                    <div class="term-item">
+                        <div class="term-title"><i class="fas fa-plane"></i> Moi truong may bay</div>
+                        <div class="term-description">Mau sac thich hop cho khong gian cabin may bay.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bo loc -->
+        <div class="filter-controls">
+            <label>BPM:</label>
+            <input type="number" id="bpmInput" placeholder="VD: 70, 90" min="60" max="120">
+
+            <label>Tone da:</label>
+            <select id="toneSelect">
+                <option value="">-- Tat ca --</option>
+                <option value="nong">Nong</option>
+                <option value="lanh">Lanh</option>
+                <option value="trungtinh">Trung tinh</option>
+            </select>
+
+            <label>Ma HEX:</label>
+            <input type="text" id="hexInput" placeholder="VD: #FF0000, #00FF00" style="width: 120px;">
+
+            <button onclick="applyFilter()">Loc</button>
+            <button onclick="showAll()">Hien tat ca</button>
+        </div>
+
+        <!-- Bang du lieu chinh -->
+        <div style="overflow-x: auto;">
+            <table class="data-table" id="colorTable">
+                <thead>
+                    <tr>
+                        <th width="5%">STT</th>
+                        <th width="15%">Mau / Hoa van</th>
+                        <th width="12%">Ten mau</th>
+                        <th width="10%">Ma HEX</th>
+                        <th width="10%">Tone da</th>
+                        <th width="8%">BPM</th>
+                        <th width="20%">Trang thai</th>
+                        <th width="10%">Moi truong</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Du lieu se duoc them bang JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <p>© 2023 Bang mau sac - BPM - Cam xuc | Ma HEX day du</p>
+            <p style="margin-top: 5px; font-size: 0.8rem;">Nhap vao tung o de hien thi danh sach va chon muc de loc bang</p>
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-text">Thong bao</span>
+    </div>
+
+    <script>
+        // Du lieu mau sac voi ma HEX day du (them cot moi truong)
+        const colors = [
+            [1, "red", "dO", "#FF0000", "nong", 120, "Nhiet huyet – tim nhanh", "phong_cuoi"],
+            [2, "orange", "DA CAM", "#FFA500", "nong", 95, "Am ap – nang luong", "tau_hoa"],
+            [3, "yellow", "VANG", "#FFFF00", "nong", 90, "Vui ve – tich cuc", "tau_dien"],
+            [4, "pink", "HONG", "#FFC0CB", "nong", 85, "Diu dang – cam xuc", "phong_cuoi"],
+            [5, "blue", "XANH BIEN", "#0000FF", "lanh", 70, "Binh tinh – ha nhip", "may_bay"],
+            [6, "skyblue", "XANH DA TROI", "#87CEEB", "lanh", 68, "Thoang – thu gian", "may_bay"],
+            [7, "green", "XANH LA", "#008000", "lanh", 75, "Can bang – on dinh", "den_chua"],
+            [8, "purple", "TIM", "#800080", "lanh", 78, "Sang tao – tri nao", "den_chua"],
+            [9, "white", "TRANG", "#FFFFFF", "trungtinh", 60, "Tinh khiet – phuc hoi", "phong_cuoi"],
+            [10, "black", "dEN", "#000000", "trungtinh", 65, "Tram – huong noi", "tau_hoa"],
+            [11, "gray", "GHI", "#808080", "trungtinh", 72, "Trung hoa", "tau_dien"],
+            [12, "silver", "KIM LOAI", "#C0C0C0", "trungtinh", 80, "Hien dai – tinh tao", "may_bay"],
+            [13, "pattern-caro", "KE CA RO dEN", "#000000 (Pattern)", "trungtinh", 90, "Ca tinh", "tau_dien"],
+            [14, "pattern-xanh", "KE NGANG XANH LA", "#2E8B57 (Pattern)", "lanh", 80, "Tuoi tre", "tau_hoa"],
+            [15, "pattern-den", "KE NGANG dEN", "#000000 (Pattern)", "trungtinh", 100, "Manh me", "may_bay"]
+        ];
+
+        // Bien luu tru trang thai
+        let activeBox = null;
+        let selectedItems = {
+            color: new Set(),
+            tone: new Set(),
+            bpm: new Set(),
+            state: new Set(),
+            hex: new Set(),
+            "bpm-category": new Set(),
+            pattern: new Set(),
+            emotion: new Set(),
+            environment: new Set()
+        };
+        
+        // Ham hien thi thong bao
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification-text');
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2500);
+        }
+        
+        // Ham lay ma mau hex tu ten mau
+        function getHexColor(colorValue) {
+            const colorMap = {
+                "red": "#FF0000",
+                "orange": "#FFA500",
+                "yellow": "#FFFF00",
+                "pink": "#FFC0CB",
+                "blue": "#0000FF",
+                "skyblue": "#87CEEB",
+                "green": "#008000",
+                "purple": "#800080",
+                "white": "#FFFFFF",
+                "black": "#000000",
+                "gray": "#808080",
+                "silver": "#C0C0C0"
+            };
+            
+            return colorMap[colorValue] || colorValue;
+        }
+        
+        // Ham lay mau hien thi tu gia tri mau
+        function getDisplayColor(colorValue) {
+            if (colorValue.includes("pattern")) {
+                if (colorValue.includes("caro")) return "caro-den";
+                if (colorValue.includes("xanh")) return "ke-ngang-xanh";
+                if (colorValue.includes("den")) return "ke-ngang-den";
+            }
+            return colorValue;
+        }
+        
+        // Ham lay ma HEX de hien thi
+        function getDisplayHex(colorValue) {
+            if (colorValue.includes("pattern")) {
+                if (colorValue.includes("caro")) return "#000000 (Pattern)";
+                if (colorValue.includes("xanh")) return "#2E8B57 (Pattern)";
+                if (colorValue.includes("den")) return "#000000 (Pattern)";
+            }
+            return getHexColor(colorValue);
+        }
+        
+        // Ham lay phan loai BPM
+        function getBpmCategory(bpm) {
+            if (bpm < 70) return "Thap";
+            if (bpm < 85) return "Trung binh";
+            if (bpm < 100) return "Cao";
+            return "Rat cao";
+        }
+        
+        // Ham lay loai hoa van
+        function getPatternType(colorValue) {
+            if (colorValue.includes("pattern")) {
+                if (colorValue.includes("caro")) return "Ca ro";
+                if (colorValue.includes("xanh")) return "Ke ngang xanh";
+                if (colorValue.includes("den")) return "Ke ngang den";
+            }
+            return "Mau thuan";
+        }
+        
+        // Ham lay nhom cam xuc
+        function getEmotionGroup(state) {
+            const lowerState = state.toLowerCase();
+            if (lowerState.includes("nhiet") || lowerState.includes("nang luong") || lowerState.includes("vui")) return "Nang dong";
+            if (lowerState.includes("binh") || lowerState.includes("thu gian") || lowerState.includes("can bang")) return "Binh tinh";
+            if (lowerState.includes("sang tao") || lowerState.includes("tri nao")) return "Sang tao";
+            if (lowerState.includes("tinh tao") || lowerState.includes("hien dai")) return "Tinh tao";
+            return "Khac";
+        }
+        
+        // Ham tao danh sach cho cac o
+        function createScrollLists() {
+            // Tao tap hop duy nhat cho moi danh muc
+            const colorNames = [...new Set(colors.map(c => c[2]))];
+            const toneTypes = [...new Set(colors.map(c => c[4]))];
+            const bpmValues = [...new Set(colors.map(c => c[5]))].sort((a, b) => a - b);
+            const states = [...new Set(colors.map(c => c[6]))];
+            const hexCodes = [...new Set(colors.map(c => c[3]))];
+            const bpmCategories = [...new Set(colors.map(c => getBpmCategory(c[5])))];
+            const patternTypes = [...new Set(colors.map(c => getPatternType(c[1])))];
+            const emotionGroups = [...new Set(colors.map(c => getEmotionGroup(c[6])))];
+            const environments = [...new Set(colors.map(c => c[7]))];
+            
+            // Cap nhat so luong
+            document.getElementById('count-color').textContent = colorNames.length;
+            document.getElementById('count-tone').textContent = toneTypes.length;
+            document.getElementById('count-bpm').textContent = bpmValues.length;
+            document.getElementById('count-state').textContent = states.length;
+            document.getElementById('count-hex').textContent = hexCodes.length;
+            document.getElementById('count-bpm-category').textContent = bpmCategories.length;
+            document.getElementById('count-pattern').textContent = patternTypes.length;
+            document.getElementById('count-emotion').textContent = emotionGroups.length;
+            document.getElementById('count-environment').textContent = environments.length;
+            
+            // Tao danh sach ten mau
+            const colorList = document.getElementById('list-color');
+            colorList.innerHTML = '';
+            colorNames.forEach(name => {
+                const count = colors.filter(c => c[2] === name).length;
+                const item = createScrollItem('color', name, name, count);
+                colorList.appendChild(item);
+            });
+            
+            // Tao danh sach tone da
+            const toneList = document.getElementById('list-tone');
+            toneList.innerHTML = '';
+            toneTypes.forEach(tone => {
+                const toneText = tone === 'nong' ? 'Nong' : tone === 'lanh' ? 'Lanh' : 'Trung tinh';
+                const count = colors.filter(c => c[4] === tone).length;
+                const icon = tone === 'nong' ? '🔥' : tone === 'lanh' ? '❄' : '⚖';
+                const item = createScrollItem('tone', tone, `${icon} ${toneText}`, count);
+                toneList.appendChild(item);
+            });
+            
+            // Tao danh sach BPM
+            const bpmList = document.getElementById('list-bpm');
+            bpmList.innerHTML = '';
+            bpmValues.forEach(bpm => {
+                const count = colors.filter(c => c[5] === bpm).length;
+                const item = createScrollItem('bpm', bpm, 
+                    `<div style="display:flex; align-items:center; gap:6px;">
+                        <i class="fas fa-heart" style="color:#ff6b8b;"></i>
+                        <span>${bpm} BPM</span>
+                    </div>`, 
+                    count);
+                bpmList.appendChild(item);
+            });
+            
+            // Tao danh sach trang thai
+            const stateList = document.getElementById('list-state');
+            stateList.innerHTML = '';
+            states.forEach(state => {
+                const count = colors.filter(c => c[6] === state).length;
+                const item = createScrollItem('state', state, state, count);
+                stateList.appendChild(item);
+            });
+            
+            // Tao danh sach ma HEX
+            const hexList = document.getElementById('list-hex');
+            hexList.innerHTML = '';
+            hexCodes.forEach(hex => {
+                const count = colors.filter(c => c[3] === hex).length;
+                const colorName = colors.find(c => c[3] === hex)?.[2] || hex;
+                const isPattern = hex.includes("Pattern");
+                const item = createScrollItem('hex', hex, 
+                    `<div style="display:flex; align-items:center; gap:6px;">
+                        ${!isPattern ? `<div style="width:12px; height:12px; border-radius:2px; background:${hex}; border:1px solid #ddd;"></div>` : ''}
+                        <span>${hex}</span>
+                    </div>`, 
+                    count);
+                hexList.appendChild(item);
+            });
+            
+            // Tao danh sach phan loai BPM
+            const bpmCategoryList = document.getElementById('list-bpm-category');
+            bpmCategoryList.innerHTML = '';
+            bpmCategories.forEach(category => {
+                const count = colors.filter(c => getBpmCategory(c[5]) === category).length;
+                const icon = category === 'Thap' ? '🔋' : category === 'Trung binh' ? '⚡' : category === 'Cao' ? '🔥' : '💥';
+                const item = createScrollItem('bpm-category', category, `${icon} ${category}`, count);
+                bpmCategoryList.appendChild(item);
+            });
+            
+            // Tao danh sach loai hoa van
+            const patternList = document.getElementById('list-pattern');
+            patternList.innerHTML = '';
+            patternTypes.forEach(pattern => {
+                const count = colors.filter(c => getPatternType(c[1]) === pattern).length;
+                const icon = pattern === 'Ca ro' ? '⬛' : pattern === 'Ke ngang xanh' ? '🟩' : pattern === 'Ke ngang den' ? '⬜' : '🎨';
+                const item = createScrollItem('pattern', pattern, `${icon} ${pattern}`, count);
+                patternList.appendChild(item);
+            });
+            
+            // Tao danh sach nhom cam xuc
+            const emotionList = document.getElementById('list-emotion');
+            emotionList.innerHTML = '';
+            emotionGroups.forEach(group => {
+                const count = colors.filter(c => getEmotionGroup(c[6]) === group).length;
+                const icon = group === 'Nang dong' ? '⚡' : group === 'Binh tinh' ? '☮' : group === 'Sang tao' ? '✨' : group === 'Tinh tao' ? '🧠' : '❓';
+                const item = createScrollItem('emotion', group, `${icon} ${group}`, count);
+                emotionList.appendChild(item);
+            });
+            
+            // Tao danh sach moi truong
+            const environmentList = document.getElementById('list-environment');
+            environmentList.innerHTML = '';
+            
+            // Danh sach moi truong day du
+            const allEnvironments = [
+                { value: "tau_hoa", name: "🚂 Tau hoa", icon: "🚂" },
+                { value: "tau_dien", name: "🚊 Tau dien", icon: "🚊" },
+                { value: "may_bay", name: "✈ May bay", icon: "✈" },
+                { value: "den_chua", name: "🛕 den chua", icon: "🛕" },
+                { value: "phong_cuoi", name: "💒 Phong cuoi", icon: "💒" },
+                { value: "van_phong", name: "🏢 Van phong", icon: "🏢" }
+            ];
+            
+            allEnvironments.forEach(env => {
+                const count = colors.filter(c => c[7] === env.value).length;
+                const item = createScrollItem('environment', env.value, 
+                    `<div style="display:flex; align-items:center; gap:6px;">
+                        <span>${env.icon}</span>
+                        <span>${env.name}</span>
+                    </div>`, 
+                    count);
+                environmentList.appendChild(item);
+            });
+            
+            updateSelectedCount();
+        }
+        
+        // Ham tao mot muc trong danh sach cuon
+        function createScrollItem(type, value, content, count) {
+            const item = document.createElement('div');
+            item.className = 'scroll-item';
+            if (selectedItems[type].has(value)) {
+                item.classList.add('selected');
+            }
+            item.dataset.type = type;
+            item.dataset.value = value;
+            item.innerHTML = `
+                <div>${content}</div>
+                <div class="item-details">${count}</div>
+            `;
+            
+            item.addEventListener('click', (e) => {
+                e.stopPropagation(); // Ngan su kien lan ra ngoai
+                toggleSelection(type, value, item);
+            });
+            
+            return item;
+        }
+        
+        // Ham chuyen doi hien thi danh sach cuon
+        function toggleScrollList(type) {
+            const box = document.getElementById(`box-${type}`);
+            const list = document.getElementById(`list-${type}`);
+            
+            // Neu dang mo thi dong lai
+            if (activeBox === box) {
+                box.classList.remove('active');
+                list.classList.remove('active');
+                activeBox = null;
+                return;
+            }
+            
+            // dong tat ca danh sach dang mo
+            if (activeBox) {
+                activeBox.classList.remove('active');
+                const activeList = activeBox.querySelector('.scroll-list');
+                if (activeList) activeList.classList.remove('active');
+            }
+            
+            // Mo danh sach duoc chon
+            box.classList.add('active');
+            list.classList.add('active');
+            activeBox = box;
+            
+            // Cuon den phan tu dau tien neu co
+            if (list.firstChild) {
+                list.scrollTop = 0;
+            }
+        }
+        
+        // Ham chuyen doi lua chon
+        function toggleSelection(type, value, element) {
+            if (selectedItems[type].has(value)) {
+                selectedItems[type].delete(value);
+                element.classList.remove('selected');
+            } else {
+                selectedItems[type].add(value);
+                element.classList.add('selected');
+            }
+            
+            updateSelectedCount();
+            filterTable();
+            scrollToFirstHighlighted();
+            
+            // Hien thi thong bao
+            const action = selectedItems[type].has(value) ? "chon" : "bo chon";
+            const typeName = getTypeName(type);
+            showNotification(`da ${action} "${getDisplayValue(type, value)}" tu ${typeName}`);
+        }
+        
+        // Ham lay gia tri hien thi
+        function getDisplayValue(type, value) {
+            if (type === 'environment') {
+                const envMap = {
+                    "tau_hoa": "Tau hoa",
+                    "tau_dien": "Tau dien",
+                    "may_bay": "May bay",
+                    "den_chua": "den chua",
+                    "phong_cuoi": "Phong cuoi",
+                    "van_phong": "Van phong"
+                };
+                return envMap[value] || value;
+            } else if (type === 'tone') {
+                return value === 'nong' ? 'Nong' : value === 'lanh' ? 'Lanh' : 'Trung tinh';
+            }
+            return value;
+        }
+        
+        // Ham lay ten hien thi cua loai
+        function getTypeName(type) {
+            const names = {
+                color: "Ten mau",
+                tone: "Tone da",
+                bpm: "BPM",
+                state: "Trang thai",
+                hex: "Ma HEX",
+                "bpm-category": "Phan loai BPM",
+                pattern: "Loai hoa van",
+                emotion: "Nhom cam xuc",
+                environment: "Moi truong"
+            };
+            return names[type] || type;
+        }
+        
+        // Ham cap nhat so luong muc duoc chon
+        function updateSelectedCount() {
+            let total = 0;
+            for (const type in selectedItems) {
+                total += selectedItems[type].size;
+            }
+            document.getElementById('selectedCount').textContent = `${total} muc duoc chon`;
+        }
+        
+        // Ham loc bang dua tren lua chon
+        function filterTable() {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+            
+            let filteredColors = colors;
+            
+            // Ap dung tat ca cac bo loc tu selectedItems
+            if (selectedItems.color.size > 0) {
+                filteredColors = filteredColors.filter(c => selectedItems.color.has(c[2]));
+            }
+            
+            if (selectedItems.tone.size > 0) {
+                filteredColors = filteredColors.filter(c => selectedItems.tone.has(c[4]));
+            }
+            
+            if (selectedItems.bpm.size > 0) {
+                filteredColors = filteredColors.filter(c => selectedItems.bpm.has(c[5]));
+            }
+            
+            if (selectedItems.state.size > 0) {
+                filteredColors = filteredColors.filter(c => selectedItems.state.has(c[6]));
+            }
+            
+            if (selectedItems.hex.size > 0) {
+                filteredColors = filteredColors.filter(c => selectedItems.hex.has(c[3]));
+            }
+            
+            if (selectedItems["bpm-category"].size > 0) {
+                filteredColors = filteredColors.filter(c => selectedItems["bpm-category"].has(getBpmCategory(c[5])));
+            }
+            
+            if (selectedItems.pattern.size > 0) {
+                filteredColors = filteredColors.filter(c => selectedItems.pattern.has(getPatternType(c[1])));
+            }
+            
+            if (selectedItems.emotion.size > 0) {
+                filteredColors = filteredColors.filter(c => selectedItems.emotion.has(getEmotionGroup(c[6])));
+            }
+            
+            if (selectedItems.environment.size > 0) {
+                filteredColors = filteredColors.filter(c => selectedItems.environment.has(c[7]));
+            }
+            
+            // Hien thi ket qua
+            filteredColors.forEach(c => {
+                const row = document.createElement('tr');
+                
+                // Kiem tra xem dong nay co khop voi bat ky lua chon nao khong
+                let isHighlighted = false;
+                
+                // STT
+                const sttCell = document.createElement('td');
+                sttCell.textContent = c[0];
+                sttCell.style.fontWeight = "600";
+                sttCell.style.color = "#4a4a9c";
+                row.appendChild(sttCell);
+                
+                // Mau / Hoa van
+                const colorCell = document.createElement('td');
+                colorCell.className = "color-cell";
+                
+                const displayColor = getDisplayColor(c[1]);
+                const hexCode = c[3];
+                const isPattern = c[1].includes("pattern");
+                
+                let colorPreview = document.createElement("div");
+                colorPreview.className = "color-preview";
+                
+                if (isPattern) {
+                    colorPreview.classList.add(displayColor);
+                    colorPreview.textContent = "PATTERN";
+                } else {
+                    colorPreview.style.background = hexCode;
+                    // Kiem tra do sang de chon mau chu phu hop
+                    const rgb = hexToRgb(hexCode);
+                    const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+                    colorPreview.style.color = brightness > 125 ? "#000" : "#FFF";
+                    colorPreview.textContent = hexCode;
+                }
+                
+                colorCell.appendChild(colorPreview);
+                row.appendChild(colorCell);
+                
+                // Ten mau
+                const nameCell = document.createElement('td');
+                nameCell.innerHTML = `<strong>${c[2]}</strong>`;
+                row.appendChild(nameCell);
+                
+                // Ma HEX
+                const hexCell = document.createElement('td');
+                hexCell.innerHTML = `<span class="color-hex">${hexCode}</span>`;
+                row.appendChild(hexCell);
+                
+                // Tone da
+                const toneCell = document.createElement('td');
+                let toneText = "";
+                if (c[4]==="nong") {
+                    toneText = "🔥 Nong";
+                    isHighlighted = isHighlighted || selectedItems.tone.has("nong");
+                } else if (c[4]==="lanh") {
+                    toneText = "❄ Lanh";
+                    isHighlighted = isHighlighted || selectedItems.tone.has("lanh");
+                } else {
+                    toneText = "⚖ Trung tinh";
+                    isHighlighted = isHighlighted || selectedItems.tone.has("trungtinh");
+                }
+                toneCell.innerHTML = `<span style="font-weight:600;">${toneText}</span>`;
+                row.appendChild(toneCell);
+                
+                // BPM
+                const bpmCell = document.createElement('td');
+                bpmCell.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <i class="fas fa-heart" style="color:#ff6b8b;"></i>
+                        <span style="font-weight:600;">${c[5]}</span>
+                    </div>
+                `;
+                isHighlighted = isHighlighted || selectedItems.bpm.has(c[5]);
+                row.appendChild(bpmCell);
+                
+                // Trang thai
+                const stateCell = document.createElement('td');
+                stateCell.textContent = c[6];
+                isHighlighted = isHighlighted || selectedItems.state.has(c[6]);
+                row.appendChild(stateCell);
+                
+                // Moi truong
+                const envCell = document.createElement('td');
+                let envIcon = "";
+                let envText = "";
+                
+                switch(c[7]) {
+                    case "tau_hoa": envIcon = "🚂"; envText = "Tau hoa"; break;
+                    case "tau_dien": envIcon = "🚊"; envText = "Tau dien"; break;
+                    case "may_bay": envIcon = "✈"; envText = "May bay"; break;
+                    case "den_chua": envIcon = "🛕"; envText = "den chua"; break;
+                    case "phong_cuoi": envIcon = "💒"; envText = "Phong cuoi"; break;
+                    default: envIcon = "🏢"; envText = "Van phong";
+                }
+                
+                envCell.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span>${envIcon}</span>
+                        <span>${envText}</span>
+                    </div>
+                `;
+                isHighlighted = isHighlighted || selectedItems.environment.has(c[7]);
+                row.appendChild(envCell);
+                
+                // Kiem tra cac lua chon khac
+                if (selectedItems.color.has(c[2])) isHighlighted = true;
+                if (selectedItems.hex.has(c[3])) isHighlighted = true;
+                if (selectedItems["bpm-category"].has(getBpmCategory(c[5]))) isHighlighted = true;
+                if (selectedItems.pattern.has(getPatternType(c[1]))) isHighlighted = true;
+                if (selectedItems.emotion.has(getEmotionGroup(c[6]))) isHighlighted = true;
+                
+                // Neu co lua chon, them lop highlighted
+                if (isHighlighted && Object.values(selectedItems).some(set => set.size > 0)) {
+                    row.classList.add('highlighted');
+                }
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        // Ham chuyen doi HEX sang RGB
+        function hexToRgb(hex) {
+            // Xoa ky tu # neu co
+            hex = hex.replace('#', '');
+            
+            // Parse cac gia tri r, g, b
+            const r = parseInt(hex.substring(0, 2), 16);
+            const g = parseInt(hex.substring(2, 4), 16);
+            const b = parseInt(hex.substring(4, 6), 16);
+            
+            return { r, g, b };
+        }
+        
+        // Ham cuon den dong dau tien duoc highlight
+        function scrollToFirstHighlighted() {
+            setTimeout(() => {
+                const firstHighlighted = document.querySelector('.highlighted');
+                if (firstHighlighted) {
+                    firstHighlighted.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+            }, 100);
+        }
+        
+        // Ham xoa tat ca lua chon
+        function clearAllSelections() {
+            // Xoa tat ca lua chon
+            for (const type in selectedItems) {
+                selectedItems[type].clear();
+            }
+            
+            // Xoa lop selected tu tat ca cac muc
+            document.querySelectorAll('.scroll-item.selected').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // dong danh sach dang mo
+            if (activeBox) {
+                activeBox.classList.remove('active');
+                const activeList = activeBox.querySelector('.scroll-list');
+                if (activeList) activeList.classList.remove('active');
+                activeBox = null;
+            }
+            
+            // Cap nhat giao dien
+            updateSelectedCount();
+            filterTable();
+            
+            // Hien thi thong bao
+            showNotification("da xoa tat ca lua chon");
+        }
+        
+        // Ham ap dung bo loc tu input
+        function applyFilter() {
+            const bpm = Number(document.getElementById("bpmInput").value);
+            const tone = document.getElementById("toneSelect").value;
+            const hex = document.getElementById("hexInput").value.toUpperCase();
+            
+            // Xoa tat ca lua chon hien tai
+            clearAllSelections();
+            
+            // Them lua chon tu bo loc
+            if (bpm) {
+                selectedItems.bpm.add(bpm);
+            }
+            
+            if (tone) {
+                selectedItems.tone.add(tone);
+            }
+            
+            if (hex) {
+                // Tim ma HEX tuong ung
+                const hexColor = colors.find(c => c[3].includes(hex));
+                if (hexColor) {
+                    selectedItems.hex.add(hexColor[3]);
+                }
+            }
+            
+            // Cap nhat giao dien
+            updateSelectedCount();
+            filterTable();
+            
+            // Hien thi thong bao
+            let message = "da ap dung bo loc";
+            if (bpm || tone || hex) {
+                let filters = [];
+                if (bpm) filters.push(`BPM=${bpm}`);
+                if (tone) filters.push(`Tone=${tone === 'nong' ? 'Nong' : tone === 'lanh' ? 'Lanh' : 'Trung tinh'}`);
+                if (hex) filters.push(`HEX=${hex}`);
+                message = `da loc: ${filters.join(', ')}`;
+            }
+            
+            showNotification(message);
+        }
+        
+        // Ham hien thi tat ca
+        function showAll() {
+            document.getElementById("bpmInput").value = "";
+            document.getElementById("toneSelect").value = "";
+            document.getElementById("hexInput").value = "";
+            clearAllSelections();
+            showNotification("Hien thi tat ca du lieu");
+        }
+        
+        // Ham khoi tao
+        function init() {
+            createScrollLists();
+            filterTable();
+            
+            // dong danh sach khi click ra ngoai
+            document.addEventListener('click', (e) => {
+                const isClickInsideBox = e.target.closest('.scroll-box');
+                if (!isClickInsideBox && activeBox) {
+                    activeBox.classList.remove('active');
+                    const activeList = activeBox.querySelector('.scroll-list');
+                    if (activeList) activeList.classList.remove('active');
+                    activeBox = null;
+                }
+            });
+        }
+        
+        // Khoi chay khi trang tai xong
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

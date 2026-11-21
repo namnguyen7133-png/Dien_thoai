@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Phan tich uu dai Shopee Affiliate</title>
+<style>
+    body { font-family: Arial; padding: 20px; background: #f7f7f7; }
+    textarea { width: 100%; height: 300px; padding: 10px; }
+    button { padding: 10px 20px; margin: 10px 0; font-size: 16px; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #fff; }
+    th, td { border: 1px solid #ccc; padding: 8px; }
+    th { background: #e3e3e3; }
+</style>
+</head>
+
+<body>
+
+<h2>Nhap du lieu uu dai (dang van ban - khong can CSV)</h2>
+<p>Dan toan bo doan du lieu theo dung dang ban gui vao o duoi:</p>
+
+<textarea id="rawInput" placeholder="Dan du lieu vao day..."></textarea>
+
+<button onclick="parseData()">Phan tich du lieu</button>
+
+<h2>Ket qua phan tich</h2>
+<table id="resultTable">
+    <thead>
+        <tr>
+            <th>Ten uu dai</th>
+            <th>Thoi gian uu dai</th>
+            <th>Ti le hoa hong</th>
+            <th>Link uu dai</th>
+            <th>Tracking link</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+function parseData() {
+    const input = document.getElementById("rawInput").value.trim();
+    if (!input) { alert("Ban chua nhap du lieu!"); return; }
+
+    const rows = input.split(/\n(?=[^",]+\,"|[^,]+,")/); 
+    // Tach theo dong moi nhung giu nhom du lieu
+
+    const tbody = document.querySelector("#resultTable tbody");
+    tbody.innerHTML = "";
+
+    rows.forEach(row => {
+        // Tach theo dau phay, nhung KHONG tach ben trong "" chua xuong dong
+        let cols = row.match(/(".*?"|[^,]+)/g);
+
+        if (!cols || cols.length < 5) return;
+
+        cols = cols.map(c => c.replace(/^"|"$/g, "").trim());
+
+        const tr = document.createElement("tr");
+        cols.forEach(c => {
+            const td = document.createElement("td");
+            td.textContent = c;
+            tr.appendChild(td);
+        });
+
+        tbody.appendChild(tr);
+    });
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

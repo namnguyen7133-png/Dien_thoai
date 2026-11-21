@@ -1,0 +1,802 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Co Quan Su – Hoc Chien Luoc Quan Su</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-blue: #2c3e50;
+  --secondary-blue: #3498db;
+  --light-blue: #ecf0f1;
+  --team-a: #2980b9;
+  --team-b: #e74c3c;
+  --safe: #27ae60;
+  --warning: #f39c12;
+  --danger: #c0392b;
+  --board-light: #f9f9f9;
+  --board-dark: #d6dbdf;
+  --text-dark: #2c3e50;
+  --text-light: #ecf0f1;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+  color: var(--text-dark);
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px;
+  width: 100%;
+  gap: 25px;
+}
+
+.header {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border-bottom: 5px solid var(--secondary-blue);
+}
+
+.header h1 {
+  color: var(--primary-blue);
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.header p {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.game-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
+}
+
+/* Ban co */
+.board-container {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.board-title {
+  font-size: 1.8rem;
+  color: var(--primary-blue);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#board {
+  display: grid;
+  grid-template-columns: repeat(8, 70px);
+  grid-template-rows: repeat(8, 70px);
+  gap: 3px;
+  background-color: var(--primary-blue);
+  padding: 5px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.cell {
+  width: 70px;
+  height: 70px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  background-color: var(--board-light);
+}
+
+.cell:hover {
+  transform: scale(1.05);
+  z-index: 10;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.cell.A {
+  background-color: rgba(41, 128, 185, 0.15);
+  border: 2px solid var(--team-a);
+}
+
+.cell.B {
+  background-color: rgba(231, 76, 60, 0.15);
+  border: 2px solid var(--team-b);
+}
+
+.cell.selected {
+  background-color: var(--warning);
+  box-shadow: 0 0 15px rgba(243, 156, 18, 0.8);
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(243, 156, 18, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(243, 156, 18, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(243, 156, 18, 0); }
+}
+
+.cell.empty {
+  background-color: var(--board-light);
+}
+
+.cell.coordinate::before {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+/* Bang dieu khien */
+.control-panel {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.panel-title {
+  font-size: 1.8rem;
+  color: var(--primary-blue);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.turn-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(90deg, var(--team-a) 50%, var(--team-b) 50%);
+  border-radius: 10px;
+  padding: 15px;
+  color: white;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.turn-indicator::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: 100%;
+  background: white;
+}
+
+.turn-text {
+  z-index: 1;
+}
+
+.turn-text.active {
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  font-size: 1.3rem;
+}
+
+.analysis-container {
+  margin-top: 10px;
+  padding: 20px;
+  background: var(--light-blue);
+  border-radius: 10px;
+  border-left: 6px solid var(--secondary-blue);
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+}
+
+.analysis-container.good {
+  background-color: rgba(39, 174, 96, 0.15);
+  border-left-color: var(--safe);
+}
+
+.analysis-container.warn {
+  background-color: rgba(243, 156, 18, 0.15);
+  border-left-color: var(--warning);
+}
+
+.analysis-container.danger {
+  background-color: rgba(192, 57, 43, 0.15);
+  border-left-color: var(--danger);
+}
+
+#analysis {
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+
+/* Bang quan co */
+.pieces-info {
+  background: var(--light-blue);
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 10px;
+}
+
+.pieces-title {
+  font-size: 1.3rem;
+  color: var(--primary-blue);
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.teams {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.team {
+  flex: 1;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.team-a {
+  background-color: rgba(41, 128, 185, 0.1);
+  border: 2px solid var(--team-a);
+}
+
+.team-b {
+  background-color: rgba(231, 76, 60, 0.1);
+  border: 2px solid var(--team-b);
+}
+
+.team h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  color: var(--primary-blue);
+}
+
+.piece-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.piece-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.piece-icon {
+  font-size: 24px;
+  width: 40px;
+  text-align: center;
+}
+
+.piece-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.piece-power {
+  background: var(--primary-blue);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+}
+
+/* Huong dan */
+.instructions {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  margin-top: 10px;
+}
+
+.instructions h3 {
+  font-size: 1.5rem;
+  color: var(--primary-blue);
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rules {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.rule {
+  background: var(--light-blue);
+  padding: 15px;
+  border-radius: 8px;
+  border-left: 4px solid var(--secondary-blue);
+}
+
+.rule h4 {
+  color: var(--primary-blue);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rule p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .game-area {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .control-panel {
+    max-width: 100%;
+  }
+  
+  #board {
+    grid-template-columns: repeat(8, 60px);
+    grid-template-rows: repeat(8, 60px);
+  }
+  
+  .cell {
+    width: 60px;
+    height: 60px;
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 600px) {
+  .header h1 {
+    font-size: 2rem;
+  }
+  
+  #board {
+    grid-template-columns: repeat(8, 50px);
+    grid-template-rows: repeat(8, 50px);
+  }
+  
+  .cell {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+  }
+  
+  .teams {
+    flex-direction: column;
+  }
+  
+  .rules {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1><span>🎖</span> Co Quan Su - Chien Thuat Quan doi</h1>
+    <p>Tro choi chien thuat mo phong chien truong thuc te. Su dung cac quan co voi suc manh khac nhau de tieu diet doi phuong va chiem co doi thu.</p>
+  </div>
+  
+  <div class="game-area">
+    <div class="board-container">
+      <h2 class="board-title">🎯 Ban Co Chien Thuat</h2>
+      <div id="board"></div>
+    </div>
+    
+    <div class="control-panel">
+      <h2 class="panel-title">📊 Bang dieu Khien</h2>
+      
+      <div class="turn-indicator">
+        <div class="turn-text A-turn ${turn === 'A' ? 'active' : ''}">🔵 doi A</div>
+        <div class="turn-text B-turn ${turn === 'B' ? 'active' : ''}">🔴 doi B</div>
+      </div>
+      
+      <div id="turn-display" class="turn-display">
+        <p>Luot di hien tai: <strong id="turn-text">🔵 doi A</strong></p>
+        <p id="selected-info">Chua co quan co nao duoc chon</p>
+      </div>
+      
+      <div class="analysis-container" id="analysis-container">
+        <div id="analysis">
+          👉 Goi y: Dung 🪖 linh de tham do, dung lo 🎖 tuong som. Quan sat nuoc di cua doi thu de doan quan bai.
+        </div>
+      </div>
+      
+      <div class="pieces-info">
+        <h3 class="pieces-title">⚔ Thong Tin Quan Co</h3>
+        <div class="teams">
+          <div class="team team-a">
+            <h3>🔵 doi A</h3>
+            <div class="piece-list" id="team-a-pieces"></div>
+          </div>
+          <div class="team team-b">
+            <h3>🔴 doi B</h3>
+            <div class="piece-list" id="team-b-pieces"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="instructions">
+    <h3>📖 Huong Dan Choi</h3>
+    <div class="rules">
+      <div class="rule">
+        <h4>🎯 Muc Tieu</h4>
+        <p>Chiem duoc 🚩 co cua doi phuong hoac tieu diet het quan co the di chuyen cua doi thu.</p>
+      </div>
+      <div class="rule">
+        <h4>⚔ Quy Tac Chien dau</h4>
+        <p>Quan co suc manh cao hon se an quan co suc manh thap hon. 🕵 gian diep co the an 🎖 tuong.</p>
+      </div>
+      <div class="rule">
+        <h4>💣 Qua Min</h4>
+        <p>Chi co 🪖 linh co the vo hieu hoa 💣 min. Cac quan khac cham min se bi tieu diet.</p>
+      </div>
+      <div class="rule">
+        <h4>🎮 Cach Choi</h4>
+        <p>Nhan chon quan cua ban, sau do nhan vao o trong de di chuyen hoac o co quan dich de tan cong.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const board = Array(64).fill(null);
+let turn = "A";
+let selected = null;
+
+const power = {
+  "🚩": 0,
+  "💣": -1,
+  "🕵": 1,
+  "🪖": 3,
+  "🎖": 10
+};
+
+const pieceNames = {
+  "🚩": "Co",
+  "💣": "Min",
+  "🕵": "Gian diep",
+  "🪖": "Linh",
+  "🎖": "Tuong"
+};
+
+function piece(side, val) {
+  return { side, val };
+}
+
+/* ===== KHOI TAO ===== */
+function init() {
+  const A = ["🚩", "💣", "💣", "🕵", "🪖", "🪖", "🪖", "🎖", "🪖", "🪖"];
+  const B = ["🚩", "💣", "💣", "🕵", "🪖", "🪖", "🪖", "🎖", "🪖", "🪖"];
+  
+  // dat quan cho doi A (hang dau)
+  A.forEach((v, i) => {
+    board[i] = piece("A", v);
+  });
+  
+  // dat quan cho doi B (hang cuoi)
+  B.forEach((v, i) => {
+    board[63 - i] = piece("B", v);
+  });
+  
+  // Cap nhat thong tin quan co
+  updatePieceInfo();
+}
+
+/* ===== CAP NHAT THONG TIN QUAN CO ===== */
+function updatePieceInfo() {
+  const teamAPieces = document.getElementById("team-a-pieces");
+  const teamBPieces = document.getElementById("team-b-pieces");
+  
+  teamAPieces.innerHTML = "";
+  teamBPieces.innerHTML = "";
+  
+  // dem so luong tung loai quan co
+  const countA = {"🚩": 0, "💣": 0, "🕵": 0, "🪖": 0, "🎖": 0};
+  const countB = {"🚩": 0, "💣": 0, "🕵": 0, "🪖": 0, "🎖": 0};
+  
+  board.forEach(cell => {
+    if (cell) {
+      if (cell.side === "A") {
+        countA[cell.val]++;
+      } else if (cell.side === "B") {
+        countB[cell.val]++;
+      }
+    }
+  });
+  
+  // Tao danh sach quan co cho doi A
+  Object.keys(countA).forEach(piece => {
+    if (countA[piece] > 0) {
+      const pieceItem = document.createElement("div");
+      pieceItem.className = "piece-item";
+      pieceItem.innerHTML = `
+        <div class="piece-icon">${piece}</div>
+        <div class="piece-name">${pieceNames[piece]}</div>
+        <div class="piece-power">Suc manh: ${power[piece]}</div>
+        <div class="piece-count">×${countA[piece]}</div>
+      `;
+      teamAPieces.appendChild(pieceItem);
+    }
+  });
+  
+  // Tao danh sach quan co cho doi B
+  Object.keys(countB).forEach(piece => {
+    if (countB[piece] > 0) {
+      const pieceItem = document.createElement("div");
+      pieceItem.className = "piece-item";
+      pieceItem.innerHTML = `
+        <div class="piece-icon">${piece}</div>
+        <div class="piece-name">${pieceNames[piece]}</div>
+        <div class="piece-power">Suc manh: ${power[piece]}</div>
+        <div class="piece-count">×${countB[piece]}</div>
+      `;
+      teamBPieces.appendChild(pieceItem);
+    }
+  });
+}
+
+/* ===== PHAN TICH & GOI Y ===== */
+function analyze(text, type = "analysis") {
+  const analysisDiv = document.getElementById("analysis");
+  const analysisContainer = document.getElementById("analysis-container");
+  
+  analysisDiv.textContent = text;
+  analysisContainer.className = "analysis-container " + type;
+}
+
+/* ===== XU LY CLICK ===== */
+function clickCell(i) {
+  const cell = board[i];
+  
+  // Hien thi thong tin quan duoc chon
+  const selectedInfo = document.getElementById("selected-info");
+  
+  if (!selected) {
+    // Chua co quan nao duoc chon
+    if (cell && cell.side === turn) {
+      selected = i;
+      selectedInfo.textContent = `da chon: ${cell.val} ${pieceNames[cell.val]} (Suc manh: ${power[cell.val]})`;
+      analyze(`🔍 da chon ${pieceNames[cell.val]}. Hay chon o trong de di chuyen hoac o co quan dich de tan cong.`);
+      draw(); // Ve lai ban co de hien thi o duoc chon
+    } else if (cell && cell.side !== turn) {
+      analyze("❌ day la quan cua doi phuong. Hay chon quan cua doi ban.", "warn");
+    } else {
+      analyze("⬜ O trong. Hay chon mot quan co cua doi ban de di chuyen.", "warn");
+    }
+    return;
+  }
+  
+  // da co quan duoc chon, xu ly di chuyen/tan cong
+  if (cell && cell.side === turn) {
+    // Chon quan khac cung doi
+    selected = i;
+    selectedInfo.textContent = `da chon: ${cell.val} ${pieceNames[cell.val]} (Suc manh: ${power[cell.val]})`;
+    analyze(`🔍 da chon ${pieceNames[cell.val]}. Hay chon o trong de di chuyen hoac o co quan dich de tan cong.`);
+    draw();
+    return;
+  }
+  
+  // Tan cong quan doi phuong
+  if (cell && cell.side !== turn) {
+    fight(selected, i);
+    selected = null;
+    selectedInfo.textContent = "Chua co quan co nao duoc chon";
+    draw();
+    updatePieceInfo();
+    return;
+  }
+  
+  // Di chuyen vao o trong
+  if (!cell) {
+    board[i] = board[selected];
+    board[selected] = null;
+    analyze(`📌 ${pieceNames[board[i].val]} da di chuyen an toan. dung de tuong lo dien som.`, "good");
+    selected = null;
+    selectedInfo.textContent = "Chua co quan co nao duoc chon";
+    endTurn();
+    draw();
+  }
+}
+
+function fight(a, b) {
+  const A = board[a];
+  const B = board[b];
+  
+  // Chiem co
+  if (B.val === "🚩") {
+    analyze(`🏆 Chien thang! ${A.side === "A" ? "doi A" : "doi B"} da chiem duoc co doi phuong!`, "good");
+    board[b] = A;
+    board[a] = null;
+    
+    // Thong bao chien thang
+    setTimeout(() => {
+      alert(`🎉 ${A.side === "A" ? "dOI A" : "dOI B"} CHIEN THANG!\nda chiem duoc co doi phuong!`);
+      init();
+      draw();
+      updatePieceInfo();
+      turn = "A";
+      updateTurnDisplay();
+      analyze("Tro choi moi da bat dau. doi A di truoc.");
+    }, 300);
+    return;
+  }
+  
+  // dung min
+  if (B.val === "💣" && A.val !== "🪖") {
+    analyze(`💥 ${pieceNames[A.val]} dung phai min! Chi co linh moi co the vo hieu hoa min.`, "danger");
+    board[a] = null;
+  } 
+  // Gian diep ha tuong
+  else if (A.val === "🕵" && B.val === "🎖") {
+    analyze(`🎯 Gian diep ha tuong – Chien thuat xuat sac!`, "good");
+    board[b] = A;
+    board[a] = null;
+  } 
+  // Quan manh hon an quan yeu hon
+  else if (power[A.val] >= power[B.val]) {
+    analyze(`⚔ ${pieceNames[A.val]} (${power[A.val]}) da danh bai ${pieceNames[B.val]} (${power[B.val]})`, "good");
+    board[b] = A;
+    board[a] = null;
+  } 
+  // Quan yeu hon bi danh bai
+  else {
+    analyze(`❌ ${pieceNames[A.val]} (${power[A.val]}) bi ${pieceNames[B.val]} (${power[B.val]}) danh bai`, "warn");
+    board[a] = null;
+  }
+  
+  endTurn();
+}
+
+function endTurn() {
+  turn = turn === "A" ? "B" : "A";
+  updateTurnDisplay();
+  analyze(turn === "A" ? "🔵 Luot cua doi A" : "🔴 Luot cua doi B");
+}
+
+function updateTurnDisplay() {
+  const turnText = document.getElementById("turn-text");
+  const aTurn = document.querySelector(".A-turn");
+  const bTurn = document.querySelector(".B-turn");
+  
+  if (turn === "A") {
+    turnText.textContent = "🔵 doi A";
+    turnText.style.color = "var(--team-a)";
+    aTurn.classList.add("active");
+    bTurn.classList.remove("active");
+  } else {
+    turnText.textContent = "🔴 doi B";
+    turnText.style.color = "var(--team-b)";
+    bTurn.classList.add("active");
+    aTurn.classList.remove("active");
+  }
+}
+
+/* ===== VE BAN CO ===== */
+function draw() {
+  const boardElement = document.getElementById("board");
+  boardElement.innerHTML = "";
+  
+  for (let i = 0; i < 64; i++) {
+    const cellElement = document.createElement("div");
+    cellElement.className = "cell";
+    
+    // Them lop phu thuoc vao doi
+    if (board[i]) {
+      cellElement.textContent = board[i].val;
+      cellElement.classList.add(board[i].side);
+      cellElement.title = `${pieceNames[board[i].val]} - doi ${board[i].side} (Suc manh: ${power[board[i].val]})`;
+    } else {
+      cellElement.classList.add("empty");
+    }
+    
+    // danh dau o duoc chon
+    if (i === selected) {
+      cellElement.classList.add("selected");
+    }
+    
+    // Them toa do o (tuy chon)
+    const row = Math.floor(i / 8) + 1;
+    const col = (i % 8) + 1;
+    cellElement.dataset.coord = `${row},${col}`;
+    
+    cellElement.onclick = () => clickCell(i);
+    boardElement.appendChild(cellElement);
+  }
+}
+
+// Khoi tao tro choi
+init();
+draw();
+updateTurnDisplay();
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

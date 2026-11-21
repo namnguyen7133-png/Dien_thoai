@@ -1,0 +1,975 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theo Doi Suc Khoe & Du doan Chu Ky Benh</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f5f9fc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        .container {
+            max-width: 1400px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+        .header-section {
+            background: linear-gradient(135deg, #1e5799 0%, #207cca 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .input-section {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #eaeaea;
+        }
+        .result-section {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #eaeaea;
+            margin-bottom: 25px;
+        }
+        .data-table {
+            font-size: 14px;
+        }
+        .data-table th {
+            background-color: #1e5799;
+            color: white;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .symptom-badge {
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        .food-badge {
+            background-color: #28a745;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        .critical-date {
+            background-color: #ffcccc;
+        }
+        .prediction-section {
+            background-color: #fff8e1;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .select-person {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .select-person:hover {
+            background-color: #e3f2fd;
+            transform: translateY(-2px);
+        }
+        .date-input {
+            border: 2px solid #ced4da;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+        }
+        .chart-container {
+            height: 300px;
+            margin-top: 20px;
+        }
+        h2, h3, h4 {
+            color: #1e5799;
+        }
+        .btn-custom {
+            background: linear-gradient(135deg, #1e5799 0%, #207cca 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-weight: bold;
+        }
+        .btn-custom:hover {
+            background: linear-gradient(135deg, #16457a 0%, #1a6aa8 100%);
+            color: white;
+        }
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: white;
+            padding: 10px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .solar-term-badge {
+            background-color: #6f42c1;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin: 2px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header-section">
+            <h1><i class="fas fa-heartbeat"></i> He Thong Theo Doi Suc Khoe & Du doan Chu Ky Benh</h1>
+            <p class="lead">Phan tich trieu chung, mon an va du doan chu ky benh dua tren ngay sinh</p>
+        </div>
+
+        <!-- Input Section -->
+        <div class="input-section">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="currentDate" class="form-label"><i class="fas fa-calendar-day"></i> Ngay hien tai</label>
+                        <input type="date" class="form-control date-input" id="currentDate">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="birthDate" class="form-label"><i class="fas fa-birthday-cake"></i> Ngay thang nam sinh</label>
+                        <input type="date" class="form-control date-input" id="birthDate">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mb-3">
+                        <label for="personSelect" class="form-label"><i class="fas fa-user-circle"></i> Danh sach nguoi (chon de tu dong nhap ngay sinh)</label>
+                        <select class="form-select" id="personSelect" onchange="selectPerson()">
+                            <option value="">-- Chon mot nguoi --</option>
+                            <option value="25993">NAM (Ngay sinh: 01/01/1970)</option>
+                            <option value="29850">KA (Ngay sinh: 15/08/1990)</option>
+                            <option value="41529">NA (Ngay sinh: 14/09/2013)</option>
+                            <option value="17772">BA HA (Ngay sinh: 13/03/1971)</option>
+                            <option value="16680">PHO (Ngay sinh: 20/05/1975)</option>
+                            <option value="41908">AN (Ngay sinh: 10/06/2010)</option>
+                            <option value="42515">CHAU (Ngay sinh: 12/08/2011)</option>
+                            <option value="43864">NGOC (Ngay sinh: 25/12/2013)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <button class="btn btn-custom btn-lg" onclick="analyzeHealthData()">
+                        <i class="fas fa-search"></i> Phan Tich & Du doan
+                    </button>
+                    <button class="btn btn-secondary btn-lg" onclick="resetForm()">
+                        <i class="fas fa-redo"></i> Lam Moi
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="result-section" id="resultsSection" style="display:none;">
+            <h3><i class="fas fa-chart-line"></i> Ket Qua Phan Tich</h3>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header bg-primary text-white">
+                            <i class="fas fa-user"></i> Thong Tin Ca Nhan
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Ma so:</strong> <span id="personCode"></span></p>
+                            <p><strong>Ngay sinh:</strong> <span id="personBirthDate"></span></p>
+                            <p><strong>Tuoi:</strong> <span id="personAge"></span></p>
+                            <p><strong>Ngay hien tai:</strong> <span id="currentDateDisplay"></span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header bg-warning text-dark">
+                            <i class="fas fa-exclamation-triangle"></i> Tom Tat Suc Khoe
+                        </div>
+                        <div class="card-body">
+                            <p><strong>So lan mac benh:</strong> <span id="totalSymptoms"></span></p>
+                            <p><strong>Trieu chung pho bien:</strong> <span id="commonSymptoms"></span></p>
+                            <p><strong>Mon an thuong dung:</strong> <span id="commonFoods"></span></p>
+                            <p><strong>Khoang cach trung binh giua cac lan benh:</strong> <span id="avgDaysBetween"></span> ngay</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Prediction Section -->
+            <div class="prediction-section">
+                <h4><i class="fas fa-crystal-ball"></i> Du doan Chu Ky Benh Tiep Theo</h4>
+                <div id="predictionResults"></div>
+            </div>
+            
+            <!-- Enhanced Health Data Table with New Columns -->
+            <div class="mt-4">
+                <h4><i class="fas fa-stethoscope"></i> Chi Tiet Trieu Chung & dieu Tri (Voi Cac Cot Moi)</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered data-table" id="enhancedSymptomsTable">
+                        <thead>
+                            <tr>
+                                <th>Ngay Benh</th>
+                                <th>Gio</th>
+                                <th>So Thu Tu</th>
+                                <th>Trieu Chung</th>
+                                <th>Mon An/dieu Tri</th>
+                                <th>Tiet Khi</th>
+                                <th>Truoc day</th>
+                                <th>Sap Toi</th>
+                                <th>Khoang cach tu ngay sinh</th>
+                            </tr>
+                        </thead>
+                        <tbody id="enhancedSymptomsBody">
+                            <!-- Enhanced data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Chart -->
+            <div class="chart-container">
+                <h4><i class="fas fa-chart-bar"></i> Bieu do Phan Bo Trieu Chung</h4>
+                <canvas id="symptomsChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Data Table -->
+        <div class="result-section">
+            <h3><i class="fas fa-database"></i> Du Lieu Suc Khoe (Mau)</h3>
+            <p class="text-muted">Duoi day la mot phan du lieu mau tu he thong</p>
+            <div class="table-responsive">
+                <table class="table table-bordered data-table">
+                    <thead>
+                        <tr>
+                            <th>Ma</th>
+                            <th>Ngay Van Han</th>
+                            <th>Gio</th>
+                            <th>Trieu Chung</th>
+                            <th>Mon An</th>
+                            <th>Chon</th>
+                        </tr>
+                    </thead>
+                    <tbody id="healthDataBody">
+                        <!-- Data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Du lieu mau (da duoc lam sach va cau truc tu du lieu dau vao)
+        const healthData = [
+            { id: 1, code: "25993", date: "22/03/2025", time: "06:49", symptom: "Hoa mat, chong mat", food: "Tiet khi", birthDate: "01/01/1970" },
+            { id: 2, code: "25993", date: "27/06/2025", time: "13:28", symptom: "Duong bat thuong", food: "", birthDate: "01/01/1970" },
+            { id: 3, code: "25993", date: "28/06/2025", time: "16:35", symptom: "Tim dap manh / nhip yeu", food: "", birthDate: "01/01/1970" },
+            { id: 4, code: "25993", date: "01/07/2025", time: "12:36", symptom: "khop dau", food: "", birthDate: "01/01/1970" },
+            { id: 5, code: "25993", date: "01/07/2025", time: "13:58", symptom: "Hoa mat, chong mat", food: "Oc Gan BIA", birthDate: "01/01/1970" },
+            { id: 6, code: "29850", date: "06/07/2025", time: "06:45", symptom: "bat dau hanh kinh", food: "Sokola", birthDate: "15/08/1990" },
+            { id: 7, code: "29850", date: "11/06/2025", time: "12:25", symptom: "het hanh kinh", food: "Sokola", birthDate: "15/08/1990" },
+            { id: 8, code: "25993", date: "21/05/2025", time: "08:25", symptom: "di ngoai ra mau", food: "Tiet khi", birthDate: "01/01/1970" },
+            { id: 9, code: "25993", date: "14/06/2025", time: "08:30", symptom: "di ngoai ra mau", food: "Gan Tiet", birthDate: "01/01/1970" },
+            { id: 10, code: "25993", date: "26/04/2025", time: "23:30", symptom: "THI NGUOI MAU", food: "Pin", birthDate: "01/01/1970" },
+            { id: 11, code: "25993", date: "02/05/2025", time: "08:30", symptom: "di ngoai ra mau", food: "Tiet khi", birthDate: "01/01/1970" },
+            { id: 12, code: "25993", date: "07/07/2025", time: "22:15", symptom: "Mat ngu", food: "", birthDate: "01/01/1970" },
+            { id: 13, code: "25993", date: "08/07/2025", time: "11:30", symptom: "dau bung, day bung, tieu chay", food: "Chao", birthDate: "01/01/1970" },
+            { id: 14, code: "25993", date: "04/05/2025", time: "06:30", symptom: "dau lung, moi vai gay", food: "Pho bo", birthDate: "01/01/1970" },
+            { id: 15, code: "25993", date: "03/05/2025", time: "08:30", symptom: "Buon ngu, met moi", food: "Tra gung, Cafe 247", birthDate: "01/01/1970" },
+            { id: 16, code: "41529", date: "02/01/2026", time: "09:00", symptom: "AN HOI", food: "Ruou", birthDate: "14/09/2013" },
+            { id: 17, code: "25993", date: "15/07/2025", time: "07:26", symptom: "Hoa mat, chong mat", food: "", birthDate: "01/01/1970" },
+            { id: 18, code: "25993", date: "20/07/2025", time: "06:00", symptom: "Tim dap manh / nhip yeu", food: "Tieu dong", birthDate: "01/01/1970" },
+            { id: 19, code: "25993", date: "23/07/2025", time: "17:08", symptom: "dau bung, day bung, tieu chay", food: "", birthDate: "01/01/1970" },
+            { id: 20, code: "25993", date: "10/08/2025", time: "21:45", symptom: "Hoa mat, chong mat", food: "Cut lon, Vit lon", birthDate: "01/01/1970" },
+            { id: 21, code: "25993", date: "25/08/2025", time: "08:15", symptom: "di ngoai ra mau", food: "", birthDate: "01/01/1970" },
+            { id: 22, code: "25993", date: "16/09/2025", time: "04:21", symptom: "Tim dap manh / nhip yeu", food: "Tieu dong", birthDate: "01/01/1970" },
+            { id: 23, code: "25993", date: "23/09/2025", time: "21:15", symptom: "Mat ngu", food: "LA VOI, CHE dANG, Cu sen, hat sen", birthDate: "01/01/1970" },
+            { id: 24, code: "25993", date: "05/12/2025", time: "22:15", symptom: "Mat ngu, Mui sung trong", food: "Canh duong can", birthDate: "01/01/1970" },
+            { id: 25, code: "25993", date: "28/12/2025", time: "22:15", symptom: "Viem hong, so mui", food: "decolgel, xit xoang", birthDate: "01/01/1970" }
+        ];
+
+        // Du lieu nguoi dung
+        const personData = {
+            "25993": { name: "NAM", birthDate: "1970-01-01" },
+            "29850": { name: "KA", birthDate: "1990-08-15" },
+            "41529": { name: "NA", birthDate: "2013-09-14" },
+            "17772": { name: "BA HA", birthDate: "1971-03-13" },
+            "16680": { name: "PHO", birthDate: "1975-05-20" },
+            "41908": { name: "AN", birthDate: "2010-06-10" },
+            "42515": { name: "CHAU", birthDate: "2011-08-12" },
+            "43864": { name: "NGOC", birthDate: "2013-12-25" }
+        };
+
+        // Du lieu 24 tiet khi
+        const solarTermsData = [
+            { name: "LAP XUAN", startMonth: 2, startDay: 4, season: "spring" },
+            { name: "VU THUY", startMonth: 2, startDay: 19, season: "spring" },
+            { name: "KINH TRAP", startMonth: 3, startDay: 6, season: "spring" },
+            { name: "XUAN PHAN", startMonth: 3, startDay: 21, season: "spring" },
+            { name: "THANH MINH", startMonth: 4, startDay: 5, season: "spring" },
+            { name: "COC VU", startMonth: 4, startDay: 20, season: "spring" },
+            { name: "LAP HA", startMonth: 5, startDay: 6, season: "summer" },
+            { name: "TIEU MAN", startMonth: 5, startDay: 21, season: "summer" },
+            { name: "MANG CHUNG", startMonth: 6, startDay: 6, season: "summer" },
+            { name: "HA CHI", startMonth: 6, startDay: 21, season: "summer" },
+            { name: "TIEU THU", startMonth: 7, startDay: 7, season: "summer" },
+            { name: "dAI THU", startMonth: 7, startDay: 22, season: "summer" },
+            { name: "LAP THU", startMonth: 8, startDay: 8, season: "autumn" },
+            { name: "XU THU", startMonth: 8, startDay: 23, season: "autumn" },
+            { name: "BACH LO", startMonth: 9, startDay: 8, season: "autumn" },
+            { name: "THU PHAN", startMonth: 9, startDay: 23, season: "autumn" },
+            { name: "HAN LO", startMonth: 10, startDay: 8, season: "autumn" },
+            { name: "SUONG GIANG", startMonth: 10, startDay: 23, season: "autumn" },
+            { name: "LAP dONG", startMonth: 11, startDay: 7, season: "winter" },
+            { name: "TIEU TUYET", startMonth: 11, startDay: 22, season: "winter" },
+            { name: "dAI TUYET", startMonth: 12, startDay: 7, season: "winter" },
+            { name: "dONG CHI", startMonth: 12, startDay: 22, season: "winter" },
+            { name: "TIEU HAN", startMonth: 1, startDay: 5, season: "winter" },
+            { name: "dAI HAN", startMonth: 1, startDay: 20, season: "winter" }
+        ];
+
+        // Khoi tao trang
+        document.addEventListener('DOMContentLoaded', function() {
+            // dat ngay hien tai
+            const today = new Date();
+            const todayFormatted = today.toISOString().split('T')[0];
+            document.getElementById('currentDate').value = todayFormatted;
+            
+            // Hien thi du lieu mau
+            displayHealthData();
+        });
+
+        // Hien thi du lieu suc khoe trong bang
+        function displayHealthData() {
+            const tableBody = document.getElementById('healthDataBody');
+            tableBody.innerHTML = '';
+            
+            healthData.forEach(item => {
+                const row = document.createElement('tr');
+                const personName = personData[item.code] ? personData[item.code].name : item.code;
+                
+                row.innerHTML = `
+                    <td>${personName} (${item.code})</td>
+                    <td>${item.date}</td>
+                    <td>${item.time}</td>
+                    <td>${item.symptom}</td>
+                    <td>${item.food ? item.food : 'Khong co'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary" onclick="selectPersonFromTable('${item.code}')">
+                            <i class="fas fa-user-check"></i> Chon
+                        </button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Chon nguoi tu danh sach
+        function selectPerson() {
+            const select = document.getElementById('personSelect');
+            const selectedValue = select.value;
+            
+            if (selectedValue && personData[selectedValue]) {
+                document.getElementById('birthDate').value = personData[selectedValue].birthDate;
+            }
+        }
+
+        // Chon nguoi tu bang du lieu
+        function selectPersonFromTable(personCode) {
+            if (personData[personCode]) {
+                document.getElementById('birthDate').value = personData[personCode].birthDate;
+                document.getElementById('personSelect').value = personCode;
+                
+                // Cuon den phan nhap lieu
+                document.getElementById('birthDate').scrollIntoView({ behavior: 'smooth' });
+                
+                // Phan tich du lieu tu dong
+                setTimeout(() => analyzeHealthData(), 500);
+            }
+        }
+
+        // Phan tich du lieu suc khoe voi cac cot moi
+        function analyzeHealthData() {
+            const currentDateStr = document.getElementById('currentDate').value;
+            const birthDateStr = document.getElementById('birthDate').value;
+            
+            if (!birthDateStr) {
+                alert("Vui long nhap ngay thang nam sinh!");
+                return;
+            }
+            
+            // Tim ma nguoi tu ngay sinh
+            let personCode = "";
+            for (const [code, data] of Object.entries(personData)) {
+                if (data.birthDate === birthDateStr) {
+                    personCode = code;
+                    break;
+                }
+            }
+            
+            // Neu khong tim thay, su dung ma mac dinh
+            if (!personCode) {
+                personCode = "25993"; // Mac dinh la NAM
+            }
+            
+            // Loc du lieu cho nguoi duoc chon
+            const personRecords = healthData.filter(item => item.code === personCode);
+            
+            if (personRecords.length === 0) {
+                alert("Khong tim thay du lieu suc khoe cho nguoi nay!");
+                return;
+            }
+            
+            // Tinh toan thong tin
+            const birthDate = new Date(birthDateStr);
+            const currentDate = currentDateStr ? new Date(currentDateStr) : new Date();
+            const age = calculateAge(birthDate, currentDate);
+            
+            // Phan tich trieu chung
+            const symptoms = {};
+            const foods = {};
+            const symptomDates = [];
+            
+            personRecords.forEach(record => {
+                // Phan tich trieu chung
+                const symptomList = record.symptom.split(/[,/]/).map(s => s.trim()).filter(s => s);
+                symptomList.forEach(symptom => {
+                    symptoms[symptom] = (symptoms[symptom] || 0) + 1;
+                });
+                
+                // Phan tich mon an
+                if (record.food) {
+                    const foodList = record.food.split(/[,/]/).map(f => f.trim()).filter(f => f);
+                    foodList.forEach(food => {
+                        foods[food] = (foods[food] || 0) + 1;
+                    });
+                }
+                
+                // Luu ngay trieu chung
+                const symptomDate = parseDate(record.date);
+                if (symptomDate) {
+                    symptomDates.push(symptomDate);
+                }
+            });
+            
+            // Sap xep trieu chung va mon an pho bien
+            const commonSymptoms = Object.entries(symptoms)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5)
+                .map(item => item[0]);
+                
+            const commonFoods = Object.entries(foods)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5)
+                .map(item => item[0]);
+            
+            // Tinh khoang cach giua cac lan benh
+            let avgDaysBetween = "Khong du du lieu";
+            if (symptomDates.length >= 2) {
+                symptomDates.sort((a, b) => a - b);
+                const intervals = [];
+                
+                for (let i = 1; i < symptomDates.length; i++) {
+                    const diffTime = Math.abs(symptomDates[i] - symptomDates[i-1]);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    intervals.push(diffDays);
+                }
+                
+                const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+                avgDaysBetween = Math.round(avgInterval * 10) / 10;
+            }
+            
+            // Du doan chu ky benh tiep theo
+            const predictions = predictNextSymptoms(symptomDates, currentDate);
+            
+            // Hien thi ket qua
+            displayResults(personCode, birthDateStr, currentDate, age, 
+                          personRecords.length, commonSymptoms, commonFoods, 
+                          avgDaysBetween, predictions, personRecords);
+            
+            // Hien thi bang nang cao voi cac cot moi
+            displayEnhancedHealthTable(personRecords, birthDate);
+            
+            // Hien thi bieu do
+            displayChart(symptoms);
+            
+            // Hien thi phan ket qua
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            // Cuon den phan ket qua
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Hien thi ket qua phan tich
+        function displayResults(personCode, birthDateStr, currentDate, age, 
+                               totalRecords, commonSymptoms, commonFoods, 
+                               avgDaysBetween, predictions, personRecords) {
+            const personName = personData[personCode] ? personData[personCode].name : personCode;
+            
+            document.getElementById('personCode').textContent = `${personName} (${personCode})`;
+            document.getElementById('personBirthDate').textContent = formatDateString(birthDateStr);
+            document.getElementById('personAge').textContent = `${age} tuoi`;
+            document.getElementById('currentDateDisplay').textContent = formatDate(currentDate);
+            document.getElementById('totalSymptoms').textContent = totalRecords;
+            document.getElementById('commonSymptoms').textContent = commonSymptoms.join(", ");
+            document.getElementById('commonFoods').textContent = commonFoods.join(", ");
+            document.getElementById('avgDaysBetween').textContent = avgDaysBetween;
+            
+            // Hien thi du doan
+            const predictionHTML = predictions.map(p => `
+                <div class="alert ${p.type === 'warning' ? 'alert-warning' : 'alert-info'}">
+                    <strong>${p.title}:</strong> ${p.message}
+                </div>
+            `).join('');
+            
+            document.getElementById('predictionResults').innerHTML = predictionHTML;
+        }
+
+        // Hien thi bang nang cao voi cac cot moi
+        function displayEnhancedHealthTable(personRecords, birthDate) {
+            const tableBody = document.getElementById('enhancedSymptomsBody');
+            tableBody.innerHTML = '';
+            
+            // Sap xep theo ngay
+            const sortedRecords = [...personRecords].sort((a, b) => {
+                const dateA = parseDate(a.date);
+                const dateB = parseDate(b.date);
+                return dateB - dateA; // Moi nhat len dau
+            });
+            
+            // Xu ly tung ban ghi va them cac cot moi
+            sortedRecords.forEach((record, index) => {
+                const row = document.createElement('tr');
+                
+                // Parse ngay va gio
+                const symptomDate = parseDate(record.date);
+                const [hours, minutes] = record.time.split(':').map(Number);
+                
+                // 1. Tinh so thu tu (gio * 60 + phut)
+                const sequenceNumber = hours * 60 + minutes;
+                
+                // 2. Xac dinh tiet khi theo ngay mac benh
+                const solarTerm = getSolarTermForDate(symptomDate);
+                
+                // 3. Tinh "Truoc day": ngay mac benh - so thu tu, gio mac benh - so thu tu
+                const pastDate = calculatePastDateTime(symptomDate, hours, minutes, sequenceNumber);
+                
+                // 4. Tinh "Sap toi": ngay mac benh + so thu tu, gio mac benh + so thu tu
+                const futureDate = calculateFutureDateTime(symptomDate, hours, minutes, sequenceNumber);
+                
+                // 5. Tinh khoang cach tu ngay sinh
+                const daysFromBirth = symptomDate ? Math.round((symptomDate - birthDate) / (1000 * 60 * 60 * 24)) : "N/A";
+                
+                // Tao noi dung hang
+                row.innerHTML = `
+                    <td>${record.date}</td>
+                    <td>${record.time}</td>
+                    <td class="text-center"><strong>${sequenceNumber}</strong></td>
+                    <td>${record.symptom}</td>
+                    <td>${record.food ? record.food : 'Khong co'}</td>
+                    <td><span class="solar-term-badge">${solarTerm}</span></td>
+                    <td>${pastDate.date}<br/>${pastDate.time}</td>
+                    <td>${futureDate.date}<br/>${futureDate.time}</td>
+                    <td>${daysFromBirth} ngay</td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Ham xac dinh tiet khi theo ngay
+        function getSolarTermForDate(date) {
+            if (!date) return "Khong xac dinh";
+            
+            const month = date.getMonth() + 1; // Thang tu 1-12
+            const day = date.getDate();
+            
+            // Tim tiet khi phu hop
+            for (const term of solarTermsData) {
+                if (term.startMonth === month && Math.abs(term.startDay - day) <= 3) {
+                    return term.name;
+                }
+            }
+            
+            // Neu khong tim thay chinh xac, tim tiet khi gan nhat
+            const dateNumber = month * 100 + day;
+            let closestTerm = solarTermsData[0];
+            let minDiff = Math.abs((closestTerm.startMonth * 100 + closestTerm.startDay) - dateNumber);
+            
+            for (const term of solarTermsData) {
+                const termNumber = term.startMonth * 100 + term.startDay;
+                const diff = Math.abs(termNumber - dateNumber);
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    closestTerm = term;
+                }
+            }
+            
+            return closestTerm.name;
+        }
+
+        // Ham tinh "Truoc day"
+        function calculatePastDateTime(baseDate, hours, minutes, sequenceNumber) {
+            if (!baseDate) return { date: "N/A", time: "N/A" };
+            
+            // Tao ban sao cua ngay de tinh toan
+            const pastDate = new Date(baseDate);
+            
+            // Tinh so ngay va so phut tu sequenceNumber
+            const daysToSubtract = Math.floor(sequenceNumber / (24 * 60));
+            const minutesToSubtract = sequenceNumber % (24 * 60);
+            
+            // Tru ngay
+            pastDate.setDate(pastDate.getDate() - daysToSubtract);
+            
+            // Tru phut tu gio hien tai
+            let newHours = hours;
+            let newMinutes = minutes;
+            
+            // Chuyen doi thoi gian hien tai thanh phut
+            let totalMinutes = newHours * 60 + newMinutes;
+            totalMinutes -= minutesToSubtract;
+            
+            // Xu ly neu totalMinutes am
+            if (totalMinutes < 0) {
+                totalMinutes += 24 * 60;
+                pastDate.setDate(pastDate.getDate() - 1);
+            }
+            
+            // Chuyen doi lai thanh gio va phut
+            newHours = Math.floor(totalMinutes / 60) % 24;
+            newMinutes = totalMinutes % 60;
+            
+            return {
+                date: formatDate(pastDate),
+                time: `${newHours.toString().padStart(2, '0')}:${newMinutes.toString().padStart(2, '0')}`
+            };
+        }
+
+        // Ham tinh "Sap toi"
+        function calculateFutureDateTime(baseDate, hours, minutes, sequenceNumber) {
+            if (!baseDate) return { date: "N/A", time: "N/A" };
+            
+            // Tao ban sao cua ngay de tinh toan
+            const futureDate = new Date(baseDate);
+            
+            // Tinh so ngay va so phut tu sequenceNumber
+            const daysToAdd = Math.floor(sequenceNumber / (24 * 60));
+            const minutesToAdd = sequenceNumber % (24 * 60);
+            
+            // Cong ngay
+            futureDate.setDate(futureDate.getDate() + daysToAdd);
+            
+            // Cong phut vao gio hien tai
+            let newHours = hours;
+            let newMinutes = minutes;
+            
+            // Chuyen doi thoi gian hien tai thanh phut
+            let totalMinutes = newHours * 60 + newMinutes;
+            totalMinutes += minutesToAdd;
+            
+            // Xu ly neu totalMinutes vuot qua 24 gio
+            if (totalMinutes >= 24 * 60) {
+                const extraDays = Math.floor(totalMinutes / (24 * 60));
+                totalMinutes %= (24 * 60);
+                futureDate.setDate(futureDate.getDate() + extraDays);
+            }
+            
+            // Chuyen doi lai thanh gio va phut
+            newHours = Math.floor(totalMinutes / 60) % 24;
+            newMinutes = totalMinutes % 60;
+            
+            return {
+                date: formatDate(futureDate),
+                time: `${newHours.toString().padStart(2, '0')}:${newMinutes.toString().padStart(2, '0')}`
+            };
+        }
+
+        // Hien thi bieu do
+        function displayChart(symptoms) {
+            const ctx = document.getElementById('symptomsChart').getContext('2d');
+            
+            // Lay 8 trieu chung pho bien nhat
+            const sortedSymptoms = Object.entries(symptoms)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 8);
+            
+            const labels = sortedSymptoms.map(item => item[0]);
+            const data = sortedSymptoms.map(item => item[1]);
+            
+            // Mau sac cho bieu do
+            const backgroundColors = [
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(153, 102, 255, 0.7)',
+                'rgba(255, 159, 64, 0.7)',
+                'rgba(199, 199, 199, 0.7)',
+                'rgba(83, 102, 255, 0.7)'
+            ];
+            
+            // Neu bieu do da ton tai, huy no truoc
+            if (window.symptomsChart) {
+                window.symptomsChart.destroy();
+            }
+            
+            // Tao bieu do moi
+            window.symptomsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'So lan xuat hien',
+                        data: data,
+                        backgroundColor: backgroundColors,
+                        borderColor: backgroundColors.map(color => color.replace('0.7', '1')),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Phan Bo Trieu Chung'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'So lan xuat hien'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Trieu chung'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Du doan trieu chung tiep theo
+        function predictNextSymptoms(symptomDates, currentDate) {
+            const predictions = [];
+            
+            if (symptomDates.length === 0) {
+                predictions.push({
+                    title: "Khong co du lieu",
+                    message: "Khong co du lieu trieu chung de du doan.",
+                    type: "info"
+                });
+                return predictions;
+            }
+            
+            // Sap xep ngay trieu chung
+            symptomDates.sort((a, b) => a - b);
+            
+            // Tinh khoang cach trung binh
+            if (symptomDates.length >= 2) {
+                const intervals = [];
+                
+                for (let i = 1; i < symptomDates.length; i++) {
+                    const diffTime = Math.abs(symptomDates[i] - symptomDates[i-1]);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    intervals.push(diffDays);
+                }
+                
+                const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+                const lastSymptomDate = symptomDates[symptomDates.length - 1];
+                const nextPredictedDate = new Date(lastSymptomDate.getTime() + avgInterval * 24 * 60 * 60 * 1000);
+                
+                const daysUntilNext = Math.round((nextPredictedDate - currentDate) / (1000 * 60 * 60 * 24));
+                
+                if (daysUntilNext > 0) {
+                    predictions.push({
+                        title: "Du doan lan benh tiep theo",
+                        message: `Co the xuat hien trieu chung vao khoang ${formatDate(nextPredictedDate)} (${daysUntilNext} ngay toi)`,
+                        type: "warning"
+                    });
+                } else {
+                    predictions.push({
+                        title: "Du doan lan benh tiep theo",
+                        message: `Theo chu ky, co the da qua thoi diem xuat hien trieu chung gan nhat. Lan tiep theo du kien trong vong ${Math.round(avgInterval)} ngay toi.`,
+                        type: "info"
+                    });
+                }
+                
+                // Phan tich theo mua
+                const seasonSymptoms = analyzeSeasonPatterns(symptomDates);
+                if (seasonSymptoms) {
+                    predictions.push({
+                        title: "Mau hinh theo mua",
+                        message: seasonSymptoms,
+                        type: "info"
+                    });
+                }
+            } else {
+                predictions.push({
+                    title: "Du lieu han che",
+                    message: "Can them du lieu de du doan chu ky benh chinh xac.",
+                    type: "info"
+                });
+            }
+            
+            // Them khuyen nghi chung
+            predictions.push({
+                title: "Khuyen nghi suc khoe",
+                message: "Theo doi trieu chung thuong xuyen, ghi chep lai cac mon an va thoi diem xuat hien trieu chung de phan tich chinh xac hon.",
+                type: "info"
+            });
+            
+            return predictions;
+        }
+
+        // Phan tich mau hinh theo mua
+        function analyzeSeasonPatterns(symptomDates) {
+            if (symptomDates.length < 4) return null;
+            
+            const seasons = {
+                "Xuan": [2, 3, 4],
+                "Ha": [5, 6, 7],
+                "Thu": [8, 9, 10],
+                "dong": [11, 0, 1]
+            };
+            
+            const seasonCount = { "Xuan": 0, "Ha": 0, "Thu": 0, "dong": 0 };
+            
+            symptomDates.forEach(date => {
+                const month = date.getMonth();
+                
+                for (const [season, months] of Object.entries(seasons)) {
+                    if (months.includes(month)) {
+                        seasonCount[season]++;
+                        break;
+                    }
+                }
+            });
+            
+            // Tim mua co nhieu trieu chung nhat
+            let maxSeason = null;
+            let maxCount = 0;
+            
+            for (const [season, count] of Object.entries(seasonCount)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    maxSeason = season;
+                }
+            }
+            
+            if (maxCount > symptomDates.length * 0.3) { // Neu tren 30% trieu chung o mot mua
+                return `Trieu chung thuong xuat hien nhieu vao mua ${maxSeason} (${maxCount}/${symptomDates.length} lan).`;
+            }
+            
+            return null;
+        }
+
+        // Lam moi form
+        function resetForm() {
+            document.getElementById('birthDate').value = '';
+            document.getElementById('personSelect').value = '';
+            document.getElementById('resultsSection').style.display = 'none';
+            
+            // dat lai ngay hien tai
+            const today = new Date();
+            const todayFormatted = today.toISOString().split('T')[0];
+            document.getElementById('currentDate').value = todayFormatted;
+        }
+
+        // Cac ham tien ich
+        function calculateAge(birthDate, currentDate) {
+            let age = currentDate.getFullYear() - birthDate.getFullYear();
+            const monthDiff = currentDate.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            return age;
+        }
+
+        function parseDate(dateStr) {
+            if (!dateStr) return null;
+            
+            // Xu ly dinh dang dd/mm/yyyy
+            const parts = dateStr.split('/');
+            if (parts.length === 3) {
+                return new Date(parts[2], parts[1] - 1, parts[0]);
+            }
+            
+            // Thu voi dinh dang khac
+            const date = new Date(dateStr);
+            return isNaN(date.getTime()) ? null : date;
+        }
+
+        function formatDate(date) {
+            if (!date) return "N/A";
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        function formatDateString(dateStr) {
+            const date = new Date(dateStr);
+            return formatDate(date);
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

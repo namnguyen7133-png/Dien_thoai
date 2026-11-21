@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Hệ Thống Tối Ưu Vận Hành Đun Nước & Phân Phối Gia Đình</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f4f8; margin: 15px; color: #222; }
+        .container { max-width: 1350px; margin: auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        h1, h2, h3 { color: #1a73e8; margin-top: 15px; }
+        .grid-params { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; background: #e8f0fe; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .param-box label { display: block; font-weight: bold; font-size: 12px; margin-bottom: 4px; color: #333; }
+        .param-box input, .param-box select { width: 100%; box-sizing: border-box; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 15px; font-size: 13.5px; }
+        th, td { border: 1px solid #c0cddb; padding: 7px 9px; text-align: left; }
+        th { background: #1a73e8; color: white; }
+        input.table-input { width: 100% !important; box-sizing: border-box; padding: 4px; border: 1px solid #ddd; border-radius: 3px; }
+        button { background: #1a73e8; color: white; border: none; padding: 10px 16px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-right: 8px; margin-top: 5px; }
+        button:hover { background: #1557b0; }
+        .btn-add { background: #28a745; }
+        .btn-reset { background: #6c757d; }
+        .btn-save { background: #ff9800; color: #000; }
+        .btn-danger { background: #dc3545; padding: 4px 8px; font-size: 12px; }
+        .result-panel { background: #fff8e1; border-left: 6px solid #ffa000; padding: 18px; border-radius: 6px; margin-top: 20px; line-height: 1.6; }
+        .schedule-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 15px; margin-top: 15px; }
+        .schedule-card { background: #f8f9fa; border: 1px solid #d0d7de; border-radius: 8px; padding: 15px; }
+        .schedule-card h3 { margin-top: 0; color: #0f52ba; border-bottom: 2px solid #e1e4e8; padding-bottom: 6px; }
+        .highlight-num { color: #d9534f; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HỆ THỐNG TỐI ƯU VẬN HÀNH ĐUN NƯỚC, PHÂN PHỐI & LỊCH SINH HOẠT GIA ĐÌNH</h1>
+        <p>Bác có thể thay đổi trực tiếp dung tích từng dụng cụ, tích chọn các món đang cạn nước và các thông số thực tế dưới đây:</p>
+
+        <!-- THAM SỐ ĐẦU VÀO LINH HOẠT -->
+        <h2>1. BẢNG THAM SỐ CẤU HÌNH BẾP & NẤU ĂN (CÓ THỂ SỬA & LƯU LẠI)</h2>
+        <div class="grid-params">
+            <div class="param-box">
+                <label>1 viên than cháy mạnh đun tối đa (lít):</label>
+                <input type="number" id="waterPerCoal" value="15" step="1" oninput="runAllCalculation()">
+            </div>
+            <div class="param-box">
+                <label>Giá 1 viên than (VND):</label>
+                <input type="number" id="coalPrice" value="5000" step="500" oninput="runAllCalculation()">
+            </div>
+            <div class="param-box">
+                <label>Vật liệu mồi bếp:</label>
+                <select id="starterCost" onchange="runAllCalculation()">
+                    <option value="15000">Than củi (15.000đ/lần)</option>
+                    <option value="30000">Cồn khô (30.000đ/lần)</option>
+                    <option value="20000">Cồn chai (20.000đ/lần)</option>
+                </select>
+            </div>
+            <div class="param-box">
+                <label>Giá điện nhà nước (VND/kWh):</label>
+                <input type="number" id="elecPrice" value="3100" step="100" oninput="runAllCalculation()">
+            </div>
+            <div class="param-box">
+                <label>Điện đun sôi 1L nước (kWh):</label>
+                <input type="number" id="kwhPerL" value="0.085" step="0.005" oninput="runAllCalculation()">
+            </div>
+            <div class="param-box">
+                <label>Chế độ nấu ăn nặng trên bếp:</label>
+                <select id="cookingHeavy" onchange="runAllCalculation()">
+                    <option value="0">Không nấu ăn nặng (giữ nguyên nước)</option>
+                    <option value="6">Rán cá 1 giờ (-6L nước đun do chiếm nhiệt)</option>
+                    <option value="1.5">Rán trứng 20 phút (-1.5L nước đun)</option>
+                    <option value="4">Xào nấu nhiều món (-4L nước đun)</option>
+                </select>
+            </div>
+            <div class="param-box">
+                <label>Nhu cầu nước sôi cố định/ngày (L):</label>
+                <input type="number" id="fixedWaterNeed" value="11" step="0.5" oninput="runAllCalculation()">
+            </div>
+            <div class="param-box">
+                <label>Số phích 2L cần mua thêm đề xuất:</label>
+                <input type="number" id="extraPhich" value="2" step="1" oninput="runAllCalculation()">
+            </div>
+        </div>
+
+        <div>
+            <button class="btn-add" onclick="addRow()">+ Thêm dụng cụ mới</button>
+            <button class="btn-save" onclick="saveData()">💾 Lưu bảng & Cấu hình</button>
+            <button class="btn-reset" onclick="resetDefault()">↺ Khôi phục mặc định</button>
+            <button onclick="runAllCalculation()" style="font-size:14px; padding:10px 20px;">⚡ TÍNH TOÁN NGAY LẬP TỨC</button>
+        </div>
+
+        <!-- BẢNG DANH SÁCH DỤNG CỤ -->
+        <h2>2. DANH SÁCH TOÀN BỘ DỤNG CỤ CHỨA & ĐUN NƯỚC (Bác nhập/sửa dung tích thoải mái)</h2>
+        <table id="deviceTable">
+            <thead>
+                <tr>
+                    <th style="width: 50px;">Đang cạn?</th>
+                    <th>Tên dụng cụ</th>
+                    <th style="width: 80px;">Số lượng</th>
+                    <th style="width: 110px;">Dung tích 1 cái (L)</th>
+                    <th style="width: 130px;">Tổng dung tích (L)</th>
+                    <th>Nhóm phân loại</th>
+                    <th style="width: 80px;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <!-- BẢNG KẾT QUẢ TÍNH TOÁN TOÀN DIỆN -->
+        <div class="result-panel" id="summaryBox">
+            <h3>Đang chờ bấm tính toán...</h3>
+        </div>
+
+        <!-- BẢNG PHÂN BỔ 4 KHU VỰC & LỊCH TRÌNH 24 GIỜ -->
+        <h2>3. LỊCH TRÌNH VÀ PHÂN BỔ KHÉP KÍN 24 GIỜ (KHÔNG CẦN NHÓM BẾP SỚM / KHÔNG CHỜ ĐỢI)</h2>
+        <div class="schedule-grid">
+            <div class="schedule-card">
+                <h3>📌 Nhóm 1: Nguồn vào xách lên (Aquafina)</h3>
+                <ul>
+                    <li><b>Vị trí xuất phát:</b> Máy lọc nước tầng trệt.</li>
+                    <li><b>Tốc độ định mức:</b> Cứ <b>1 tiếng = 1 bình 5L</b> (đúng nhịp không vội vã).</li>
+                    <li><b>Lịch xách bình ngày thường:</b> 
+                        <br>&bull; Khung <b>08:30 - 09:30</b>: Xách 1 bình 5L lọc lên gác.
+                        <br>&bull; Khung <b>15:00 - 16:00</b>: Xách thêm 1 bình nếu cần gối đầu.</li>
+                    <li><b>Ngày Thứ Bảy & Chủ Nhật (Nhờ trẻ em):</b>
+                        <br>&bull; <b>Trẻ 6 tuổi:</b> Không xách nặng, chỉ gấp khăn/xếp đũa.
+                        <br>&bull; <b>Trẻ 10 tuổi (ở nhà T7-CN):</b> 09:30 hỗ trợ lau dọn, kê gọn bình sứ/bình nhựa.
+                        <br>&bull; <b>Trẻ 13 tuổi (ở nhà T7-CN):</b> 09:00 - 09:30 xách <b>1 bình Aquafina 5L</b> lên gác và hạ <b>1 bình rỗng</b> xuống.</li>
+                </ul>
+            </div>
+
+            <div class="schedule-card">
+                <h3>🔥 Nhóm 2: Đun nước trên gác (Bếp than tổ ong 1 mẻ duy nhất)</h3>
+                <ul>
+                    <li><b>Tuyệt đối không nhóm bếp lúc 04:00 sáng hoặc 05:30 sáng</b> (vừa buồn ngủ dễ bỏng, vừa đầu tắt mặt tối mở cửa hàng, vo gạo, cho con ăn).</li>
+                    <li><b>Khung giờ vàng đun duy nhất trong ngày: 13:30 - 15:30</b> (Con đã đi học, cửa hàng vắng, người thảnh thơi nhất).</li>
+                    <li><b>Quy trình đun 1 lèo:</b>
+                        <br>&bull; 13:10: Mở cửa lò than âm ỉ hoặc tiếp 1 viên than mới (mất 20 phút bén).
+                        <br>&bull; 13:30 - 15:00: Đặt 3 ấm/xoong (1 ấm 5L + 1 ấm 3,5L + 1 xoong 4L/5L) đun một lèo đạt đủ <b>11 - 13 lít nước sôi</b>.
+                        <br>&bull; Rót đầy 100% các phích nước sôi (3 phích con 1L + 3 phích to 2L + mua thêm 2 phích 2L = đủ 11L nước sôi cho cả ngày + sáng hôm sau).
+                        <br>&bull; Đổ 1 xoong 5L nước sôi ra ngoài để nguội tự nhiên đủ 4 tiếng.
+                    </li>
+                </ul>
+            </div>
+
+            <div class="schedule-card">
+                <h3>⏳ Nhóm 3: Để nguội 4 tiếng & Hạ xuống (An toàn tuyệt đối)</h3>
+                <ul>
+                    <li><b>Nguyên tắc 4 tiếng:</b> Nước sôi trút ra xoong/ấm lớn để nguội tự nhiên đúng <b>4 tiếng</b> mới trút sang bình sứ/nhựa (tránh nứt bình sứ hoặc nước bị thiu).</li>
+                    <li><b>Lịch hạ bình nước nguội:</b>
+                        <br>&bull; Đun xong lúc 15:00 &rarr; Để nguội từ 15:00 đến <b>19:00</b> (đúng 4 tiếng).
+                        <br>&bull; 19:00: Trút sang 2 bình sứ (4L x 2 = 8L) và bình nhựa (7,5L).
+                        <br>&bull; Tiện tay hạ xuống các phòng: Phòng ăn (1 bình nhựa 7,5L), Phòng ngủ tầng 4 (1 bình nhựa 7,5L + 2 bình Aquafina).
+                    </li>
+                    <li><b>Chốt đun gối đầu 22:00 đêm:</b> Tranh thủ dùng hơi than ấm ỉ đun gối đầu <b>1 phích to 2L</b> để sẵn &rarr; <b>04:00 sáng hôm sau</b> với tay nhấc dùng ngay cho bếp dưới, không phải nhóm bếp sáng sớm!</li>
+                </ul>
+            </div>
+        </div>
+
+        <h2>4. LỊCH TRÌNH PHÂN BỔ 4 KHU VỰC (KHÔNG BỊ ĐỘNG)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Khu vực</th>
+                    <th>Dụng cụ cố định tại chỗ</th>
+                    <th>Nguồn nước sử dụng hàng ngày</th>
+                    <th>Thời điểm luân chuyển</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>Phòng bếp dưới nhà</b></td>
+                    <td>3 phích to (2L) + 2 phích con (1L) = 8 lít nước sôi</td>
+                    <td>04:00 (pha chè, nấu cơm), 10:00 (nấu cơm), 16:00 (nấu cơm)</td>
+                    <td>Bơm/xách từ phích gác xuống 2 lần/ngày (05:30 sáng & 16:20 chiều)</td>
+                </tr>
+                <tr>
+                    <td><b>Phòng ăn</b></td>
+                    <td>1 bình nhựa to 7,5 lít (nước nguội)</td>
+                    <td>Nước uống & sinh hoạt chung</td>
+                    <td>Rót từ mẻ trút sau đủ 4 tiếng (19:00 hàng ngày)</td>
+                </tr>
+                <tr>
+                    <td><b>Phòng ngủ tầng 4</b></td>
+                    <td>2 bình Aquafina (10L nước lọc) + 1 bình nhựa 7,5 lít</td>
+                    <td>Nước uống ban đêm & sáng sớm</td>
+                    <td>Thay bình định kỳ khi hết</td>
+                </tr>
+                <tr>
+                    <td><b>Phòng đun nước (Tầng gác)</b></td>
+                    <td>1 phích con (1L) + 1 ấm điện cũ (1L) + 2 bình sứ (8L) + 1 ấm inox nhỏ (3,5L) + 1 ấm to (5L)</td>
+                    <td>Buổi sáng cần 2L nước sôi nấu cơm canh/chè ngay tại gác</td>
+                    <td>Trung tâm đun trực tiếp & trút nước nguội theo mẻ 13:30</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const defaultDevices = [
+            {checked: true, name: "Phích con (1L)", qty: 3, vol: 1, type: "soi"},
+            {checked: true, name: "Phích to (2L)", qty: 3, vol: 2, type: "soi"},
+            {checked: false, name: "Mua thêm phích 2L (Đề xuất)", qty: 2, vol: 2, type: "soi"},
+            {checked: false, name: "Ấm điện cũ (1L)", qty: 1, vol: 1, type: "dun"},
+            {checked: false, name: "Ấm inox to (5L)", qty: 1, vol: 5, type: "dun"},
+            {checked: false, name: "Ấm inox nhỏ (3,5L)", qty: 1, vol: 3.5, type: "dun"},
+            {checked: false, name: "Xoong đun (4L + 5L)", qty: 2, vol: 4.5, type: "dun"},
+            {checked: false, name: "Bình sứ (4L)", qty: 2, vol: 4, type: "nguoi"},
+            {checked: false, name: "Bình nhựa (7,5L)", qty: 2, vol: 7.5, type: "nguoi"},
+            {checked: false, name: "Bình nước Aquafina (5L)", qty: 5, vol: 5, type: "nguoi"}
+        ];
+
+        function renderTable(data) {
+            const tbody = document.querySelector('#deviceTable tbody');
+            tbody.innerHTML = '';
+            data.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><input type="checkbox" class="chk" ${item.checked ? 'checked' : ''} onchange="saveData(); runAllCalculation();"></td>
+                    <td><input type="text" class="table-input name" value="${item.name}" oninput="saveData()"></td>
+                    <td><input type="number" class="table-input qty" value="${item.qty}" min="0" step="1" oninput="saveData(); runAllCalculation();"></td>
+                    <td><input type="number" class="table-input vol" value="${item.vol}" min="0.1" step="0.5" oninput="saveData(); runAllCalculation();"></td>
+                    <td class="total-vol" style="font-weight:bold; color:#0f52ba;">${(item.qty * item.vol).toFixed(1)} L</td>
+                    <td>
+                        <select class="table-input type" onchange="saveData();">
+                            <option value="soi" ${item.type==='soi'?'selected':''}>Nước sôi (Phích trữ)</option>
+                            <option value="nguoi" ${item.type==='nguoi'?'selected':''}>Nước nguội (Bình sứ/nhựa)</option>
+                            <option value="dun" ${item.type==='dun'?'selected':''}>Đun trực tiếp (Ấm/xoong)</option>
+                        </select>
+                    </td>
+                    <td><button class="btn-danger" onclick="removeRow(this)">Xóa</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+            runAllCalculation();
+        }
+
+        function addRow() {
+            const tbody = document.querySelector('#deviceTable tbody');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="checkbox" class="chk" checked onchange="saveData(); runAllCalculation();"></td>
+                <td><input type="text" class="table-input name" value="Dụng cụ mới" oninput="saveData()"></td>
+                <td><input type="number" class="table-input qty" value="1" min="1" step="1" oninput="saveData(); runAllCalculation();"></td>
+                <td><input type="number" class="table-input vol" value="2" min="0.1" step="0.5" oninput="saveData(); runAllCalculation();"></td>
+                <td class="total-vol" style="font-weight:bold; color:#0f52ba;">2.0 L</td>
+                <td>
+                    <select class="table-input type" onchange="saveData();">
+                        <option value="soi">Nước sôi (Phích trữ)</option>
+                        <option value="nguoi">Nước nguội (Bình sứ/nhựa)</option>
+                        <option value="dun">Đun trực tiếp (Ấm/xoong)</option>
+                    </select>
+                </td>
+                <td><button class="btn-danger" onclick="removeRow(this)">Xóa</button></td>
+            `;
+            tbody.appendChild(tr);
+            runAllCalculation();
+        }
+
+        function removeRow(btn) {
+            btn.closest('tr').remove();
+            saveData();
+            runAllCalculation();
+        }
+
+        function saveData() {
+            const rows = document.querySelectorAll('#deviceTable tbody tr');
+            const data = [];
+            rows.forEach(r => {
+                const qty = parseFloat(r.querySelector('.qty').value) || 0;
+                const vol = parseFloat(r.querySelector('.vol').value) || 0;
+                r.querySelector('.total-vol').innerText = (qty * vol).toFixed(1) + ' L';
+                data.push({
+                    checked: r.querySelector('.chk').checked,
+                    name: r.querySelector('.name').value,
+                    qty: qty,
+                    vol: vol,
+                    type: r.querySelector('.type').value
+                });
+            });
+            localStorage.setItem('familyWaterMatrix2026', JSON.stringify(data));
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('familyWaterMatrix2026');
+            if (saved) {
+                renderTable(JSON.parse(saved));
+            } else {
+                renderTable(defaultDevices);
+            }
+        }
+
+        function resetDefault() {
+            localStorage.removeItem('familyWaterMatrix2026');
+            renderTable(defaultDevices);
+        }
+
+        function runAllCalculation() {
+            const rows = document.querySelectorAll('#deviceTable tbody tr');
+            let totalSystemCapacity = 0;
+            let totalCheckedNeed = 0;
+            let totalSoiCapacity = 0;
+            let totalNguoiCapacity = 0;
+            let totalDunCapacity = 0;
+
+            rows.forEach(row => {
+                const qty = parseFloat(row.querySelector('.qty').value) || 0;
+                const vol = parseFloat(row.querySelector('.vol').value) || 0;
+                const type = row.querySelector('.type').value;
+                const isChecked = row.querySelector('.chk').checked;
+                const sub = qty * vol;
+
+                totalSystemCapacity += sub;
+                if (type === 'soi') totalSoiCapacity += sub;
+                if (type === 'nguoi') totalNguoiCapacity += sub;
+                if (type === 'dun') totalDunCapacity += sub;
+
+                if (isChecked) {
+                    totalCheckedNeed += sub;
+                }
+            });
+
+            const cookingDeduction = parseFloat(document.getElementById('cookingHeavy').value) || 0;
+            const fixedNeed = parseFloat(document.getElementById('fixedWaterNeed').value) || 11;
+            const netWaterToBoil = Math.max(fixedNeed, totalCheckedNeed - cookingDeduction);
+
+            const waterPerCoal = parseFloat(document.getElementById('waterPerCoal').value) || 15;
+            const coalPrice = parseFloat(document.getElementById('coalPrice').value) || 5000;
+            const starterCost = parseFloat(document.getElementById('starterCost').value) || 15000;
+            const elecPrice = parseFloat(document.getElementById('elecPrice').value) || 3100;
+            const kwhPerL = parseFloat(document.getElementById('kwhPerL').value) || 0.085;
+            const extraPhichCount = parseFloat(document.getElementById('extraPhich').value) || 2;
+
+            const coalCount = Math.ceil(netWaterToBoil / waterPerCoal) || 1;
+            const totalCoalBill = (coalCount * coalPrice) + starterCost;
+            const totalElecBill = (netWaterToBoil * kwhPerL) * elecPrice;
+            const diffSave = totalElecBill - totalCoalBill;
+
+            document.getElementById('summaryBox').innerHTML = `
+                <h3>📊 KẾT QUẢ PHÂN TÍCH & TỐI ƯU HỆ THỐNG NƯỚC:</h3>
+                <ul>
+                    <li><b>Tổng dung tích toàn hệ thống chứa nước:</b> <span class="highlight-num">${totalSystemCapacity.toFixed(1)} lít</span> 
+                        <i>(Nước sôi trữ: ${totalSoiCapacity.toFixed(1)}L | Nước nguội: ${totalNguoiCapacity.toFixed(1)}L | Ấm/xoong đun trực tiếp: ${totalDunCapacity.toFixed(1)}L)</i>
+                    </li>
+                    <li><b>Nhu cầu nước sôi cần đun cho 1 mẻ duy nhất:</b> <span class="highlight-num">${netWaterToBoil.toFixed(1)} lít</span> 
+                        <i>(Trừ hao nhiệt nấu ăn nặng -${cookingDeduction}L)</i>
+                    </li>
+                    <li><b>Đề xuất phích trữ nước:</b> Hiện kho phích có 9 lít nước sôi &rarr; Cần mua thêm <b>${extraPhichCount} phích loại 2 lít</b> để tổng kho phích đạt <b>13 lít</b>, đủ chứa 100% lượng nước sôi 11L trong 1 lần đun duy nhất, không lo thiếu!</li>
+                    <li><b>Số viên than tổ ong cần dùng mỗi ngày:</b> <b>${coalCount} viên</b> (định mức ${waterPerCoal}L/viên).</li>
+                    <li><b>Tổng chi phí mua than (${coalCount} viên x ${coalPrice.toLocaleString('vi-VN')}đ) + Tiền mồi (${starterCost.toLocaleString('vi-VN')}đ):</b> <span style="color:#d9534f;font-weight:bold;">${totalCoalBill.toLocaleString('vi-VN')} VND/ngày</span></li>
+                    <li><b>Chi phí điện tương đương nếu đun bằng ấm siêu tốc:</b> ${totalElecBill.toLocaleString('vi-VN')} VND/ngày</li>
+                    <li><b>So sánh chi phí Than vs Điện:</b> <span style="color:${diffSave >= 0 ? '#28a745' : '#d9534f'}; font-weight:bold;">${diffSave >= 0 ? 'Dùng bếp than tiết kiệm được ' + diffSave.toLocaleString('vi-VN') + ' VND/ngày so với điện' : 'Điện rẻ hơn than ' + Math.abs(diffSave).toLocaleString('vi-VN') + ' VND'}</span></li>
+                    <li><b>Khung giờ nhóm & đun chuẩn xác:</b> Chỉ nhóm/mở bếp <b>1 lần duy nhất trong ngày lúc 13:30 - 15:00</b> (lúc vắng khách và con đi học), không nhóm 2 lần, không nhóm 4h sáng, không nhóm giờ cao điểm sáng 5h30-7h00.</li>
+                </ul>
+            `;
+        }
+
+        window.onload = loadData;
+    </script>
+</body>
+</html>

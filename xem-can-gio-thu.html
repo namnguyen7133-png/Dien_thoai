@@ -1,0 +1,626 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinh Toan 14 Ngay Tu Moc 1/1/1900</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f8ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            overflow: hidden;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .control-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            align-items: flex-end;
+        }
+        
+        .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            min-width: 150px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .info-box {
+            background-color: #e8f4fc;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .info-box h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            min-width: 1200px;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            text-align: center;
+            padding: 15px 10px;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        
+        td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f0f7ff;
+        }
+        
+        .day-number {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        
+        .weekday {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .sunday {
+            color: #e74c3c;
+        }
+        
+        .saturday {
+            color: #3498db;
+        }
+        
+        .can-chi {
+            font-weight: bold;
+            color: #27ae60;
+        }
+        
+        .cycle-count {
+            font-weight: bold;
+            color: #9b59b6;
+        }
+        
+        .hour-cell {
+            font-size: 0.9em;
+            padding: 8px 5px;
+        }
+        
+        .hour-header {
+            font-size: 0.85em;
+            padding: 10px 5px;
+        }
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .control-section {
+                flex-direction: column;
+            }
+            
+            .input-group {
+                width: 100%;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            th, td {
+                padding: 8px 5px;
+                font-size: 0.9em;
+            }
+            
+            .hour-cell {
+                font-size: 0.8em;
+                padding: 5px 2px;
+            }
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .reference-info {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px dashed #ddd;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tinh Toan 14 Ngay Tu Moc 1/1/1900</h1>
+        <p class="subtitle">Hien thi thong tin 14 ngay lien tiep voi chu ky tinh tu ngay 1/1/1900 (Chu Nhat)</p>
+        
+        <div class="info-box">
+            <h3>Thong tin moc chuan</h3>
+            <p><strong>Ngay moc:</strong> 1/1/1900 (Chu Nhat) - Ngay Giap Tuat, thang dinh Suu, nam Ky Hoi</p>
+            <p><strong>Tinh toan:</strong> 14 ngay lien tiep tu ngay bat dau, bao gom thu, so ngay tu moc 1/1/1900, can chi ngay, va can gio tu 1-24h.</p>
+        </div>
+        
+        <div class="control-section">
+            <div class="input-group">
+                <label for="startDate">Ngay bat dau:</label>
+                <input type="date" id="startDate">
+            </div>
+            
+            <button id="calculateBtn">Tinh Toan 14 Ngay</button>
+        </div>
+        
+        <div class="loading" id="loadingIndicator">dang tinh toan...</div>
+        
+        <div class="table-container">
+            <table id="resultsTable">
+                <thead>
+                    <tr>
+                        <th rowspan="2">STT</th>
+                        <th rowspan="2">Ngay</th>
+                        <th rowspan="2">Thu</th>
+                        <th rowspan="2">So ngay tu 1/1/1900</th>
+                        <th rowspan="2">Can chi ngay</th>
+                        <th colspan="24">Can gio (1-24 gio)</th>
+                    </tr>
+                    <tr id="hourHeaders">
+                        <!-- Header gio se duoc tao bang JavaScript -->
+                    </tr>
+                </thead>
+                <tbody id="resultsBody">
+                    <!-- Du lieu se duoc them vao day -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #fffacd;"></div>
+                <span>Ngay duoc chon lam moc tinh toan</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #ffebee;"></div>
+                <span>Chu Nhat (mau do)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background-color: #e8f4fc;"></div>
+                <span>Thu Bay (mau xanh)</span>
+            </div>
+        </div>
+        
+        <div class="reference-info">
+            <p><strong>Ghi chu:</strong> So ngay duoc tinh tu ngay 1/1/1900 (ngay thu 0). Can gio duoc tinh dua tren can ngay va chu ky 60 hoa giap.</p>
+            <p>Moi ngay duoc chia thanh 12 canh gio (moi canh 2 gio), bat dau tu gio Ty (23h-1h) den gio Hoi (21h-23h).</p>
+        </div>
+    </div>
+
+    <script>
+        // Moc chuan: 1/1/1900 la Chu Nhat, ngay Giap Tuat
+        const REFERENCE_DATE = new Date(1900, 0, 1); // 1/1/1900
+        const REFERENCE_WEEKDAY = 0; // Chu Nhat (0 = Chu Nhat, 1 = Thu Hai, ..., 6 = Thu Bay)
+        
+        // Bang 60 hoa giap
+        const hoaGiap = [
+            "Giap Ty", "At Suu", "Binh Dan", "dinh Mao", "Mau Thin", "Ky Ty", 
+            "Canh Ngo", "Tan Mui", "Nham Than", "Quy Dau", "Giap Tuat", "At Hoi",
+            "Binh Ty", "dinh Suu", "Mau Dan", "Ky Mao", "Canh Thin", "Tan Ty",
+            "Nham Ngo", "Quy Mui", "Giap Than", "At Dau", "Binh Tuat", "dinh Hoi",
+            "Mau Ty", "Ky Suu", "Canh Dan", "Tan Mao", "Nham Thin", "Quy Ty",
+            "Giap Ngo", "At Mui", "Binh Than", "dinh Dau", "Mau Tuat", "Ky Hoi",
+            "Canh Ty", "Tan Suu", "Nham Dan", "Quy Mao", "Giap Thin", "At Ty",
+            "Binh Ngo", "dinh Mui", "Mau Than", "Ky Dau", "Canh Tuat", "Tan Hoi",
+            "Nham Ty", "Quy Suu", "Giap Dan", "At Mao", "Binh Thin", "dinh Ty",
+            "Mau Ngo", "Ky Mui", "Canh Than", "Tan Dau", "Nham Tuat", "Quy Hoi"
+        ];
+        
+        // Chi so cua ngay Giap Tuat trong bang hoa giap (ngay 1/1/1900)
+        const REFERENCE_HOA_GIAP_INDEX = 10; // Giap Tuat la phan tu thu 11 (index 10)
+        
+        // Bang thien can
+        const thienCan = ["Giap", "At", "Binh", "dinh", "Mau", "Ky", "Canh", "Tan", "Nham", "Quy"];
+        
+        // Bang dia chi
+        const diaChi = ["Ty", "Suu", "Dan", "Mao", "Thin", "Ty", "Ngo", "Mui", "Than", "Dau", "Tuat", "Hoi"];
+        
+        // Bang gio va canh gio tuong ung (truyen thong: 12 canh gio, moi canh 2 gio)
+        const gioTruyenThong = [
+            { gioBatDau: 23, gioKetThuc: 1, ten: "Ty", chiIndex: 0 },
+            { gioBatDau: 1, gioKetThuc: 3, ten: "Suu", chiIndex: 1 },
+            { gioBatDau: 3, gioKetThuc: 5, ten: "Dan", chiIndex: 2 },
+            { gioBatDau: 5, gioKetThuc: 7, ten: "Mao", chiIndex: 3 },
+            { gioBatDau: 7, gioKetThuc: 9, ten: "Thin", chiIndex: 4 },
+            { gioBatDau: 9, gioKetThuc: 11, ten: "Ty", chiIndex: 5 },
+            { gioBatDau: 11, gioKetThuc: 13, ten: "Ngo", chiIndex: 6 },
+            { gioBatDau: 13, gioKetThuc: 15, ten: "Mui", chiIndex: 7 },
+            { gioBatDau: 15, gioKetThuc: 17, ten: "Than", chiIndex: 8 },
+            { gioBatDau: 17, gioKetThuc: 19, ten: "Dau", chiIndex: 9 },
+            { gioBatDau: 19, gioKetThuc: 21, ten: "Tuat", chiIndex: 10 },
+            { gioBatDau: 21, gioKetThuc: 23, ten: "Hoi", chiIndex: 11 }
+        ];
+        
+        // Ten thu trong tuan
+        const thuTrongTuan = [
+            "Chu Nhat", "Thu Hai", "Thu Ba", "Thu Tu", "Thu Nam", "Thu Sau", "Thu Bay"
+        ];
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Thiet lap ngay hom nay lam gia tri mac dinh
+            const today = new Date();
+            const todayFormatted = formatDateForInput(today);
+            document.getElementById('startDate').value = todayFormatted;
+            
+            // Tao header cho cac gio (1-24)
+            createHourHeaders();
+            
+            // Tinh toan ngay khi tai trang
+            calculate14Days();
+            
+            // Gan su kien cho nut tinh toan
+            document.getElementById('calculateBtn').addEventListener('click', calculate14Days);
+        });
+        
+        function formatDateForInput(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+        
+        function formatDateDisplay(date) {
+            const day = date.getDate();
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+        
+        function createHourHeaders() {
+            const hourHeaders = document.getElementById('hourHeaders');
+            hourHeaders.innerHTML = '';
+            
+            // Tao header cho 24 gio
+            for (let i = 1; i <= 24; i++) {
+                const th = document.createElement('th');
+                th.className = 'hour-header';
+                th.textContent = i;
+                hourHeaders.appendChild(th);
+            }
+        }
+        
+        function calculate14Days() {
+            // Hien thi loading
+            document.getElementById('loadingIndicator').classList.add('active');
+            
+            // Lay ngay bat dau tu input
+            const startDateInput = document.getElementById('startDate').value;
+            const startDate = new Date(startDateInput);
+            
+            // Xac nhan ngay hop le
+            if (isNaN(startDate.getTime())) {
+                alert('Vui long chon ngay hop le');
+                document.getElementById('loadingIndicator').classList.remove('active');
+                return;
+            }
+            
+            // Tinh toan va hien thi sau mot khoang thoi gian nho de tranh block UI
+            setTimeout(() => {
+                const resultsBody = document.getElementById('resultsBody');
+                resultsBody.innerHTML = '';
+                
+                // Tao 14 ngay lien tiep
+                for (let i = 0; i < 14; i++) {
+                    const currentDate = new Date(startDate);
+                    currentDate.setDate(startDate.getDate() + i);
+                    
+                    // Tinh toan cac thong tin cho ngay nay
+                    const dayInfo = calculateDayInfo(currentDate, i === 0);
+                    
+                    // Tao hang trong bang
+                    const row = createTableRow(dayInfo, i + 1);
+                    resultsBody.appendChild(row);
+                }
+                
+                // An loading
+                document.getElementById('loadingIndicator').classList.remove('active');
+            }, 100);
+        }
+        
+        function calculateDayInfo(date, isStartDate) {
+            // Tinh so ngay tu 1/1/1900 den ngay nay
+            const diffTime = date - REFERENCE_DATE;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            // Tinh thu trong tuan
+            // Ngay 1/1/1900 la Chu Nhat (0)
+            const weekdayIndex = (REFERENCE_WEEKDAY + diffDays) % 7;
+            const weekday = thuTrongTuan[weekdayIndex];
+            
+            // Tinh can chi ngay
+            // Ngay 1/1/1900 la Giap Tuat (index 10 trong hoa giap)
+            const hoaGiapIndex = (REFERENCE_HOA_GIAP_INDEX + diffDays) % 60;
+            const adjustedIndex = hoaGiapIndex < 0 ? hoaGiapIndex + 60 : hoaGiapIndex;
+            const canChiDay = hoaGiap[adjustedIndex];
+            
+            // Tinh can chi cho tung gio (1-24)
+            const hourCanChi = calculateHourCanChi(canChiDay);
+            
+            return {
+                date: date,
+                dateFormatted: formatDateDisplay(date),
+                weekday: weekday,
+                weekdayIndex: weekdayIndex,
+                daysFromReference: diffDays,
+                cycles: Math.floor(diffDays / 60),
+                remainder: diffDays % 60,
+                canChiDay: canChiDay,
+                hourCanChi: hourCanChi,
+                isStartDate: isStartDate
+            };
+        }
+        
+        function calculateHourCanChi(canChiDay) {
+            // Lay can cua ngay tu can chi ngay
+            const dayCan = canChiDay.split(' ')[0];
+            const dayCanIndex = thienCan.indexOf(dayCan);
+            
+            // Tao mang chua can chi cua 24 gio
+            const hourCanChi = [];
+            
+            for (let hour = 1; hour <= 24; hour++) {
+                // Xac dinh canh gio truyen thong cho gio nay
+                // Chuyen doi gio 24h sang gio truyen thong (1-12)
+                let traditionalHour = hour;
+                
+                // Xac dinh dia chi cua gio
+                let chiIndex;
+                if (hour >= 23 || hour < 1) {
+                    chiIndex = 0; // Ty
+                } else if (hour >= 1 && hour < 3) {
+                    chiIndex = 1; // Suu
+                } else if (hour >= 3 && hour < 5) {
+                    chiIndex = 2; // Dan
+                } else if (hour >= 5 && hour < 7) {
+                    chiIndex = 3; // Mao
+                } else if (hour >= 7 && hour < 9) {
+                    chiIndex = 4; // Thin
+                } else if (hour >= 9 && hour < 11) {
+                    chiIndex = 5; // Ty
+                } else if (hour >= 11 && hour < 13) {
+                    chiIndex = 6; // Ngo
+                } else if (hour >= 13 && hour < 15) {
+                    chiIndex = 7; // Mui
+                } else if (hour >= 15 && hour < 17) {
+                    chiIndex = 8; // Than
+                } else if (hour >= 17 && hour < 19) {
+                    chiIndex = 9; // Dau
+                } else if (hour >= 19 && hour < 21) {
+                    chiIndex = 10; // Tuat
+                } else {
+                    chiIndex = 11; // Hoi
+                }
+                
+                // Tinh can cua gio: Can gio = (Can ngay * 2 + Chi gio) % 10
+                const hourCanIndex = (dayCanIndex * 2 + chiIndex) % 10;
+                const hourCan = thienCan[hourCanIndex];
+                const hourChi = diaChi[chiIndex];
+                
+                hourCanChi.push(`${hourCan} ${hourChi}`);
+            }
+            
+            return hourCanChi;
+        }
+        
+        function createTableRow(dayInfo, index) {
+            const row = document.createElement('tr');
+            
+            // Them class dac biet neu la ngay bat dau
+            if (dayInfo.isStartDate) {
+                row.classList.add('highlight');
+            }
+            
+            // Them class cho Chu Nhat va Thu Bay
+            if (dayInfo.weekdayIndex === 0) { // Chu Nhat
+                row.classList.add('sunday');
+            } else if (dayInfo.weekdayIndex === 6) { // Thu Bay
+                row.classList.add('saturday');
+            }
+            
+            // STT
+            const cellIndex = document.createElement('td');
+            cellIndex.className = 'day-number';
+            cellIndex.textContent = index;
+            row.appendChild(cellIndex);
+            
+            // Ngay
+            const cellDate = document.createElement('td');
+            cellDate.textContent = dayInfo.dateFormatted;
+            row.appendChild(cellDate);
+            
+            // Thu
+            const cellWeekday = document.createElement('td');
+            cellWeekday.className = 'weekday';
+            cellWeekday.textContent = dayInfo.weekday;
+            row.appendChild(cellWeekday);
+            
+            // So ngay tu 1/1/1900
+            const cellDaysFromRef = document.createElement('td');
+            cellDaysFromRef.innerHTML = `
+                <div>${dayInfo.daysFromReference}</div>
+                <div style="font-size:0.8em; color:#7f8c8d;">
+                    ${dayInfo.cycles} chu ky + ${dayInfo.remainder} ngay
+                </div>
+            `;
+            row.appendChild(cellDaysFromRef);
+            
+            // Can chi ngay
+            const cellCanChiDay = document.createElement('td');
+            cellCanChiDay.className = 'can-chi';
+            cellCanChiDay.textContent = dayInfo.canChiDay;
+            row.appendChild(cellCanChiDay);
+            
+            // Can chi gio (1-24)
+            for (let i = 0; i < 24; i++) {
+                const cellHour = document.createElement('td');
+                cellHour.className = 'hour-cell';
+                cellHour.textContent = dayInfo.hourCanChi[i];
+                row.appendChild(cellHour);
+            }
+            
+            return row;
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

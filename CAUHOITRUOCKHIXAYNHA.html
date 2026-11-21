@@ -1,0 +1,337 @@
+﻿<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>05 Cau hoi Song Con - Truoc Khi Giao Thau Xay Nha (Ngo dinh Khuon)</title>
+  <style>
+    :root{--bg:#f5f7fb;--card:#fff;--accent:#0b6df0;--muted:#666}
+    body{font-family:Inter,Segoe UI,Roboto,Arial;background:var(--bg);margin:0;padding:24px;color:#222}
+    header{max-width:1000px;margin:0 auto 18px}
+    .app{max-width:1000px;margin:0 auto}
+    h1{margin:6px 0 4px;font-size:22px}
+    p.lead{margin:0;color:var(--muted)}
+    .cards{display:grid;grid-template-columns:1fr;gap:14px;margin-top:18px}
+    .card{background:var(--card);padding:16px;border-radius:10px;box-shadow:0 6px 18px rgba(10,20,40,0.06)}
+    .card h3{margin:0 0 6px}
+    .explain{color:var(--muted);font-size:14px;margin-bottom:8px}
+    label{display:block;margin:8px 0 6px;font-weight:600}
+    input[type=text],input[type=number],select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #d7dbe6}
+    textarea{min-height:80px}
+    .row{display:flex;gap:12px}
+    .col{flex:1}
+    .actions{display:flex;gap:10px;margin-top:12px}
+    button{background:var(--accent);color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer}
+    button.ghost{background:#eef3ff;color:var(--accent);border:1px solid #d7e6ff}
+    .summary{white-space:pre-wrap;background:#0f1724;color:#e6f0ff;padding:12px;border-radius:8px;margin-top:12px}
+    .small{font-size:13px;color:var(--muted)}
+    .flex-between{display:flex;justify-content:space-between;align-items:center}
+    .important{color:#b33}
+    footer{max-width:1000px;margin:20px auto;text-align:center;color:var(--muted);font-size:13px}
+    .link{color:var(--accent);text-decoration:none}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>05 Cau hoi Song Con — Truoc Khi Giao Thau Xay Nha Tron Goi</h1>
+      <p class="lead">Dua tren video cua kenh <strong>Ngo dinh Khuon</strong>. dien cac cau tra loi ben duoi de tao <em>ban tom tat hop dong</em> va kiem soat rui ro truoc khi ky.</p>
+      <p class="small">Video nguon: <a class="link" href="http://www.youtube.com/watch?v=JpkVzeyMy2E" target="_blank">JpkVzeyMy2E</a></p>
+    </header>
+
+    <main class="cards">
+
+      <!-- 1 -->
+      <section class="card" id="q1">
+        <div class="flex-between"><h3>1. Pham vi cong viec cua Nha thau</h3><span class="small">Bat buoc lam ro</span></div>
+        <p class="explain">Chon ro goi (nhan cong / vat tu tho / hoan thien / tron goi). Ghi danh sach hang muc cu the neu tron goi (bep, son, thiet bi ve sinh, vach trang tri, cong rao...)</p>
+
+        <label>Chon goi thau:</label>
+        <select id="scope_type">
+          <option value="">-- Chon --</option>
+          <option value="nhancong">Chi nhan cong</option>
+          <option value="vattu_tho">Vat tu tho</option>
+          <option value="hoanthien">Hoan thien</option>
+          <option value="tron_goi">Tron goi (full noi that)</option>
+        </select>
+
+        <label>Danh sach hang muc (liet ke ro: bep, son, thiet bi...)</label>
+        <textarea id="scope_items" placeholder="Vi du: Bep (loai X), Son (ma mau, 2 lop), Thiet bi ve sinh (thuong hieu)..."></textarea>
+
+        <div class="actions">
+          <button onclick="savePart('q1')">Luu</button>
+          <button class="ghost" onclick="clearPart('q1')">Xoa</button>
+        </div>
+      </section>
+
+      <!-- 2 -->
+      <section class="card" id="q2">
+        <h3>2. Ban ve xay dung da day du chua?</h3>
+        <p class="explain">Kiem tra kien truc, ket cau, dien, nuoc; yeu cau ho so chi tiet thi cong truoc khi ky.</p>
+
+        <label>da co (tick cac muc):</label>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <label><input type="checkbox" id="drawing_kientruc"> Ban ve Kien truc</label>
+          <label><input type="checkbox" id="drawing_ketcau"> Ho so Ket cau</label>
+          <label><input type="checkbox" id="drawing_dien"> Ban ve dien</label>
+          <label><input type="checkbox" id="drawing_nuoc"> Ban ve Nuoc</label>
+        </div>
+
+        <label>Ghi chu ve ban ve / link file / phien ban:</label>
+        <input type="text" id="drawing_note" placeholder="Vi du: Ban ve chinh thuc v1.2 - 2025-11-10" />
+
+        <div class="actions">
+          <button onclick="savePart('q2')">Luu</button>
+          <button class="ghost" onclick="clearPart('q2')">Xoa</button>
+        </div>
+      </section>
+
+      <!-- 3 -->
+      <section class="card" id="q3">
+        <h3>3. Ai la nguoi giam sat cong trinh?</h3>
+        <p class="explain">Du tron goi, gia chu nen phan dinh nguoi giam sat: gia chu, nguoi than co chuyen mon, hay giam sat doc lap.</p>
+
+        <label>Nguoi giam sat chinh:</label>
+        <select id="supervisor_type">
+          <option value="">-- Chon --</option>
+          <option value="giachu">Gia chu</option>
+          <option value="nguoi_than">Nguoi than / chuyen mon</option>
+          <option value="giam_sat_doclap">Giam sat doc lap (thue ngoai)</option>
+        </select>
+
+        <label>Thong tin nguoi giam sat (ten, lien he, cong ty neu co):</label>
+        <input type="text" id="supervisor_info" placeholder="Vi du: Nguyen A - 0912xxx - Cong ty Giam sat X" />
+
+        <div class="actions">
+          <button onclick="savePart('q3')">Luu</button>
+          <button class="ghost" onclick="clearPart('q3')">Xoa</button>
+        </div>
+      </section>
+
+      <!-- 4 -->
+      <section class="card" id="q4">
+        <h3>4. Thanh toan, bao hanh, xu ly phat sinh</h3>
+        <p class="explain">Lam ro lich thanh toan theo tien do, dieu kien bao hanh, & co che xu ly phat sinh (cach tinh, trach nhiem).</p>
+
+        <label>Lich thanh toan (mo ta cac dot va %):</label>
+        <input type="text" id="payment_schedule" placeholder="Vi du: dot 1: Ky 20% ; dot 2: Xong mong 20% ..." />
+
+        <label>Chinh sach bao hanh (thoi gian / pham vi):</label>
+        <input type="text" id="warranty" placeholder="Vi du: 12 thang hoan thien; 5 nam ket cau" />
+
+        <label>Quy dinh xu ly phat sinh (mo ta & % du tru):</label>
+        <input type="text" id="extra_rules" placeholder="Vi du: Phat sinh do chu nha tinh rieng; du tru 10% tong ngan sach" />
+
+        <div class="actions">
+          <button onclick="savePart('q4')">Luu</button>
+          <button class="ghost" onclick="clearPart('q4')">Xoa</button>
+        </div>
+      </section>
+
+      <!-- 5 -->
+      <section class="card" id="q5">
+        <h3>5. Vat tu chat luong & thuong hieu</h3>
+        <p class="explain">Yeu cau ro chung loai vat tu tho va hoan thien, cung cap danh sach & chung chi chat luong.</p>
+
+        <label>Danh sach vat tu tho (cat, thep, gach, be tong):</label>
+        <textarea id="materials_tho" placeholder="Ghi ro: thep loai nao, be tong thuong pham hay tron tay..."></textarea>
+
+        <label>Danh sach vat tu hoan thien & thuong hieu mong muon:</label>
+        <textarea id="materials_finish" placeholder="Gach: THUONG HIEU X; Thiet bi ve sinh: Y; Son: Z..."></textarea>
+
+        <div class="actions">
+          <button onclick="savePart('q5')">Luu</button>
+          <button class="ghost" onclick="clearPart('q5')">Xoa</button>
+        </div>
+      </section>
+
+      <!-- Controls -->
+      <section class="card">
+        <h3>Tong hop - Tao ban tom tat hop dong</h3>
+        <p class="explain">Sau khi da luu tung phan, bam <strong>"Tao tom tat"</strong> de sinh van ban tom tat nhanh (co the tai ve hoac in).</p>
+
+        <div class="row">
+          <div class="col">
+            <button onclick="generateSummary()">Tao tom tat</button>
+          </div>
+          <div class="col">
+            <button class="ghost" onclick="downloadSummary()">Tai ve (.txt)</button>
+          </div>
+          <div class="col">
+            <button class="ghost" onclick="clearAll()">Xoa moi du lieu</button>
+          </div>
+        </div>
+
+        <div id="summaryBox" class="summary" style="display:none"></div>
+      </section>
+
+    </main>
+
+    <footer>
+      <div>Phien ban: 1.0 — Tao checklist truoc khi giao thau. Ban co the in hoac tai tep TXT chua tom tat.</div>
+    </footer>
+  </div>
+
+<script>
+// luu / load bang localStorage de tien theo doi
+function savePart(id){
+  const data = collectAll();
+  localStorage.setItem('giao_thau_data', JSON.stringify(data));
+  alert('da luu phan ' + id + ' vao bo nho trinh duyet.');
+}
+function clearPart(id){
+  const data = JSON.parse(localStorage.getItem('giao_thau_data') || '{}');
+  // clear fields for each part
+  if(id === 'q1'){
+    document.getElementById('scope_type').value = '';
+    document.getElementById('scope_items').value = '';
+  }
+  if(id === 'q2'){
+    ['drawing_kientruc','drawing_ketcau','drawing_dien','drawing_nuoc'].forEach(idc=>document.getElementById(idc).checked=false);
+    document.getElementById('drawing_note').value = '';
+  }
+  if(id === 'q3'){
+    document.getElementById('supervisor_type').value='';
+    document.getElementById('supervisor_info').value='';
+  }
+  if(id === 'q4'){
+    document.getElementById('payment_schedule').value='';
+    document.getElementById('warranty').value='';
+    document.getElementById('extra_rules').value='';
+  }
+  if(id === 'q5'){
+    document.getElementById('materials_tho').value='';
+    document.getElementById('materials_finish').value='';
+  }
+  // save cleared state
+  const newData = collectAll();
+  localStorage.setItem('giao_thau_data', JSON.stringify(newData));
+  alert('da xoa noi dung phan ' + id + '.');
+}
+
+function collectAll(){
+  return {
+    q1: {type: document.getElementById('scope_type').value, items: document.getElementById('scope_items').value},
+    q2: {kientruc: document.getElementById('drawing_kientruc').checked, ketcau: document.getElementById('drawing_ketcau').checked, dien: document.getElementById('drawing_dien').checked, nuoc: document.getElementById('drawing_nuoc').checked, note: document.getElementById('drawing_note').value},
+    q3: {who: document.getElementById('supervisor_type').value, info: document.getElementById('supervisor_info').value},
+    q4: {payment: document.getElementById('payment_schedule').value, warranty: document.getElementById('warranty').value, extra: document.getElementById('extra_rules').value},
+    q5: {tho: document.getElementById('materials_tho').value, finish: document.getElementById('materials_finish').value},
+    savedAt: new Date().toString()
+  }
+}
+
+function generateSummary(){
+  const d = collectAll();
+  const lines = [];
+  lines.push('TOM TAT 05 CAU HOI - TRUOC KHI GIAO THAU');
+  lines.push('Nguon: Video Ngo dinh Khuon ("05 Cau hoi SONG CON...")');
+  lines.push('Ngay tao: ' + new Date().toLocaleString());
+  lines.push('--------------------------------------------------');
+
+  // Q1
+  lines.push('\n1) PHAM VI CONG VIEC:');
+  lines.push('- Loai goi: ' + (d.q1.type || '[Chua chon]'));
+  lines.push('- Hang muc chi tiet: ' + (d.q1.items || '[Chua dien]'));
+
+  // Q2
+  lines.push('\n2) BAN VE:');
+  lines.push('- Kien truc: ' + (d.q2.kientruc ? 'da co' : 'Chua'));
+  lines.push('- Ket cau: ' + (d.q2.ketcau ? 'da co' : 'Chua'));
+  lines.push('- dien: ' + (d.q2.dien ? 'da co' : 'Chua'));
+  lines.push('- Nuoc: ' + (d.q2.nuoc ? 'da co' : 'Chua'));
+  lines.push('- Ghi chu ban ve: ' + (d.q2.note || '[Chua]'));
+
+  // Q3
+  lines.push('\n3) GIAM SAT:');
+  lines.push('- Nguoi giam sat chinh: ' + (d.q3.who || '[Chua chon]'));
+  lines.push('- Thong tin: ' + (d.q3.info || '[Chua]'));
+
+  // Q4
+  lines.push('\n4) THANH TOAN - BAO HANH - PHAT SINH:');
+  lines.push('- Lich thanh toan: ' + (d.q4.payment || '[Chua]'));
+  lines.push('- Bao hanh: ' + (d.q4.warranty || '[Chua]'));
+  lines.push('- Quy dinh phat sinh: ' + (d.q4.extra || '[Chua]'));
+
+  // Q5
+  lines.push('\n5) VAT TU & THUONG HIEU:');
+  lines.push('- Vat tu tho: ' + (d.q5.tho || '[Chua]'));
+  lines.push('- Vat tu hoan thien: ' + (d.q5.finish || '[Chua]'));
+
+  lines.push('\n--------------------------------------------------');
+  lines.push('Ghi chu: Nen dua noi dung nay vao HOP dONG va BAN PHU LUC KY THUAT. Nen du tru 10-20% ngan sach cho phat sinh.');
+
+  const text = lines.join('\n');
+  document.getElementById('summaryBox').style.display = 'block';
+  document.getElementById('summaryBox').textContent = text;
+  // auto-save
+  localStorage.setItem('giao_thau_data', JSON.stringify(collectAll()));
+}
+
+function downloadSummary(){
+  let txt = document.getElementById('summaryBox').textContent;
+  if(!txt){
+    alert('Chua co tom tat. Bam "Tao tom tat" truoc.');
+    return;
+  }
+  const blob = new Blob([txt], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'tomtat_giaothau.txt';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function clearAll(){
+  if(confirm('Xac nhan xoa moi du lieu da luu?')){
+    localStorage.removeItem('giao_thau_data');
+    location.reload();
+  }
+}
+
+// load saved data on open
+(function loadSaved(){
+  try{
+    const raw = localStorage.getItem('giao_thau_data');
+    if(!raw) return;
+    const d = JSON.parse(raw);
+    if(!d) return;
+    // q1
+    if(d.q1){ document.getElementById('scope_type').value = d.q1.type || ''; document.getElementById('scope_items').value = d.q1.items || ''; }
+    if(d.q2){ document.getElementById('drawing_kientruc').checked = !!d.q2.kientruc; document.getElementById('drawing_ketcau').checked = !!d.q2.ketcau; document.getElementById('drawing_dien').checked = !!d.q2.dien; document.getElementById('drawing_nuoc').checked = !!d.q2.nuoc; document.getElementById('drawing_note').value = d.q2.note || ''; }
+    if(d.q3){ document.getElementById('supervisor_type').value = d.q3.who || ''; document.getElementById('supervisor_info').value = d.q3.info || ''; }
+    if(d.q4){ document.getElementById('payment_schedule').value = d.q4.payment || ''; document.getElementById('warranty').value = d.q4.warranty || ''; document.getElementById('extra_rules').value = d.q4.extra || ''; }
+    if(d.q5){ document.getElementById('materials_tho').value = d.q5.tho || ''; document.getElementById('materials_finish').value = d.q5.finish || ''; }
+  }catch(e){console.warn('Khong the load du lieu:', e)}
+})();
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

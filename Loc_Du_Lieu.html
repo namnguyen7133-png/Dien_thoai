@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Hệ Thống Lọc Thực Phẩm Siêu Cấp</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial; background: #eef2f7; padding: 40px; text-align: center; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; }
+        .upload-box { border: 3px dashed #3498db; padding: 30px; border-radius: 15px; background: #f8fbff; cursor: pointer; transition: 0.3s; }
+        .upload-box:hover { background: #e1f0fa; }
+        .btn-group { display: flex; gap: 15px; justify-content: center; margin-top: 25px; }
+        button { padding: 15px 25px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; }
+        .btn-blue { background: #3498db; }
+        .btn-red { background: #e74c3c; }
+        button:hover { transform: translateY(-3px); opacity: 0.9; }
+        #status { margin-top: 20px; color: #27ae60; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🛠 BỘ LỌC TỔNG HỢP (WEB)</h2>
+    <p>Chọn cùng lúc nhiều file .txt để lọc sạch</p>
+
+    <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+        <strong>Nhấn vào đây để chọn nhiều file .txt</strong>
+        <input type="file" id="fileInput" multiple accept=".txt" style="display: none;">
+    </div>
+
+    <div id="status"></div>
+
+    <div class="btn-group">
+        <button class="btn-blue" onclick="process('duong')">LỌC & LƯU DƯƠNG (+)</button>
+        <button class="btn-red" onclick="process('am')">LỌC & LƯU ÂM (-)</button>
+    </div>
+</div>
+
+<script>
+    let allContent = "";
+
+    // 1. NẠP NHIỀU FILE 1 LÚC
+    document.getElementById('fileInput').addEventListener('change', async function(e) {
+        const files = e.target.files;
+        if (files.length === 0) return;
+
+        allContent = ""; // Reset nội dung
+        for (let file of files) {
+            const text = await file.text();
+            allContent += text + " ";
+        }
+        document.getElementById('status').innerText = "✅ Đã nạp xong " + files.length + " tệp!";
+        playBeep(600); // Kêu nhẹ khi nạp xong
+    });
+
+    // 2. LÀM SẠCH VÀ HIỆN BẢNG HỎI LƯU (Save As)
+    function process(type) {
+        if (!allContent) {
+            alert("Bạn chưa chọn tệp nào!");
+            return;
+        }
+
+        // Chuẩn hóa ký hiệu
+        let words = allContent.replace(/▲/g, '+').replace(/▼/g, '-').split(/[\s,\n\t]+/);
+        let results = [];
+
+        words.forEach(word => {
+            let clean = word.replace(/^[0-9.]+/, '').trim(); // Xóa số thứ tự
+            if (type === 'duong' && clean.includes('+')) results.push(clean);
+            if (type === 'am' && clean.includes('-')) results.push(clean);
+        });
+
+        if (results.length === 0) {
+            alert("Không tìm thấy món nào phù hợp!");
+            return;
+        }
+
+        // Tạo tệp để tải về (Trình duyệt sẽ hiện bảng Save As)
+        const blob = new Blob([results.join('\n')], { type: 'text/plain' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = type === 'duong' ? "Thuc_Pham_DUONG_Sach.txt" : "Thuc_Pham_AM_Sach.txt";
+        a.click();
+
+        // 3. PHÁT TIẾNG KÊU KHI XONG (Ting!)
+        playBeep(1000);
+        alert("Thành công! Đã lọc xong " + results.length + " món.");
+    }
+
+    // Hàm tạo tiếng kêu "Bíp" trên trình duyệt
+    function playBeep(freq) {
+        const context = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = context.createOscillator();
+        const gain = context.createGain();
+        oscillator.type = "sine";
+        oscillator.frequency.value = freq;
+        oscillator.connect(gain);
+        gain.connect(context.destination);
+        oscillator.start();
+        setTimeout(() => oscillator.stop(), 200);
+    }
+</script>
+
+</body>
+</html>

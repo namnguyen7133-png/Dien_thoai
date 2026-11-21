@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Robot Review Phim - Kết nối Python</title>
+    <style>
+        body { background: #000; color: #00ff00; font-family: 'Consolas', monospace; padding: 20px; }
+        .box { border: 2px solid #00ff00; border-radius: 5px; background: #050505; padding: 15px; margin-bottom: 15px; }
+        #output { height: 400px; overflow-y: auto; color: #fff; border-left: 3px solid #00ff00; padding-left: 15px; }
+        input { background: #111; border: 1px solid #333; color: #fff; padding: 10px; width: 70%; }
+        button { border: none; padding: 10px 15px; font-weight: bold; cursor: pointer; border-radius: 3px; margin: 2px; }
+        .item { border-bottom: 1px dotted #444; padding: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h3>🤖 HỆ THỐNG TRA CỨU & SOI PHIM</h3>
+        <div id="output">Đang đợi nạp dữ liệu từ Apps Script...</div>
+    </div>
+
+    <div class="box">
+        <input type="text" id="api-url" placeholder="Dán link /exec vào đây...">
+        <button onclick="taiData()" style="background: #ffaa00;">TẢI DATA</button>
+        <button onclick="soiPhuDe()" style="background: #00bcff; color: #fff;">SOI PHỤ ĐỀ (PYTHON)</button>
+    </div>
+
+    <div style="display: flex; gap: 8px;">
+        <input type="text" id="chat-input" placeholder="Nhập câu cần tra..." onkeypress="if(event.keyCode==13) guiTraCuu()">
+        <button onclick="guiTraCuu()" style="background: #00ff00; color: #000;">TÌM KIẾM</button>
+    </div>
+
+    <script>
+        let dbPhim = [];
+        let indexXoayVong = {};
+
+        async function taiData() {
+            const url = document.getElementById('api-url').value;
+            if(!url) return alert("Dán link /exec đã Nam!");
+            
+            // Gọi Apps Script lấy dữ liệu
+            const script = document.createElement('script');
+            const cb = 'cb_' + Date.now();
+            window[cb] = res => {
+                dbPhim = res;
+                document.getElementById('output').innerHTML = "✅ ĐÃ NẠP " + res.length + " DÒNG TRI THỨC!";
+            };
+            script.src = url + (url.includes('?') ? '&' : '?') + "callback=" + cb;
+            document.body.appendChild(script);
+        }
+
+        async function soiPhuDe() {
+            if(dbPhim.length === 0) return alert("Chưa có data!");
+            const res = await fetch('http://127.0.0.1:5000/filter_subtitles', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({sheet_data: dbPhim})
+            });
+            const filtered = await res.json();
+            hienThi(filtered);
+        }
+
+        async function guiTraCuu() {
+            const txt = document.getElementById('chat-input').value;
+            const res = await fetch('http://127.0.0.1:5000/search_long_text', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({text: txt, sheet_data: dbPhim})
+            });
+            const result = await res.json();
+            hienThi(result);
+        }
+
+        function hienThi(data) {
+            const out = document.getElementById('output');
+            out.innerHTML = "";
+            data.forEach((row, i) => {
+                const reviews = [5, 6, 7, 8].map(idx => row[idx]).filter(v => v);
+                if (!indexXoayVong[i]) indexXoayVong[i] = 0;
+                let cur = indexXoayVong[i] % reviews.length;
+                out.innerHTML += `<div class="item">🎬 <b>Gốc:</b> ${row[1]}<br>💡 <b>Review:</b> ${reviews[cur]}</div>`;
+                indexXoayVong[i]++;
+            });
+        }
+    </script>
+</body>
+</html>

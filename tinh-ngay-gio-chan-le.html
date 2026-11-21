@@ -1,0 +1,593 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ung dung tinh toan va bang</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            padding: 8px;
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-left: 4px solid #4CAF50;
+            margin: 10px 0;
+        }
+        table {
+            border-collapse: collapse;
+            margin: 20px 0;
+            width: 100%;
+            font-size: 13px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 5px;
+            text-align: center;
+            min-width: 35px;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .notification {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .col {
+            flex: 1;
+            min-width: 300px;
+        }
+        .person-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: white;
+        }
+        .person-item {
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+        .person-item:hover {
+            background-color: #e8f5e9;
+        }
+        .person-item.selected {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .table-container {
+            overflow-x: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ung dung tinh toan va bang</h1>
+        
+        <div class="row">
+            <div class="col">
+                <!-- O 1: Nhap ngay thang nam hien tai -->
+                <div class="form-group">
+                    <label for="currentDate">O 1: Ngay thang nam hien tai</label>
+                    <input type="date" id="currentDate">
+                </div>
+                
+                <!-- O 2: Hien thi ten tuoi tu danh sach -->
+                <div class="form-group">
+                    <label for="selectedName">O 2: Ten tuoi (chon tu danh sach)</label>
+                    <input type="text" id="selectedName" readonly>
+                </div>
+                
+                <!-- O 3: Hien thi ngay thang nam sinh tu danh sach -->
+                <div class="form-group">
+                    <label for="selectedBirthDate">O 3: Ngay thang nam sinh (chon tu danh sach)</label>
+                    <input type="text" id="selectedBirthDate" readonly>
+                </div>
+                
+                <!-- O 4: Danh sach chon -->
+                <div class="form-group">
+                    <label>O 4: Danh sach (bam chon de hien thi vao o 2 va o 3)</label>
+                    <div class="person-list" id="personListContainer">
+                        <!-- Danh sach se duoc hien thi o day -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col">
+                <!-- O 5: Ket qua tinh toan 1 -->
+                <div class="form-group">
+                    <label for="result5">O 5: So ngay tu 01/01/1900 den ngay hien tai</label>
+                    <input type="text" id="result5" readonly>
+                    <div id="notification5" class="notification" style="display: none;"></div>
+                </div>
+                
+                <!-- O 6: Xac dinh gioi tinh tu so ngay -->
+                <div class="form-group">
+                    <label for="result6">O 6: Gioi tinh (tu o 5 - Chan: Trai, Le: Gai)</label>
+                    <input type="text" id="result6" readonly>
+                    <div id="notification6" class="notification" style="display: none;"></div>
+                </div>
+                
+                <!-- O 7: Ket qua tinh toan 2 -->
+                <div class="form-group">
+                    <label for="result7">O 7: Ngay hien tai + 285 - 01/01/1900</label>
+                    <input type="text" id="result7" readonly>
+                    <div id="notification7" class="notification" style="display: none;"></div>
+                </div>
+                
+                <!-- O 8: Xac dinh gioi tinh tu o 7 -->
+                <div class="form-group">
+                    <label for="result8">O 8: Gioi tinh (tu o 7 - Chan: Trai, Le: Gai)</label>
+                    <input type="text" id="result8" readonly>
+                    <div id="notification8" class="notification" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Nut tinh toan -->
+        <div class="form-group">
+            <button onclick="calculateAll()">Tinh toan tat ca</button>
+            <button onclick="addNewPerson()">Them nguoi moi</button>
+            <button onclick="loadDefaultList()">Tai danh sach mac dinh</button>
+            <button onclick="clearAll()">Xoa tat ca</button>
+        </div>
+        
+        <!-- Bang ket qua -->
+        <div class="form-group">
+            <h2>Bang ket qua (24 dong + 1 dong STT) - 14 cot du lieu</h2>
+            <div class="table-container">
+                <table id="resultTable">
+                    <!-- Bang se duoc tao bang JavaScript -->
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Danh sach nguoi dung mac dinh
+        const defaultPersonList = [
+            { id: 1, name: "NGUYENKHACNANG", birthDate: "1944-06-04", formattedBirthDate: "04/06/1944" },
+            { id: 2, name: "TOTHIHA", birthDate: "1948-08-29", formattedBirthDate: "29/08/1948" },
+            { id: 3, name: "NGUYENMINHNAM", birthDate: "1971-03-03", formattedBirthDate: "03/03/1971" },
+            { id: 4, name: "THANTHIKIMANH", birthDate: "1981-09-23", formattedBirthDate: "23/09/1981" },
+            { id: 5, name: "NGUYENTONGANAN", birthDate: "2014-09-28", formattedBirthDate: "28/09/2014" },
+            { id: 6, name: "NGUYENTOMINHCHAU", birthDate: "2016-07-25", formattedBirthDate: "25/07/2016" },
+            { id: 7, name: "NGUYENTOBICHNGOC", birthDate: "2020-02-05", formattedBirthDate: "05/02/2020" },
+            { id: 8, name: "NGUYENTHIMINHHANG", birthDate: "1974-01-07", formattedBirthDate: "07/01/1974" },
+            { id: 9, name: "NGOQUYCUONG", birthDate: "1973-05-23", formattedBirthDate: "23/05/1973" },
+            { id: 10, name: "NGOGIABACH", birthDate: "2000-10-12", formattedBirthDate: "12/10/2000" },
+            { id: 11, name: "NGOGIALINH", birthDate: "2005-04-05", formattedBirthDate: "05/04/2005" },
+            { id: 12, name: "NGUYENTHIMINHPHUONG", birthDate: "1978-11-06", formattedBirthDate: "06/11/1978" },
+            { id: 13, name: "HOANGANHDUNG", birthDate: "1978-09-21", formattedBirthDate: "21/09/1978" },
+            { id: 14, name: "HOANGHAIVINH", birthDate: "2010-06-03", formattedBirthDate: "03/06/2010" },
+            { id: 15, name: "HOANGTHIENBACHANH", birthDate: "2015-11-14", formattedBirthDate: "14/11/2015" },
+            { id: 16, name: "TO KIM HUE", birthDate: "1960-08-09", formattedBirthDate: "09/08/1960" },
+            { id: 17, name: "NGUYEN TUAN ANH", birthDate: "1983-10-23", formattedBirthDate: "23/10/1983" },
+            { id: 18, name: "NGUYEN THE ANH", birthDate: "2001-03-24", formattedBirthDate: "24/03/2001" },
+            { id: 19, name: "NGO THI MAI", birthDate: "1948-12-12", formattedBirthDate: "12/12/1948" },
+            { id: 20, name: "TO VIET HUNG", birthDate: "1996-06-17", formattedBirthDate: "17/06/1996" },
+            { id: 21, name: "TO THI HONG", birthDate: "1964-10-10", formattedBirthDate: "10/10/1964" },
+            { id: 22, name: "VU VAN HIEP", birthDate: "1974-04-24", formattedBirthDate: "24/04/1974" },
+            { id: 23, name: "NGUYEN THI CHI", birthDate: "1946-02-08", formattedBirthDate: "08/02/1946" },
+            { id: 24, name: "NGUYEN TAN BAC", birthDate: "1957-11-30", formattedBirthDate: "30/11/1957" },
+            { id: 25, name: "NGUYEN THI TAM", birthDate: "1954-08-08", formattedBirthDate: "08/08/1954" }
+        ];
+
+        let personList = [...defaultPersonList];
+        let selectedPersonId = null;
+        
+        // Ham dinh dang ngay
+        function formatDate(date) {
+            if (!date) return '';
+            const d = new Date(date);
+            return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
+        }
+        
+        // Ham tinh so ngay tu 01/01/1900
+        function daysFrom1900(date) {
+            const startDate = new Date('1900-01-01');
+            const currentDate = new Date(date);
+            const diffTime = currentDate - startDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays;
+        }
+        
+        // Ham xac dinh gioi tinh tu so
+        function getGenderFromNumber(number) {
+            const lastDigit = Math.abs(number) % 10;
+            return lastDigit % 2 === 0 ? 'Con trai (T)' : 'Con gai (G)';
+        }
+        
+        // Ham lay ky hieu gioi tinh
+        function getGenderSymbol(number) {
+            const lastDigit = Math.abs(number) % 10;
+            return lastDigit % 2 === 0 ? 'T' : 'G';
+        }
+        
+        // Ham hien thi thong bao
+        function showNotification(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.style.display = 'block';
+            
+            // Tu dong an thong bao sau 5 giay
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Ham hien thi danh sach
+        function displayPersonList() {
+            const container = document.getElementById('personListContainer');
+            container.innerHTML = '';
+            
+            if (personList.length === 0) {
+                container.innerHTML = '<p style="color: #666; text-align: center;">Danh sach trong</p>';
+                return;
+            }
+            
+            personList.forEach(person => {
+                const item = document.createElement('div');
+                item.className = 'person-item';
+                if (person.id === selectedPersonId) {
+                    item.classList.add('selected');
+                }
+                item.innerHTML = `
+                    <strong>${person.id}. ${person.name}</strong>
+                    <div style="color: ${person.id === selectedPersonId ? '#fff' : '#666'}; font-size: 12px;">
+                        Sinh ngay: ${person.formattedBirthDate}
+                    </div>
+                `;
+                
+                // Them su kien click
+                item.onclick = () => selectPerson(person.id);
+                
+                container.appendChild(item);
+            });
+        }
+        
+        // Ham chon nguoi tu danh sach
+        function selectPerson(personId) {
+            selectedPersonId = personId;
+            const person = personList.find(p => p.id === personId);
+            
+            if (person) {
+                // Hien thi thong tin vao o 2 va o 3
+                document.getElementById('selectedName').value = person.name;
+                document.getElementById('selectedBirthDate').value = person.formattedBirthDate;
+                
+                // Hien thi lai danh sach voi item duoc chon
+                displayPersonList();
+                
+                // Hien thi thong bao
+                showNotification('notification5', `da chon: ${person.name} - ${person.formattedBirthDate}`);
+            }
+        }
+        
+        // Ham them nguoi moi
+        function addNewPerson() {
+            const name = prompt("Nhap ten nguoi moi:");
+            if (!name) return;
+            
+            const birthDateStr = prompt("Nhap ngay sinh (dinh dang dd/mm/yyyy):");
+            if (!birthDateStr) return;
+            
+            // Chuyen doi ngay tu dd/mm/yyyy sang yyyy-mm-dd
+            const parts = birthDateStr.split('/');
+            if (parts.length !== 3) {
+                alert("dinh dang ngay khong dung! Vui long nhap dd/mm/yyyy");
+                return;
+            }
+            
+            const day = parseInt(parts[0]);
+            const month = parseInt(parts[1]) - 1; // Thang bat dau tu 0
+            const year = parseInt(parts[2]);
+            
+            const birthDate = new Date(year, month, day);
+            if (isNaN(birthDate.getTime())) {
+                alert("Ngay khong hop le!");
+                return;
+            }
+            
+            const formattedDate = birthDate.toISOString().split('T')[0];
+            const formattedDisplay = formatDate(formattedDate);
+            
+            const person = {
+                id: personList.length + 1,
+                name: name,
+                birthDate: formattedDate,
+                formattedBirthDate: formattedDisplay
+            };
+            
+            personList.push(person);
+            displayPersonList();
+            
+            // Tu dong chon nguoi vua them
+            selectPerson(person.id);
+            
+            alert(`da them ${person.name} vao danh sach!`);
+        }
+        
+        // Ham tai danh sach mac dinh
+        function loadDefaultList() {
+            if (confirm('Ban co chac chan muon tai danh sach mac dinh? Du lieu hien tai se bi ghi de.')) {
+                personList = [...defaultPersonList];
+                selectedPersonId = null;
+                document.getElementById('selectedName').value = '';
+                document.getElementById('selectedBirthDate').value = '';
+                displayPersonList();
+                alert(`da tai ${personList.length} nguoi tu danh sach mac dinh!`);
+            }
+        }
+        
+        // Ham tinh toan tat ca
+        function calculateAll() {
+            // Lay ngay hien tai tu o 1
+            const currentDateInput = document.getElementById('currentDate').value;
+            
+            if (!currentDateInput) {
+                alert('Vui long nhap ngay hien tai vao o 1!');
+                return;
+            }
+            
+            const currentDate = new Date(currentDateInput);
+            
+            // Tinh toan cho o 5
+            const days1 = daysFrom1900(currentDate);
+            document.getElementById('result5').value = days1;
+            showNotification('notification5', `Ket qua o 5: ${days1} ngay tu 01/01/1900 den ${formatDate(currentDate)}`);
+            
+            // Tinh toan cho o 6
+            const gender1 = getGenderFromNumber(days1);
+            document.getElementById('result6').value = gender1;
+            showNotification('notification6', `Ket qua o 6: ${gender1} (so ${days1}, so cuoi ${days1 % 10})`);
+            
+            // Tinh toan cho o 7
+            const futureDate = new Date(currentDate);
+            futureDate.setDate(futureDate.getDate() + 285);
+            const days2 = daysFrom1900(futureDate);
+            document.getElementById('result7').value = days2;
+            showNotification('notification7', `Ket qua o 7: ${days2} ngay (${formatDate(currentDate)} + 285 ngay = ${formatDate(futureDate)})`);
+            
+            // Tinh toan cho o 8
+            const gender2 = getGenderFromNumber(days2);
+            document.getElementById('result8').value = gender2;
+            showNotification('notification8', `Ket qua o 8: ${gender2} (so ${days2}, so cuoi ${days2 % 10})`);
+            
+            // Tao bang
+            createTable(days2);
+        }
+        
+        // Ham tao bang
+        function createTable(baseNumber) {
+            const table = document.getElementById('resultTable');
+            table.innerHTML = '';
+            
+            // Tao tieu de bang - Dong 1
+            const headerRow = document.createElement('tr');
+            
+            // Cot 1 dong 1: STT
+            const th1 = document.createElement('th');
+            th1.textContent = 'STT';
+            th1.style.width = '50px';
+            headerRow.appendChild(th1);
+            
+            // Tao cac cot tu 2 den 15 (tong cong 14 cot) - dA THEM 2 COT
+            for (let col = 2; col <= 15; col++) {
+                const th = document.createElement('th');
+                const colValue = baseNumber + (col - 2);
+                const colGender = getGenderSymbol(colValue);
+                th.textContent = `${colValue} (${colGender})`;
+                th.title = `Cot ${col}: ${colValue} - ${colGender === 'T' ? 'Trai' : 'Gai'}`;
+                headerRow.appendChild(th);
+            }
+            
+            table.appendChild(headerRow);
+            
+            // Tao cac dong tu 2 den 25 (tong cong 24 dong + 1 dong tieu de)
+            for (let row = 2; row <= 25; row++) {
+                const tr = document.createElement('tr');
+                
+                // Cot 1: STT voi gioi tinh (tu 1 den 24)
+                const td1 = document.createElement('td');
+                const rowValue = row - 1; // 1 den 24
+                const rowGender = getGenderSymbol(rowValue);
+                td1.textContent = `${rowValue} (${rowGender})`;
+                td1.style.fontWeight = 'bold';
+                td1.title = `Dong ${row}: ${rowValue} - ${rowGender === 'T' ? 'Trai' : 'Gai'}`;
+                tr.appendChild(td1);
+                
+                // Cac cot tu 2 den 15 - dA THEM 2 COT
+                for (let col = 2; col <= 15; col++) {
+                    const td = document.createElement('td');
+                    const colValue = baseNumber + (col - 2);
+                    const colGender = getGenderSymbol(colValue);
+                    const cellValue = `${rowGender}${colGender}`;
+                    
+                    // doi mau nen dua tren ket qua
+                    if (cellValue === 'TT') {
+                        td.style.backgroundColor = '#a5d6a7'; // Xanh nhat cho Trai-Trai
+                    } else if (cellValue === 'GG') {
+                        td.style.backgroundColor = '#f48fb1'; // Hong nhat cho Gai-Gai
+                    } else if (cellValue === 'TG' || cellValue === 'GT') {
+                        td.style.backgroundColor = '#fff59d'; // Vang nhat cho khac gioi
+                    }
+                    
+                    td.textContent = cellValue;
+                    td.title = `Giao diem: Dong ${rowValue}(${rowGender}) × Cot ${colValue}(${colGender}) = ${cellValue}`;
+                    tr.appendChild(td);
+                }
+                
+                table.appendChild(tr);
+            }
+            
+            // Them dong tong (dong 25)
+            const totalRow = document.createElement('tr');
+            totalRow.style.backgroundColor = '#e8f5e9';
+            
+            const totalTd1 = document.createElement('td');
+            totalTd1.textContent = 'Tong';
+            totalTd1.style.fontWeight = 'bold';
+            totalRow.appendChild(totalTd1);
+            
+            for (let col = 2; col <= 15; col++) {
+                const td = document.createElement('td');
+                const colValue = baseNumber + (col - 2);
+                const colGender = getGenderSymbol(colValue);
+                td.textContent = `${colValue} (${colGender})`;
+                td.style.fontWeight = 'bold';
+                totalRow.appendChild(td);
+            }
+            
+            table.appendChild(totalRow);
+            
+            // Hien thi thong bao
+            const notificationMessage = `da tao bang thanh cong!\n- So co so tu o 7: ${baseNumber}\n- Tong so dong: 25 (24 dong du lieu + 1 dong STT)\n- Tong so cot: 15 (1 cot STT + 14 cot du lieu)`;
+            showNotification('notification5', notificationMessage);
+            alert(notificationMessage);
+        }
+        
+        // Ham xoa tat ca
+        function clearAll() {
+            if (confirm('Ban co chac chan muon xoa tat ca du lieu?')) {
+                // Xoa cac o nhap
+                document.getElementById('currentDate').value = '';
+                
+                // Xoa cac o hien thi
+                document.getElementById('selectedName').value = '';
+                document.getElementById('selectedBirthDate').value = '';
+                
+                // Xoa cac o ket qua
+                document.getElementById('result5').value = '';
+                document.getElementById('result6').value = '';
+                document.getElementById('result7').value = '';
+                document.getElementById('result8').value = '';
+                
+                // Xoa danh sach
+                personList = [];
+                selectedPersonId = null;
+                displayPersonList();
+                
+                // Xoa bang
+                document.getElementById('resultTable').innerHTML = '';
+                
+                // An thong bao
+                ['notification5', 'notification6', 'notification7', 'notification8'].forEach(id => {
+                    document.getElementById(id).style.display = 'none';
+                });
+                
+                alert('da xoa tat ca du lieu!');
+            }
+        }
+        
+        // Khoi tao ngay hien tai va hien thi danh sach mac dinh
+        window.onload = function() {
+            const today = new Date();
+            const formattedToday = today.toISOString().split('T')[0];
+            document.getElementById('currentDate').value = formattedToday;
+            
+            // Hien thi danh sach mac dinh
+            displayPersonList();
+            
+            // Tu dong chon nguoi dau tien
+            if (personList.length > 0) {
+                setTimeout(() => {
+                    selectPerson(1);
+                }, 500);
+            }
+            
+            // Tinh toan tu dong
+            setTimeout(() => {
+                calculateAll();
+            }, 1000);
+        };
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>TCDN 1 – EAA (Chuoi tien te deu tuong duong)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#eef2f7;
+    margin:0;
+    padding:20px;
+}
+h1,h2,h3{color:#2c3e50}
+.card{
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+.term{
+    border-left:5px solid #3498db;
+    padding-left:12px;
+    margin-bottom:12px;
+}
+.note{
+    background:#fff8dc;
+    padding:12px;
+    border-left:4px solid #f39c12;
+}
+input,button{
+    padding:8px;
+    width:100%;
+    margin-top:6px;
+}
+button{
+    background:#3498db;
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
+button:hover{background:#217dbb}
+.case-btn{
+    background:#2ecc71;
+    margin-bottom:6px;
+}
+.case-btn:hover{background:#27ae60}
+.result{
+    font-weight:bold;
+    margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>📘 TCDN 1 – Chuong 3 – Cac truong hop dac biet (EAA)</h1>
+
+<div class="card">
+🔗 <b>Link video:</b> Quang Trung TV – dau tu dai han DN – Phan 7  
+<br>
+<a href="https://www.youtube.com/watch?v=Zh_ev8c465M" target="_blank">
+https://www.youtube.com/watch?v=Zh_ev8c465M
+</a>
+</div>
+
+<!-- 2.1 THUAT NGU -->
+<div class="card" id="terms">
+<h2>2.1 Thuat ngu & Cong thuc (Giai thich doi song)</h2>
+
+<div class="term">
+<b>Van de tuoi tho khac nhau</b><br>
+➡ Khong the so du an 3 nam voi 6 nam bang NPV truc tiep  
+➡ Giong nhu so dien thoai dung 2 nam voi may dung 5 nam
+</div>
+
+<div class="term">
+<b>EAA (Equivalent Annual Annuity)</b><br>
+➡ Loi ich <b>binh quan moi nam</b> sau khi da quy doi thoi gian  
+➡ Tra loi cau hoi: “Moi nam du an nuoi ta bao nhieu tien?”
+</div>
+
+<div class="term">
+<b>Cong thuc</b><br>
+EAA = NPV / PVFA<br>
+PVFA = [1 − (1+r)<sup>−n</sup>] / r
+</div>
+
+<div class="note">
+📌 EAA giup so sanh cong bang cac du an co thoi gian song khac nhau
+</div>
+</div>
+
+<!-- 2.2 DUNG CHO AI -->
+<div class="card" id="usage">
+<h2>2.2 Dung trong cong viec & ca nhan</h2>
+
+<ul>
+<li><b>Ca nhan:</b> mua do ben – thue hay mua → dung <b>EAA</b></li>
+<li><b>Gia dinh:</b> thue nha dai han hay mua tra gop → <b>EAA</b></li>
+<li><b>Doanh nghiep:</b> chon may moc tuoi tho khac nhau → <b>BAT BUOC EAA</b></li>
+</ul>
+
+<div class="note">
+✔ Khi du an co the lap lai → luon dung EAA  
+❌ Khong dung IRR trong truong hop nay
+</div>
+</div>
+
+<!-- 3.2 THOI dIEM & dIEU KIEN -->
+<div class="card" id="timeline">
+<h2>3.2 Lam luc nao? dieu kien moi duoc lam</h2>
+
+<h3>🔁 Trinh tu chuan</h3>
+<ol>
+<li>Tinh NPV tung du an</li>
+<li>Xac dinh tuoi tho rieng</li>
+<li>Tinh PVFA theo tung tuoi tho</li>
+<li>Tinh EAA</li>
+<li>So sanh EAA</li>
+</ol>
+
+<h3>📊 dieu kien thi truong</h3>
+<ul>
+<li>Thi truong on dinh → chon EAA cao</li>
+<li>Rui ro cong nghe → uu tien du an ngan han (EAA cao, n nho)</li>
+<li>Thieu von → chon EAA giup quay vong nhanh</li>
+</ul>
+
+<div class="note">
+⚠ NPV cao nhung EAA thap → von bi “chon” lau
+</div>
+</div>
+
+<!-- 4.2 NHAP TINH HUONG -->
+<div class="card" id="calculator">
+<h2>4.2 Nhap tinh huong & giai quyet</h2>
+
+<label>NPV du an (trieu VNd)</label>
+<input type="number" id="npv">
+
+<label>Lai suat chiet khau (% / nam)</label>
+<input type="number" id="rate">
+
+<label>Tuoi tho du an (nam)</label>
+<input type="number" id="life">
+
+<button onclick="tinhEAA()">TINH EAA</button>
+
+<div class="result" id="ketqua"></div>
+</div>
+
+<!-- CASE BUTTONS -->
+<div class="card">
+<h2>📌 Chon tinh huong mau</h2>
+<button class="case-btn" onclick="scrollToCase('case1')">Ca nhan mua dien thoai</button>
+<button class="case-btn" onclick="scrollToCase('case2')">Gia dinh mua nha</button>
+<button class="case-btn" onclick="scrollToCase('case3')">DN mua may moc</button>
+</div>
+
+<!-- CASES -->
+<div class="card" id="case1">
+<h3>📍 Case 1 – Ca nhan</h3>
+<p>May cu: re – dung 2 nam  
+May moi: dat – dung 5 nam  
+➡ Tinh EAA chi phi/nam → chon cai <b>ton it moi nam hon</b></p>
+</div>
+
+<div class="card" id="case2">
+<h3>📍 Case 2 – Gia dinh</h3>
+<p>Thue 10 nam vs mua tra gop 20 nam  
+➡ So EAA dong tien ra hang nam</p>
+</div>
+
+<div class="card" id="case3">
+<h3>📍 Case 3 – Doanh nghiep</h3>
+<p>May A: NPV cao – tuoi tho dai  
+May B: NPV thap – quay vong nhanh  
+➡ Chon may co <b>EAA cao hon</b></p>
+</div>
+
+<script>
+function tinhEAA(){
+    let npv = Number(document.getElementById("npv").value);
+    let r = Number(document.getElementById("rate").value)/100;
+    let n = Number(document.getElementById("life").value);
+
+    if(npv<=0 || r<=0 || n<=0){
+        document.getElementById("ketqua").innerHTML="⚠ Nhap day du so lieu";
+        return;
+    }
+
+    let pvfa = (1 - Math.pow(1+r, -n)) / r;
+    let eaa = npv / pvfa;
+
+    document.getElementById("ketqua").innerHTML =
+        "PVFA = " + pvfa.toFixed(2) +
+        "<br>EAA = " + eaa.toFixed(2) + 
+        " trieu VNd / nam";
+}
+
+function scrollToCase(id){
+    document.getElementById(id).scrollIntoView({behavior:"smooth"});
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

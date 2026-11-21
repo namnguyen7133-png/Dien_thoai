@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Cashflow Analyzer</title>
+</head>
+<body style="font-family: sans-serif; background: #f0f2f5; padding: 20px;">
+
+    <div style="max-width: 500px; border: 3px solid #d4af37; padding: 20px; border-radius: 15px; background: #fffdf5; margin: 0 auto 30px auto;">
+        <h2 style="color: #b8860b; text-align: center;">PHÂN TÍCH CHI TIẾT THẺ VÀNG</h2>
+        
+        <div style="margin-bottom: 15px;">
+            <label><b>1. Thu nhập cho thuê ($):</b></label>
+            <input type="number" id="in_rent" value="600" style="width:100%; padding: 8px; box-sizing: border-box;">
+        </div>
+
+        <div style="border-left: 3px solid #e74c3c; padding-left: 10px;">
+            <label>2. Chi phí điện ($):</label>
+            <input type="number" id="in_elec" value="100" style="width:100%; margin-bottom: 5px;">
+            <label>3. Chi phí nước ($):</label>
+            <input type="number" id="in_water" value="100" style="width:100%; margin-bottom: 5px;">
+            <label>4. Tiền thế chấp (Mortgage) ($):</label>
+            <input type="number" id="in_mort" value="200" style="width:100%;">
+        </div>
+
+        <div style="margin-top: 15px; border-top: 2px solid #d4af37; padding-top: 10px;">
+            <label><b>5. Vốn trả trước (Down Payment) ($):</b></label>
+            <input type="number" id="in_dp" value="2000" style="width:100%; padding: 8px; box-sizing: border-box;">
+        </div>
+
+        <button onclick="analyze()" style="width:100%; margin-top:15px; background:#d4af37; color:white; padding:10px; border:none; font-weight:bold; cursor:pointer;">TÍNH TOÁN</button>
+
+        <div id="res" style="margin-top:20px; padding:15px; display:none; border-radius:8px;"></div>
+    </div>
+
+    <div style="max-width: 550px; border: 3px solid #2980b9; padding: 25px; border-radius: 15px; background: #f0f7ff; margin: 0 auto;">
+        <h2 style="color: #2980b9; text-align: center; border-bottom: 2px solid #2980b9; padding-bottom: 10px;">MÁY TÍNH CHI TIẾT CĂN HỘ (CONDO)</h2>
+        
+        <div style="margin-bottom: 15px;">
+            <label><b>1. Tổng thu nhập cho thuê ($):</b></label>
+            <input type="number" id="rent_income" value="700" style="width:100%; padding:8px; box-sizing: border-box;">
+        </div>
+
+        <div style="background: white; border: 1px solid #bdc3c7; padding: 15px; border-radius: 8px;">
+            <label style="color: #e74c3c;">2. Phí quản lý chung cư ($):</label>
+            <input type="number" id="condo_fee" value="150" style="width:100%; margin-bottom:10px;">
+            
+            <label style="color: #e74c3c;">3. Điện & Nước ($):</label>
+            <input type="number" id="utility_fee" value="100" style="width:100%; margin-bottom:10px;">
+            
+            <label style="color: #e74c3c;">4. Trả nợ ngân hàng (Mortgage) ($):</label>
+            <input type="number" id="mortgage_pay" value="250" style="width:100%;">
+        </div>
+
+        <div style="margin-top: 15px; padding-top: 10px;">
+            <label><b>5. Vốn trả trước thực tế ($):</b></label>
+            <input type="number" id="actual_dp" value="2000" style="width:100%; padding:8px; border: 2px solid #2980b9; box-sizing: border-box;">
+        </div>
+
+        <button onclick="calcCondo()" style="width:100%; margin-top:20px; background:#2980b9; color:white; padding:12px; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">PHÂN TÍCH DEAL</button>
+
+        <div id="condo_res" style="margin-top:20px; padding:15px; display:none; border-radius:8px; text-align:center;"></div>
+    </div>
+
+    <script>
+    // Hàm cho Máy tính Thẻ Vàng
+    function analyze() {
+        const rent = parseFloat(document.getElementById('in_rent').value) || 0;
+        const elec = parseFloat(document.getElementById('in_elec').value) || 0;
+        const water = parseFloat(document.getElementById('in_water').value) || 0;
+        const mort = parseFloat(document.getElementById('in_mort').value) || 0;
+        const dp = parseFloat(document.getElementById('in_dp').value) || 0;
+
+        const cf = rent - (elec + water + mort);
+        const roi = dp !== 0 ? (cf / dp) * 100 : 0;
+        
+        const div = document.getElementById('res');
+        div.style.display = 'block';
+        div.style.background = roi >= 5 ? '#d4edda' : '#f8d7da';
+        div.innerHTML = `
+            <b>KẾT QUẢ:</b><br>
+            - Dòng tiền ròng: <b>$${cf}/tháng</b><br>
+            - Tỷ lệ ROI: <b style="font-size:1.2em;">${roi.toFixed(1)}%</b><br>
+            - Đánh giá: ${roi >= 10 ? "SIÊU HỜI - MUA NGAY!" : (roi >= 5 ? "TỐT - NÊN ĐẦU TƯ" : "KÉM - CÂN NHẮC")}
+        `;
+    }
+
+    // Hàm cho Máy tính Condo
+    function calcCondo() {
+        const rent = parseFloat(document.getElementById('rent_income').value) || 0;
+        const fee = parseFloat(document.getElementById('condo_fee').value) || 0;
+        const util = parseFloat(document.getElementById('utility_fee').value) || 0;
+        const mort = parseFloat(document.getElementById('mortgage_pay').value) || 0;
+        const dp = parseFloat(document.getElementById('actual_dp').value) || 0;
+
+        const netCF = rent - (fee + util + mort);
+        const netROI = dp !== 0 ? (netCF / dp) * 100 : 0;
+        
+        const div = document.getElementById('condo_res');
+        div.style.display = 'block';
+        div.style.background = netROI >= 5 ? '#d4edda' : '#f8d7da';
+        div.innerHTML = `
+            <span style="font-size: 0.9em;">Dòng tiền ròng:</span><br>
+            <b style="font-size: 1.8em; color: #2c3e50;">$${netCF}/tháng</b><br>
+            <span style="font-size: 0.9em;">Tỷ lệ lợi nhuận ROI:</span><br>
+            <b style="font-size: 1.8em; color: #27ae60;">${netROI.toFixed(1)}%</b><br>
+            <div style="margin-top:10px; font-weight:bold;">${netROI >= 8 ? "🔥 DEAL SIÊU LỢI NHUẬN" : "✅ DEAL TỐT"}</div>
+        `;
+    }
+    </script>
+</body>
+</html>

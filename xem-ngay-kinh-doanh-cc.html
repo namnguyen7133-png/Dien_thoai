@@ -1,0 +1,1824 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phan Tich Menh Ly & dinh Huong Kinh Doanh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            font-size: 16px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border-left: 5px solid var(--secondary-color);
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+        
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        
+        .date-info {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-top: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .date-info span {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        
+        .time-item {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .input-section, .result-section, .canchi-calculator {
+            background-color: white;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .canchi-calculator {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .input-tabs {
+            display: flex;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 12px 25px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: #7f8c8d;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            color: var(--secondary-color);
+            border-bottom: 3px solid var(--secondary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .input-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .input-field {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+            font-size: 1.1rem;
+        }
+        
+        input, select, button {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+        }
+        
+        .btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-calculate {
+            background-color: var(--success-color);
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .btn-calculate:hover {
+            background-color: #27ae60;
+        }
+        
+        .btn-secondary {
+            background-color: var(--warning-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e67e22;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+        
+        .person-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            padding: 10px;
+            margin-top: 15px;
+        }
+        
+        .person-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 1.05rem;
+        }
+        
+        .person-item:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .person-item.selected {
+            background-color: #e3f2fd;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .result-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            background-color: #f8f9fa;
+        }
+        
+        .person-name {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .person-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .detail-item {
+            background-color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .group-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+        
+        .group-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .group-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+            border-top: 5px solid;
+        }
+        
+        .group-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .group-leader {
+            background-color: #fff8e1;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            margin: 10px 0;
+            font-weight: bold;
+            color: #ff8f00;
+        }
+        
+        .business-suggestion {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-top: 15px;
+            font-style: italic;
+        }
+        
+        .members-list {
+            list-style-type: none;
+            margin-top: 10px;
+        }
+        
+        .members-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        
+        .color-wood { border-top-color: #4CAF50; }
+        .color-fire { border-top-color: #f44336; }
+        .color-earth { border-top-color: #795548; }
+        .color-metal { border-top-color: #607D8B; }
+        .color-water { border-top-color: #2196F3; }
+        
+        .element-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: white;
+            margin-right: 5px;
+        }
+        
+        .badge-wood { background-color: #4CAF50; }
+        .badge-fire { background-color: #f44336; }
+        .badge-earth { background-color: #795548; }
+        .badge-metal { background-color: #607D8B; }
+        .badge-water { background-color: #2196F3; }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.95rem;
+        }
+        
+        .instructions {
+            background-color: #fffde7;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+            border-left: 4px solid #ffd600;
+        }
+        
+        .result-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .result-detail {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        
+        .detail-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-top: 5px;
+        }
+        
+        .highlight {
+            background: #fffde7 !important;
+            border-left: 4px solid #ffeb3b;
+        }
+        
+        .canchi-result {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+        
+        .error-message {
+            color: var(--accent-color);
+            background-color: #ffeaea;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            margin: 10px 0;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        @media (max-width: 768px) {
+            .input-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .input-tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-chart-line"></i> Phan Tich Menh Ly & dinh Huong Kinh Doanh</h1>
+            <div class="subtitle">Dua tren Can Chi - Ngu Hanh - Menh theo ngay sinh</div>
+            <div class="date-info">
+                <div class="time-item">Ngay chuan: <span>18/12/2025</span></div>
+                <div class="time-item">10 gio <span>Quy Ty</span></div>
+                <div class="time-item">29 Ngay <span>Tan Dau</span></div>
+                <div class="time-item">10 Thang <span>dinh Hoi</span></div>
+                <div class="time-item">2025 Nam <span>At Ty</span></div>
+            </div>
+        </header>
+        
+        <div class="instructions">
+            <p><i class="fas fa-info-circle"></i> <strong>Huong dan su dung:</strong> Nhap ten va ngay sinh (hoac chon tu danh sach co san) de tra cuu thong tin menh ly theo ngay Can Chi. Su dung cong cu tinh Can Chi de tinh toan chi tiet. Sau do nhan "Phan Tich & Phan Nhom" de xem ket qua phan nhom kinh doanh.</p>
+        </div>
+        
+        <div class="canchi-calculator">
+            <h2 class="section-title"><i class="fas fa-calculator"></i> Cong Cu Tinh Can Chi</h2>
+            
+            <div class="input-tabs">
+                <button class="tab active" data-tab="canchi">Nhap Can Chi</button>
+                <button class="tab" data-tab="solar">Nhap Duong Lich</button>
+            </div>
+            
+            <div id="canchi-tab" class="tab-content active">
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="hour"><i class="far fa-clock"></i> Gio (Can Chi):</label>
+                        <select id="hour">
+                            <option value="">Chon gio</option>
+                            <!-- Gio se duoc them bang JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div class="input-field">
+                        <label for="day"><i class="far fa-calendar-alt"></i> Ngay (Can Chi):</label>
+                        <select id="day">
+                            <option value="">Chon ngay</option>
+                            <!-- Ngay se duoc them bang JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div class="input-field">
+                        <label for="month"><i class="fas fa-calendar"></i> Thang (Can Chi):</label>
+                        <select id="month">
+                            <option value="">Chon thang</option>
+                            <!-- Thang se duoc them bang JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div class="input-field">
+                        <label for="year"><i class="fas fa-calendar-check"></i> Nam (Can Chi):</label>
+                        <select id="year">
+                            <option value="">Chon nam</option>
+                            <!-- Nam se duoc them bang JavaScript -->
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn" id="calculateForward">
+                        <i class="fas fa-forward"></i> Tinh Xuoi
+                    </button>
+                    <button class="btn btn-secondary" id="calculateBackward">
+                        <i class="fas fa-backward"></i> Tinh Nguoc
+                    </button>
+                    <button class="btn" id="resetCanChi">
+                        <i class="fas fa-redo"></i> dat Lai
+                    </button>
+                    <button class="btn btn-secondary" id="calculateToSolar">
+                        <i class="fas fa-sun"></i> Tinh Duong Lich
+                    </button>
+                </div>
+            </div>
+            
+            <div id="solar-tab" class="tab-content">
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="solarHour"><i class="far fa-clock"></i> Gio (0-23):</label>
+                        <input type="number" id="solarHour" min="0" max="23" value="10">
+                    </div>
+                    
+                    <div class="input-field">
+                        <label for="solarDay"><i class="far fa-calendar-alt"></i> Ngay:</label>
+                        <input type="number" id="solarDay" min="1" max="31" value="18">
+                    </div>
+                    
+                    <div class="input-field">
+                        <label for="solarMonth"><i class="fas fa-calendar"></i> Thang:</label>
+                        <input type="number" id="solarMonth" min="1" max="12" value="12">
+                    </div>
+                    
+                    <div class="input-field">
+                        <label for="solarYear"><i class="fas fa-calendar-check"></i> Nam:</label>
+                        <input type="number" id="solarYear" min="1900" max="2100" value="2025">
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn" id="calculateFromSolar">
+                        <i class="fas fa-moon"></i> Tinh Can Chi
+                    </button>
+                    <button class="btn" id="applyToPerson">
+                        <i class="fas fa-user-plus"></i> Ap dung vao Nguoi
+                    </button>
+                </div>
+            </div>
+            
+            <div id="canchiResult" class="canchi-result" style="display: none;">
+                <h3><i class="fas fa-chart-pie"></i> Ket Qua Tinh Can Chi</h3>
+                <div id="canchiResultContent"></div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="input-section">
+                <h2 class="section-title"><i class="fas fa-user-edit"></i> Nhap thong tin ca nhan</h2>
+                
+                <div class="input-group">
+                    <div class="input-field">
+                        <label for="nameInput"><i class="fas fa-user"></i> Ho va ten:</label>
+                        <input type="text" id="nameInput" placeholder="Nhap ho va ten day du">
+                    </div>
+                    
+                    <div class="input-field">
+                        <label for="birthdayInput"><i class="fas fa-birthday-cake"></i> Ngay sinh (dd/mm/yyyy):</label>
+                        <input type="text" id="birthdayInput" placeholder="VD: 04/06/1944">
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-field">
+                        <label><i class="fas fa-list-ul"></i> Hoac chon tu danh sach co san:</label>
+                        <div class="person-list" id="personList">
+                            <!-- Danh sach nguoi se duoc them bang JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn" id="addPersonBtn">
+                        <i class="fas fa-plus"></i> Them nguoi vao danh sach
+                    </button>
+                    <button class="btn btn-secondary" id="clearListBtn">
+                        <i class="fas fa-trash"></i> Xoa danh sach
+                    </button>
+                </div>
+                
+                <button class="btn btn-calculate" id="calculateBtn">
+                    <i class="fas fa-calculator"></i> Phan Tich & Phan Nhom
+                </button>
+            </div>
+            
+            <div class="result-section">
+                <h2 class="section-title"><i class="fas fa-chart-pie"></i> Ket qua phan tich</h2>
+                <div id="individualResults">
+                    <p class="no-results">Chua co du lieu. Vui long nhap thong tin va nhan "Phan Tich & Phan Nhom".</p>
+                </div>
+                
+                <div class="group-section" id="groupSection" style="display: none;">
+                    <h2 class="section-title"><i class="fas fa-users"></i> Phan nhom kinh doanh</h2>
+                    <div id="groupResults"></div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Ung dung phan tich menh ly theo Can Chi - Ngu Hanh | Thiet ke danh cho nguoi can thi do 2</p>
+            <p>Du lieu tham khao tu bang tra cuu Can Chi truyen thong</p>
+        </footer>
+    </div>
+
+    <script>
+        // ==============================
+        // DU LIEU CO BAN
+        // ==============================
+        
+        // Du lieu 25 nguoi mau
+        const samplePeople = [
+            { id: 1, name: "NGUYENKHACNANG", birthday: "04/06/1944" },
+            { id: 2, name: "TOTHIHA", birthday: "29/08/1948" },
+            { id: 3, name: "NGUYENMINHNAM", birthday: "03/03/1971" },
+            { id: 4, name: "THANTHIKIMANH", birthday: "23/09/1981" },
+            { id: 5, name: "NGUYENTONGANAN", birthday: "28/09/2014" },
+            { id: 6, name: "NGUYENTOMINHCHAU", birthday: "25/07/2016" },
+            { id: 7, name: "NGUYENTOBICHNGOC", birthday: "05/02/2020" },
+            { id: 8, name: "NGUYENTHIMINHHANG", birthday: "07/01/1974" },
+            { id: 9, name: "NGOQUYCUONG", birthday: "23/05/1973" },
+            { id: 10, name: "NGOGIABACH", birthday: "12/10/2000" },
+            { id: 11, name: "NGOGIALINH", birthday: "05/04/2005" },
+            { id: 12, name: "NGUYENTHIMINHPHUONG", birthday: "06/11/1978" },
+            { id: 13, name: "HOANGANHDUNG", birthday: "21/09/1978" },
+            { id: 14, name: "HOANGHAIVINH", birthday: "03/06/2010" },
+            { id: 15, name: "HOANGTHIENBACHANH", birthday: "14/11/2015" },
+            { id: 16, name: "TO KIM HUE", birthday: "09/08/1960" },
+            { id: 17, name: "NGUYEN TUAN ANH", birthday: "23/10/1983" },
+            { id: 18, name: "NGUYEN THE ANH", birthday: "24/03/2001" },
+            { id: 19, name: "NGO THI MAI", birthday: "12/12/1948" },
+            { id: 20, name: "TO VIET HUNG", birthday: "17/06/1996" },
+            { id: 21, name: "TO THI HONG", birthday: "10/10/1964" },
+            { id: 22, name: "VU VAN HIEP", birthday: "24/04/1974" },
+            { id: 23, name: "NGUYEN THI CHI", birthday: "08/02/1946" },
+            { id: 24, name: "NGUYEN TAN BAC", birthday: "30/11/1957" },
+            { id: 25, name: "NGUYEN THI TAM", birthday: "08/08/1954" }
+        ];
+
+        // Bang tra cuu Can Chi (60 Hoa Giap)
+        const canChiData = [
+            {id: 1, canChi: "Giap Ty", yNghia: "Oc Thuong Chi Thu (Chuot o noc nha)", amDuong: "Kim +", menh: "Hai Trung Kim (Vang trong bien)", que1: "doai Kim", que2: "Can Tho", element: "Kim"},
+            {id: 2, canChi: "At Suu", yNghia: "Hai Noi Chi Nguu (Trau trong bien)", amDuong: "Kim -", menh: "Hai Trung Kim (Vang trong bien)", que1: "Can Kim", que2: "Ly Hoa", element: "Kim"},
+            {id: 3, canChi: "Binh Dan", yNghia: "Son Lam Chi Ho (Ho trong rung)", amDuong: "Hoa +", menh: "Lu Trung Hoa (Lua trong lo)", que1: "Khon Tho", que2: "Kham Thuy", element: "Hoa"},
+            {id: 4, canChi: "dinh Mao", yNghia: "Vong Nguyet Chi Tho (Tho ngam trang)", amDuong: "Hoa -", menh: "Lu Trung Hoa (Lua trong lo)", que1: "Ton Moc", que2: "Khon Tho", element: "Hoa"},
+            {id: 5, canChi: "Mau Thin", yNghia: "Thanh On Chi Long (Rong on hoa)", amDuong: "Moc +", menh: "dai Lam Moc (Go rung gia)", que1: "Chan Moc", que2: "Chan Moc", element: "Moc"},
+            {id: 6, canChi: "Ky Ty", yNghia: "Phuc Khi Chi Xa (Ran co phuc)", amDuong: "Moc -", menh: "dai Lam Moc (Go rung gia)", que1: "Khon Tho", que2: "Ton Moc", element: "Moc"},
+            {id: 7, canChi: "Canh Ngo", yNghia: "That Ly Chi Ma (Ngua trong nha)", amDuong: "Tho +", menh: "Lo Bang Tho (dat duong di)", que1: "doai Kim", que2: "Can Tho", element: "Tho"},
+            {id: 8, canChi: "Tan Mui", yNghia: "dac Loc Chi Duong (De co loc)", amDuong: "Tho -", menh: "Lo Bang Tho (dat duong di)", que1: "Can Kim", que2: "Ly Hoa", element: "Tho"},
+            {id: 9, canChi: "Nham Than", yNghia: "Thanh Tu Chi Hau (Khi thanh tu)", amDuong: "Kim +", menh: "Kiem Phong Kim (Vang mui kiem)", que1: "Khon Tho", que2: "Kham Thuy", element: "Kim"},
+            {id: 10, canChi: "Quy Dau", yNghia: "Lau Tuc Ke (Ga nha gac)", amDuong: "Kim -", menh: "Kiem Phong Kim (Vang mui kiem)", que1: "Ton Moc", que2: "Khon Tho", element: "Kim"},
+            {id: 11, canChi: "Giap Tuat", yNghia: "Thu Than Chi Cau (Cho giu minh)", amDuong: "Hoa +", menh: "Son dau Hoa (Lua tren nui)", que1: "Chan Moc", que2: "Chan Moc", element: "Hoa"},
+            {id: 12, canChi: "At Hoi", yNghia: "Qua Vang Chi Tru (Lon hay di)", amDuong: "Hoa -", menh: "Son dau Hoa (Lua tren nui)", que1: "Khon Tho", que2: "Ton Moc", element: "Hoa"},
+            {id: 13, canChi: "Binh Ty", yNghia: "dien Noi Chi Thu (Chuot trong ruong)", amDuong: "Thuy +", menh: "Gian Ha Thuy (Nuoc khe suoi)", que1: "Kham Thuy", que2: "Khon Tho", element: "Thuy"},
+            {id: 14, canChi: "dinh Suu", yNghia: "Ho Noi Chi Nguu (Trau trong ho nuoc)", amDuong: "Thuy -", menh: "Gian Ha Thuy (Nuoc khe suoi)", que1: "Ly Hoa", que2: "Can Kim", element: "Thuy"},
+            {id: 15, canChi: "Mau Dan", yNghia: "Qua Son Chi Ho (Ho qua rung)", amDuong: "Tho +", menh: "Thanh dau Tho (dat tren thanh)", que1: "Can Tho", que2: "doai Kim", element: "Tho"},
+            {id: 16, canChi: "Ky Mao", yNghia: "Son Lam Chi Tho (Tho o rung)", amDuong: "Tho -", menh: "Thanh dau Tho (dat tren thanh)", que1: "doai Kim", que2: "Can Tho", element: "Tho"},
+            {id: 17, canChi: "Canh Thin", yNghia: "Thu Tinh Chi Long (Rong khoan dung)", amDuong: "Kim +", menh: "Bach Lap Kim (Vang sap ong)", que1: "Can Kim", que2: "Ly Hoa", element: "Kim"},
+            {id: 18, canChi: "Tan Ty", yNghia: "dong Tang Chi Xa (Ran ngu dong)", amDuong: "Kim -", menh: "Bach Lap Kim (Vang sap ong)", que1: "Khon Tho", que2: "Kham Thuy", element: "Kim"},
+            {id: 19, canChi: "Nham Ngo", yNghia: "Quan Trung Chi Ma (Ngua chien)", amDuong: "Moc +", menh: "Duong Lieu Moc (Go cay duong)", que1: "Ton Moc", que2: "Khon Tho", element: "Moc"},
+            {id: 20, canChi: "Quy Mui", yNghia: "Quan Noi Chi Duong (De trong dan)", amDuong: "Moc -", menh: "Duong Lieu Moc (Go cay duong)", que1: "Chan Moc", que2: "Chan Moc", element: "Moc"},
+            {id: 21, canChi: "Giap Than", yNghia: "Qua Thu Chi Hau (Khi leo cay)", amDuong: "Thuy +", menh: "Tuyen Trung Thuy (Nuoc trong suoi)", que1: "Khon Tho", que2: "Ton Moc", element: "Thuy"},
+            {id: 22, canChi: "At Dau", yNghia: "Xuong Ngo Chi Ke (Ga gay trua)", amDuong: "Thuy -", menh: "Tuyen Trung Thuy (Nuoc trong suoi)", que1: "Kham Thuy", que2: "Khon Tho", element: "Thuy"},
+            {id: 23, canChi: "Binh Tuat", yNghia: "Tu Mien Chi Cau (Chuan dang ngu)", amDuong: "Tho +", menh: "Oc Thuong Tho (dat noc nha)", que1: "Ly Hoa", que2: "Can Kim", element: "Tho"},
+            {id: 24, canChi: "dinh Hoi", yNghia: "Qua Son Chi Tru (Lon qua nui)", amDuong: "Tho -", menh: "Oc Thuong Tho (dat noc nha)", que1: "Can Tho", que2: "doai Kim", element: "Tho"},
+            {id: 25, canChi: "Mau Ty", yNghia: "Thuong Noi Chi Tru (Chuot trong kho)", amDuong: "Hoa +", menh: "Thich Lich Hoa (Lua sam set)", que1: "doai Kim", que2: "Can Tho", element: "Hoa"},
+            {id: 26, canChi: "Ky Suu", yNghia: "Lam Noi Chi Nguu (Trau trong chuong)", amDuong: "Hoa -", menh: "Thich Lich Hoa (Lua sam set)", que1: "Can Kim", que2: "Ly Hoa", element: "Hoa"},
+            {id: 27, canChi: "Canh Dan", yNghia: "Xuat Son Chi Ho (Ho xuong nui)", amDuong: "Moc +", menh: "Tung Bach Moc (Go tung bach)", que1: "Khon Tho", que2: "Kham Thuy", element: "Moc"},
+            {id: 28, canChi: "Tan Mao", yNghia: "An Huyet Chi Tho (Tho trong hang)", amDuong: "Moc -", menh: "Tung Bach Moc (Go tung bach)", que1: "Ton Moc", que2: "Khon Tho", element: "Moc"},
+            {id: 29, canChi: "Nham Thin", yNghia: "Hanh Vu Chi Long (Rong phun mua)", amDuong: "Thuy +", menh: "Truong Luu Thuy (Nuoc chay manh)", que1: "Chan Moc", que2: "Chan Moc", element: "Thuy"},
+            {id: 30, canChi: "Quy Ty", yNghia: "Thao Trung Chi Xa (Ran trong co)", amDuong: "Thuy -", menh: "Truong Luu Thuy (Nuoc chay manh)", que1: "Khon Tho", que2: "Ton Moc", element: "Thuy"},
+            {id: 31, canChi: "Giap Ngo", yNghia: "Van Trung Chi Ma (Ngua trong may)", amDuong: "Kim +", menh: "Sa Trung Kim (Vang trong cat)", que1: "Kham Thuy", que2: "Khon Tho", element: "Kim"},
+            {id: 32, canChi: "At Mui", yNghia: "Kinh Trong Chi Duong (De duoc quy men)", amDuong: "Kim -", menh: "Sa Trung Kim (Vang trong cat)", que1: "Ly Hoa", que2: "Can Kim", element: "Kim"},
+            {id: 33, canChi: "Binh Than", yNghia: "Son Thuong Chi Hau (Khi tren nui)", amDuong: "Hoa +", menh: "Son Ha Hoa (Lua tren nui)", que1: "Can Tho", que2: "doai Kim", element: "Hoa"},
+            {id: 34, canChi: "dinh Dau", yNghia: "doc Lap Chi Ke (Ga doc than)", amDuong: "Hoa -", menh: "Son Ha Hoa (Lua tren nui)", que1: "doai Kim", que2: "Can Tho", element: "Hoa"},
+            {id: 35, canChi: "Mau Tuat", yNghia: "Tien Son Chi Cau (Cho vao nui)", amDuong: "Moc +", menh: "Binh dia Moc (Go dong bang)", que1: "Can Kim", que2: "Ly Hoa", element: "Moc"},
+            {id: 36, canChi: "Ky Hoi", yNghia: "dao Vien Chi Tru (Lon trong tu vien)", amDuong: "Moc -", menh: "Binh dia Moc (Go dong bang)", que1: "Khon Tho", que2: "Kham Thuy", element: "Moc"},
+            {id: 37, canChi: "Canh Ty", yNghia: "Luong Thuong Chi Thu (Chuot tren xa)", amDuong: "Tho +", menh: "Bich Thuong Tho (dat to vo)", que1: "Ton Moc", que2: "Khon Tho", element: "Tho"},
+            {id: 38, canChi: "Tan Suu", yNghia: "Lo do Chi Nguu (Trau tren duong)", amDuong: "Tho -", menh: "Bich Thuong Tho (dat to vo)", que1: "Chan Moc", que2: "Chan Moc", element: "Tho"},
+            {id: 39, canChi: "Nham Dan", yNghia: "Qua Lam Chi Ho (Ho qua rung)", amDuong: "Kim +", menh: "Kim Bach Kim (Vang pha bac)", que1: "Khon Tho", que2: "Ton Moc", element: "Kim"},
+            {id: 40, canChi: "Quy Mao", yNghia: "Qua Lam Chi Tho (Tho qua rung)", amDuong: "Kim -", menh: "Kim Bach Kim (Vang pha bac)", que1: "Kham Thuy", que2: "Khon Tho", element: "Kim"},
+            {id: 41, canChi: "Giap Thin", yNghia: "Phuc dam Chi Lam (Rong an o dam)", amDuong: "Hoa +", menh: "Phu dang Hoa (Lua den to)", que1: "Ly Hoa", que2: "Can Kim", element: "Hoa"},
+            {id: 42, canChi: "At Ty", yNghia: "Xuat Huyet Chi Xa (Ran roi hang)", amDuong: "Hoa -", menh: "Phu dang Hoa (Lua den to)", que1: "Can Tho", que2: "doai Kim", element: "Hoa"},
+            {id: 43, canChi: "Binh Ngo", yNghia: "Hanh Lo Chi Ma (Ngua chay tren duong)", amDuong: "Thuy +", menh: "Thien Ha Thuy (Nuoc tren troi)", que1: "doai Kim", que2: "Can Tho", element: "Thuy"},
+            {id: 44, canChi: "dinh Mui", yNghia: "That Quan Chi Duong (De lac dan)", amDuong: "Thuy -", menh: "Thien Ha Thuy (Nuoc tren troi)", que1: "Can Kim", que2: "Ly Hoa", element: "Thuy"},
+            {id: 45, canChi: "Mau Than", yNghia: "doc Lap Chi Hau (Khi doc than)", amDuong: "Tho +", menh: "dai Trach Tho (dat nen nha)", que1: "Khon Tho", que2: "Kham Thuy", element: "Tho"},
+            {id: 46, canChi: "Ky Dau", yNghia: "Bao Hieu Chi Ke (Ga gay)", amDuong: "Tho -", menh: "dai Trach Tho (dat nen nha)", que1: "Ton Moc", que2: "Khon Tho", element: "Tho"},
+            {id: 47, canChi: "Canh Tuat", yNghia: "Tu Quan Chi Cau (Cho nha chua)", amDuong: "Kim +", menh: "Thoa Xuyen Kim (Vang trang suc)", que1: "Chan Moc", que2: "Chan Moc", element: "Kim"},
+            {id: 48, canChi: "Tan Hoi", yNghia: "Khuyen Duong Chi Tru (Lon nuoi nhot)", amDuong: "Kim -", menh: "Thoa Xuyen Kim (Vang trang suc)", que1: "Khon Tho", que2: "Ton Moc", element: "Kim"},
+            {id: 49, canChi: "Nham Ty", yNghia: "Son Thuong Chi Thu (Chuot tren nui)", amDuong: "Moc +", menh: "Tang do Moc (Go cay dau)", que1: "Kham Thuy", que2: "Khon Tho", element: "Moc"},
+            {id: 50, canChi: "Quy Suu", yNghia: "Lan Ngoai Chi Nguu (Trau ngoai chuong)", amDuong: "Moc -", menh: "Tang do Moc (Go cay dau)", que1: "Ly Hoa", que2: "Can Kim", element: "Moc"},
+            {id: 51, canChi: "Giap Dan", yNghia: "Lap dinh Chi Ho (Ho tu lap)", amDuong: "Thuy +", menh: "dai Khe Thuy (Nuoc khe lon)", que1: "Can Tho", que2: "doai Kim", element: "Thuy"},
+            {id: 52, canChi: "At Mao", yNghia: "dac dao Chi Tho (Tho dac dao)", amDuong: "Thuy -", menh: "dai Khe Thuy (Nuoc khe lon)", que1: "doai Kim", que2: "Can Tho", element: "Thuy"},
+            {id: 53, canChi: "Binh Thin", yNghia: "Thien Thuong Chi Long (Rong tren troi)", amDuong: "Tho +", menh: "Sa Trung Tho (dat pha cat)", que1: "Can Kim", que2: "Ly Hoa", element: "Tho"},
+            {id: 54, canChi: "dinh Ty", yNghia: "dam Noi Chi Xa (Ran trong dam)", amDuong: "Tho -", menh: "Sa Trung Tho (dat pha cat)", que1: "Khon Tho", que2: "Kham Thuy", element: "Tho"},
+            {id: 55, canChi: "Mau Ngo", yNghia: "Cuu Noi Chi Ma (Ngua trong chuong)", amDuong: "Hoa +", menh: "Thien Thuong Hoa (Lua tren troi)", que1: "Ton Moc", que2: "Khon Tho", element: "Hoa"},
+            {id: 56, canChi: "Ky Mui", yNghia: "Thao Da Chi Duong (De dong co)", amDuong: "Hoa -", menh: "Thien Thuong Hoa (Lua tren troi)", que1: "Chan Moc", que2: "Chan Moc", element: "Hoa"},
+            {id: 57, canChi: "Canh Than", yNghia: "Thuc Qua Chi Hau (Khi an hoa qua)", amDuong: "Moc +", menh: "Thach Luu Moc (Go cay luu da)", que1: "Khon Tho", que2: "Ton Moc", element: "Moc"},
+            {id: 58, canChi: "Tan Dau", yNghia: "Long Tang Chi Ke (Ga trong long)", amDuong: "Moc -", menh: "Thach Luu Moc (Go cay luu da)", que1: "Kham Thuy", que2: "Khon Tho", element: "Moc"},
+            {id: 59, canChi: "Nham Tuat", yNghia: "Co Gia Chi Khuyen (Cho ve nha)", amDuong: "Thuy +", menh: "dai Hai Thuy (Nuoc bien lon)", que1: "Ly Hoa", que2: "Can Kim", element: "Thuy"},
+            {id: 60, canChi: "Quy Hoi", yNghia: "Lam Ha Chi Tru (Lon trong rung)", amDuong: "Thuy -", menh: "dai Hai Thuy (Nuoc bien lon)", que1: "Can Tho", que2: "doai Kim", element: "Thuy"}
+        ];
+
+        // Ngay chuan (18/12/2025 10:00)
+        const STANDARD_DATE = {
+            year: 2025,
+            month: 12,
+            day: 18,
+            hour: 10,
+            canChi: {
+                hour: "Quy Ty",
+                day: "Tan Dau",
+                month: "dinh Hoi",
+                year: "At Ty"
+            }
+        };
+
+        // Bang quy doi nam duong lich sang Can Chi
+        const canChiYearMap = {
+            1944: "Giap Than", 1945: "At Dau", 1946: "Binh Tuat", 1947: "dinh Hoi", 1948: "Mau Ty",
+            1949: "Ky Suu", 1950: "Canh Dan", 1951: "Tan Mao", 1952: "Nham Thin", 1953: "Quy Ty",
+            1954: "Giap Ngo", 1955: "At Mui", 1956: "Binh Than", 1957: "dinh Dau", 1958: "Mau Tuat",
+            1959: "Ky Hoi", 1960: "Canh Ty", 1961: "Tan Suu", 1962: "Nham Dan", 1963: "Quy Mao",
+            1964: "Giap Thin", 1965: "At Ty", 1966: "Binh Ngo", 1967: "dinh Mui", 1968: "Mau Than",
+            1969: "Ky Dau", 1970: "Canh Tuat", 1971: "Tan Hoi", 1972: "Nham Ty", 1973: "Quy Suu",
+            1974: "Giap Dan", 1975: "At Mao", 1976: "Binh Thin", 1977: "dinh Ty", 1978: "Mau Ngo",
+            1979: "Ky Mui", 1980: "Canh Than", 1981: "Tan Dau", 1982: "Nham Tuat", 1983: "Quy Hoi",
+            1984: "Giap Ty", 1985: "At Suu", 1986: "Binh Dan", 1987: "dinh Mao", 1988: "Mau Thin",
+            1989: "Ky Ty", 1990: "Canh Ngo", 1991: "Tan Mui", 1992: "Nham Than", 1993: "Quy Dau",
+            1994: "Giap Tuat", 1995: "At Hoi", 1996: "Binh Ty", 1997: "dinh Suu", 1998: "Mau Dan",
+            1999: "Ky Mao", 2000: "Canh Thin", 2001: "Tan Ty", 2002: "Nham Ngo", 2003: "Quy Mui",
+            2004: "Giap Than", 2005: "At Dau", 2006: "Binh Tuat", 2007: "dinh Hoi", 2008: "Mau Ty",
+            2009: "Ky Suu", 2010: "Canh Dan", 2011: "Tan Mao", 2012: "Nham Thin", 2013: "Quy Ty",
+            2014: "Giap Ngo", 2015: "At Mui", 2016: "Binh Than", 2017: "dinh Dau", 2018: "Mau Tuat",
+            2019: "Ky Hoi", 2020: "Canh Ty", 2021: "Tan Suu", 2022: "Nham Dan", 2023: "Quy Mao",
+            2024: "Giap Thin", 2025: "At Ty", 2026: "Binh Ngo", 2027: "dinh Mui", 2028: "Mau Than",
+            2029: "Ky Dau", 2030: "Canh Tuat"
+        };
+
+        // de xuat cong viec kinh doanh theo ngu hanh
+        const businessSuggestions = {
+            "Kim": ["Cong nghe thong tin", "Kinh doanh vang bac, da quy", "Dich vu tai chinh ngan hang", "Co khi che tao", "Bat dong san cao cap"],
+            "Moc": ["Nong nghiep, lam nghiep", "Thiet ke noi that", "Xuat ban, giao duc", "Thoi trang tu chat lieu tu nhien", "Y te, duoc pham"],
+            "Thuy": ["Du lich, van tai bien", "Kinh doanh nuoc giai khat", "Dich vu spa, tham my", "Truyen thong, quang cao", "Cong nghe nuoc, moi truong"],
+            "Hoa": ["Nha hang, khach san", "Nang luong, dien luc", "Giai tri, the thao", "My pham, lam dep", "Cong nghe nhiet"],
+            "Tho": ["Xay dung, vat lieu xay dung", "Bat dong san", "Nong san thuc pham", "Tu van phong thuy", "Khach san, khu nghi duong"]
+        };
+
+        // Danh sach nguoi duoc them
+        let peopleList = [];
+
+        // ==============================
+        // HAM TIEN ICH CHUNG
+        // ==============================
+        
+        // Tim thong tin theo Can Chi
+        function findInfoByCanChi(canChi) {
+            return canChiData.find(item => item.canChi === canChi);
+        }
+
+        // Tim chi so cua Can Chi
+        function findIndexByCanChi(canChi) {
+            return canChiData.findIndex(item => item.canChi === canChi);
+        }
+
+        // Lay Can Chi tu chi so
+        function getCanChiByIndex(index) {
+            while (index < 0) index += 60;
+            while (index >= 60) index -= 60;
+            return canChiData[index].canChi;
+        }
+
+        // Tinh so ngay giua hai ngay
+        function getDaysBetween(date1, date2) {
+            const oneDay = 24 * 60 * 60 * 1000;
+            const firstDate = new Date(date1.year, date1.month - 1, date1.day);
+            const secondDate = new Date(date2.year, date2.month - 1, date2.day);
+            const diffDays = Math.round((secondDate - firstDate) / oneDay);
+            return diffDays;
+        }
+
+        // Lay class CSS cho ngu hanh
+        function getElementClass(element) {
+            switch(element) {
+                case "Moc": return "wood";
+                case "Hoa": return "fire";
+                case "Tho": return "earth";
+                case "Kim": return "metal";
+                case "Thuy": return "water";
+                default: return "wood";
+            }
+        }
+
+        // ==============================
+        // TINH CAN CHI TU DUONG LICH (CHO NGAY SINH)
+        // ==============================
+        
+        function calculateCanChiFromSolarDate(solarDate) {
+            try {
+                // Tinh so ngay chenh lech so voi ngay chuan
+                const daysDiff = getDaysBetween(STANDARD_DATE, solarDate);
+                
+                // Tinh chi so cua Can Chi ngay chuan
+                const stdDayIndex = findIndexByCanChi(STANDARD_DATE.canChi.day);
+                
+                // Tinh chi so moi cho ngay (ngay Can Chi)
+                let newDayIndex = (stdDayIndex + daysDiff) % 60;
+                if (newDayIndex < 0) newDayIndex += 60;
+                
+                // Tinh nam Can Chi tu bang tra
+                const yearCanChi = canChiYearMap[solarDate.year] || "Khong xac dinh";
+                
+                return {
+                    day: getCanChiByIndex(newDayIndex),
+                    year: yearCanChi,
+                    success: true
+                };
+            } catch (error) {
+                console.error("Loi tinh Can Chi:", error);
+                return {
+                    day: "Loi tinh toan",
+                    year: "Khong xac dinh",
+                    success: false
+                };
+            }
+        }
+
+        // ==============================
+        // TINH CAN CHI dAY dU TU DUONG LICH
+        // ==============================
+        
+        function calculateFullCanChiFromSolar(solarDate) {
+            try {
+                const daysDiff = getDaysBetween(STANDARD_DATE, solarDate);
+                const hoursDiff = (daysDiff * 24) + (solarDate.hour - STANDARD_DATE.hour);
+                
+                // Tinh chi so cua tung Can Chi dua tren ngay chuan
+                const hourIndex = findIndexByCanChi(STANDARD_DATE.canChi.hour);
+                const dayIndex = findIndexByCanChi(STANDARD_DATE.canChi.day);
+                const monthIndex = findIndexByCanChi(STANDARD_DATE.canChi.month);
+                const yearIndex = findIndexByCanChi(STANDARD_DATE.canChi.year);
+                
+                // Tinh chi so moi
+                const newHourIndex = (hourIndex + hoursDiff) % 60;
+                const newDayIndex = (dayIndex + daysDiff) % 60;
+                
+                // Tinh thang: moi thang am lich khoang 29.53 ngay
+                const monthsDiff = Math.floor(daysDiff / 29.53);
+                const newMonthIndex = (monthIndex + monthsDiff) % 60;
+                
+                // Tinh nam: moi nam am lich khoang 354.37 ngay
+                const yearsDiff = Math.floor(daysDiff / 354.37);
+                const newYearIndex = (yearIndex + yearsDiff) % 60;
+                
+                // dam bao chi so khong am
+                const adjustedHourIndex = newHourIndex < 0 ? newHourIndex + 60 : newHourIndex;
+                const adjustedDayIndex = newDayIndex < 0 ? newDayIndex + 60 : newDayIndex;
+                const adjustedMonthIndex = newMonthIndex < 0 ? newMonthIndex + 60 : newMonthIndex;
+                const adjustedYearIndex = newYearIndex < 0 ? newYearIndex + 60 : newYearIndex;
+                
+                return {
+                    hour: getCanChiByIndex(adjustedHourIndex),
+                    day: getCanChiByIndex(adjustedDayIndex),
+                    month: getCanChiByIndex(adjustedMonthIndex),
+                    year: getCanChiByIndex(adjustedYearIndex),
+                    success: true
+                };
+            } catch (error) {
+                console.error("Loi tinh Can Chi day du:", error);
+                return {
+                    hour: "Loi",
+                    day: "Loi",
+                    month: "Loi",
+                    year: "Loi",
+                    success: false
+                };
+            }
+        }
+
+        // ==============================
+        // TINH DUONG LICH TU CAN CHI
+        // ==============================
+        
+        function calculateSolarFromCanChi(canChiInput) {
+            try {
+                // Tim chi so cua Can Chi nhap vao
+                const hourIndex = findIndexByCanChi(canChiInput.hour);
+                const dayIndex = findIndexByCanChi(canChiInput.day);
+                const monthIndex = findIndexByCanChi(canChiInput.month);
+                const yearIndex = findIndexByCanChi(canChiInput.year);
+                
+                // Tim chi so cua Can Chi chuan
+                const stdHourIndex = findIndexByCanChi(STANDARD_DATE.canChi.hour);
+                const stdDayIndex = findIndexByCanChi(STANDARD_DATE.canChi.day);
+                const stdMonthIndex = findIndexByCanChi(STANDARD_DATE.canChi.month);
+                const stdYearIndex = findIndexByCanChi(STANDARD_DATE.canChi.year);
+                
+                // Tinh khoang cach
+                let hourDiff = hourIndex - stdHourIndex;
+                let dayDiff = dayIndex - stdDayIndex;
+                let monthDiff = monthIndex - stdMonthIndex;
+                let yearDiff = yearIndex - stdYearIndex;
+                
+                // dieu chinh khoang cach ve khoang -30 den 30
+                if (hourDiff > 30) hourDiff = hourDiff - 60;
+                if (hourDiff < -30) hourDiff = hourDiff + 60;
+                
+                if (dayDiff > 30) dayDiff = dayDiff - 60;
+                if (dayDiff < -30) dayDiff = dayDiff + 60;
+                
+                if (monthDiff > 30) monthDiff = monthDiff - 60;
+                if (monthDiff < -30) monthDiff = monthDiff + 60;
+                
+                if (yearDiff > 30) yearDiff = yearDiff - 60;
+                if (yearDiff < -30) yearDiff = yearDiff + 60;
+                
+                // Uu tien su dung chenh lech ngay
+                const totalDays = dayDiff;
+                
+                // Tinh ngay moi
+                const standardDateObj = new Date(STANDARD_DATE.year, STANDARD_DATE.month - 1, STANDARD_DATE.day);
+                const newDateObj = new Date(standardDateObj);
+                newDateObj.setDate(standardDateObj.getDate() + totalDays);
+                
+                // Tinh gio moi
+                const hourOffset = hourDiff;
+                let newHour = (STANDARD_DATE.hour + hourOffset) % 24;
+                if (newHour < 0) newHour += 24;
+                
+                return {
+                    year: newDateObj.getFullYear(),
+                    month: newDateObj.getMonth() + 1,
+                    day: newDateObj.getDate(),
+                    hour: Math.floor(newHour),
+                    success: true
+                };
+            } catch (error) {
+                console.error("Loi tinh Duong lich:", error);
+                return {
+                    year: 2025,
+                    month: 12,
+                    day: 18,
+                    hour: 10,
+                    success: false
+                };
+            }
+        }
+
+        // ==============================
+        // KHOI TAO UNG DUNG
+        // ==============================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            initializePersonList();
+            populateSampleList();
+            populateCanChiSelectOptions();
+            
+            // Gan su kien
+            document.getElementById('addPersonBtn').addEventListener('click', addPersonFromInput);
+            document.getElementById('calculateBtn').addEventListener('click', calculateAndGroup);
+            document.getElementById('clearListBtn').addEventListener('click', clearPeopleList);
+            
+            // Su kien cho cong cu tinh Can Chi
+            document.getElementById('calculateForward').addEventListener('click', () => calculateFromCanChi('forward'));
+            document.getElementById('calculateBackward').addEventListener('click', () => calculateFromCanChi('backward'));
+            document.getElementById('resetCanChi').addEventListener('click', resetCanChiForm);
+            document.getElementById('calculateFromSolar').addEventListener('click', calculateFromSolar);
+            document.getElementById('calculateToSolar').addEventListener('click', calculateToSolar);
+            document.getElementById('applyToPerson').addEventListener('click', applySolarToPerson);
+            
+            // Su kien cho cac tab
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabName = this.getAttribute('data-tab');
+                    switchTab(tabName);
+                });
+            });
+            
+            // Them su kien Enter cho input
+            document.getElementById('birthdayInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addPersonFromInput();
+                }
+            });
+            
+            document.getElementById('nameInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addPersonFromInput();
+                }
+            });
+            
+            console.log("Ung dung da duoc khoi tao thanh cong!");
+        }
+
+        // ==============================
+        // QUAN LY DANH SACH NGUOI
+        // ==============================
+        
+        function initializePersonList() {
+            try {
+                const savedList = localStorage.getItem('peopleList');
+                if (savedList) {
+                    peopleList = JSON.parse(savedList);
+                    updatePersonListDisplay();
+                }
+            } catch (error) {
+                console.error("Loi khi khoi tao danh sach:", error);
+                peopleList = [];
+            }
+        }
+
+        function populateSampleList() {
+            const personListElement = document.getElementById('personList');
+            if (!personListElement) {
+                console.error("Khong tim thay phan tu personList!");
+                return;
+            }
+            
+            personListElement.innerHTML = '';
+            
+            samplePeople.forEach(person => {
+                const personElement = document.createElement('div');
+                personElement.className = 'person-item';
+                personElement.innerHTML = `
+                    <strong>${person.id}. ${person.name}</strong>
+                    <div>Ngay sinh: ${person.birthday}</div>
+                `;
+                
+                personElement.addEventListener('click', function() {
+                    document.getElementById('nameInput').value = person.name;
+                    document.getElementById('birthdayInput').value = person.birthday;
+                    
+                    document.querySelectorAll('.person-item').forEach(item => {
+                        item.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    
+                    // Tu dong cuon den phan tu duoc chon
+                    this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                });
+                
+                personListElement.appendChild(personElement);
+            });
+            
+            console.log("da tao danh sach mau voi", samplePeople.length, "nguoi");
+        }
+
+        function addPersonFromInput() {
+            const name = document.getElementById('nameInput').value.trim();
+            const birthday = document.getElementById('birthdayInput').value.trim();
+            
+            if (!name || !birthday) {
+                showError('Vui long nhap day du ten va ngay sinh!');
+                return;
+            }
+            
+            if (!isValidDateFormat(birthday)) {
+                showError('dinh dang ngay sinh khong hop le. Vui long nhap theo dinh dang dd/mm/yyyy (VD: 04/06/1944)');
+                return;
+            }
+            
+            const newPerson = {
+                id: peopleList.length + 1,
+                name: name,
+                birthday: birthday,
+                addedDate: new Date().toISOString()
+            };
+            
+            peopleList.push(newPerson);
+            updatePersonListDisplay();
+            saveToLocalStorage();
+            
+            document.getElementById('nameInput').value = '';
+            document.getElementById('birthdayInput').value = '';
+            
+            showSuccess(`da them ${name} vao danh sach phan tich!`);
+            
+            // Cuon den phan tu moi them
+            setTimeout(() => {
+                const resultSection = document.getElementById('individualResults');
+                if (resultSection) {
+                    resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 100);
+        }
+
+        function showError(message) {
+            // Tao hoac cap nhat thong bao loi
+            let errorDiv = document.querySelector('.error-message');
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                document.querySelector('.input-section').prepend(errorDiv);
+            }
+            errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            
+            // Tu dong an sau 5 giay
+            setTimeout(() => {
+                if (errorDiv && errorDiv.parentNode) {
+                    errorDiv.remove();
+                }
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            // Tao thong bao thanh cong tam thoi
+            const successDiv = document.createElement('div');
+            successDiv.className = 'error-message';
+            successDiv.style.backgroundColor = '#e8f5e9';
+            successDiv.style.borderLeftColor = '#4CAF50';
+            successDiv.style.color = '#2e7d32';
+            successDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            
+            document.querySelector('.input-section').prepend(successDiv);
+            
+            // Tu dong an sau 3 giay
+            setTimeout(() => {
+                if (successDiv && successDiv.parentNode) {
+                    successDiv.remove();
+                }
+            }, 3000);
+        }
+
+        function isValidDateFormat(dateString) {
+            const regex = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
+            if (!regex.test(dateString)) return false;
+            
+            const parts = dateString.split('/');
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10);
+            const year = parseInt(parts[2], 10);
+            
+            if (year < 1900 || year > 2100) return false;
+            if (month < 1 || month > 12) return false;
+            
+            const monthLength = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+            if (year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0)) {
+                monthLength[1] = 29;
+            }
+            
+            return day > 0 && day <= monthLength[month - 1];
+        }
+
+        function updatePersonListDisplay() {
+            const resultSection = document.getElementById('individualResults');
+            if (!resultSection) {
+                console.error("Khong tim thay phan tu individualResults!");
+                return;
+            }
+            
+            if (peopleList.length === 0) {
+                resultSection.innerHTML = '<p class="no-results">Chua co du lieu. Vui long nhap thong tin va nhan "Phan Tich & Phan Nhom".</p>';
+                return;
+            }
+            
+            let html = `<h3><i class="fas fa-users"></i> Danh sach nguoi da them (${peopleList.length} nguoi):</h3>`;
+            
+            peopleList.forEach((person, index) => {
+                const birthdayParts = person.birthday.split('/');
+                const solarDate = {
+                    year: parseInt(birthdayParts[2]),
+                    month: parseInt(birthdayParts[1]),
+                    day: parseInt(birthdayParts[0]),
+                    hour: 12
+                };
+                
+                const canChiResult = calculateCanChiFromSolarDate(solarDate);
+                const dayInfo = findInfoByCanChi(canChiResult.day);
+                const element = dayInfo ? dayInfo.element : "Khong xac dinh";
+                
+                // Kiem tra xem co loi khong
+                const hasError = !canChiResult.success || !dayInfo;
+                
+                html += `
+                    <div class="result-item ${hasError ? 'highlight' : ''}">
+                        <div class="person-name">${index + 1}. ${person.name}</div>
+                        <div class="person-details">
+                            <div class="detail-item"><i class="far fa-calendar"></i> ${person.birthday}</div>
+                            <div class="detail-item"><i class="fas fa-chart-bar"></i> Ngay: ${canChiResult.day}</div>
+                            <div class="detail-item"><i class="fas fa-calendar-check"></i> Nam: ${canChiResult.year}</div>
+                            <div class="detail-item element-badge badge-${getElementClass(element)}">${element}</div>
+                        </div>
+                        ${hasError ? '<div class="error-message" style="margin-top: 10px; padding: 8px; font-size: 0.9rem;"><i class="fas fa-exclamation-triangle"></i> Co the co loi trong tinh toan</div>' : ''}
+                    </div>
+                `;
+            });
+            
+            resultSection.innerHTML = html;
+        }
+
+        function clearPeopleList() {
+            if (peopleList.length === 0) {
+                showError('Danh sach da trong!');
+                return;
+            }
+            
+            if (confirm(`Ban co chac chan muon xoa toan bo danh sach (${peopleList.length} nguoi)?`)) {
+                peopleList = [];
+                updatePersonListDisplay();
+                saveToLocalStorage();
+                document.getElementById('groupSection').style.display = 'none';
+                showSuccess('da xoa toan bo danh sach!');
+            }
+        }
+
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem('peopleList', JSON.stringify(peopleList));
+            } catch (error) {
+                console.error("Loi khi luu vao localStorage:", error);
+            }
+        }
+
+        // ==============================
+        // TINH TOAN VA PHAN NHOM (THEO NGAY CAN CHI)
+        // ==============================
+        
+        function calculateAndGroup() {
+            if (peopleList.length === 0) {
+                showError('Vui long them it nhat mot nguoi vao danh sach truoc khi phan tich!');
+                return;
+            }
+            
+            // Hien thi trang thai loading
+            const resultSection = document.getElementById('individualResults');
+            resultSection.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> dang phan tich du lieu...</div>';
+            
+            // doi mot chut de hien thi loading
+            setTimeout(() => {
+                // Phan tich tung nguoi DUA TREN NGAY CAN CHI
+                const analyzedPeople = peopleList.map((person, index) => {
+                    const birthdayParts = person.birthday.split('/');
+                    const solarDate = {
+                        year: parseInt(birthdayParts[2]),
+                        month: parseInt(birthdayParts[1]),
+                        day: parseInt(birthdayParts[0]),
+                        hour: 12
+                    };
+                    
+                    // Tinh Can Chi cua ngay sinh
+                    const canChiResult = calculateCanChiFromSolarDate(solarDate);
+                    const dayInfo = findInfoByCanChi(canChiResult.day);
+                    
+                    // Neu khong tim thay thong tin cho ngay Can Chi, thu dung nam
+                    let info;
+                    if (!dayInfo) {
+                        const yearInfo = findInfoByCanChi(canChiResult.year);
+                        info = yearInfo || { 
+                            element: "Khong xac dinh", 
+                            yNghia: "Khong tim thay thong tin", 
+                            amDuong: "N/A", 
+                            menh: "N/A", 
+                            que1: "N/A", 
+                            que2: "N/A" 
+                        };
+                    } else {
+                        info = dayInfo;
+                    }
+                    
+                    // Gia dinh gioi tinh dua tren ten
+                    const isMale = !person.name.toUpperCase().includes("THI") && 
+                                   !person.name.toUpperCase().includes("THI") &&
+                                   !person.name.toUpperCase().includes("NU");
+                    
+                    return {
+                        ...person,
+                        listId: index + 1,
+                        canChi: canChiResult.day,
+                        yearCanChi: canChiResult.year,
+                        element: info.element,
+                        yNghia: info.yNghia,
+                        amDuong: info.amDuong,
+                        menh: info.menh,
+                        destiny: isMale ? info.que2 : info.que1,
+                        isMale: isMale,
+                        hasError: !canChiResult.success || !info
+                    };
+                });
+                
+                // Cap nhat hien thi chi tiet
+                updateDetailedDisplay(analyzedPeople);
+                
+                // Phan nhom theo ngu hanh (cua ngay Can Chi)
+                groupByElement(analyzedPeople);
+                
+                // Hien thi phan nhom
+                document.getElementById('groupSection').style.display = 'block';
+                
+                // Cuon den phan ket qua
+                document.getElementById('groupSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+            }, 500); // Delay de hien thi loading
+        }
+
+        function updateDetailedDisplay(people) {
+            let html = '<h3><i class="fas fa-chart-bar"></i> Ket qua phan tich chi tiet (theo ngay Can Chi):</h3>';
+            
+            const errorCount = people.filter(p => p.hasError).length;
+            if (errorCount > 0) {
+                html += `<div class="error-message" style="margin-bottom: 20px;">
+                    <i class="fas fa-exclamation-triangle"></i> Co ${errorCount} nguoi co the co loi trong tinh toan. Vui long kiem tra lai.
+                </div>`;
+            }
+            
+            people.forEach(person => {
+                html += `
+                    <div class="result-item ${person.hasError ? 'highlight' : ''}">
+                        <div class="person-name">${person.listId}. ${person.name} 
+                            <span style="font-size: 0.9rem; color: #666;">(${person.isMale ? 'Nam' : 'Nu'})</span>
+                            ${person.hasError ? '<span style="color: var(--accent-color); margin-left: 10px;"><i class="fas fa-exclamation-triangle"></i></span>' : ''}
+                        </div>
+                        <div class="person-details">
+                            <div class="detail-item"><i class="far fa-calendar"></i> ${person.birthday}</div>
+                            <div class="detail-item"><i class="fas fa-chart-bar"></i> Ngay: ${person.canChi}</div>
+                            <div class="detail-item"><i class="fas fa-calendar-check"></i> Nam: ${person.yearCanChi}</div>
+                            <div class="detail-item element-badge badge-${getElementClass(person.element)}">${person.element}</div>
+                            <div class="detail-item"><i class="fas fa-star"></i> ${person.destiny}</div>
+                        </div>
+                        <div><strong>Y nghia:</strong> ${person.yNghia}</div>
+                        <div><strong>Menh:</strong> ${person.menh} (${person.amDuong})</div>
+                        ${person.hasError ? '<div class="error-message" style="margin-top: 10px; padding: 8px; font-size: 0.9rem;"><i class="fas fa-exclamation-triangle"></i> Co the co loi trong tinh toan</div>' : ''}
+                    </div>
+                `;
+            });
+            
+            document.getElementById('individualResults').innerHTML = html;
+        }
+
+        function groupByElement(people) {
+            const groups = {
+                "Moc": [],
+                "Hoa": [],
+                "Tho": [],
+                "Kim": [],
+                "Thuy": [],
+                "Khong xac dinh": []
+            };
+            
+            people.forEach(person => {
+                const element = person.element || "Khong xac dinh";
+                if (groups[element]) {
+                    groups[element].push(person);
+                } else {
+                    groups["Khong xac dinh"].push(person);
+                }
+            });
+            
+            displayGroups(groups);
+        }
+
+        function displayGroups(groups) {
+            let html = '';
+            const elements = ["Moc", "Hoa", "Tho", "Kim", "Thuy", "Khong xac dinh"];
+            
+            elements.forEach(element => {
+                const group = groups[element];
+                if (group.length > 0) {
+                    // Xac dinh doi truong (nguoi lon tuoi nhat trong nhom)
+                    const leader = group.reduce((oldest, current) => {
+                        const currentYear = parseInt(current.birthday.split('/')[2]);
+                        const oldestYear = parseInt(oldest.birthday.split('/')[2]);
+                        return currentYear < oldestYear ? current : oldest;
+                    });
+                    
+                    // Lay de xuat kinh doanh
+                    const suggestions = businessSuggestions[element] || ["Chua co de xuat cu the cho nhom nay"];
+                    const randomSuggestion = suggestions[Math.floor(Math.random() * suggestions.length)];
+                    
+                    html += `
+                        <div class="group-card color-${getElementClass(element)}">
+                            <div class="group-title">
+                                <span class="element-badge badge-${getElementClass(element)}">${element}</span>
+                                Nhom ${element} (${group.length} thanh vien)
+                            </div>
+                            
+                            <div class="group-leader">
+                                <i class="fas fa-crown"></i> doi truong: ${leader.name} (${leader.birthday}) - ${leader.canChi}
+                            </div>
+                            
+                            <div><strong>Thanh vien:</strong></div>
+                            <ul class="members-list">
+                                ${group.map(person => `<li>${person.listId}. ${person.name} (${person.birthday}) - ${person.canChi}</li>`).join('')}
+                            </ul>
+                            
+                            <div class="business-suggestion">
+                                <strong><i class="fas fa-lightbulb"></i> de xuat kinh doanh (theo ngu hanh ${element}):</strong><br>
+                                ${randomSuggestion}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            document.getElementById('groupResults').innerHTML = html || '<p>Khong co nhom nao duoc tao.</p>';
+        }
+
+        // ==============================
+        // CONG CU TINH CAN CHI
+        // ==============================
+        
+        function populateCanChiSelectOptions() {
+            const hourSelect = document.getElementById('hour');
+            const daySelect = document.getElementById('day');
+            const monthSelect = document.getElementById('month');
+            const yearSelect = document.getElementById('year');
+            
+            if (!hourSelect || !daySelect || !monthSelect || !yearSelect) {
+                console.error("Khong tim thay cac phan tu select!");
+                return;
+            }
+            
+            // Xoa cac option cu (giu lai option dau tien)
+            while (hourSelect.options.length > 1) hourSelect.remove(1);
+            while (daySelect.options.length > 1) daySelect.remove(1);
+            while (monthSelect.options.length > 1) monthSelect.remove(1);
+            while (yearSelect.options.length > 1) yearSelect.remove(1);
+            
+            canChiData.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.canChi;
+                option.textContent = item.canChi;
+                
+                hourSelect.appendChild(option.cloneNode(true));
+                daySelect.appendChild(option.cloneNode(true));
+                monthSelect.appendChild(option.cloneNode(true));
+                yearSelect.appendChild(option.cloneNode(true));
+            });
+            
+            // dat gia tri mac dinh theo thoi gian chuan
+            hourSelect.value = STANDARD_DATE.canChi.hour;
+            daySelect.value = STANDARD_DATE.canChi.day;
+            monthSelect.value = STANDARD_DATE.canChi.month;
+            yearSelect.value = STANDARD_DATE.canChi.year;
+            
+            console.log("da tao options cho Can Chi select");
+        }
+
+        function calculateFromCanChi(direction) {
+            const hour = document.getElementById('hour').value;
+            const day = document.getElementById('day').value;
+            const month = document.getElementById('month').value;
+            const year = document.getElementById('year').value;
+            
+            if (!hour || !day || !month || !year) {
+                showError("Vui long chon day du gio, ngay, thang, nam!");
+                return;
+            }
+            
+            const hourInfo = findInfoByCanChi(hour);
+            const dayInfo = findInfoByCanChi(day);
+            const monthInfo = findInfoByCanChi(month);
+            const yearInfo = findInfoByCanChi(year);
+            
+            if (!hourInfo || !dayInfo || !monthInfo || !yearInfo) {
+                showError("Khong tim thay thong tin cho mot hoac nhieu gia tri da chon!");
+                return;
+            }
+            
+            const resultContent = document.getElementById('canchiResultContent');
+            
+            let items;
+            if (direction === 'forward') {
+                items = [
+                    {label: "Gio", info: hourInfo},
+                    {label: "Ngay", info: dayInfo},
+                    {label: "Thang", info: monthInfo},
+                    {label: "Nam", info: yearInfo}
+                ];
+            } else {
+                items = [
+                    {label: "Nam", info: yearInfo},
+                    {label: "Thang", info: monthInfo},
+                    {label: "Ngay", info: dayInfo},
+                    {label: "Gio", info: hourInfo}
+                ];
+            }
+            
+            let html = '';
+            items.forEach(item => {
+                html += `
+                    <div class="result-item">
+                        <div class="person-name">${item.label}: ${item.info.canChi}</div>
+                        <div class="result-content">
+                            <div class="result-detail">
+                                <div class="detail-label">Y Nghia:</div>
+                                <div class="detail-value">${item.info.yNghia}</div>
+                            </div>
+                            <div class="result-detail">
+                                <div class="detail-label">Am Duong Ngu Hanh:</div>
+                                <div class="detail-value">${item.info.amDuong}</div>
+                            </div>
+                            <div class="result-detail">
+                                <div class="detail-label">Menh:</div>
+                                <div class="detail-value">${item.info.menh}</div>
+                            </div>
+                            <div class="result-detail">
+                                <div class="detail-label">Que 1:</div>
+                                <div class="detail-value">${item.info.que1}</div>
+                            </div>
+                            <div class="result-detail">
+                                <div class="detail-label">Que 2:</div>
+                                <div class="detail-value">${item.info.que2}</div>
+                            </div>
+                            <div class="result-detail">
+                                <div class="detail-label">Ngu Hanh:</div>
+                                <div class="detail-value"><span class="element-badge badge-${getElementClass(item.info.element)}">${item.info.element}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultContent.innerHTML = html;
+            document.getElementById('canchiResult').style.display = 'block';
+            
+            // Cuon den ket qua
+            document.getElementById('canchiResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function calculateFromSolar() {
+            const hour = parseInt(document.getElementById('solarHour').value);
+            const day = parseInt(document.getElementById('solarDay').value);
+            const month = parseInt(document.getElementById('solarMonth').value);
+            const year = parseInt(document.getElementById('solarYear').value);
+            
+            if (isNaN(hour) || isNaN(day) || isNaN(month) || isNaN(year)) {
+                showError("Vui long nhap day du thong tin!");
+                return;
+            }
+            
+            if (hour < 0 || hour > 23) {
+                showError("Gio phai tu 0 den 23!");
+                return;
+            }
+            
+            if (day < 1 || day > 31) {
+                showError("Ngay khong hop le!");
+                return;
+            }
+            
+            if (month < 1 || month > 12) {
+                showError("Thang khong hop le!");
+                return;
+            }
+            
+            const solarDate = { year, month, day, hour };
+            const canChiResult = calculateFullCanChiFromSolar(solarDate);
+            
+            if (!canChiResult.success) {
+                showError("Co loi xay ra khi tinh Can Chi!");
+                return;
+            }
+            
+            const hourInfo = findInfoByCanChi(canChiResult.hour);
+            const dayInfo = findInfoByCanChi(canChiResult.day);
+            const monthInfo = findInfoByCanChi(canChiResult.month);
+            const yearInfo = findInfoByCanChi(canChiResult.year);
+            
+            const resultContent = document.getElementById('canchiResultContent');
+            
+            let html = `
+                <div class="result-item">
+                    <div class="person-name">Ngay Duong Lich Nhap: ${day}/${month}/${year} - ${hour} gio</div>
+                </div>
+            `;
+            
+            const items = [
+                {label: "Gio", info: hourInfo},
+                {label: "Ngay", info: dayInfo},
+                {label: "Thang", info: monthInfo},
+                {label: "Nam", info: yearInfo}
+            ];
+            
+            items.forEach(item => {
+                if (item.info) {
+                    html += `
+                        <div class="result-item">
+                            <div class="person-name">${item.label}: ${item.info.canChi}</div>
+                            <div class="result-content">
+                                <div class="result-detail">
+                                    <div class="detail-label">Y Nghia:</div>
+                                    <div class="detail-value">${item.info.yNghia}</div>
+                                </div>
+                                <div class="result-detail">
+                                    <div class="detail-label">Am Duong Ngu Hanh:</div>
+                                    <div class="detail-value">${item.info.amDuong}</div>
+                                </div>
+                                <div class="result-detail">
+                                    <div class="detail-label">Menh:</div>
+                                    <div class="detail-value">${item.info.menh}</div>
+                                </div>
+                                <div class="result-detail">
+                                    <div class="detail-label">Que 1:</div>
+                                    <div class="detail-value">${item.info.que1}</div>
+                                </div>
+                                <div class="result-detail">
+                                    <div class="detail-label">Que 2:</div>
+                                    <div class="detail-value">${item.info.que2}</div>
+                                </div>
+                                <div class="result-detail">
+                                    <div class="detail-label">Ngu Hanh:</div>
+                                    <div class="detail-value"><span class="element-badge badge-${getElementClass(item.info.element)}">${item.info.element}</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            
+            resultContent.innerHTML = html;
+            document.getElementById('canchiResult').style.display = 'block';
+            
+            // Cuon den ket qua
+            document.getElementById('canchiResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function calculateToSolar() {
+            const hour = document.getElementById('hour').value;
+            const day = document.getElementById('day').value;
+            const month = document.getElementById('month').value;
+            const year = document.getElementById('year').value;
+            
+            if (!hour || !day || !month || !year) {
+                showError("Vui long chon day du gio, ngay, thang, nam Can Chi!");
+                return;
+            }
+            
+            const canChiInput = { hour, day, month, year };
+            const solarResult = calculateSolarFromCanChi(canChiInput);
+            
+            const resultContent = document.getElementById('canchiResultContent');
+            
+            let html = `
+                <div class="result-item">
+                    <div class="person-name">Can Chi Nhap: Gio ${hour} - Ngay ${day} - Thang ${month} - Nam ${year}</div>
+                </div>
+                <div class="result-item">
+                    <div class="person-name">Ngay Duong Lich Tuong Ung (Gan dung):</div>
+                    <div class="result-content">
+                        <div class="result-detail">
+                            <div class="detail-label">Gio:</div>
+                            <div class="detail-value">${solarResult.hour} gio</div>
+                        </div>
+                        <div class="result-detail">
+                            <div class="detail-label">Ngay:</div>
+                            <div class="detail-value">${solarResult.day}</div>
+                        </div>
+                        <div class="result-detail">
+                            <div class="detail-label">Thang:</div>
+                            <div class="detail-value">${solarResult.month}</div>
+                        </div>
+                        <div class="result-detail">
+                            <div class="detail-label">Nam:</div>
+                            <div class="detail-value">${solarResult.year}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="result-item">
+                    <div class="person-name">Luu y:</div>
+                    <div class="result-detail">
+                        <div class="detail-value">Ket qua nay la tinh toan gan dung dua tren chu ky 60 Can Chi va ngay chuan 18/12/2025. 
+                        do chinh xac co the sai lech do su khac biet giua lich am va duong.</div>
+                    </div>
+                </div>
+            `;
+            
+            resultContent.innerHTML = html;
+            document.getElementById('canchiResult').style.display = 'block';
+            
+            // Cuon den ket qua
+            document.getElementById('canchiResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function applySolarToPerson() {
+            const hour = parseInt(document.getElementById('solarHour').value);
+            const day = parseInt(document.getElementById('solarDay').value);
+            const month = parseInt(document.getElementById('solarMonth').value);
+            const year = parseInt(document.getElementById('solarYear').value);
+            
+            if (isNaN(hour) || isNaN(day) || isNaN(month) || isNaN(year)) {
+                showError("Vui long nhap day du thong tin duong lich!");
+                return;
+            }
+            
+            // Format ngay sinh cho danh sach nguoi
+            const formattedDay = day.toString().padStart(2, '0');
+            const formattedMonth = month.toString().padStart(2, '0');
+            const formattedBirthday = `${formattedDay}/${formattedMonth}/${year}`;
+            
+            // dat gia tri vao form nhap nguoi
+            document.getElementById('birthdayInput').value = formattedBirthday;
+            
+            // Tinh Can Chi de hien thi goi y ten
+            const solarDate = { year, month, day, hour };
+            const canChiResult = calculateCanChiFromSolarDate(solarDate);
+            const dayInfo = findInfoByCanChi(canChiResult.day);
+            
+            let nameSuggestion = "";
+            if (dayInfo) {
+                const element = dayInfo.element;
+                switch(element) {
+                    case "Kim": nameSuggestion = "Goi y ten: Kim, Ngan, Cuong, Khoa"; break;
+                    case "Moc": nameSuggestion = "Goi y ten: Xuan, Mai, Lam, Tung"; break;
+                    case "Thuy": nameSuggestion = "Goi y ten: Thuy, Ha, Giang, Hai"; break;
+                    case "Hoa": nameSuggestion = "Goi y ten: Hoa, Nhiet, Minh, Duong"; break;
+                    case "Tho": nameSuggestion = "Goi y ten: Son, Tho, dia, Nham"; break;
+                    default: nameSuggestion = "Nhap ten cua ban";
+                }
+            } else {
+                nameSuggestion = "Nhap ten cua ban";
+            }
+            
+            document.getElementById('nameInput').placeholder = nameSuggestion;
+            document.getElementById('nameInput').focus();
+            
+            showSuccess(`da ap dung ngay ${formattedBirthday} vao o ngay sinh. Ban co the nhap ten va them vao danh sach.`);
+        }
+
+        function resetCanChiForm() {
+            document.getElementById('hour').value = STANDARD_DATE.canChi.hour;
+            document.getElementById('day').value = STANDARD_DATE.canChi.day;
+            document.getElementById('month').value = STANDARD_DATE.canChi.month;
+            document.getElementById('year').value = STANDARD_DATE.canChi.year;
+            
+            document.getElementById('solarHour').value = STANDARD_DATE.hour;
+            document.getElementById('solarDay').value = STANDARD_DATE.day;
+            document.getElementById('solarMonth').value = STANDARD_DATE.month;
+            document.getElementById('solarYear').value = STANDARD_DATE.year;
+            
+            document.getElementById('canchiResult').style.display = 'none';
+            
+            showSuccess("da dat lai form tinh Can Chi ve gia tri mac dinh.");
+        }
+
+        function switchTab(tabName) {
+            // An tat ca tab content
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Hien thi tab content duoc chon
+            const selectedTab = document.getElementById(`${tabName}-tab`);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+            
+            // Cap nhat trang thai active cho tab
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            const activeTab = document.querySelector(`.tab[data-tab="${tabName}"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

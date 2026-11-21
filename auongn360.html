@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bảng Thực Đơn 360 Món Ăn Hà Nội - Cuộn Tự Động</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Modern Dark Theme Base Setup */
+        body {
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        /* Continuous Auto Scroll Animation */
+        #menuContainer {
+            will-change: transform;
+        }
+
+        .scrolling-active #menuContainer {
+            animation: scrollUp var(--scroll-speed, 90s) linear infinite;
+        }
+
+        .scrolling-paused #menuContainer {
+            animation-play-state: paused !important;
+        }
+
+        @keyframes scrollUp {
+            0% {
+                transform: translateY(100vh);
+            }
+            100% {
+                transform: translateY(-100%);
+            }
+        }
+
+        /* Glassmorphism Control Bar */
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
+        }
+
+        /* Item Row Gradient Accent */
+        .item-row {
+            transition: all 0.2s ease;
+        }
+        .item-row:hover {
+            background-color: rgba(31, 41, 55, 0.8);
+        }
+        
+        /* Fixed Header Table Glow */
+        .price-col {
+            color: #4ade80;
+            font-weight: 700;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .stt-col {
+            color: #fbbf24;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between select-none">
+
+    <!-- TOP CONTROL BAR (Fixed) -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass-panel shadow-2xl px-3 py-2.5 sm:px-6 sm:py-3">
+        <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-2">
+            
+            <!-- Title & Status -->
+            <div class="flex items-center space-x-2">
+                <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse" id="statusDot"></div>
+                <h1 class="text-sm sm:text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-amber-400 via-amber-200 to-emerald-400 truncate max-w-[180px] sm:max-w-none">
+                    THỰC ĐƠN 360 MÓN HÀ NỘI
+                </h1>
+            </div>
+
+            <!-- Controls Group -->
+            <div class="flex items-center space-x-2 sm:space-x-4">
+                
+                <!-- Play/Pause Button -->
+                <button id="toggleBtn" onclick="toggleScroll()" class="flex items-center space-x-1.5 px-3 py-1.5 sm:px-4 sm:py-2 bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold rounded-lg transition-transform active:scale-95 shadow-lg shadow-amber-500/20 text-xs sm:text-sm">
+                    <i id="toggleIcon" class="fas fa-pause"></i>
+                    <span id="toggleText" class="hidden sm:inline">Tạm dừng</span>
+                </button>
+
+                <!-- Speed Control Slider -->
+                <div class="flex items-center space-x-1.5 bg-gray-900/90 border border-gray-700/60 rounded-lg px-2.5 py-1 text-xs">
+                    <i class="fas fa-tachometer-alt text-amber-400 hidden sm:inline"></i>
+                    <span class="text-gray-400 text-[11px] sm:text-xs">Tốc độ:</span>
+                    <input type="range" id="speedSlider" min="20" max="240" value="90" oninput="changeSpeed(this.value)" class="w-16 sm:w-24 accent-amber-400 cursor-pointer">
+                    <span id="speedVal" class="text-amber-400 font-mono font-bold w-7 text-right">90s</span>
+                </div>
+
+                <!-- Font Size Controls -->
+                <div class="flex items-center bg-gray-900/90 border border-gray-700/60 rounded-lg p-1 text-xs space-x-1">
+                    <button onclick="changeFontSize(-1)" class="w-7 h-7 flex items-center justify-center hover:bg-gray-800 rounded text-gray-300 active:bg-gray-700">A-</button>
+                    <button onclick="changeFontSize(1)" class="w-7 h-7 flex items-center justify-center hover:bg-gray-800 rounded text-gray-300 active:bg-gray-700 font-bold">A+</button>
+                </div>
+
+                <!-- Fast Nav Buttons -->
+                <div class="flex items-center space-x-1">
+                    <button onclick="scrollToTop()" title="Lên đầu" class="p-1.5 sm:p-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg border border-gray-700 active:scale-95 text-xs sm:text-sm">
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                    <button onclick="scrollToBottom()" title="Xuống cuối" class="p-1.5 sm:p-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg border border-gray-700 active:scale-95 text-xs sm:text-sm">
+                        <i class="fas fa-arrow-down"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- COLUMN HEADERS (Fixed directly under Top Control) -->
+    <div class="fixed top-[52px] sm:top-[60px] left-0 right-0 z-40 bg-gray-950/95 border-b border-gray-800 px-3 py-2 text-xs sm:text-sm font-bold text-gray-400 uppercase tracking-wider shadow-md">
+        <div class="max-w-4xl mx-auto grid grid-cols-12 gap-2 text-center">
+            <div class="col-span-3 text-left pl-2 text-emerald-400">Giá (VNĐ)</div>
+            <div class="col-span-2 text-amber-400">STT</div>
+            <div class="col-span-7 text-left pl-2 text-gray-200">Tên Món Ăn</div>
+        </div>
+    </div>
+
+    <!-- MAIN SCROLLING CONTENT WRAPPER -->
+    <main id="scrollViewport" class="flex-1 w-full max-w-4xl mx-auto pt-28 pb-20 px-2 sm:px-4 scrolling-active" onclick="handleContainerClick()">
+        <div id="menuContainer" class="space-y-8">
+            <!-- Content will be injected dynamically via JS -->
+        </div>
+    </main>
+
+    <!-- FOOTER INFO BAR -->
+    <footer class="fixed bottom-0 left-0 right-0 z-50 glass-panel py-1.5 px-4 text-center text-[11px] sm:text-xs text-gray-400">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <span>Tổng cộng: <strong class="text-amber-400">360 Món</strong></span>
+            <span class="text-gray-500">Chạm vào màn hình để Tạm dừng / Tiếp tục</span>
+            <span id="currentPartDisplay" class="text-emerald-400 font-semibold hidden sm:inline">Phần 1: Chợ rau xanh</span>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // 360 MENU DATASET STRUCTURED ACCORDING TO USER REQUIREMENTS
+        const menuData = [
+            // PHẦN 1: 100 MÓN CHỢ RAU XANH (1-100)
+            { section: "PHẦN 1: 100 MÓN ĂN VÀ NGUYÊN LIỆU CHẾ BIẾN TẠI CHỢ RAU XANH", items: [
+                { price: "30.000", stt: 1, name: "Canh cua rau đay mồng tơi mướp" },
+                { price: "45.000", stt: 2, name: "Canh sấu nấu sườn chua" },
+                { price: "40.000", stt: 3, name: "Canh khoai sọ nấu xương heo" },
+                { price: "50.000", stt: 4, name: "Canh chua cá lóc (cá quả dọc mùng)" },
+                { price: "35.000", stt: 5, name: "Canh bầu nấu tôm tươi" },
+                { price: "25.000", stt: 6, name: "Canh bí đao thịt bằm" },
+                { price: "20.000", stt: 7, name: "Canh rau ngót thịt băm" },
+                { price: "15.000", stt: 8, name: "Canh giá đỗ đậu phụ hẹ" },
+                { price: "25.000", stt: 9, name: "Canh rong biển đậu hũ non" },
+                { price: "35.000", stt: 10, name: "Canh mướp đắng nhồi thịt" },
+                { price: "50.000", stt: 11, name: "Thịt chân giò luộc thái mỏng" },
+                { price: "45.000", stt: 12, name: "Thịt ba chỉ luộc chấm mắm tép" },
+                { price: "180.000", stt: 13, name: "Gà ta luộc lá chanh" },
+                { price: "10.000", stt: 14, name: "Rau muống luộc (kèm nước sấu dầm)" },
+                { price: "15.000", stt: 15, name: "Bắp cải luộc trứng dầm nước mắm" },
+                { price: "15.000", stt: 16, name: "Bầu luộc chấm muối vừng" },
+                { price: "12.000", stt: 17, name: "Mướp hương luộc" },
+                { price: "15.000", stt: 18, name: "Đậu cô ve luộc" },
+                { price: "25.000", stt: 19, name: "Su hào, cà rốt luộc chấm kho quẹt" },
+                { price: "10.000", stt: 20, name: "Trứng gà luộc lòng đào" },
+                { price: "15.000", stt: 21, name: "Rau muống xào tỏi giòn" },
+                { price: "60.000", stt: 22, name: "Thịt bò xào hành tây tỏi tây" },
+                { price: "60.000", stt: 23, name: "Thịt bò xào cần tây măng tươi" },
+                { price: "35.000", stt: 24, name: "Lòng mề gà xào giá đỗ hành hoa" },
+                { price: "70.000", stt: 25, name: "Mực tươi xào dứa ớt chuông" },
+                { price: "55.000", stt: 26, name: "Su hào xào mực khô sợi" },
+                { price: "20.000", stt: 27, name: "Mướp đắng xào trứng gà" },
+                { price: "50.000", stt: 28, name: "Đậu cô ve xào thịt bò thái mỏng" },
+                { price: "15.000", stt: 29, name: "Rau cải ngọt xào tỏi" },
+                { price: "12.000", stt: 30, name: "Giá đỗ xào hẹ tươi" },
+                { price: "50.000", stt: 31, name: "Thịt ba chỉ kho tàu trứng cút" },
+                { price: "40.000", stt: 32, name: "Cá rô phi kho riềng khế chua" },
+                { price: "65.000", stt: 33, name: "Cá trắm kho dưa chua ba chỉ" },
+                { price: "60.000", stt: 34, name: "Cá kho tộ kiểu truyền thống" },
+                { price: "30.000", stt: 35, name: "Đậu phụ kho thịt băm nước mắm" },
+                { price: "65.000", stt: 36, name: "Sườn sụn rim chua ngọt đậm đà" },
+                { price: "50.000", stt: 37, name: "Thịt đông truyền thống (mộc nhĩ nấm hương)" },
+                { price: "55.000", stt: 38, name: "Gà kho gừng nghệ ấm bụng" },
+                { price: "45.000", stt: 39, name: "Cá bống kho tiêu cay nồng" },
+                { price: "45.000", stt: 40, name: "Trứng cút kho thịt ba chỉ" },
+                { price: "15.000", stt: 41, name: "Đậu phụ mơ rán giòn chấm mắm tôm" },
+                { price: "45.000", stt: 42, name: "Chả cá thát lát rán sả ớt" },
+                { price: "40.000", stt: 43, name: "Nem rán truyền thống (thịt, mộc nhĩ, miến)" },
+                { price: "45.000", stt: 44, name: "Thịt lợn tẩm bột xù rán giòn" },
+                { price: "90.000", stt: 45, name: "Chả rươi thơm lá gừng" },
+                { price: "35.000", stt: 46, name: "Cá rô phi rán giòn chấm mắm gừng" },
+                { price: "35.000", stt: 47, name: "Chả lá lốt thịt băm thơm phức" },
+                { price: "15.000", stt: 48, name: "Trứng rán hành hoa ta" },
+                { price: "25.000", stt: 49, name: "Trứng đúc thịt băm nấm hương" },
+                { price: "85.000", stt: 50, name: "Chả mực giã tay rán vàng" },
+                { price: "35.000", stt: 51, name: "Nộm tai heo su hào cà rốt lạc rang" },
+                { price: "35.000", stt: 52, name: "Nộm hoa chuối tai heo hoa kinh giới" },
+                { price: "30.000", stt: 53, name: "Nộm dưa chuột bò khô" },
+                { price: "40.000", stt: 54, name: "Nộm rau muống tôm thịt chua ngọt" },
+                { price: "45.000", stt: 55, name: "Gỏi ngó sen tôm thịt" },
+                { price: "35.000", stt: 56, name: "Nộm sứa giòn xoài xanh" },
+                { price: "50.000", stt: 57, name: "Nộm rau tiến vua tôm nõn" },
+                { price: "35.000", stt: 58, name: "Nộm xoài xanh khô cá chỉ vàng" },
+                { price: "55.000", stt: 59, name: "Nộm bắp bò rau mầm" },
+                { price: "30.000", stt: 60, name: "Nộm đu đủ bò khô truyền thống" },
+                { price: "20.000", stt: 61, name: "Đậu phụ sốt cà chua hành hoa" },
+                { price: "45.000", stt: 62, name: "Cá sốt cà chua thì la" },
+                { price: "30.000", stt: 63, name: "Thịt băm sốt cà chua trộn cơm" },
+                { price: "35.000", stt: 64, name: "Đậu phụ nhồi thịt sốt cà chua" },
+                { price: "25.000", stt: 65, name: "Cá mòi hộp sốt cà chua hành tây" },
+                { price: "65.000", stt: 66, name: "Sườn sụn sốt chua ngọt dứa ớt" },
+                { price: "40.000", stt: 67, name: "Chả cá sốt cà chua đậm vị" },
+                { price: "60.000", stt: 68, name: "Dạ dày heo sốt tiêu đen" },
+                { price: "75.000", stt: 69, name: "Mực tươi sốt cay kiểu Thái" },
+                { price: "65.000", stt: 70, name: "Tôm rim mặn ngọt cháy cạnh" },
+                { price: "25.000", stt: 71, name: "Cháo sườn sụn quẩy giòn tự nấu" },
+                { price: "45.000", stt: 72, name: "Cháo gà ác hạt sen tía tô" },
+                { price: "35.000", stt: 73, name: "Bún mọc sườn sụn nhà làm" },
+                { price: "30.000", stt: 74, name: "Bún riêu cua đồng gạch béo" },
+                { price: "40.000", stt: 75, name: "Phở bò tái lăn tại gia" },
+                { price: "30.000", stt: 76, name: "Miến dong lòng mề gà" },
+                { price: "25.000", stt: 77, name: "Mì tôm trứng thịt bò cải ngọt" },
+                { price: "15.000", stt: 78, name: "Bánh đúc chấm mắm tôm nguyên bản" },
+                { price: "45.000", stt: 79, name: "Bún thang nhà làm cầu kỳ" },
+                { price: "35.000", stt: 80, name: "Cháo lòng tiết canh gia đình" },
+                { price: "50.000", stt: 81, name: "Bánh tráng cuốn thịt heo luộc rau sống" },
+                { price: "45.000", stt: 82, name: "Phở cuốn thịt bò xào rau thơm" },
+                { price: "30.000", stt: 83, name: "Bánh xèo miền Bắc nhân giá thịt đậu xanh" },
+                { price: "150.000", stt: 84, name: "Bò nhúng giấm cuốn bánh tráng" },
+                { price: "200.000", stt: 85, name: "Lẩu gà ớt chua cay lá giang" },
+                { price: "250.000", stt: 86, name: "Lẩu riêu cua bắp bò sườn sụn" },
+                { price: "40.000", stt: 87, name: "Bánh tôm Hồ Tây tự làm tại nhà" },
+                { price: "30.000", stt: 88, name: "Gỏi cuốn tôm thịt bún tươi" },
+                { price: "45.000", stt: 89, name: "Nem lụi nướng sả cuốn bánh tráng" },
+                { price: "60.000", stt: 90, name: "Chả cá cuốn bánh tráng mắm nêm" },
+                { price: "5.000", stt: 91, name: "Dưa cải bẹ muối chua giòn" },
+                { price: "5.000", stt: 92, name: "Cà pháo muối xổi tỏi ớt" },
+                { price: "10.000", stt: 93, name: "Cà pháo muối chua ngọt giòn tan" },
+                { price: "15.000", stt: 94, name: "Kim chi cải thảo phong cách Việt" },
+                { price: "10.000", stt: 95, name: "Dưa chuột muối chua ngọt ăn kèm" },
+                { price: "8.000", stt: 96, name: "Su hào cà rốt muối xổi chua ngọt" },
+                { price: "15.000", stt: 97, name: "Hành củ muối chua ăn bánh chưng" },
+                { price: "20.000", stt: 98, name: "Tỏi ngâm giấm ớt nguyên củ" },
+                { price: "25.000", stt: 99, name: "Măng củ ngâm tỏi ớt cay" },
+                { price: "5.000", stt: 100, name: "Sung muối xổi giòn chát nhẹ" }
+            ]},
+
+            // PHẦN 2: 100 MÓN SIÊU THỊ (101-200)
+            { section: "PHẦN 2: 100 MÓN ĂN VÀ THỰC PHẨM TIỆN LỢI TẠI SIÊU THỊ", items: [
+                { price: "45.000", stt: 101, name: "Nem chua rán tẩm bột đông lạnh" },
+                { price: "38.000", stt: 102, name: "Chả giò tôm thịt kiểu Nam Bộ" },
+                { price: "52.000", stt: 103, name: "Sủi cảo / Hoành thánh nhân tôm thịt" },
+                { price: "35.000", stt: 104, name: "Bánh bao nhân thịt trứng cút mini" },
+                { price: "22.000", stt: 105, name: "Bánh bao chay không nhân" },
+                { price: "65.000", stt: 106, name: "Bánh xếp Hàn Quốc (Mandu nhân thịt bắp)" },
+                { price: "28.000", stt: 107, name: "Cá viên chiên cao cấp siêu thị" },
+                { price: "42.000", stt: 108, name: "Bò viên gân đóng gói" },
+                { price: "35.000", stt: 109, name: "Tôm viên đông lạnh" },
+                { price: "75.000", stt: 110, name: "Xúc xích Đức xông khói đông lạnh" },
+                { price: "4.500", stt: 111, name: "Mì Hảo Hảo tôm chua cay quốc dân" },
+                { price: "8.500", stt: 112, name: "Mì Omachi sốt bò hầm sợi khoai tây" },
+                { price: "9.000", stt: 113, name: "Phở ăn liền Vifon vị bò chín" },
+                { price: "12.000", stt: 114, name: "Mì nấu Hàn Quốc Koreno vị cay" },
+                { price: "11.000", stt: 115, name: "Miến Phú Hương nấu thịt heo" },
+                { price: "32.000", stt: 116, name: "Mì Ý Spaghetti khô đóng gói" },
+                { price: "45.000", stt: 117, name: "Mì Udon khô Nhật Bản" },
+                { price: "10.000", stt: 118, name: "Hủ tiếu Nam Vang ăn liền" },
+                { price: "28.000", stt: 119, name: "Mì cay Samyang gà phô mai" },
+                { price: "25.000", stt: 120, name: "Mì Chũ Bắc Giang chuẩn sạch siêu thị" },
+                { price: "15.000", stt: 121, name: "Xúc xích ăn liền Vissan / San Miguel" },
+                { price: "95.000", stt: 122, name: "Lạp xưởng Mai Quế Lộ cao cấp" },
+                { price: "45.000", stt: 123, name: "Dăm bông heo (Ham) đóng gói lát" },
+                { price: "70.000", stt: 124, name: "Giò lụa truyền thống hút chân không" },
+                { price: "75.000", stt: 125, name: "Giò thủ siêu thị giòn sần sật" },
+                { price: "65.000", stt: 126, name: "Chả lụa bì chiên sẵn" },
+                { price: "55.000", stt: 127, name: "Xúc xích phô mai tươi" },
+                { price: "68.000", stt: 128, name: "Thịt xông khói (Bacon) cắt lát mỏng" },
+                { price: "110.000", stt: 129, name: "Xúc xích xông khói kiểu Ý (Salami)" },
+                { price: "50.000", stt: 130, name: "Dăm bông gà xông khói" },
+                { price: "22.000", stt: 131, name: "Cá mòi sốt cà chua đóng hộp 3 Cô Gái" },
+                { price: "95.000", stt: 132, name: "Thịt hộp heo hầm Spam nguyên vị" },
+                { price: "45.000", stt: 133, name: "Pate gan heo hộp gan ngỗng cao cấp" },
+                { price: "18.000", stt: 134, name: "Ngô ngọt tách hạt đóng hộp lon" },
+                { price: "20.000", stt: 135, name: "Đậu Hà Lan đóng hộp mềm" },
+                { price: "48.000", stt: 136, name: "Sốt mỳ Ý cà chua bò bằm sẵn lọ thủy tinh" },
+                { price: "38.000", stt: 137, name: "Sốt ướp thịt nướng Hàn Quốc (Bulgogi)" },
+                { price: "25.000", stt: 138, name: "Nước dùng lẩu Thái cô đặc dạng gói/hũ" },
+                { price: "35.000", stt: 139, name: "Sốt mayonnaise Kewpie béo ngậy" },
+                { price: "20.000", stt: 140, name: "Bơ thực vật Tường An / Lurpak" },
+                { price: "38.000", stt: 141, name: "Sữa tươi tiệt trùng nguyên kem Vinamilk/TH" },
+                { price: "28.000", stt: 142, name: "Sữa chua ăn liền Vinamilk có đường" },
+                { price: "22.000", stt: 143, name: "Sữa chua Hy Lạp nguyên bản" },
+                { price: "38.000", stt: 144, name: "Phô mai con bò cười (Laughing Cow)" },
+                { price: "55.000", stt: 145, name: "Phô mai lát Cheddar kẹp bánh mì" },
+                { price: "26.000", stt: 146, name: "Sữa đậu nành Fami canxi hộp giấy" },
+                { price: "15.000", stt: 147, name: "Trà sữa đóng chai tiện lợi" },
+                { price: "16.000", stt: 148, name: "Cà phê sữa đá đóng lon Highlands / Nescafe" },
+                { price: "42.000", stt: 149, name: "Nước trái cây hộp giấy (Cam, Táo, Ổi)" },
+                { price: "10.000", stt: 150, name: "Trà thảo mộc bí đao long nhãn đóng chai" },
+                { price: "140.000", stt: 151, name: "Bánh quy bơ Đan Mạch hộp thiếc" },
+                { price: "28.000", stt: 152, name: "Bánh gạo One-One vị truyền thống" },
+                { price: "20.000", stt: 153, name: "Snack khoai tây Lay's vị tự nhiên" },
+                { price: "19.000", stt: 154, name: "Snack khoai tây O'Star vị tảo biển" },
+                { price: "25.000", stt: 155, name: "Kẹo dẻo trái cây Haribo vị tổng hợp" },
+                { price: "48.000", stt: 156, name: "Chocolate thanh đen nguyên chất 70%" },
+                { price: "85.000", stt: 157, name: "Hạt điều rang muối đóng hộp kín" },
+                { price: "120.000", stt: 158, name: "Hạt dẻ cười rang muối Mỹ" },
+                { price: "18.000", stt: 159, name: "Hướng dương tẩm vị bóc sẵn hạt" },
+                { price: "35.000", stt: 160, name: "Bánh gạo lứt nguyên cám ăn kiêng" },
+                { price: "190.000", stt: 161, name: "Gạo thơm ST25 đặc sản đóng túi 5kg" },
+                { price: "65.000", stt: 162, name: "Yến mạch cán vỡ nguyên chất Quaker" },
+                { price: "110.000", stt: 163, name: "Ngũ cốc sấy khô Granola trái cây hạt" },
+                { price: "18.000", stt: 164, name: "Bánh mì sandwich lát mềm đóng túi" },
+                { price: "25.000", stt: 165, name: "Bánh mì gối nguyên cám (Whole wheat)" },
+                { price: "75.000", stt: 166, name: "Bột ngũ cốc dinh dưỡng 22 loại hạt" },
+                { price: "35.000", stt: 167, name: "Bánh quy yến mạch ăn sáng" },
+                { price: "22.000", stt: 168, name: "Mì nui ống / nui xoắn khô nấu súp" },
+                { price: "48.000", stt: 169, name: "Bơ đậu phộng mịn thơm béo" },
+                { price: "55.000", stt: 170, name: "Mứt trái cây phết bánh mì (Dâu tây, Việt quất)" },
+                { price: "35.000", stt: 171, name: "Chả lụa chay nguyên chất" },
+                { price: "28.000", stt: 172, name: "Sườn non chay khô chiên giòn" },
+                { price: "16.000", stt: 173, name: "Đậu hũ non Nhật Bản hộp giấy mềm" },
+                { price: "32.000", stt: 174, name: "Chả cá chay chiên sẵn" },
+                { price: "38.000", stt: 175, name: "Xúc xích chay hương vị tiêu" },
+                { price: "40.000", stt: 176, name: "Há cảo chay nhân rau củ đông lạnh" },
+                { price: "45.000", stt: 177, name: "Ruốc nấm hương chay thơm ngon" },
+                { price: "42.000", stt: 178, name: "Thịt ba chỉ chay cấu trúc giả mặn" },
+                { price: "38.000", stt: 179, name: "Giò thủ chay nấm mèo" },
+                { price: "55.000", stt: 180, name: "Bào ngư chay đóng hộp sốt nấm" },
+                { price: "22.000", stt: 181, name: "Rau salad trộn sẵn đóng gói ăn ngay" },
+                { price: "35.000", stt: 182, name: "Ngô ngọt tách hạt đông lạnh túi 500g" },
+                { price: "38.000", stt: 183, name: "Đậu Hà Lan hạt đông lạnh siêu thị" },
+                { price: "20.000", stt: 184, name: "Củ quả cắt sẵn nấu canh súp (Su hào, cà rốt, khoai tây)" },
+                { price: "15.000", stt: 185, name: "Hành tây cắt lát đóng túi sạch" },
+                { price: "12.000", stt: 186, name: "Nấm kim châm Hàn Quốc đóng gói hút chân không" },
+                { price: "25.000", stt: 187, name: "Nấm đùi gà tươi siêu thị" },
+                { price: "18.000", stt: 188, name: "Dưa chuột baby đóng túi sạch" },
+                { price: "22.000", stt: 189, name: "Cà chua bi Đà Lạt hộp nhựa" },
+                { price: "45.000", stt: 190, name: "Khoai tây bi gọt vỏ sẵn cấp đông" },
+                { price: "28.000", stt: 191, name: "Dầu hào đậm đặc Maggi chai thủy tinh" },
+                { price: "75.000", stt: 192, name: "Nước tương đậu nành Nhật Bản Kikkoman" },
+                { price: "125.000", stt: 193, name: "Dầu ô liu Extra Virgin ép lạnh" },
+                { price: "18.000", stt: 194, name: "Giấm táo mèo / Giấm gạo lên men" },
+                { price: "45.000", stt: 195, name: "Dầu mè nguyên chất thơm lừng" },
+                { price: "32.000", stt: 196, name: "Sốt ướp xá xíu đậm đà vị Quảng Đông" },
+                { price: "25.000", stt: 197, name: "Xốt me chua ngọt làm sẵn" },
+                { price: "18.000", stt: 198, name: "Bột canh hầm xương cốt thịt ngọt lịm" },
+                { price: "55.000", stt: 199, name: "Tương ớt Hàn Quốc (Gochujang) nấu Tokbokki" },
+                { price: "26.000", stt: 200, name: "Nước cốt dừa đậm đặc đóng hộp lon" }
+            ]},
+
+            // PHẦN 3: 100 MÓN VỈA HÈ (201-300)
+            { section: "PHẦN 3: 100 MÓN ĂN VÀ THỨC UỐNG VỈA HÈ LÒNG ĐƯỜNG HÀ NỘI", items: [
+                { price: "50.000", stt: 201, name: "Phở bò tái gân vỉa hè nước dùng ngọt thanh" },
+                { price: "45.000", stt: 202, name: "Phở gà trộn phố cổ hành phi lạc rang" },
+                { price: "50.000", stt: 203, name: "Bún chả quạt nan nướng than hoa thơm nức" },
+                { price: "40.000", stt: 204, name: "Bún mọc dọc mùng sườn sụn chua thanh" },
+                { price: "40.000", stt: 205, name: "Bún riêu cua ốc vỉa hè gạch béo ngậy" },
+                { price: "50.000", stt: 206, name: "Bún ốc nguội thanh tao giòn sần sật" },
+                { price: "50.000", stt: 207, name: "Bún ngan chặt măng khô mọc nước dùng đậm" },
+                { price: "45.000", stt: 208, name: "Bún mọc sườn sụn ăn kèm quẩy giòn" },
+                { price: "45.000", stt: 209, name: "Bún bò Huế vỉa hè chuẩn vị cay nồng" },
+                { price: "55.000", stt: 210, name: "Phở sốt vang vỉa hè thịt bò dẻ sườn mềm nhừ" },
+                { price: "30.000", stt: 211, name: "Bánh cuốn nóng nhân thịt mộc nhĩ hành phi" },
+                { price: "25.000", stt: 212, name: "Bánh xèo giòn rụm cuốn rau rừng nước chấm chua ngọt" },
+                { price: "20.000", stt: 213, name: "Bánh giò nóng nhân thịt trứng cút béo ngậy" },
+                { price: "25.000", stt: 214, name: "Bánh đúc nóng chan nước mắm thịt băm mộc nhĩ" },
+                { price: "15.000", stt: 215, name: "Bánh gối chiên giòn nhân miến thịt trứng cút" },
+                { price: "7.000", stt: 216, name: "Bánh rán mặn (nhân thịt) & Bánh rán ngọt (đỗ xanh)" },
+                { price: "12.000", stt: 217, name: "Bánh tôm Hồ Tây vỉa hè giòn rụm" },
+                { price: "30.000", stt: 218, name: "Bánh mỳ dân tổ kẹp thập cẩm trứng bơ pate" },
+                { price: "45.000", stt: 219, name: "Bánh mỳ chảo vỉa hè (trứng, pate, xúc xích, thịt bò)" },
+                { price: "15.000", stt: 220, name: "Bánh khúc nóng hổi ăn đêm thơm mùi lá khúc" },
+                { price: "30.000", stt: 221, name: "Cháo sườn sụn quẩy giòn nhuyễn mịn" },
+                { price: "25.000", stt: 222, name: "Cháo trai vỉa hè thơm mùi răm hành tiêu" },
+                { price: "40.000", stt: 223, name: "Cháo lòng tiết canh dồi trường nóng hổi" },
+                { price: "15.000", stt: 224, name: "Xôi xéo mỡ hành đỗ xanh vàng óng" },
+                { price: "35.000", stt: 225, name: "Xôi thịt kho tàu trứng cút đậm đà" },
+                { price: "15.000", stt: 226, name: "Xôi lạc đỗ vừng truyền thống giản dị" },
+                { price: "15.000", stt: 227, name: "Xôi ngô ngọt mỡ hành hành phi giòn" },
+                { price: "30.000", stt: 228, name: "Xôi pate chả lạp xưởng ăn sáng chắc bụng" },
+                { price: "25.000", stt: 229, name: "Cháo đậu xanh sườn sụn giải nhiệt" },
+                { price: "15.000", stt: 230, name: "Xôi khúc dẻo thơm nhân đậu xanh mỡ hành" },
+                { price: "60.000", stt: 231, name: "Nem chua rán phố cổ giòn rụm chấm tương ớt" },
+                { price: "30.000", stt: 232, name: "Khoai lang kén bùi béo chiên giòn" },
+                { price: "35.000", stt: 233, name: "Ngô chiên bơ giòn tan hạt vàng ươm" },
+                { price: "15.000", stt: 234, name: "Bánh mỳ bơ tỏi nướng giòn tan" },
+                { price: "10.000", stt: 235, name: "Phô mai que kéo sợi béo ngậy" },
+                { price: "20.000", stt: 236, name: "Khoai tây lốc xoáy chiên giòn rụm" },
+                { price: "10.000", stt: 237, name: "Xiên bẩn vỉa hè (Cá viên, bò viên, xúc xích chiên)" },
+                { price: "25.000", stt: 238, name: "Bánh bột lọc chiên giòn nước mắm cay" },
+                { price: "15.000", stt: 239, name: "Bánh tét chiên giòn vỏ vàng ruộm" },
+                { price: "15.000", stt: 240, name: "Chả cốm rán vỉa hè dẻo thơm hạt cốm làng Vòng" },
+                { price: "45.000", stt: 241, name: "Ốc luộc lá chanh sả chấm nước mắm gừng ớt" },
+                { price: "60.000", stt: 242, name: "Ốc xào me dừa béo ngọt đậm đà" },
+                { price: "50.000", stt: 243, name: "Ngao hấp sả ớt nóng hổi cay nồng" },
+                { price: "35.000", stt: 244, name: "Cút lộn xào me sệt sệt ăn kèm bánh mì" },
+                { price: "15.000", stt: 245, name: "Chân gà nướng mật ong vàng óng thơm phức" },
+                { price: "25.000", stt: 246, name: "Cánh gà nướng than hoa tẩm ướp đậm đà" },
+                { price: "80.000", stt: 247, name: "Dạ dày heo nướng vỉa hè giòn sần sật" },
+                { price: "50.000", stt: 248, name: "Sụn dồi nướng thơm mùi mắc khén hạt dổi" },
+                { price: "65.000", stt: 249, name: "Nem chua nướng Ấu Triệu dẻo thơm" },
+                { price: "15.000", stt: 250, name: "Hột vịt lộn luộc ngải cứu bồi bổ sức khỏe" },
+                { price: "150.000", stt: 251, name: "Lẩu riêu cua bắp bò vỉa hè ngồi vỉa hè thoáng mát" },
+                { price: "130.000", stt: 252, name: "Lẩu ếch măng cay chua ngọt thơm phức" },
+                { price: "120.000", stt: 253, name: "Nướng chảo gang vỉa hè (Bò nướng bơ tỏi)" },
+                { price: "120.000", stt: 254, name: "Lẩu thái sườn sụn chua cay đậm đà" },
+                { price: "110.000", stt: 255, name: "Lẩu gà chua cay lá é / lá giang" },
+                { price: "80.000", stt: 256, name: "Dạ dày nướng tảng giòn sần sật" },
+                { price: "90.000", stt: 257, name: "Nầm bò nướng chao thơm béo" },
+                { price: "100.000", stt: 258, name: "Lẩu đầu cá hồi măng chua" },
+                { price: "120.000", stt: 259, name: "Lẩu lòng bò giòn sần sật chấm chao" },
+                { price: "50.000", stt: 260, name: "Chân gà ngâm sả tắc giòn sần sật chua ngọt" },
+                { price: "20.000", stt: 261, name: "Chè sắn dây nóng gừng ấm bụng ngày đông" },
+                { price: "20.000", stt: 262, name: "Chè đỗ đen cốt dừa bùi béo thanh mát" },
+                { price: "25.000", stt: 263, name: "Chè bưởi truyền thống giòn sần sật cùi bưởi" },
+                { price: "35.000", stt: 264, name: "Chè khúc bạch thanh mát phô mai hạnh nhân" },
+                { price: "25.000", stt: 265, name: "Chè thập cẩm vỉa hè đủ màu sắc thạch trân châu" },
+                { price: "15.000", stt: 266, name: "Tào phớ nước đường hoa nhài mềm mịn" },
+                { price: "25.000", stt: 267, name: "Sữa chua nếp cẩm dẻo thơm ngọt dịu" },
+                { price: "15.000", stt: 268, name: "Kem Tràng Tiền / Thủy Tạ truyền thống" },
+                { price: "30.000", stt: 269, name: "Kem xôi cốm dẻo thơm mát lạnh" },
+                { price: "25.000", stt: 270, name: "Chè chuối nướng cốt dừa thơm phức mùi khói bếp" },
+                { price: "5.000", stt: 271, name: "Trà đá vỉa hè văn hóa giao lưu phố thị" },
+                { price: "15.000", stt: 272, name: "Trà chanh chém gió vỉa hè nhà thờ/hồ gươm" },
+                { price: "7.000", stt: 273, name: "Nhân trần đá mát lạnh giải nhiệt mùa hè" },
+                { price: "12.000", stt: 274, name: "Nước mía siêu sạch ép tươi kèm quất" },
+                { price: "20.000", stt: 275, name: "Nước rau má đậu xanh nguyên chất bổ dưỡng" },
+                { price: "12.000", stt: 276, name: "Sữa đậu nành rang nóng hổi thơm phức" },
+                { price: "15.000", stt: 277, name: "Nước sấu đá chua ngọt thanh mát ngày hè" },
+                { price: "15.000", stt: 278, name: "Nước me đá dầm lạc rang giòn" },
+                { price: "15.000", stt: 279, name: "Sữa ngô vỉa hè béo ngậy ngọt tự nhiên" },
+                { price: "20.000", stt: 280, name: "Trà tắc mật ong thanh họng giải khát" },
+                { price: "25.000", stt: 281, name: "Bánh mỳ pate chả nguội truyền thống phố cổ" },
+                { price: "30.000", stt: 282, name: "Bánh mỳ thịt nướng than hoa thơm mùi sả hành" },
+                { price: "30.000", stt: 283, name: "Bánh mỳ xíu mại sốt sệt nóng hổi" },
+                { price: "20.000", stt: 284, name: "Bánh mỳ trứng ốp la vỉa hè chan xì dầu" },
+                { price: "15.000", stt: 285, name: "Bánh mỳ kẹp kem mát lạnh tuổi thơ" },
+                { price: "50.000", stt: 286, name: "Bánh mỳ sốt vang thịt dẻo sụn mềm" },
+                { price: "35.000", stt: 287, name: "Bánh mỳ Doner Kebab kẹp thịt quay xắt lát" },
+                { price: "30.000", stt: 288, name: "Bánh mỳ gà xé phay bơ trứng béo ngậy" },
+                { price: "25.000", stt: 289, name: "Bánh mỳ nem chua rán sốt mai-onnaise tương ớt" },
+                { price: "25.000", stt: 290, name: "Bánh mỳ xúc xích nướng vỉa hè" },
+                { price: "25.000", stt: 291, name: "Sấu chín dầm muối ớt chua cay giòn tan" },
+                { price: "30.000", stt: 292, name: "Xoài xanh dầm bò khô chua ngọt" },
+                { price: "30.000", stt: 293, name: "Mận hậu lắc muối ớt giòn tan chua chát" },
+                { price: "25.000", stt: 294, name: "Cốc non dầm muối ớt giòn sần sật" },
+                { price: "10.000", stt: 295, name: "Bánh cốm Hàng Than ngọt thơm dẻo quánh" },
+                { price: "30.000", stt: 296, name: "Bánh su kem nhỏ nhân kem trứng béo" },
+                { price: "5.000", stt: 297, name: "Bánh nhúng giòn tan hình hoa văn" },
+                { price: "20.000", stt: 298, name: "Quẩy nóng chấm nước mắm chua ngọt" },
+                { price: "5.000", stt: 299, name: "Kẹo dồi, kẹo lạc nhâm nhi cùng trà đá" },
+                { price: "15.000", stt: 300, name: "Bánh phồng tôm rán giòn rụm vỉa hè" }
+            ]},
+
+            // PHẦN 4: 60 MÓN KHÁCH SẠN CAO CẤP (301-360)
+            { section: "PHẦN 4: 60 MÓN ĂN VÀ THỰC ĐƠN CAO CẤP TẠI KHÁCH SẠN / NHÀ HÀNG SANG TRỌNG", items: [
+                { price: "350.000", stt: 301, name: "Súp bào ngư hải sâm nấm đông cô" },
+                { price: "450.000", stt: 302, name: "Súp yến thả gà xé phay thượng hạng" },
+                { price: "280.000", stt: 303, name: "Súp bong bóng cá sò điệp Điệp Sơn" },
+                { price: "550.000", stt: 304, name: "Gan ngỗng béo áp chảo sốt mứt quả mọng (Foie Gras)" },
+                { price: "220.000", stt: 305, name: "Salad lườn vịt hun khói sốt cam dại" },
+                { price: "320.000", stt: 306, name: "Súp kem bí đỏ tôm hùm Na Uy" },
+                { price: "480.000", stt: 307, name: "Salad tôm hùm đút lò sốt bơ chanh" },
+                { price: "260.000", stt: 308, name: "Gỏi vây cá hồi ngâm giấm balsamic" },
+                { price: "380.000", stt: 309, name: "Súp nấm bào ngư truffle đen Ý" },
+                { price: "650.000", stt: 310, name: "Thịt heo muối Iberico Tây Ban Nha cắt lát kèm dưa lưới" },
+                { price: "1.800.000", stt: 311, name: "Tôm hùm Alaska bỏ lò phô mai Mozzarella" },
+                { price: "2.500.000", stt: 312, name: "Cua Hoàng Đế (King Crab) hấp tuyết nhĩ" },
+                { price: "120.000", stt: 313, name: "Tu hài nướng mỡ hành tỏi phi thượng hạng" },
+                { price: "450.000", stt: 314, name: "Cá tầm Sapa nướng muối ớt nấm mỡ" },
+                { price: "380.000", stt: 315, name: "Cá hồi Na Uy áp chảo sốt bơ chanh dây" },
+                { price: "420.000", stt: 316, name: "Sò điệp Nhật Bản áp chảo sốt kem nấm Truffle" },
+                { price: "1.600.000", stt: 317, name: "Tôm hùm bông sốt bơ tỏi ăn kèm bánh mì Ý" },
+                { price: "680.000", stt: 318, name: "Bào ngư Úc sốt dầu hàu nấm đông cô" },
+                { price: "750.000", stt: 319, name: "Hải sâm hải sản om nồi đất phong cách Quảng Đông" },
+                { price: "850.000", stt: 320, name: "Cá tuyết Đại Tây Dương hấp xì dầu Hongkong" },
+                { price: "1.500.000", stt: 321, name: "Bò Wagyu A5 nướng đá núi lửa Nhật Bản" },
+                { price: "650.000", stt: 322, name: "Thịt thăn nội bò Mỹ nướng sốt tiêu đen (Ribeye Steak)" },
+                { price: "580.000", stt: 323, name: "Sườn cừu New Zealand nướng thảo mộc sốt rượu vang đỏ" },
+                { price: "2.200.000", stt: 324, name: "Bò Tomahawk nướng nguyên khối sốt nấm Truffle" },
+                { price: "2.800.000", stt: 325, name: "Bò Kobe nướng sốt ponzu mát lạnh" },
+                { price: "720.000", stt: 326, name: "Sườn bò Mỹ nướng sốt BBQ cao cấp" },
+                { price: "890.000", stt: 327, name: "Dẻ sườn bò Wagyu đút lò sốt vang đỏ" },
+                { price: "1.800.000", stt: 328, name: "Đùi cừu đút lò nguyên chiếc sốt hương thảo" },
+                { price: "950.000", stt: 329, name: "Bò Wellington bọc bột ngàn lớp nấm phô mai" },
+                { price: "420.000", stt: 330, name: "Thịt thăn heo Ả Rập nướng mù tạt Dijon" },
+                { price: "1.200.000", stt: 331, name: "Vịt quay Bắc Kinh 3 món" },
+                { price: "950.000", stt: 332, name: "Gà Đông Tảo hấp muối ngải cứu hoàng gia" },
+                { price: "350.000", stt: 333, name: "Chim cút nhồi nhân nấm đút lò sốt rượu vang" },
+                { price: "450.000", stt: 334, name: "Gà H'Mông tiềm thuốc bắc hạt sen trong quả dừa" },
+                { price: "680.000", stt: 335, name: "Vịt Pháp bỏ lò sốt cam tươi" },
+                { price: "380.000", stt: 336, name: "Bồ câu ra ràng quay giòn bì phong cách hoàng gia" },
+                { price: "360.000", stt: 337, name: "Lườn vịt áp chảo sốt mâm xôi" },
+                { price: "450.000", stt: 338, name: "Gà quay mật ong rừng kèm xôi nếp nương" },
+                { price: "3.500.000", stt: 339, name: "Heo sữa quay nguyên con da giòn phong cách Macao" },
+                { price: "480.000", stt: 340, name: "Đùi gà Tây nướng thảo mộc đút lò" },
+                { price: "380.000", stt: 341, name: "Cơm chiên hải sản vây cá bào ngư" },
+                { price: "320.000", stt: 342, name: "Mì Ý hải sản sốt mực đen cao cấp" },
+                { price: "280.000", stt: 343, name: "Cơm chiên bò Wagyu trứng muối" },
+                { price: "600.000", stt: 344, name: "Lẩu nấm thiên nhiên hoàng gia (Nấm bụng dê, nấm vuốt hổ)" },
+                { price: "800.000", stt: 345, name: "Lẩu thuyền hải sản cao cấp khách sạn 5 sao" },
+                { price: "450.000", stt: 346, name: "Mì Udon sốt tôm hùm đút lò" },
+                { price: "220.000", stt: 347, name: "Cơm gói lá sen tôm thịt hạt sen cổ truyền" },
+                { price: "550.000", stt: 348, name: "Lẩu sâm tươi sườn cừu Hàn Quốc" },
+                { price: "420.000", stt: 349, name: "Miến xào tôm hùm sốt XO" },
+                { price: "260.000", stt: 350, name: "Súp mì ramen thịt bò Wagyu trứng lòng đào" },
+                { price: "120.000", stt: 351, name: "Bánh Tiramisu Ý hương rượu Kahlua" },
+                { price: "110.000", stt: 352, name: "Bánh Crème Brûlée đốt đường giòn Pháp" },
+                { price: "95.000", stt: 353, name: "Bánh Mousse chanh dây kem tươi Anchor" },
+                { price: "180.000", stt: 354, name: "Bánh Macaron Pháp đủ hương vị nghệ thuật" },
+                { price: "450.000", stt: 355, name: "Set trà chiều hoàng gia Anh (Scones, sandwich mini, bánh kem)" },
+                { price: "150.000", stt: 356, name: "Bánh Lava Chocolate nóng chảy kèm kem vani Madagascar" },
+                { price: "350.000", stt: 357, name: "Chè yến chưng hạt sen táo đỏ đường phèn" },
+                { price: "130.000", stt: 358, name: "Bánh Tart dâu tây tươi New Zealand" },
+                { price: "90.000", stt: 359, name: "Kem bơ sầu riêng cốt dừa mìn cao cấp" },
+                { price: "350.000", stt: 360, name: "Trái cây tươi nhập khẩu (Cherry, Đào Nhật, Nho mẫu đơn)" }
+            ]}
+        ];
+
+        let isScrolling = true;
+        let currentFontSize = 15; // base font size in px
+
+        // Render HTML content dynamically
+        function renderMenu() {
+            const container = document.getElementById('menuContainer');
+            let html = '';
+
+            menuData.forEach((part, index) => {
+                html += `
+                    <div class="mb-10">
+                        <!-- Section Banner Header -->
+                        <div class="sticky top-0 z-10 py-3 px-4 bg-gradient-to-r from-amber-600/90 via-amber-500/90 to-amber-700/90 text-gray-950 font-extrabold text-sm sm:text-base rounded-xl shadow-lg border border-amber-300/30 uppercase tracking-wide my-4 text-center">
+                            ${part.section}
+                        </div>
+
+                        <!-- Item Grid Rows -->
+                        <div class="space-y-1.5">
+                `;
+
+                part.items.forEach(item => {
+                    html += `
+                        <div class="item-row grid grid-cols-12 gap-2 items-center px-3 py-2.5 rounded-lg border border-gray-800/60 bg-gray-900/40">
+                            <!-- Column 1: Price -->
+                            <div class="col-span-3 price-col text-left font-mono tracking-tight text-xs sm:text-sm">
+                                ${item.price}
+                            </div>
+                            
+                            <!-- Column 2: STT -->
+                            <div class="col-span-2 stt-col text-center font-bold text-xs sm:text-sm">
+                                ${item.stt}
+                            </div>
+                            
+                            <!-- Column 3: Item Name -->
+                            <div class="col-span-7 text-left font-medium text-gray-100 leading-snug truncate sm:whitespace-normal">
+                                ${item.name}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Toggle Scroll State
+        function toggleScroll() {
+            const viewport = document.getElementById('scrollViewport');
+            const toggleIcon = document.getElementById('toggleIcon');
+            const toggleText = document.getElementById('toggleText');
+            const statusDot = document.getElementById('statusDot');
+
+            if (isScrolling) {
+                viewport.classList.remove('scrolling-active');
+                viewport.classList.add('scrolling-paused');
+                toggleIcon.className = 'fas fa-play';
+                toggleText.innerText = 'Tiếp tục';
+                statusDot.className = 'w-3 h-3 rounded-full bg-rose-500';
+                isScrolling = false;
+            } else {
+                viewport.classList.remove('scrolling-paused');
+                viewport.classList.add('scrolling-active');
+                toggleIcon.className = 'fas fa-pause';
+                toggleText.innerText = 'Tạm dừng';
+                statusDot.className = 'w-3 h-3 rounded-full bg-emerald-500 animate-pulse';
+                isScrolling = true;
+            }
+        }
+
+        // Handle Click anywhere on container to toggle pause/play
+        function handleContainerClick() {
+            toggleScroll();
+        }
+
+        // Change Animation Speed
+        function changeSpeed(val) {
+            document.documentElement.style.setProperty('--scroll-speed', `${val}s`);
+            document.getElementById('speedVal').innerText = `${val}s`;
+        }
+
+        // Change Font Size
+        function changeFontSize(delta) {
+            currentFontSize = Math.max(12, Math.min(22, currentFontSize + delta));
+            document.getElementById('scrollViewport').style.fontSize = `${currentFontSize}px`;
+        }
+
+        // Scroll to Top
+        function scrollToTop() {
+            const container = document.getElementById('menuContainer');
+            const viewport = document.getElementById('scrollViewport');
+            
+            // Temporary disable keyframe animation to force position
+            viewport.classList.remove('scrolling-active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            setTimeout(() => {
+                if (isScrolling) {
+                    viewport.classList.add('scrolling-active');
+                }
+            }, 500);
+        }
+
+        // Scroll to Bottom
+        function scrollToBottom() {
+            const viewport = document.getElementById('scrollViewport');
+            viewport.classList.remove('scrolling-active');
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+
+        // Initialize Page Load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderMenu();
+            changeSpeed(90); // default speed 90 seconds
+        });
+    </script>
+</body>
+</html>

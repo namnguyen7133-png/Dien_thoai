@@ -1,0 +1,740 @@
+﻿<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>📱 AI Agent Mobile - Chay tren dien thoai, khong can Python | No Code Solution</title>
+
+<style>
+:root{
+  --bg:#07142b;
+  --card:#0f2746;
+  --accent:#6bffb8;
+  --accent-glow:#b4ffdc;
+  --muted:#cfe8ff;
+  --code-bg:#021122;
+  --max-width:980px;
+  --base-size:22px;
+  --line-height:1.45;
+  --success:#6bffb8;
+  --warning:#ffb86b;
+  --gradient-start:#00d2ff;
+  --gradient-end:#3a7bd5;
+}
+html,body{
+  margin:0; padding:0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  background: linear-gradient(135deg, #04102a 0%, #07142b 50%, #0a1a38 100%);
+  color: var(--muted);
+  min-height: 100vh;
+}
+.wrap{
+  max-width: var(--max-width);
+  margin:0 auto;
+  padding:20px;
+}
+/* Header voi giai phap mobile-first */
+@keyframes pulse-mobile {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+@keyframes float-phone {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-15px) rotate(5deg); }
+}
+header{
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 20px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 20px;
+  border: 2px solid rgba(107, 255, 184, 0.2);
+}
+.phone-emoji {
+  font-size: 80px;
+  animation: float-phone 3s ease-in-out infinite;
+  display: block;
+  margin-bottom: 20px;
+}
+.brand{
+  background: linear-gradient(135deg, var(--accent), #00ffaa);
+  color:#07142b;
+  font-weight:900;
+  padding:15px 25px;
+  border-radius:20px;
+  font-size:36px;
+  display: inline-block;
+  margin-bottom: 15px;
+  animation: pulse-mobile 2s infinite;
+}
+h1{
+  font-size:40px; 
+  margin:10px 0;
+  line-height:1.05; 
+  color:#fff;
+  background: linear-gradient(90deg, #fff, var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.subtitle {
+  font-size: 24px;
+  color: var(--muted);
+  margin-bottom: 25px;
+}
+/* Solution Cards */
+.solution-card {
+  background: linear-gradient(135deg, 
+    rgba(107, 255, 184, 0.1) 0%,
+    rgba(0, 210, 255, 0.05) 100%);
+  border-radius: 20px;
+  padding: 25px;
+  margin: 25px 0;
+  border: 2px solid rgba(107, 255, 184, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+.solution-card::before {
+  content: '📱';
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 40px;
+  opacity: 0.3;
+}
+.solution-title {
+  color: var(--accent);
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.badge-mobile {
+  background: linear-gradient(135deg, #ff5e7d, #ff8a00);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 18px;
+  font-weight: 700;
+  display: inline-block;
+  margin: 10px 0;
+}
+/* Platform Grid */
+.platform-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin: 30px 0;
+}
+.platform-card {
+  background: rgba(255,255,255,0.03);
+  border-radius: 15px;
+  padding: 25px;
+  border: 2px solid rgba(255,255,255,0.05);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+.platform-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-5px);
+}
+.platform-icon {
+  font-size: 50px;
+  margin-bottom: 20px;
+}
+.platform-name {
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+/* Step by Step */
+.steps-container {
+  counter-reset: step-counter;
+  margin: 40px 0;
+}
+.step {
+  display: flex;
+  align-items: center;
+  margin: 30px 0;
+  background: rgba(255,255,255,0.02);
+  padding: 25px;
+  border-radius: 15px;
+  border-left: 5px solid var(--accent);
+}
+.step::before {
+  counter-increment: step-counter;
+  content: counter(step-counter);
+  background: linear-gradient(135deg, var(--accent), #00ffaa);
+  color: var(--bg);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 900;
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+.step-content {
+  flex-grow: 1;
+}
+.step-title {
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+/* App Store Style */
+.app-badges {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 30px 0;
+  flex-wrap: wrap;
+}
+.app-badge {
+  background: #000;
+  color: white;
+  padding: 15px 25px;
+  border-radius: 12px;
+  font-size: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  transition: transform 0.3s;
+}
+.app-badge:hover {
+  transform: scale(1.05);
+}
+.app-badge.ios {
+  background: linear-gradient(135deg, #007AFF, #5856D6);
+}
+.app-badge.android {
+  background: linear-gradient(135deg, #3DDC84, #0F9D58);
+}
+.app-badge.web {
+  background: linear-gradient(135deg, #4285F4, #34A853);
+}
+/* No Code Solution */
+.no-code-box {
+  background: linear-gradient(135deg, 
+    rgba(255, 94, 125, 0.1),
+    rgba(255, 138, 0, 0.1));
+  border-radius: 20px;
+  padding: 30px;
+  margin: 40px 0;
+  text-align: center;
+  border: 2px solid rgba(255, 94, 125, 0.3);
+}
+.no-code-title {
+  font-size: 32px;
+  color: #ff5e7d;
+  font-weight: 900;
+  margin-bottom: 20px;
+}
+/* Comparison Table */
+.comparison {
+  margin: 40px 0;
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255,255,255,0.02);
+  border-radius: 15px;
+  overflow: hidden;
+}
+th {
+  background: linear-gradient(135deg, var(--accent), #00ffaa);
+  color: var(--bg);
+  padding: 20px;
+  text-align: left;
+  font-size: 20px;
+  font-weight: 800;
+}
+td {
+  padding: 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+tr:last-child td {
+  border-bottom: none;
+}
+td.good {
+  color: var(--success);
+  font-weight: 700;
+}
+td.bad {
+  color: #ff5e7d;
+  font-weight: 700;
+}
+/* QR Code */
+.qr-container {
+  text-align: center;
+  margin: 40px 0;
+  padding: 30px;
+  background: rgba(255,255,255,0.02);
+  border-radius: 20px;
+}
+.qr-placeholder {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(135deg, #fff, #f0f0f0);
+  border-radius: 20px;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60px;
+  color: #000;
+}
+/* CTA Mobile */
+.cta-mobile {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  color: white;
+  padding: 20px 40px;
+  border-radius: 50px;
+  font-size: 22px;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 10px 40px rgba(0, 210, 255, 0.5);
+  z-index: 1000;
+  display: none;
+  animation: pulse-mobile 2s infinite;
+}
+/* Responsive */
+@media (max-width: 768px) {
+  .wrap {
+    padding: 15px;
+  }
+  h1 {
+    font-size: 32px;
+  }
+  .brand {
+    font-size: 28px;
+    padding: 12px 20px;
+  }
+  .platform-grid {
+    grid-template-columns: 1fr;
+  }
+  .step {
+    flex-direction: column;
+    text-align: center;
+  }
+  .step::before {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+  .cta-mobile {
+    display: block;
+    width: 90%;
+    text-align: center;
+  }
+}
+/* Features */
+.features-mobile {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin: 30px 0;
+}
+.feature-item {
+  background: rgba(255,255,255,0.02);
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.feature-icon {
+  font-size: 40px;
+  margin-bottom: 15px;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  
+  <!-- Fixed Mobile CTA -->
+  <a href="#get-started" class="cta-mobile">
+    📲 BAT dAU MIEN PHI
+  </a>
+
+  <header>
+    <div class="phone-emoji">📱</div>
+    <div class="brand">AI AGENT MOBILE</div>
+    <h1>Chay AI Agent tren dien thoai<br>KHONG CAN Python!</h1>
+    <div class="subtitle">5 giai phap NO-CODE danh cho nguoi dung mobile</div>
+    <div class="badge-mobile">🚫 Khong can may tinh | 🚫 Khong can lap trinh</div>
+  </header>
+
+  <div class="solution-card">
+    <div class="solution-title">🎯 VAN dE: "dien thoai khong chay duoc Python"</div>
+    <p style="font-size:24px; color:#fff;">✅ <strong>GIAI PHAP:</strong> Khong can Python! Dung cac nen tang co san tren mobile:</p>
+  </div>
+
+  <div class="platform-grid">
+    <div class="platform-card">
+      <div class="platform-icon">🌐</div>
+      <div class="platform-name">Web App (PWA)</div>
+      <p>Chay tren trinh duyet dien thoai, luu nhu app</p>
+    </div>
+    
+    <div class="platform-card">
+      <div class="platform-icon">🤖</div>
+      <div class="platform-name">Google Colab</div>
+      <p>Chay Python tren cloud, dieu khien bang dien thoai</p>
+    </div>
+    
+    <div class="platform-card">
+      <div class="platform-icon">📱</div>
+      <div class="platform-name">Mobile Apps</div>
+      <p>Ung dung co san tren App Store/Google Play</p>
+    </div>
+    
+    <div class="platform-card">
+      <div class="platform-icon">⚡</div>
+      <div class="platform-name">Zapier/Make</div>
+      <p>Keo tha, khong can code</p>
+    </div>
+  </div>
+
+  <div class="no-code-box">
+    <div class="no-code-title">🚀 GIAI PHAP 1: Web App (Tot nhat cho mobile)</div>
+    <p style="font-size:24px; margin:20px 0;">Truy cap <strong style="color:#00d2ff;">ai-agent.com</strong> tren dien thoai va dung ngay!</p>
+    
+    <div class="steps-container">
+      <div class="step">
+        <div class="step-content">
+          <div class="step-title">Buoc 1: Mo trinh duyet tren dien thoai</div>
+          <p>Truy cap: <code style="background:#000;padding:5px 10px;border-radius:5px;">https://ai-agent.com</code></p>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-content">
+          <div class="step-title">Buoc 2: Them vao man hinh chinh</div>
+          <p>Chon "Add to Home Screen" de cai dat nhu app that</p>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-content">
+          <div class="step-title">Buoc 3: dang nhap & Dung ngay</div>
+          <p>Connect Google Drive, Facebook Page va bat dau tu dong hoa!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qr-container">
+    <h2 style="color:var(--accent);">📲 Quet QR de dung thu ngay</h2>
+    <div class="qr-placeholder">
+      📱<br>
+      <div style="font-size:16px;color:#666;">QR Code Here</div>
+    </div>
+    <p>Quet bang camera dien thoai de mo Web App</p>
+  </div>
+
+  <div class="solution-card" style="background:linear-gradient(135deg, rgba(0,210,255,0.1), rgba(58,123,213,0.1));">
+    <div class="solution-title">🤖 GIAI PHAP 2: Google Colab tren Mobile</div>
+    <p style="font-size:22px;">Chay Python tren cloud cua Google, dieu khien bang dien thoai</p>
+    
+    <div class="features-mobile">
+      <div class="feature-item">
+        <div class="feature-icon">⚡</div>
+        <div>Mien phi GPU/TPU</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">📁</div>
+        <div>Ket noi Google Drive</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🤖</div>
+        <div>Chay 24/7</div>
+      </div>
+    </div>
+
+    <div class="app-badges">
+      <a href="https://colab.research.google.com" class="app-badge web" target="_blank">
+        <span>🌐 Mo Google Colab</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="comparison">
+    <h2 style="color:var(--accent); text-align:center; margin-bottom:30px;">📊 SO SANH CAC GIAI PHAP</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Giai phap</th>
+          <th>Tren Mobile</th>
+          <th>Chi phi</th>
+          <th>do kho</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Web App (PWA)</strong></td>
+          <td class="good">✅ Tot nhat</td>
+          <td class="good">Mien phi</td>
+          <td class="good">De dang</td>
+        </tr>
+        <tr>
+          <td><strong>Google Colab</strong></td>
+          <td class="good">✅ Tot</td>
+          <td class="good">Mien phi</td>
+          <td>Trung binh</td>
+        </tr>
+        <tr>
+          <td><strong>Mobile App</strong></td>
+          <td class="good">✅ Hoan hao</td>
+          <td>Co phi</td>
+          <td class="good">Rat de</td>
+        </tr>
+        <tr>
+          <td><strong>Zapier/Make</strong></td>
+          <td class="good">✅ Tot</td>
+          <td>Co phi</td>
+          <td class="good">De (keo tha)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="app-badges" id="get-started">
+    <a href="https://apps.apple.com" class="app-badge ios" target="_blank">
+      <span>📱</span>
+      <div>
+        <div style="font-size:14px;">Tai tren</div>
+        <div style="font-size:18px;">App Store</div>
+      </div>
+    </a>
+    
+    <a href="https://play.google.com" class="app-badge android" target="_blank">
+      <span>🤖</span>
+      <div>
+        <div style="font-size:14px;">Tai tren</div>
+        <div style="font-size:18px;">Google Play</div>
+      </div>
+    </a>
+    
+    <a href="#web-app" class="app-badge web" onclick="openWebApp()">
+      <span>🌐</span>
+      <div>
+        <div style="font-size:14px;">Dung ngay</div>
+        <div style="font-size:18px;">Web App</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="solution-card" style="background:linear-gradient(135deg, rgba(255,94,125,0.1), rgba(255,209,102,0.1));">
+    <div class="solution-title">🎮 HUONG DAN CU THE: Web App tren Mobile</div>
+    
+    <div style="margin:25px 0; padding:20px; background:rgba(0,0,0,0.3); border-radius:15px;">
+      <h3 style="color:#fff; margin-top:0;">📝 Cac buoc thuc te:</h3>
+      <ol style="font-size:20px; line-height:1.8;">
+        <li><strong>Mo Safari/Chrome</strong> tren iPhone/Android</li>
+        <li>Truy cap: <code>ai-agent-webapp.com</code></li>
+        <li>Chon <strong>"Add to Home Screen"</strong></li>
+        <li>Icon app se xuat hien tren man hinh chinh</li>
+        <li>Mo app → dang nhap Google/Facebook</li>
+        <li>Thiet lap automation → Bat tu dong chay</li>
+        <li><strong>Xong! App se chay ngam 24/7</strong></li>
+      </ol>
+    </div>
+    
+    <p style="font-size:22px; text-align:center; color:var(--accent);">
+      ⚡ <strong>Uu diem:</strong> Khong can cai dat phuc tap, update tu dong, chay duoc offline
+    </p>
+  </div>
+
+  <div class="solution-card">
+    <div class="solution-title">🔧 CAI dAT THAY THE: Server Cloud</div>
+    <p style="font-size:22px;">Neu van muon chay Python code goc:</p>
+    
+    <div style="background:rgba(0,0,0,0.5); padding:20px; border-radius:15px; margin:20px 0;">
+      <h4 style="color:var(--accent);">Thue Cloud Server ($5/thang):</h4>
+      <ul style="font-size:20px;">
+        <li>DigitalOcean / AWS / Google Cloud</li>
+        <li>Cai Python script mot lan duy nhat</li>
+        <li>Truy cap & quan ly bang dien thoai qua SSH app</li>
+        <li>Chay 24/7 khong can mo may tinh</li>
+      </ul>
+    </div>
+    
+    <p>Ung dung SSH cho mobile: <strong>Termius</strong> (iOS/Android)</p>
+  </div>
+
+  <div style="text-align:center; margin:50px 0; padding:30px; background:linear-gradient(135deg, rgba(107,255,184,0.2), rgba(0,210,255,0.2)); border-radius:20px;">
+    <h2 style="color:#fff; font-size:32px;">🎯 LOI KHUYEN:</h2>
+    <p style="font-size:28px; color:var(--accent); font-weight:800;">
+      Dung Web App (PWA) la giai phap<br>TOT NHAT cho nguoi dung dien thoai!
+    </p>
+    <p style="font-size:22px;">Khong cai dat • Khong Python • Chay moi luc moi noi</p>
+  </div>
+
+  <footer style="text-align:center; padding:40px 20px; border-top:2px solid rgba(107,255,184,0.3);">
+    <h3 style="color:var(--accent);">📞 HO TRO NGUOI DUNG MOBILE</h3>
+    <div style="display:flex; justify-content:center; gap:30px; margin:30px 0; flex-wrap:wrap;">
+      <div>
+        <div style="font-size:24px;">📧</div>
+        <div>support@ai-agent.com</div>
+      </div>
+      <div>
+        <div style="font-size:24px;">💬</div>
+        <div>Zalo: 0988-888-888</div>
+      </div>
+      <div>
+        <div style="font-size:24px;">👥</div>
+        <div>Group Facebook</div>
+      </div>
+    </div>
+    <p>© 2024 AI Agent Mobile - Thiet ke cho nguoi dung dien thoai</p>
+  </footer>
+
+</div>
+
+<script>
+function openWebApp() {
+  // Simulate opening web app
+  const url = 'https://ai-agent-webapp-demo.netlify.app';
+  
+  // Check if on mobile
+  if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+    // Try to open in app or browser
+    window.location.href = url;
+    
+    // Show install prompt for PWA
+    setTimeout(() => {
+      if ('BeforeInstallPromptEvent' in window) {
+        alert('📱 Nhan "Add to Home Screen" de cai dat nhu app!');
+      }
+    }, 1000);
+  } else {
+    window.open(url, '_blank');
+  }
+}
+
+// Detect mobile and show appropriate instructions
+function detectMobile() {
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const mobileNotice = document.createElement('div');
+  
+  if (isMobile) {
+    mobileNotice.innerHTML = `
+      <div style="
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        background: linear-gradient(135deg, #ff5e7d, #ff8a00);
+        color: white;
+        padding: 15px;
+        border-radius: 15px;
+        z-index: 10000;
+        text-align: center;
+        font-weight: bold;
+        box-shadow: 0 5px 20px rgba(255,94,125,0.5);
+      ">
+        📱 Ban dang dung dien thoai! Nhan vao "Web App" de dung ngay!
+      </div>
+    `;
+    document.body.appendChild(mobileNotice);
+    
+    // Auto scroll to get started
+    setTimeout(() => {
+      document.getElementById('get-started').scrollIntoView({
+        behavior: 'smooth'
+      });
+    }, 2000);
+    
+    // Remove notice after 10 seconds
+    setTimeout(() => {
+      mobileNotice.remove();
+    }, 10000);
+  }
+}
+
+// Show/hide mobile CTA on scroll
+let lastScroll = 0;
+window.addEventListener('scroll', function() {
+  const cta = document.querySelector('.cta-mobile');
+  if (!cta) return;
+  
+  const currentScroll = window.pageYOffset;
+  
+  if (currentScroll > lastScroll && currentScroll > 100) {
+    // Scrolling down
+    cta.style.opacity = '1';
+    cta.style.transform = 'translateX(-50%) translateY(0)';
+  } else {
+    // Scrolling up
+    cta.style.opacity = '0';
+    cta.style.transform = 'translateX(-50%) translateY(100px)';
+  }
+  
+  lastScroll = currentScroll;
+});
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+  detectMobile();
+  
+  // Add click handler for all platform cards
+  document.querySelectorAll('.platform-card').forEach(card => {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', function() {
+      const platform = this.querySelector('.platform-name').textContent;
+      alert(`Ban chon: ${platform}\n\nGiai phap nay hoat dong hoan hao tren dien thoai!`);
+    });
+  });
+  
+  // Add animation to solution cards
+  const cards = document.querySelectorAll('.solution-card');
+  cards.forEach((card, index) => {
+    card.style.animationDelay = `${index * 0.2}s`;
+    card.style.animation = 'slideIn 0.6s ease-out forwards';
+    card.style.opacity = '0';
+  });
+});
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

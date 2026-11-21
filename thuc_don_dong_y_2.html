@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Sách Món Ăn Bài Thuốc Đông Y</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brandDark: '#121826',
+                        brandCard: '#1E293B',
+                        emeraldPrice: '#10B981',
+                        orangeStt: '#F97316'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        /* Custom scrollbar styling for dark mode */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="bg-brandDark text-slate-100 min-h-screen flex flex-col font-sans antialiased overflow-x-hidden">
+
+    <!-- FIXED CONTROL HEADER -->
+    <header id="header" class="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 shadow-xl px-4 py-3 transition-all duration-300">
+        <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <!-- App Title / Logo -->
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl">🌿</span>
+                <h1 class="text-lg md:text-xl font-bold bg-gradient-to-r from-emerald-400 to-teal-200 bg-clip-text text-transparent">
+                    Đông Y Thực Dưỡng
+                </h1>
+            </div>
+
+            <!-- Controls Panel -->
+            <div class="flex flex-wrap items-center gap-2 md:gap-4 text-sm" onclick="event.stopPropagation()">
+                <!-- Play / Pause Button -->
+                <button id="btnPlayPause" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium transition active:scale-95 shadow-md shadow-emerald-900/20">
+                    <span id="playIcon">⏸</span>
+                    <span id="playText">Tạm dừng</span>
+                </button>
+
+                <!-- Rewind Button -->
+                <button id="btnRewind" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition active:scale-95">
+                    <span>↺</span>
+                    <span>Tua lại</span>
+                </button>
+
+                <!-- Speed Control Slider -->
+                <div class="flex items-center gap-2 bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-700">
+                    <label for="speedRange" class="text-xs text-slate-400 font-medium">Tốc độ:</label>
+                    <input type="range" id="speedRange" min="1" max="10" value="3" class="w-16 md:w-24 accent-emerald-500 cursor-pointer">
+                    <span id="speedVal" class="text-xs font-mono font-bold text-emerald-400 w-5 text-right">3x</span>
+                </div>
+
+                <!-- Font Size Adjustment -->
+                <div class="flex items-center bg-slate-800/80 rounded-lg border border-slate-700 overflow-hidden">
+                    <button id="btnFontDec" class="px-2.5 py-1.5 hover:bg-slate-700 text-slate-300 font-bold border-r border-slate-700 transition active:scale-90" title="Giảm cỡ chữ">A-</button>
+                    <span id="fontSizeDisp" class="px-2 text-xs font-mono text-slate-400">100%</span>
+                    <button id="btnFontInc" class="px-2.5 py-1.5 hover:bg-slate-700 text-slate-300 font-bold transition active:scale-90" title="Tăng cỡ chữ">A+</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENT AREA -->
+    <main id="contentContainer" class="flex-1 max-w-5xl w-full mx-auto px-3 md:px-6 pt-24 pb-32 cursor-pointer transition-all duration-200">
+        <!-- Status Floating Indicator -->
+        <div id="statusToast" class="fixed bottom-6 right-6 z-40 bg-slate-800/90 border border-slate-700 text-slate-200 text-xs px-3 py-2 rounded-full shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span id="toastMsg">Đang cuộn tự động</span>
+        </div>
+
+        <!-- 3-Column List Header (Hidden on small screens, structured as table layout) -->
+        <div id="listHeader" class="hidden md:grid grid-cols-12 gap-4 px-4 py-3 bg-slate-800/90 text-xs font-bold text-slate-400 uppercase tracking-wider rounded-lg border border-slate-700 mb-4 sticky top-20 z-30 shadow-md">
+            <div class="col-span-3 text-left">Giá ước tính</div>
+            <div class="col-span-1 text-center">STT</div>
+            <div class="col-span-8 text-left">Tên món & Mô tả chi tiết</div>
+        </div>
+
+        <!-- Main Items Content Root -->
+        <div id="itemsList" class="space-y-6">
+            <!-- Group items will be populated here -->
+        </div>
+    </main>
+
+    <!-- FOOTER INFO -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-6 text-center text-xs text-slate-500">
+        <p>Danh Sách 42 Món Ăn Bài Thuốc Đông Y Cổ Truyền Việt Nam</p>
+        <p class="mt-1">Chạm/Click vào màn hình để Tạm dừng hoặc Tiếp tục cuộn</p>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Data Structure with 11 Categories & 42 Items
+        const remediesData = [
+            {
+                category: "1. Hay Bị Trầm Uất do Tỳ Kém",
+                items: [
+                    { price: "20.000 VNĐ", stt: 1, text: "Trà Tâm Sen (Tim Sen): Tâm sen giúp an thần, thanh tâm, giải phiền." },
+                    { price: "35.000 VNĐ", stt: 2, text: "Cháo Hạt Sen, Táo Đỏ: Hạt sen bổ tỳ, dưỡng tâm; táo đỏ bổ khí huyết, an thần." },
+                    { price: "25.000 VNĐ", stt: 3, text: "Canh Nấm Hương, Đậu Phụ: Nấm hương bổ tỳ khí, giúp tinh thần sảng khoái." },
+                    { price: "15.000 VNĐ", stt: 4, text: "Sữa Chua (Yaourt) + Hạt Chia: Sữa chua tốt cho tiêu hóa, hạt chia giúp cân bằng đường huyết, ổn định tâm trạng." }
+                ]
+            },
+            {
+                category: "2. Tai Ù Tai Điếc do Khí ở Thận Tắc Nghẽn",
+                items: [
+                    { price: "15.000 VNĐ", stt: 5, text: "Chè Đỗ Đen, Gừng: Đỗ đen bổ thận, gừng giúp hành khí, ấm thận." },
+                    { price: "30.000 VNĐ", stt: 6, text: "Cháo Tôm, Hẹ: Tôm bổ thận tráng dương, hẹ ôn thận khí." },
+                    { price: "60.000 VNĐ", stt: 7, text: "Món Hầm từ Thận Heo/Dê (theo Đông y \"dĩ tạng bổ tạng\"): Hầm với kỷ tử, đỗ trọng để tăng cường hiệu quả bổ thận." },
+                    { price: "50.000 VNĐ", stt: 8, text: "Hà Thủ Ô (dùng trong nấu ăn hoặc ngâm rượu): Là vị thuốc bổ thận, đen tóc, thính tai nổi tiếng." }
+                ]
+            },
+            {
+                category: "3. Hay Bị Cảm do Dương Khí Hư",
+                items: [
+                    { price: "15.000 VNĐ", stt: 9, text: "Cháo Hành Tía, Tía Tô: Đây là món giải cảm kinh điển. Hành và tía tô giúp phát tán phong hàn, đóng lỗ chân lông." },
+                    { price: "65.000 VNĐ", stt: 10, text: "Cháo Gà Thuốc Bắc (có Hoàng Kỳ): Hoàng kỳ là vị thuốc bổ khí, cố biểu số một, giúp tăng cường sức đề kháng." },
+                    { price: "20.000 VNĐ", stt: 11, text: "Trà Quế, Táo Đỏ: Quế chi có tác dụng bổ dương, thông mạch, giúp ấm cơ thể từ bên trong." },
+                    { price: "40.000 VNĐ", stt: 12, text: "Súp Gà Nóng: Món ăn bổ dưỡng, ấm nóng, giúp phục hồi nguyên khí." }
+                ]
+            },
+            {
+                category: "4. Ria Lưỡi Có Nhiều Nốt Đỏ do Gan Nóng Tích Độc",
+                items: [
+                    { price: "15.000 VNĐ", stt: 13, text: "Nước Rau Má, Diếp Cá, Nhân Trần: Phối hợp các loại thảo dược có tính hàn mạnh để thanh lọc gan, thải độc." },
+                    { price: "25.000 VNĐ", stt: 14, text: "Canh Khổ Qua (Mướp Đắng): Khổ qua là \"thánh dược\" cho các chứng nóng gan, nổi mụn, mẩn ngứa." },
+                    { price: "10.000 VNĐ", stt: 15, text: "Nước Mã Đề, Râu Ngô: Giúp lợi tiểu, đào thải độc tố qua đường tiểu." },
+                    { price: "20.000 VNĐ", stt: 16, text: "Uống Nước Atiso: Atiso giúp mát gan, lợi mật, hạ men gan." }
+                ]
+            },
+            {
+                category: "5. Môi Nhợt do Máu Lưu Thông Kém",
+                items: [
+                    { price: "30.000 VNĐ", stt: 17, text: "Cháo Hà Thủ Ô, Đại Táo: Hà thủ ô bổ huyết, đại táo (táo tàu) bổ khí huyết." },
+                    { price: "70.000 VNĐ", stt: 18, text: "Chân Giò Hầm Đương Quy, Hồng Táo: Món ăn bài thuốc bổ huyết truyền thống." },
+                    { price: "45.000 VNĐ", stt: 19, text: "Gan Heo Xào Cần Tây, Hành Tây: \"Dĩ tạng bổ tạng\", gan heo rất giàu sắt, giúp bổ máu." },
+                    { price: "25.000 VNĐ", stt: 20, text: "Nước Sâm Táo Đỏ: Sâm (có thể dùng hồng sâm hoặc đảng sâm) bổ khí, táo đỏ bổ huyết." }
+                ]
+            },
+            {
+                category: "6. Môi Đỏ Quá Mức do Tâm và Tỳ Bị Nóng",
+                items: [
+                    { price: "30.000 VNĐ", stt: 21, text: "Chè Hạt Sen, Táo Đỏ, La Hán Quả: Hạt sen thanh tâm, táo đỏ dưỡng huyết (dùng ít), la hán quả thanh nhiệt, ngọt tự nhiên." },
+                    { price: "15.000 VNĐ", stt: 22, text: "Trà Cỏ Ngọt, Hoa Cúc: Giúp thanh nhiệt, an thần." },
+                    { price: "15.000 VNĐ", stt: 23, text: "Canh Rau Ngót: Tính mát, giúp thanh nhiệt, giải độc." },
+                    { price: "10.000 VNĐ", stt: 24, text: "Nước Râu Bắp (Ngô): Thanh nhiệt, lợi tiểu." }
+                ]
+            },
+            {
+                category: "7. Đại Tiện Phân Sống do Tỳ và Thận Bị Lạnh",
+                items: [
+                    { price: "20.000 VNĐ", stt: 25, text: "Cháo Gạo Lứt, Gừng: Gạo lứt bổ tỳ, gừng ôn trung, tán hàn." },
+                    { price: "25.000 VNĐ", stt: 26, text: "Cháo Kê, Hồng Táo: Kê và hồng táo đều có tính ấm, bổ tỳ vị." },
+                    { price: "80.000 VNĐ", stt: 27, text: "Thịt Dê Hầm Gừng, Riềng: Thịt dê ôn bổ, gừng riềng ấm bụng, mạnh tỳ vị." },
+                    { price: "10.000 VNĐ", stt: 28, text: "Trà Gừng Mật Ong: Uống vào buổi sáng để làm ấm tỳ vị." }
+                ]
+            },
+            {
+                category: "8. Đại Tiện Phân Đen Như Rau Để Qua Đêm (Xuất Huyết Tiêu Hóa)",
+                items: [
+                    { price: "10.000 VNĐ", stt: 29, text: "Nước Cỏ Mực (Nhọ Nồi): Là vị thuốc cầm máu rất tốt trong Đông y." },
+                    { price: "20.000 VNĐ", stt: 30, text: "Cháo Trắng Nấu với Ý Dĩ, Hạt Sen: Giúp bảo vệ niêm mạc dạ dày, dễ tiêu." }
+                ]
+            },
+            {
+                category: "9. Tiêu Chảy Phân Vàng, Nhiều Bọt do Nhiệt Quá",
+                items: [
+                    { price: "10.000 VNĐ", stt: 31, text: "Nước Lá Ổi Non: Có tác dụng cầm tiêu chảy rất tốt." },
+                    { price: "15.000 VNĐ", stt: 32, text: "Trà Vỏ Cam, Vỏ Quýt (Trần Bì): Giúp hành khí, hóa thấp, kiện tỳ." },
+                    { price: "20.000 VNĐ", stt: 33, text: "Cháo Ý Dĩ, Mã Đề: Ý dĩ kiện tỳ trừ thấp, mã đề lợi tiểu để thấp nhiệt theo đường tiểu mà ra." },
+                    { price: "15.000 VNĐ", stt: 34, text: "Trà Búp Tre (Trúc Nhự): Có tác dụng thanh nhiệt, lợi thấp." }
+                ]
+            },
+            {
+                category: "10. Nước Tiểu Vàng do Người Khô Nóng",
+                items: [
+                    { price: "15.000 VNĐ", stt: 35, text: "Chè Đỗ Đen, Mè Đen: Hai loại hạt màu đen đều bổ thận âm." },
+                    { price: "15.000 VNĐ", stt: 36, text: "Nước Râu Ngô, Mía Lau: Giúp thanh nhiệt, sinh tân (tạo dịch cơ thể)." },
+                    { price: "25.000 VNĐ", stt: 37, text: "Canh Rong Biển, Đậu Phụ: Rong biển tính mát, bổ âm." },
+                    { price: "10.000 VNĐ", stt: 38, text: "Nước Rau Câu (Thạch): Giúp mát, bổ âm." }
+                ]
+            },
+            {
+                category: "11. Nước Tiểu Trong & Hay Tiểu Đêm do Thận Khí Hư/Thận Dương Hư",
+                items: [
+                    { price: "20.000 VNĐ", stt: 39, text: "Cháo Kỷ Tử, Hạt Sen, Hạt É: Giúp bổ thận, cố tinh." },
+                    { price: "25.000 VNĐ", stt: 40, text: "Chè Hạt Sen, Đường Phèn: Hạt sen có tác dụng ích thận, cố tinh, giảm tiểu đêm." },
+                    { price: "35.000 VNĐ", stt: 41, text: "Cháo Cá Diếc Hầm với Táo Đỏ, Gừng: Cá diếc bổ khí, kiện tỳ, lợi thủy." },
+                    { price: "75.000 VNĐ", stt: 42, text: "Ba Kích Tím Hầm Thịt (dùng ít): Ba kích ôn bổ thận dương, mạnh gân cốt, giảm tiểu đêm." }
+                ]
+            }
+        ];
+
+        // State Variables
+        let isScrolling = true;
+        let scrollSpeed = 3; // pixels per step delay
+        let fontScale = 100; // Percentage
+        let scrollInterval = null;
+        let toastTimeout = null;
+
+        // DOM Elements
+        const itemsListEl = document.getElementById('itemsList');
+        const btnPlayPause = document.getElementById('btnPlayPause');
+        const playIcon = document.getElementById('playIcon');
+        const playText = document.text = document.getElementById('playText');
+        const btnRewind = document.getElementById('btnRewind');
+        const speedRange = document.getElementById('speedRange');
+        const speedVal = document.getElementById('speedVal');
+        const btnFontDec = document.getElementById('btnFontDec');
+        const btnFontInc = document.getElementById('btnFontInc');
+        const fontSizeDisp = document.getElementById('fontSizeDisp');
+        const contentContainer = document.getElementById('contentContainer');
+        const statusToast = document.getElementById('statusToast');
+        const toastMsg = document.getElementById('toastMsg');
+
+        // Render HTML Content
+        function renderItems() {
+            let html = '';
+            remediesData.forEach(group => {
+                html += `
+                    <div class="mb-8">
+                        <h2 class="text-base md:text-lg font-bold text-amber-400 bg-slate-800/80 px-4 py-2.5 rounded-lg border-l-4 border-amber-500 shadow-md mb-3 flex items-center justify-between">
+                            <span>${group.category}</span>
+                            <span class="text-xs text-slate-400 font-normal">(${group.items.length} món)</span>
+                        </h2>
+                        <div class="space-y-2">
+                `;
+
+                group.items.forEach(item => {
+                    html += `
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 p-3 md:p-4 bg-brandCard hover:bg-slate-800/90 rounded-xl border border-slate-700/60 transition duration-150 shadow-sm items-center">
+                            <!-- Mobile layout: STT & Price row -->
+                            <div class="flex items-center justify-between md:hidden pb-1 border-b border-slate-700/40 mb-1">
+                                <span class="text-xs font-bold px-2 py-0.5 rounded bg-orange-500/20 text-orangeStt border border-orange-500/30">
+                                    STT: ${item.stt}
+                                </span>
+                                <span class="text-xs font-semibold text-emeraldPrice">
+                                    ${item.price}
+                                </span>
+                            </div>
+
+                            <!-- Desktop 3-Columns -->
+                            <div class="hidden md:block md:col-span-3 text-emeraldPrice font-semibold text-sm">
+                                ${item.price}
+                            </div>
+                            <div class="hidden md:block md:col-span-1 text-center font-bold text-orangeStt">
+                                <span class="px-2 py-1 rounded bg-orange-500/10 border border-orange-500/20 text-xs">
+                                    #${item.stt}
+                                </span>
+                            </div>
+                            <div class="col-span-1 md:col-span-8 text-slate-200 leading-relaxed font-normal text-sm md:text-base">
+                                ${item.text}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+
+            itemsListEl.innerHTML = html;
+        }
+
+        // Auto-scroll mechanism using requestAnimationFrame/setInterval for smooth experience
+        function startAutoScroll() {
+            stopAutoScroll();
+            isScrolling = true;
+            updatePlayButtonUI();
+
+            scrollInterval = setInterval(() => {
+                if (!isScrolling) return;
+                
+                // Calculate step based on speed multiplier
+                const step = scrollSpeed * 0.4;
+                window.scrollBy(0, step);
+
+                // If reached bottom, rewind or loop safely
+                if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 2) {
+                    // Reached bottom
+                    showToast("Đã cuộn đến cuối danh sách");
+                }
+            }, 16); // ~60fps smooth tick
+        }
+
+        function stopAutoScroll() {
+            isScrolling = false;
+            if (scrollInterval) {
+                clearInterval(scrollInterval);
+                scrollInterval = null;
+            }
+            updatePlayButtonUI();
+        }
+
+        function toggleScroll() {
+            if (isScrolling) {
+                stopAutoScroll();
+                showToast("Tạm dừng cuộn");
+            } else {
+                startAutoScroll();
+                showToast("Đang cuộn tự động");
+            }
+        }
+
+        function updatePlayButtonUI() {
+            if (isScrolling) {
+                playIcon.textContent = "⏸";
+                playText.textContent = "Tạm dừng";
+                btnPlayPause.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium transition active:scale-95 shadow-md shadow-emerald-900/20";
+            } else {
+                playIcon.textContent = "▶";
+                playText.textContent = "Tiếp tục";
+                btnPlayPause.className = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-medium transition active:scale-95 shadow-md shadow-amber-900/20";
+            }
+        }
+
+        // Toast feedback notification
+        function showToast(msg) {
+            toastMsg.textContent = msg;
+            statusToast.classList.remove('opacity-0');
+            statusToast.classList.add('opacity-100');
+
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                statusToast.classList.remove('opacity-100');
+                statusToast.classList.add('opacity-0');
+            }, 1800);
+        }
+
+        // Event Listeners
+        window.addEventListener('load', () => {
+            renderItems();
+            
+            // Ensure scroll position is at the very top immediately on load
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            
+            // Start auto scroll
+            startAutoScroll();
+        });
+
+        // Toggle on click/tap anywhere on body/content (except headers/controls)
+        document.body.addEventListener('click', (e) => {
+            // Prevent toggling if clicked inside header control bar
+            if (e.target.closest('#header')) return;
+            toggleScroll();
+        });
+
+        // Controls
+        btnPlayPause.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleScroll();
+        });
+
+        btnRewind.addEventListener('click', (e) => {
+            e.stopPropagation();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            showToast("Đã quay về đầu");
+        });
+
+        speedRange.addEventListener('input', (e) => {
+            scrollSpeed = parseInt(e.target.value, 10);
+            speedVal.textContent = scrollSpeed + 'x';
+            if (isScrolling) {
+                startAutoScroll(); // restart interval with new speed
+            }
+        });
+
+        // Font scaling logic
+        btnFontInc.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (fontScale < 150) {
+                fontScale += 10;
+                applyFontSize();
+            }
+        });
+
+        btnFontDec.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (fontScale > 80) {
+                fontScale -= 10;
+                applyFontSize();
+            }
+        });
+
+        function applyFontSize() {
+            fontSizeDisp.textContent = fontScale + '%';
+            contentContainer.style.fontSize = (fontScale / 100) + 'rem';
+            showToast(`Cỡ chữ: ${fontScale}%`);
+        }
+    </script>
+</body>
+</html>

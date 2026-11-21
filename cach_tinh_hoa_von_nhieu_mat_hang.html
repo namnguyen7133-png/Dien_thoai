@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tinh Hoa Von Nhieu San Pham</title>
+<style>
+body { font-family: Arial; background:#f4f6f7; padding:20px }
+.box { max-width:1000px; margin:auto; background:#fff; padding:20px; border-radius:10px }
+table { width:100%; border-collapse:collapse; margin-top:10px }
+th, td { border:1px solid #ccc; padding:6px; text-align:center }
+th { background:#dfe6e9 }
+input { width:100%; padding:4px }
+button { margin-top:10px; padding:10px; border:none; font-size:15px; border-radius:5px }
+.add { background:#27ae60; color:white }
+.calc { background:#0984e3; color:white; width:100% }
+.result { margin-top:15px; background:#ecf0f1; padding:12px; border-radius:6px }
+.good { color:green; font-weight:bold }
+.warn { color:orange; font-weight:bold }
+</style>
+</head>
+<body>
+
+<div class="box">
+<h2>📊 TINH HOA VON – NHIEU MAT HANG</h2>
+
+<h3>1⃣ Danh sach san pham</h3>
+<table id="productTable">
+<tr>
+<th>San pham</th>
+<th>Gia ban</th>
+<th>Gia von</th>
+<th>San luong</th>
+<th>Bien phi (%)</th>
+</tr>
+
+<tr>
+<td><input value="SP 1"></td>
+<td><input type="number" value="50000"></td>
+<td><input type="number" value="30000"></td>
+<td><input type="number" value="100"></td>
+<td><input type="number" value="5"></td>
+</tr>
+</table>
+
+<button class="add" onclick="addProduct()">➕ Them san pham</button>
+
+<h3>2⃣ Chi phi co dinh / thang</h3>
+<input type="number" id="fixedCost" value="30000000">
+
+<h3>3⃣ Loi nhuan muc tieu</h3>
+<input type="number" id="targetProfit" value="10000000">
+
+<button class="calc" onclick="calculate()">📈 TINH HOA VON</button>
+
+<div class="result" id="result"></div>
+</div>
+
+<script>
+function addProduct(){
+    let table = document.getElementById("productTable");
+    let row = table.insertRow(-1);
+    row.innerHTML = `
+        <td><input placeholder="Ten SP"></td>
+        <td><input type="number" placeholder="Gia ban"></td>
+        <td><input type="number" placeholder="Gia von"></td>
+        <td><input type="number" placeholder="San luong"></td>
+        <td><input type="number" placeholder="% bien phi"></td>
+    `;
+}
+
+function calculate(){
+    let rows = document.querySelectorAll("#productTable tr");
+    let totalRevenue = 0;
+    let totalCM = 0;
+
+    for(let i=1;i<rows.length;i++){
+        let inputs = rows[i].querySelectorAll("input");
+        let price = parseFloat(inputs[1].value);
+        let cost = parseFloat(inputs[2].value);
+        let qty = parseFloat(inputs[3].value);
+        let varRate = parseFloat(inputs[4].value)/100;
+
+        if(isNaN(price)||isNaN(cost)||isNaN(qty)||isNaN(varRate)) continue;
+
+        let revenue = price * qty;
+        let contribution = (price*(1-varRate) - cost) * qty;
+
+        totalRevenue += revenue;
+        totalCM += contribution;
+    }
+
+    let fixed = parseFloat(document.getElementById("fixedCost").value);
+    let target = parseFloat(document.getElementById("targetProfit").value);
+
+    let cmRate = totalCM / totalRevenue;
+    let breakevenRevenue = fixed / cmRate;
+    let targetRevenue = (fixed + target) / cmRate;
+
+    document.getElementById("result").innerHTML = `
+        <b>📌 Tong doanh thu:</b> ${totalRevenue.toLocaleString()} d<br>
+        <b>📌 Tong so du dam phi:</b> ${totalCM.toLocaleString()} d<br>
+        <b>📊 Ty le dam phi binh quan:</b> ${(cmRate*100).toFixed(2)}%<br><br>
+
+        <b class="warn">⚖ DOANH THU HOA VON:</b> ${breakevenRevenue.toLocaleString()} d<br>
+        <b class="good">🎯 DOANH THU dAT LOI NHUAN:</b> ${targetRevenue.toLocaleString()} d
+    `;
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

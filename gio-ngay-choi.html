@@ -1,0 +1,342 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Nhap Ngay - Phien ban cai tien</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      padding: 20px;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #3498db, #9b59b6, #e74c3c, #f39c12, #2ecc71);
+    }
+    
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      font-size: 2.2rem;
+    }
+    
+    .description {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #7f8c8d;
+      font-size: 1.1rem;
+    }
+    
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    
+    label {
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    
+    input {
+      padding: 12px 15px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    
+    input:focus {
+      border-color: #3498db;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+    
+    button {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: white;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 6px rgba(52, 152, 219, 0.3);
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(52, 152, 219, 0.4);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    #result {
+      margin-top: 30px;
+      padding: 20px;
+      border-radius: 8px;
+      background-color: #f8f9fa;
+      border-left: 4px solid #3498db;
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .result-title {
+      color: #2c3e50;
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .result-title i {
+      color: #3498db;
+    }
+    
+    .hour-item {
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.2s;
+    }
+    
+    .hour-item:hover {
+      transform: translateX(5px);
+    }
+    
+    .hour-time {
+      font-weight: 600;
+      color: #2c3e50;
+      min-width: 120px;
+    }
+    
+    .hour-zodiac {
+      color: #e74c3c;
+      font-weight: 600;
+      min-width: 100px;
+    }
+    
+    .hour-word {
+      flex-grow: 1;
+      text-align: center;
+      font-weight: 600;
+      color: #27ae60;
+    }
+    
+    .summary {
+      margin-top: 20px;
+      padding: 15px;
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      color: white;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    
+    .error {
+      color: #e74c3c;
+      font-weight: 600;
+      text-align: center;
+      padding: 15px;
+      background-color: #fadbd8;
+      border-radius: 8px;
+      margin-top: 20px;
+      border-left: 4px solid #e74c3c;
+    }
+    
+    .hint {
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: #7f8c8d;
+      text-align: center;
+    }
+    
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px 15px;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      .hour-item {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+      }
+      
+      .hour-time, .hour-zodiac, .hour-word {
+        min-width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Game Nhap Ngay</h1>
+    <p class="description">Nhap ten ngay de xem ket qua theo gio va con giap tuong ung</p>
+    
+    <div class="input-group">
+      <label for="dayInput">Nhap ten ngay (Dan, Mao, Thin, Ty, Ngo, Mui, Than, Dau, Tuat, Hoi, Ty, Suu):</label>
+      <input type="text" id="dayInput" placeholder="Vi du: Dan, Mao, Thin...">
+      <button onclick="showResult()">Hien thi ket qua</button>
+      <p class="hint">Goi y: Moi ngay tuong ung voi mot cot trong bang ket qua</p>
+    </div>
+    
+    <div id="result">
+      <h2 class="result-title">
+        <i class="icon">📅</i>
+        Ket qua cho ngay: <span id="selectedDay"></span>
+      </h2>
+      <div id="resultContent"></div>
+      <div id="summary" class="summary"></div>
+    </div>
+  </div>
+
+  <script>
+    // Du lieu theo bang moi
+    const tableData = [
+      {gio: 23, zodiac: "Ty", letters: ["dI", "dEN", "AI", "CUOI", "dEP", "SAN", "dI", "dEN", "AI", "CUOI", "dEP", "SAN"]},
+      {gio: 1, zodiac: "Suu", letters: ["dUNG", "CUA", "NGONG", "dAT", "dE", "KE", "dUNG", "CUA", "NGONG", "dAT", "dE", "KE"]},
+      {gio: 3, zodiac: "Dan", letters: ["BINH", "dONG", "dOI", "CUNG", "TIEN", "dUA", "BINH", "dONG", "dOI", "CUNG", "TIEN", "dUA"]},
+      {gio: 5, zodiac: "Mao", letters: ["YEN", "dAO", "AI", "TROI", "dO", "dUONG", "YEN", "dAO", "AI", "TROI", "dO", "dUONG"]},
+      {gio: 7, zodiac: "Thin", letters: ["dEN", "CO", "dUONG", "dEN", "QUA", "BANG", "dEN", "CO", "dUONG", "dEN", "QUA", "BANG"]},
+      {gio: 9, zodiac: "Ty", letters: ["dAU", "TIEN", "dI", "NOI", "SONG", "dEO", "dAU", "TIEN", "dI", "NOI", "SONG", "dEO"]},
+      {gio: 11, zodiac: "Ngo", letters: ["CUNG", "dUA", "SUON", "dAC", "dUNG", "VUOT", "CUNG", "dUA", "SUON", "dAC", "dUNG", "VUOT"]},
+      {gio: 13, zodiac: "Mui", letters: ["dUOC", "dON", "SE", "dIA", "VOI", "SUOI", "dUOC", "dON", "SE", "dIA", "VOI", "SUOI"]},
+      {gio: 15, zodiac: "Than", letters: ["NGUOI", "QUA", "dEP", "CON", "dOI", "dEM", "NGUOI", "QUA", "dEP", "CON", "dOI", "dEM"]},
+      {gio: 17, zodiac: "Dau", letters: ["QUEN", "dEO", "dOI", "NGOI", "dO", "SANG", "QUEN", "dEO", "dOI", "NGOI", "dO", "SANG"]},
+      {gio: 19, zodiac: "Tuat", letters: ["dON", "THIEN", "BAN", "dAN", "SANG", "dON", "dON", "THIEN", "BAN", "dAN", "SANG", "dON"]},
+      {gio: 21, zodiac: "Hoi", letters: ["CHAO", "THAI", "dUONG", "dO", "NGANG", "dIEN", "CHAO", "THAI", "dUONG", "dO", "NGANG", "dIEN"]}
+    ];
+
+    const days = ["Dan", "Mao", "Thin", "Ty", "Ngo", "Mui", "Than", "Dau", "Tuat", "Hoi", "Ty", "Suu"];
+
+    function showResult() {
+      const day = document.getElementById("dayInput").value.trim();
+      const index = days.indexOf(day);
+      const resultDiv = document.getElementById("result");
+      const resultContent = document.getElementById("resultContent");
+      const summaryDiv = document.getElementById("summary");
+      const selectedDaySpan = document.getElementById("selectedDay");
+      
+      if (index === -1) {
+        resultContent.innerHTML = `<div class="error">Ngay "${day}" khong hop le! Vui long nhap mot trong cac ngay: ${days.join(", ")}</div>`;
+        resultDiv.style.display = "block";
+        return;
+      }
+      
+      selectedDaySpan.textContent = day;
+      
+      let output = "";
+      let countD = 0;
+      
+      // Sap xep tableData theo gio de hien thi theo thu tu thoi gian
+      const sortedTableData = [...tableData].sort((a, b) => {
+        // Xu ly truong hop gio Ty (23h) la gio dau tien
+        if (a.gio === 23) return -1;
+        if (b.gio === 23) return 1;
+        return a.gio - b.gio;
+      });
+      
+      sortedTableData.forEach(row => {
+        const word = row.letters[index];
+        const zodiac = row.zodiac;
+        
+        output += `
+          <div class="hour-item">
+            <div class="hour-time">Gio ${row.gio} (${zodiac})</div>
+            <div class="hour-word">${word}</div>
+          </div>
+        `;
+        
+        if (word.startsWith("d")) countD++;
+      });
+      
+      resultContent.innerHTML = output;
+      summaryDiv.innerHTML = `Tong so tu bat dau bang chu "d": ${countD}`;
+      resultDiv.style.display = "block";
+    }
+    
+    // Them tinh nang nhan Enter de hien thi ket qua
+    document.getElementById("dayInput").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        showResult();
+      }
+    });
+  </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

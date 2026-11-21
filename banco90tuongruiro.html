@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bàn Cờ Cờ Tướng 90 Điểm Tình Huống - Sinh Kế & Rủi Ro</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        xiangqi: {
+                            bg: '#f4ebd0',
+                            board: '#e4c490',
+                            border: '#8b4513',
+                            line: '#5c2c16',
+                            red: '#cc2222',
+                            black: '#1a1a1a',
+                            gold: '#d4af37'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Merriweather', 'serif'],
+                        sans: ['Nunito', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e1e24 0%, #2a2a36 100%);
+            font-family: 'Nunito', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Chessboard custom layout */
+        .board-container {
+            aspect-ratio: 9 / 10;
+            position: relative;
+            background-color: #e6c896;
+            background-image: radial-gradient(#dca864 1px, transparent 0);
+            background-size: 20px 20px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3), 0 10px 25px rgba(0,0,0,0.5);
+            border: 12px solid #5c2b0e;
+            border-radius: 8px;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .board-flipped {
+            transform: rotate(180deg);
+        }
+
+        .board-flipped .piece-content,
+        .board-flipped .point-marker,
+        .board-flipped .river-text {
+            transform: rotate(180deg);
+        }
+
+        /* Responsive grid overlay */
+        .board-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.4);
+        }
+    </style>
+</head>
+<body class="text-slate-100 pb-12">
+
+    <!-- Header Section -->
+    <header class="bg-slate-900/80 backdrop-blur border-b border-slate-700/60 sticky top-0 z-30 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-chess-king text-amber-500 text-3xl"></i>
+                <div>
+                    <h1 class="text-xl font-bold font-serif text-amber-400 leading-tight">Cờ Tướng 90 Tình Huống</h1>
+                    <p class="text-xs text-slate-400">Trải Nghiệm Sinh Kế & Rủi Ro Cuộc Sống</p>
+                </div>
+            </div>
+
+            <!-- Global Action Controls -->
+            <div class="flex items-center gap-2">
+                <button id="flipBoardBtn" class="flex items-center gap-2 bg-amber-600 hover:bg-amber-500 text-white font-semibold px-3 py-2 rounded-lg text-sm transition shadow-lg active:scale-95">
+                    <i class="fa-solid fa-rotate text-base"></i>
+                    <span>Đảo Bàn Cờ</span>
+                </button>
+                <button id="openAssignModalBtn" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-3 py-2 rounded-lg text-sm transition shadow-lg active:scale-95">
+                    <i class="fa-solid fa-users-gear text-base"></i>
+                    <span class="hidden sm:inline">Danh Sách Người Chơi & Quân Cờ</span>
+                    <span class="sm:hidden">Quân Cờ</span>
+                </button>
+                <button id="resetLogBtn" class="bg-rose-600/80 hover:bg-rose-600 text-white p-2 rounded-lg text-sm transition" title="Xóa Lịch Sử">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-2 sm:px-4 mt-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left Sidebar: Player Info & Status -->
+        <div class="lg:col-span-3 space-y-4 order-2 lg:order-1">
+            <!-- Red Player Card -->
+            <div class="bg-slate-800/80 border-l-4 border-red-500 rounded-xl p-4 shadow-lg backdrop-blur">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-4 h-4 rounded-full bg-red-500 inline-block shadow-sm"></span>
+                        <h3 class="font-bold text-red-400 text-lg">BÊN ĐỎ (TIÊN)</h3>
+                    </div>
+                    <span class="text-xs font-semibold px-2 py-0.5 rounded bg-red-950 text-red-300 border border-red-800">Đỏ đi trước</span>
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs text-slate-400">Tên người chơi:</label>
+                    <input type="text" id="playerRedName" value="Nguyễn Văn A" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-sm focus:outline-none focus:border-red-500 font-semibold text-red-200">
+                </div>
+                <div class="mt-3">
+                    <p class="text-xs font-semibold text-slate-400 mb-1">Quân cờ chủ lực:</p>
+                    <div id="redPiecePreview" class="text-xs text-slate-300 flex flex-wrap gap-1 max-h-24 overflow-y-auto pr-1">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Black Player Card -->
+            <div class="bg-slate-800/80 border-l-4 border-slate-400 rounded-xl p-4 shadow-lg backdrop-blur">
+                <div class="flex justify-between items-center mb-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-4 h-4 rounded-full bg-slate-300 inline-block shadow-sm"></span>
+                        <h3 class="font-bold text-slate-300 text-lg">BÊN ĐEN (HẬU)</h3>
+                    </div>
+                    <span class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-900 text-slate-400 border border-slate-700">Đen đi sau</span>
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs text-slate-400">Tên người chơi:</label>
+                    <input type="text" id="playerBlackName" value="Trần Thị B" class="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 text-sm focus:outline-none focus:border-slate-500 font-semibold text-slate-200">
+                </div>
+                <div class="mt-3">
+                    <p class="text-xs font-semibold text-slate-400 mb-1">Quân cờ chủ lực:</p>
+                    <div id="blackPiecePreview" class="text-xs text-slate-300 flex flex-wrap gap-1 max-h-24 overflow-y-auto pr-1">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Legend / Filter -->
+            <div class="bg-slate-800/60 rounded-xl p-4 border border-slate-700/50">
+                <h4 class="text-sm font-semibold text-amber-400 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info"></i> Chú Thích Tình Huống
+                </h4>
+                <div class="space-y-2 text-xs">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+                        <span class="text-slate-300">45 Tình huống Rủi ro / Biến cố</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                        <span class="text-slate-300">45 Tình huống Sinh kế / Nghề nghiệp</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-2 italic">Nhấp vào bất kỳ điểm nào trên 90 giao điểm bàn cờ để kích hoạt tình huống tương ứng.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Column: Xiangqi Board -->
+        <div class="lg:col-span-6 flex flex-col items-center justify-start order-1 lg:order-2">
+            
+            <!-- Board Wrapper for scaling -->
+            <div class="w-full max-w-[560px] p-2 bg-amber-950/40 rounded-2xl border border-amber-900/50 shadow-2xl">
+                <!-- Outer Xiangqi Canvas Area -->
+                <div id="boardContainer" class="board-container relative w-full select-none overflow-hidden">
+                    
+                    <!-- SVG Overlay for Grid Lines & Palace Lines -->
+                    <svg class="absolute inset-0 w-full h-full pointer-events-none z-0" viewBox="0 0 900 1000" preserveAspectRatio="none">
+                        <!-- Outer Border Line -->
+                        <rect x="50" y="50" width="800" height="900" fill="none" stroke="#5c2c16" stroke-width="6"/>
+                        <rect x="58" y="58" width="784" height="884" fill="none" stroke="#5c2c16" stroke-width="2"/>
+
+                        <!-- Vertical Lines (Top Half: 0..4) -->
+                        <g stroke="#5c2c16" stroke-width="3">
+                            <line x1="150" y1="50" x2="150" y2="450" />
+                            <line x1="250" y1="50" x2="250" y2="450" />
+                            <line x1="350" y1="50" x2="350" y2="450" />
+                            <line x1="450" y1="50" x2="450" y2="450" />
+                            <line x1="550" y1="50" x2="550" y2="450" />
+                            <line x1="650" y1="50" x2="650" y2="450" />
+                            <line x1="750" y1="50" x2="750" y2="450" />
+                        </g>
+
+                        <!-- Vertical Lines (Bottom Half: 5..9) -->
+                        <g stroke="#5c2c16" stroke-width="3">
+                            <line x1="150" y1="550" x2="150" y2="950" />
+                            <line x1="250" y1="550" x2="250" y2="950" />
+                            <line x1="350" y1="550" x2="350" y2="950" />
+                            <line x1="450" y1="550" x2="450" y2="950" />
+                            <line x1="550" y1="550" x2="550" y2="950" />
+                            <line x1="650" y1="550" x2="650" y2="950" />
+                            <line x1="750" y1="550" x2="750" y2="950" />
+                        </g>
+
+                        <!-- Horizontal Lines -->
+                        <g stroke="#5c2c16" stroke-width="3">
+                            <line x1="50" y1="150" x2="850" y2="150" />
+                            <line x1="50" y1="250" x2="850" y2="250" />
+                            <line x1="50" y1="350" x2="850" y2="350" />
+                            <line x1="50" y1="450" x2="850" y2="450" />
+                            
+                            <line x1="50" y1="550" x2="850" y2="550" />
+                            <line x1="50" y1="650" x2="850" y2="650" />
+                            <line x1="50" y1="750" x2="850" y2="750" />
+                            <line x1="50" y1="850" x2="850" y2="850" />
+                        </g>
+
+                        <!-- Palace Diagonal Lines (Cửu Cung) -->
+                        <g stroke="#5c2c16" stroke-width="3" stroke-dasharray="none">
+                            <!-- Top Palace -->
+                            <line x1="350" y1="50" x2="550" y2="250" />
+                            <line x1="550" y1="50" x2="350" y2="250" />
+                            <!-- Bottom Palace -->
+                            <line x1="350" y1="750" x2="550" y2="950" />
+                            <line x1="550" y1="750" x2="350" y2="950" />
+                        </g>
+                    </svg>
+
+                    <!-- River Text Overlay -->
+                    <div class="absolute top-[45%] left-0 w-full h-[10%] flex items-center justify-around pointer-events-none z-0 px-8">
+                        <span class="river-text text-amber-900 font-serif font-bold text-xl sm:text-2xl opacity-70 tracking-widest transition-transform duration-500">楚 河</span>
+                        <span class="river-text text-amber-900 font-serif font-bold text-xl sm:text-2xl opacity-70 tracking-widest transition-transform duration-500">漢 界</span>
+                    </div>
+
+                    <!-- Interactive 90 Nodes (Grid HTML Elements) -->
+                    <div id="boardNodesContainer" class="absolute inset-0 z-10">
+                        <!-- JavaScript dynamic insertion of 90 points -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Node Status Bar -->
+            <div class="w-full max-w-[560px] mt-3 bg-slate-800/90 rounded-lg p-3 text-center border border-slate-700 shadow">
+                <p class="text-xs text-slate-400">Điểm chọn gần nhất:</p>
+                <p id="activeNodeSummary" class="text-sm font-semibold text-amber-300 mt-0.5">Chưa chọn điểm nào trên bàn cờ</p>
+            </div>
+        </div>
+
+        <!-- Right Sidebar: Log & History -->
+        <div class="lg:col-span-3 space-y-4 order-3">
+            <div class="bg-slate-800/80 rounded-xl p-4 shadow-lg border border-slate-700/60 backdrop-blur h-[520px] flex flex-col">
+                <div class="flex justify-between items-center pb-3 border-b border-slate-700">
+                    <h3 class="font-bold text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left"></i> Lịch Sử Ván Chơi
+                    </h3>
+                    <span id="logCount" class="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded-full font-mono">0</span>
+                </div>
+
+                <!-- History Logs List -->
+                <div id="historyLogList" class="flex-1 overflow-y-auto mt-3 space-y-2.5 pr-1">
+                    <div id="emptyLogState" class="text-center text-slate-500 py-12 text-sm italic">
+                        Chưa có diễn biến nào.<br>Nhấn vào một điểm trên bàn cờ để kích hoạt tình huống!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL 1: SITUATION DISPLAY MODAL (90 CASE POPUP) -->
+    <div id="situationModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-opacity duration-300 opacity-0">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-xl w-full p-6 shadow-2xl relative transform transition-transform duration-300 scale-95">
+            <!-- Modal Close Button -->
+            <button id="closeSituationModal" class="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Type Badge Header -->
+            <div class="flex items-center gap-2 mb-3">
+                <span id="modalCategoryBadge" class="px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase">
+                    <!-- Dynamic Category Badge -->
+                </span>
+                <span id="modalCoordinate" class="text-xs font-mono text-slate-400 bg-slate-800 px-2.5 py-1 rounded-full">
+                    <!-- Point Coordinate (Row, Col) -->
+                </span>
+            </div>
+
+            <!-- Situation Title -->
+            <h2 id="modalTitle" class="text-xl font-bold text-amber-400 mb-2 font-serif leading-snug">
+                <!-- Situation Name -->
+            </h2>
+
+            <!-- Piece Info (If piece on node) -->
+            <div id="modalPieceBox" class="mb-4 bg-slate-800/80 p-3 rounded-xl border border-slate-700 flex items-center gap-3 hidden">
+                <div id="modalPieceBadge" class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg border-2 shadow-inner">
+                    <!-- Piece Icon/Text -->
+                </div>
+                <div>
+                    <p id="modalPieceOwner" class="text-xs text-slate-400 font-semibold"></p>
+                    <p id="modalPieceAssigned" class="text-sm text-slate-200 font-bold"></p>
+                </div>
+            </div>
+
+            <!-- Situation Details & Description -->
+            <div class="space-y-3 bg-slate-950/60 p-4 rounded-xl border border-slate-800 text-slate-300 text-sm leading-relaxed mb-6 max-h-60 overflow-y-auto">
+                <p id="modalDescription" class="whitespace-pre-line"></p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-end gap-3">
+                <button id="recordEventBtn" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition shadow-lg flex items-center gap-2 active:scale-95">
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span>Ghi Lại Vào Lịch Sử</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: ASSIGNMENT & PLAYERS MANAGEMENT MODAL -->
+    <div id="assignModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden transition-opacity duration-300 opacity-0">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-4xl w-full p-6 shadow-2xl relative max-h-[90vh] flex flex-col">
+            <!-- Header -->
+            <div class="flex justify-between items-center pb-4 border-b border-slate-700 mb-4">
+                <div>
+                    <h2 class="text-lg font-bold text-amber-400 flex items-center gap-2 font-serif">
+                        <i class="fa-solid fa-users-gear"></i> Gán Tên Người Cho Quân Cờ
+                    </h2>
+                    <p class="text-xs text-slate-400">Liên kết tên các thành viên/nhân vật với các quân cờ Đỏ & Đen</p>
+                </div>
+                <button id="closeAssignModal" class="text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-full flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Scrollable Content Grid -->
+            <div class="flex-1 overflow-y-auto pr-2 space-y-6">
+                <!-- Red Team Assign -->
+                <div>
+                    <h3 class="text-sm font-bold text-red-400 border-b border-red-900/50 pb-2 mb-3 flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-red-500"></span> Quân Đỏ (Red Team)
+                    </h3>
+                    <div id="redPiecesAssignGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                        <!-- Generated via JS -->
+                    </div>
+                </div>
+
+                <!-- Black Team Assign -->
+                <div>
+                    <h3 class="text-sm font-bold text-slate-300 border-b border-slate-700 pb-2 mb-3 flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-slate-400"></span> Quân Đen (Black Team)
+                    </h3>
+                    <div id="blackPiecesAssignGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                        <!-- Generated via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Save -->
+            <div class="pt-4 border-t border-slate-700 mt-4 flex justify-between items-center">
+                <button id="resetAssignmentsBtn" class="text-xs text-slate-400 hover:text-rose-400 transition">
+                    <i class="fa-solid fa-rotate-left"></i> Khôi phục mặc định
+                </button>
+                <button id="saveAssignmentsBtn" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-6 py-2 rounded-xl text-sm transition shadow-lg active:scale-95">
+                    Lưu Cấu Hình
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* -------------------------------------------------------------
+           1. DATA SETS: 90 SITUATIONS (45 RISKS & 45 CAREERS/LIVELIHOODS)
+           ------------------------------------------------------------- */
+        const RISKS_45 = [
+            { title: "Mất Điện Diện Rộng", desc: "Nguồn điện bị cắt liên tục 3 ngày. Thực phẩm tủ lạnh hư hỏng, sản xuất ngưng trệ, sinh hoạt gia đình đảo lộn." },
+            { title: "Cắt Nước Sinh Hoạt", desc: "Mất nước sạch kéo dài. Phải mua nước bình giá cao, vệ sinh cá nhân cực kỳ khó khăn, ảnh hưởng sức khỏe." },
+            { title: "Mất Nguồn Thu Nhập Chính", desc: "Công ty cắt giảm nhân sự bất ngờ. Mất hoàn toàn nguồn thu nhập duy nhất trong khi hóa đơn vẫn dồn dập." },
+            { title: "Mất Chỗ Dựa Bố Mẹ", desc: "Bố mẹ lâm bệnh nặng/qua đời. Mất đi điểm tựa tinh thần và tài chính vững chắc nhất từ trước đến nay." },
+            { title: "Mất Chỗ Dựa Anh Chị Em", desc: "Anh chị em gặp biến cố riêng không thể hỗ trợ, vỡ nợ hoặc bất hòa gia đình khiến mất đi trợ lực." },
+            { title: "Suy Thoái Kinh Tế Toàn Cầu", desc: "Thị trường đóng băng, lạm phát tăng cao, giá cả nhu yếu phẩm phi mã trong khi tiền tích lũy mất giá." },
+            { title: "Bị Sa Thải Thất Nghiệp", desc: "Dự án dừng hoạt động, mất việc ở tuổi giữa sự nghiệp, khó tìm lại công việc có mức lương tương đương." },
+            { title: "Tai Nạn Giao Thông", desc: "Phương tiện hư hỏng nặng, bản thân tốn chi phí điều trị đắt đỏ, phải nghỉ dưỡng sức thời gian dài." },
+            { title: "Bệnh Tật Đột Ngột", desc: "Phát hiện bệnh mãn tính/hiểm nghèo. Chi phí chữa trị tiêu tốn hết toàn bộ tiền tiết kiệm gia đình." },
+            { title: "Chủ Nhà Đòi Lại Nhà Gấp", desc: "Bị hủy hợp đồng thuê nhà trong vòng 3 ngày, không tìm kịp chỗ ở mới, đồ đạc hư hỏng khi chuyển vội." },
+            { title: "Bị Lừa Đảo Đầu Tư", desc: "Tin lời dụ dỗ đầu tư tài chính/bất động sản ảo, toàn bộ tiền tích lũy 10 năm qua 'không cánh mà bay'." },
+            { title: "Tăng Giá Thuê Nhà Chi Phí", desc: "Giá nhà tăng 40%, tiền điện nước leo thang khiến chi phí sinh hoạt vượt quá khả năng chi trả." },
+            { title: "Mất Cắp Tài Sản Lớn", desc: "Kẻ gian đột nhập lấy mất xe máy, máy tính làm việc và toàn bộ tiền mặt dự trữ trong nhà." },
+            { title: "Hỏa Hoạn Biến Cố Nhà Ở", desc: "Chập điện gây cháy nhỏ hỏng hóc tài sản quan trọng, tốn chi phí sửa chữa khắc phục hậu quả." },
+            { title: "Ngập Nước Lụt Mùa Mưa", desc: "Triều cường/mưa lớn làm ngập nhà, toàn bộ thiết bị điện tử, nội thất hư hỏng nặng." },
+            { title: "Vỡ Nợ Vì Vay Tín Dụng Black", desc: "Vay tiền lãi suất cao giúp người thân, lãi mẹ đẻ lãi con vượt tầm kiểm soát tài chính." },
+            { title: "Hàng Xóm Gây Tranh Chấp", desc: "Tranh chấp ranh giới, tiếng ồn kéo dài khiến môi trường sống căng thẳng, không thể an cư." },
+            { title: "Bị Bùng Nợ Khi Cho Vay", desc: "Bạn bè thân thiết vay số tiền lớn rồi cắt liên lạc, khiến bản thân rơi vào bế tắc tài chính." },
+            { title: "Bảo Hiem Từ Chối Bồi Thường", desc: "Gặp sự cố nhưng hồ sơ bảo hiểm bị từ chối do rào cản điều khoản, tự gánh 100% thiệt hại." },
+            { title: "Giá Xăng Dầu Phi Mã", desc: "Chi phí di chuyển và vận chuyển hàng hóa tăng gấp đôi, bào mòn lợi nhuận kinh doanh nhỏ." },
+            { title: "Con Cái Lâm Bệnh Tốn Kém", desc: "Con trẻ cần phẫu thuật gấp, viện phí vượt ngoài khả năng chi trả của hai vợ chồng." },
+            { title: "Rủi Ro Sức Khỏe Tâm Lý", desc: "Áp lực quá lớn dẫn đến trầm cảm, kiệt sức (burnout), không còn khả năng làm việc bình thường." },
+            { title: "Đối Tác Bẻ Cọc Hợp Đồng", desc: "Khách hàng lớn đơn phương hủy đơn hàng vào phút chót, tồn kho ngập tràn, vốn bị chôn chặt." },
+            { title: "Hư Hỏng Phương Tiện Kiếm Sống", desc: "Xe tải/xe máy giao hàng bị hỏng động cơ nặng, dừng hoạt động kiếm sống hàng ngày." },
+            { title: "Thiên Tai Dịch Bệnh", desc: "Dịch bệnh giãn cách xã hội kéo dài, cửa hàng đóng cửa nhưng vẫn phải trả tiền mặt bằng." },
+            { title: "Bị Hack Tài Khoản Ngân Hàng", desc: "Lộ thông tin OTP, toàn bộ tiền trong tài khoản thanh toán bị rút sạch trong đêm." },
+            { title: "Hợp Đồng Cho Thê Đột Ngột Hủy", desc: "Nguồn thu nhập thụ động từ cho thuê phòng trọ bị gián đoạn do khách đồng loạt trả phòng." },
+            { title: "Hàng Hóa Hết Hạn Hư Hỏng", desc: "Kho hàng bị ẩm mốc/côn trùng phá hoại, thiệt hại hàng trăm triệu đồng tiền vốn." },
+            { title: "Bị Tráo Hàng Giả Khi Mua", desc: "Nhập nguyên liệu sản xuất giá cao nhưng nhận phải hàng kém chất lượng, đền bù uy tín." },
+            { title: "Kiện Tụng Tranh Chấp Pháp Lý", desc: "Vướng vào tranh chấp pháp lý rắc rối, tốn tiền thuê luật sư và mất nhiều thời gian." },
+            { title: "Bị Giảm Lương 50%", desc: "Công ty khó khăn tái cấu trúc, cắt giảm nửa lương nhưng khối lượng công việc tăng đôi." },
+            { title: "Đóng Cửa Chi Nhánh Làm Việc", desc: "Nơi làm việc chuyển sang tỉnh khác, buộc phải nghỉ việc vì không thể đi lại quá xa." },
+            { title: "Thất Bại Dự Án Khởi Nghiệp 1", desc: "Mở cửa hàng đầu tay không nghiên cứu kỹ thị trường, sập tiệm sau 4 tháng vận hành." },
+            { title: "Mất Giấy Tờ Tùy Thân Quan Trọng", desc: "Mất hết CCCD, bằng lái, hộ chiếu đúng lúc cần thực hiện giao dịch ngân hàng/bất động sản." },
+            { title: "Bị Thu Hồi Mặt Bằng Phố", desc: "Tuyến đường giải tỏa mặt bằng, mất vị trí kinh doanh đắc địa đã gây dựng nhiều năm." },
+            { title: "Rủi Ro Khi Đứng Tên Vay Giúp", desc: "Đứng tên mua trả góp hộ người quen, họ bỏ trốn khiến bản thân bị nợ xấu ngân hàng." },
+            { title: "Hệ Thống CNTT Lỗi Mất Dữ Liệu", desc: "Mất toàn bộ dữ liệu khách hàng và sổ sách kế toán do máy tính hư ổ cứng không backup." },
+            { title: "Vợ/Chồng Thất Nghiệp Cùng Lúc", desc: "Cả hai vợ chồng đều mất việc làm trong cùng một tháng, chi tiêu gia đình chạm đáy." },
+            { title: "Chi Phí Học Phí Con Tăng Vọt", desc: "Trường học tăng học phí và phí phụ thu đột ngột, gia đình phải vay mượn để con tiếp tục học." },
+            { title: "Sản Phẩm Bị Thu Hồi Do Lỗi", desc: "Lỗi bao bì/chất lượng khiến toàn bộ lô hàng bán ra bị trả về và bồi thường cho khách." },
+            { title: "Bị Ngắt Nguồn Cung Nguyên Liệu", desc: "Nhà cung cấp độc quyền phá sản, dây chuyền sản xuất nhỏ phải tạm ngưng hoàn toàn." },
+            { title: "Thời Tiết Thất Thường Hỏng Hàng", desc: "Nắng nóng/mưa bão kéo dài làm hư hỏng toàn bộ hàng hóa nông sản bán lẻ." },
+            { title: "Bị Đột Xuất Kiểm Tra Thuế", desc: "Bị truy thu thuế và phạt hành chính do sai sót trong quản lý sổ sách kế toán cá nhân." },
+            { title: "Bạn Cùng Mở Quán Rút Vốn", desc: "Đối tác góp vốn bất ngờ rút lại tiền mặt, buộc phải gánh toàn bộ chi phí duy trì." },
+            { title: "Áp Lực Nợ Trả Góp Hàng Tháng", desc: "Tiền trả góp nhà/xe chiếm 80% thu nhập, chỉ cần gián đoạn 1 tháng là nguy cơ siết nợ." }
+        ];
+
+        const CHOICES_45 = [
+            { title: "Mở Tiệm Cắt Tóc Nam (Barber)", desc: "Đầu tư học nghề 3 tháng, mua ghế cờ và bộ tông đơ. Thu nhập ổn định từ khách quen bình dân." },
+            { title: "Nấu Nước Sôi & Chè Đậu Bán", desc: "Vốn ít, bán nước chè tươi, nước đắng, nước sôi giải khát cho người lao động tại cổng mỏ/xưởng." },
+            { title: "Quản Lý Tòa Nhà Cho Thê", desc: "Nhận quản lý vận hành, thu tiền điện nước, bảo trì sự cố cho các chung cư mini, căn hộ dịch vụ." },
+            { title: "Mua Sắm Bán Lẻ Tạp Hóa", desc: "Mở tiệm tạp hóa nhỏ tại nhà, kinh doanh các mặt hàng nhu yếu phẩm: mắm, muối, mì gói, bỉm sữa." },
+            { title: "Cho Thê Nhà Nghỉ Bình Dân", desc: "Thuê lại dãy phòng trọ hoặc căn nhà nhiều phòng để cải tạo làm nhà nghỉ theo giờ/ngày." },
+            { title: "Mở Quán Bún Rêu / Bún Mọc", desc: "Thức dậy từ 4h sáng chuẩn bị nước dùng thơm ngon, phục vụ ăn sáng cho dân văn phòng, học sinh." },
+            { title: "Mở Quán Phở Bò Gia Truyền", desc: "Hầm xương nguyên đêm, tạo bí quyết nước dùng đậm đà thu hút khách ruột mỗi buổi sáng." },
+            { title: "Luộc Lòng Tiết Canh Sạch", desc: "Nhập nội tạng tươi ngon từ sớm, chế biến sạch sẽ, làm món điểm tâm và nhậu được ưa chuộng." },
+            { title: "Kinh Doanh Món Nhậu Bình Dân", desc: "Mở quán ốc, đồ nướng, chân gà nướng về đêm. Thu hút lượng khách lai rai sau giờ làm." },
+            { title: "Mở Xưởng Mạ Kim Loại Sắt Thép", desc: "Đầu tư bể mạ điện, gia công xi mạ ốc vít, linh kiện cơ khí cho các xưởng sản xuất nhỏ." },
+            { title: "Sơn Tượng & Dát Vàng Tượng Phật", desc: "Nghề thủ công mỹ nghệ khéo tay: làm mới, sơn son thếp vàng tượng thờ, đồ phong thủy." },
+            { title: "Chạy Xe Ô Tô / Xe Máy Công Nghệ", desc: "Linh hoạt thời gian, đăng ký app xe công nghệ (Grab/Be/Gojek) chạy mẫn cán kiếm tiền hàng ngày." },
+            { title: "Làm Mướn Bốc Vếp / Giao Hàng", desc: "Nhận chở hàng cho các đại lý chợ đầu mối, công việc nặng nhọc nhưng có tiền mặt ngay cuối ngày." },
+            { title: "Mở Tiệm Giặt Ồi Tự Động", desc: "Đầu tư 4-6 máy giặt sấy công nghiệp, phục vụ sinh viên và người đi làm bận rộn trong khu vực." },
+            { title: "Bán Đồ Ăn Vặt Cổng Trường", desc: "Bán bánh chuối chiên, cá viên chiên, trà sữa cho học sinh giờ tan trường với biên lợi nhuận tốt." },
+            { title: "Sửa Chữa Xe Máy Dọc Đường", desc: "Sắm bộ dụng cụ vá xe, thay nhớt, sửa chữa hỏng hóc cơ bản cho người đi đường." },
+            { title: "Mở Tiệm Bánh Mì Kẹp Thịt", desc: "Xe bánh mì nướng nóng giòn với pa-tê tự làm, bán nhanh số lượng lớn vào giờ cao điểm sáng." },
+            { title: "Nhập Hàng Online Bán Quần Áo", desc: "Livestream bán hàng thời trang giá rẻ trên Facebook/TikTok, tận dụng kho hàng ký gửi." },
+            { title: "Mở Quán Cà Phê Cốc Vỉa Hè", desc: "Vốn đầu tư thấp, pha cà phê phin truyền thống phục vụ khách ngắm phố buổi sáng." },
+            { title: "Dịch Vụ Vệ Sinh Máy Lạnh Nhà Cửa", desc: "Sắm máy bơm áp lực, nhận rửa điều hòa, vệ sinh sofa, thảm tận nhà cho hộ gia đình." },
+            { title: "Nấu Suất Ăn Công Nghiệp", desc: "Nhận nấu 50-100 suất cơm trưa giao tận nơi cho các văn phòng, công trình xây dựng lân cận." },
+            { title: "Kinh Doanh Rau Củ Tươi Chợ Đầu Mối", desc: "Thức dậy 2h sáng lấy rau từ chợ đầu mối về chia nhỏ bán lại ở các chợ tạm dân sinh." },
+            { title: "Trồng Rau Sạch Thuộc Khu Vực Ven", desc: "Tận dụng đất trống trồng rau thủy canh/màng nilon cung cấp cho chuỗi cửa hàng thực phẩm." },
+            { title: "Mở Xưởng In Ấn Quảng Cáo Small", desc: "In bạt hiflex, làm biển hiệu hộp đèn, in card visit cho các cửa hàng mới mở." },
+            { title: "Trông Trẻ Tại Nhà Nho Nhỏ", desc: "Nhận trông 3-5 bé mầm non cho cha mẹ đi làm ca đêm hoặc không xin được trường công." },
+            { title: "Thu Gom Nông Sản Phân Phối", desc: "Đến tận vườn thu mua trái cây theo mùa rồi vận chuyển bán sỉ cho các đại lý thành phố." },
+            { title: "Sửa Chữa Điện Nước Gia Đình", desc: "Thợ tự do nhận sửa chập điện, rò rỉ nước, lắp đặt quạt đèn cho người dân xung quanh." },
+            { title: "Kinh Doanh Đồ Cũ / Đồ Antiques", desc: "Thu mua bàn ghế, đồ điện tử cũ về tân trang rồi bán lại cho người có nhu cầu tiết kiệm." },
+            { title: "Mở Quán Cháo Dinh Dưỡng Trẻ Em", desc: "Nấu các món cháo heo, bò, tim, chim cút tươi ngon bán theo phần cho phụ huynh nuôi con." },
+            { title: "Dịch Vụ Chăm Sóc Thú Cung", desc: "Tắm rửa, tỉa lông và nhận giữ thú cưng dịp lễ tết khi chủ nhà đi du lịch." },
+            { title: "Làm Bánh Ngọt Home-made", desc: "Nướng bánh sinh nhật, bánh bông lan trứng muối bán theo đơn đặt hàng trên mạng." },
+            { title: "Chăn Nuôi Gà Nòi / Gà Thịt", desc: "Tận dụng vườn rộng nuôi gà thả vườn thịt thơm ngon cung cấp cho các nhà hàng." },
+            { title: "Kinh Doanh Đồ Kim Khí Đồ Điện", desc: "Mở tiệm bán ốc vít, đinh, dây điện, bóng đèn, mỏ lết cho thợ xây và hộ gia đình." },
+            { title: "Mở Quán Bánh Xèo Bánh Khọt", desc: "Món ăn vặt chiều được ưa thích, chiên bánh giòn rụm phục vụ khách tại chỗ và mang về." },
+            { title: "Làm Đồ Thủ Công Handmade Export", desc: "Đan mây tre đan, làm nến thơm, đồ len móc bán cho khách du lịch hoặc xuất khẩu." },
+            { title: "Dịch Vụ Đưa Đón Học Sinh", desc: "Dùng xe ô tô gia đình đưa đón học sinh tiểu học đi học đúng giờ theo tháng." },
+            { title: "Cho Thê Trang Phục Sự Kiện", desc: "Mở tiệm cho thuê áo dài, veston, trang phục biểu diễn văn nghệ cho học sinh, công ty." },
+            { title: "Mở Tiệm Rửa Xe Ô Tô Xe Máy", desc: "Mặt bằng rộng, đầu tư máy nén khí, bọt tuyết rửa sạch và thay nhớt nhanh chóng." },
+            { title: "Nhận Chữa Đồ Da & Giày Đép", desc: "Phục hồi đồ da, dán đế giày thể thao, sửa túi xách hiệu bị sờn cũ." },
+            { title: "Kinh Doanh Hoa Tươi Dịp Lễ", desc: "Cắm hoa nghệ thuật, bán bó hoa tươi tận nơi vào các ngày kỷ niệm, lễ tết." },
+            { title: "Mở Tiệm Mới May Sửa Quần Áo", desc: "Nghề may cắt sửa lưng quần, thay khóa kéo, bóp ống quần cho khách hàng xung quanh." },
+            { title: "Cung Cấp Dịch Vụ Chuyển Nhà Trọn Gói", desc: "Sắm xe tải nhỏ cùng 3-4 nhân công nhận tháo lắp, đóng gói, vận chuyển đồ đạc." },
+            { title: "Kinh Doanh Mật Ong & Đặc Sản Vùng Miền", desc: "Nhập đặc sản quê (mật ong, tỏi Lý Sơn, thịt lợn gác bếp) bán cho cư dân đô thị." },
+            { title: "Mở Tiệm Trà Chanh Vỉa Hè Hợp Phố", desc: "Không gian thoáng đãng, thức uống bình dân là điểm tụ tập chém gió của giới trẻ." },
+            { title: "Dịch Vụ Cho Thê Đồ Dùng Sự Kiện", desc: "Cho thuê bàn ghế, loa kéo, phông bạt cho các đám tiệc, sinh nhật quy mô nhỏ." }
+        ];
+
+        /* Combined 90 Master Situations Array */
+        let ALL_90_SITUATIONS = [];
+
+        // Combine 45 Risks + 45 Choices and shuffle/interleave them evenly
+        (function prepare90Situations() {
+            let combined = [];
+            for (let i = 0; i < 45; i++) {
+                combined.push({ type: 'RISK', data: RISKS_45[i] });
+                combined.push({ type: 'CHOICE', data: CHOICES_45[i] });
+            }
+            // Shuffle pseudo-randomly to disperse across board grid nicely
+            ALL_90_SITUATIONS = combined;
+        })();
+
+        /* -------------------------------------------------------------
+           2. XIANGQI INITIAL PIECE SETUP (90 POINTS = 10 ROWS x 9 COLS)
+           ------------------------------------------------------------- */
+        // Default standard chess pieces setup
+        const INITIAL_PIECES = {
+            // Red Pieces (Row 9 to 6)
+            "9-0": { type: "R_ROOK", name: "Xe Đỏ", char: "車", side: "red" },
+            "9-1": { type: "R_KNIGHT", name: "Mã Đỏ", char: "馬", side: "red" },
+            "9-2": { type: "R_ELEPHANT", name: "Tượng Đỏ", char: "相", side: "red" },
+            "9-3": { type: "R_ADVISOR", name: "Sĩ Đỏ", char: "仕", side: "red" },
+            "9-4": { type: "R_KING", name: "Tướng Đỏ", char: "帥", side: "red" },
+            "9-5": { type: "R_ADVISOR", name: "Sĩ Đỏ", char: "仕", side: "red" },
+            "9-6": { type: "R_ELEPHANT", name: "Tượng Đỏ", char: "相", side: "red" },
+            "9-7": { type: "R_KNIGHT", name: "Mã Đỏ", char: "馬", side: "red" },
+            "9-8": { type: "R_ROOK", name: "Xe Đỏ", char: "車", side: "red" },
+            "7-1": { type: "R_CANNON", name: "Pháo Đỏ", char: "砲", side: "red" },
+            "7-7": { type: "R_CANNON", name: "Pháo Đỏ", char: "砲", side: "red" },
+            "6-0": { type: "R_PAWN", name: "Tốt Đỏ 1", char: "兵", side: "red" },
+            "6-2": { type: "R_PAWN", name: "Tốt Đỏ 2", char: "兵", side: "red" },
+            "6-4": { type: "R_PAWN", name: "Tốt Đỏ 3", char: "兵", side: "red" },
+            "6-6": { type: "R_PAWN", name: "Tốt Đỏ 4", char: "兵", side: "red" },
+            "6-8": { type: "R_PAWN", name: "Tốt Đỏ 5", char: "兵", side: "red" },
+
+            // Black Pieces (Row 0 to 3)
+            "0-0": { type: "B_ROOK", name: "Xe Đen", char: "車", side: "black" },
+            "0-1": { type: "B_KNIGHT", name: "Mã Đen", char: "馬", side: "black" },
+            "0-2": { type: "B_ELEPHANT", name: "Tượng Đen", char: "象", side: "black" },
+            "0-3": { type: "B_ADVISOR", name: "Sĩ Đen", char: "士", side: "black" },
+            "0-4": { type: "B_KING", name: "Tướng Đen", char: "將", side: "black" },
+            "0-5": { type: "B_ADVISOR", name: "Sĩ Đen", char: "士", side: "black" },
+            "0-6": { type: "B_ELEPHANT", name: "Tượng Đen", char: "象", side: "black" },
+            "0-7": { type: "B_KNIGHT", name: "Mã Đen", char: "馬", side: "black" },
+            "0-8": { type: "B_ROOK", name: "Xe Đen", char: "車", side: "black" },
+            "2-1": { type: "B_CANNON", name: "Pháo Đen", char: "砲", side: "black" },
+            "2-7": { type: "B_CANNON", name: "Pháo Đen", char: "砲", side: "black" },
+            "3-0": { type: "B_PAWN", name: "Tốt Đen 1", char: "卒", side: "black" },
+            "3-2": { type: "B_PAWN", name: "Tốt Đen 2", char: "卒", side: "black" },
+            "3-4": { type: "B_PAWN", name: "Tốt Đen 3", char: "卒", side: "black" },
+            "3-6": { type: "B_PAWN", name: "Tốt Đen 4", char: "卒", side: "black" },
+            "3-8": { type: "B_PAWN", name: "Tốt Đen 5", char: "卒", side: "black" },
+        };
+
+        // Person Assignment Database for each piece type
+        let PIECE_ASSIGNMENTS = {
+            "R_KING": "Chú Cả (Trưởng họ)",
+            "R_ADVISOR": "Anh Hai (Cố vấn)",
+            "R_ELEPHANT": "Chú Ba (Tài chính)",
+            "R_KNIGHT": "Cậu Tư (Kinh doanh)",
+            "R_ROOK": "Bác Sáu (Tiên phong)",
+            "R_CANNON": "Cô Bảy (Truyền thông)",
+            "R_PAWN": "Anh Em Họ (Trợ lực Đỏ)",
+
+            "B_KING": "Bố (Trụ cột Đen)",
+            "B_ADVISOR": "Mẹ (Hậu phương)",
+            "B_ELEPHANT": "Dì Út (Quản lý)",
+            "B_KNIGHT": "Anh Trai (Ngoại giao)",
+            "B_ROOK": "Chú Tám (Đầu tư)",
+            "B_CANNON": "Chị Gái (Hỗ trợ)",
+            "B_PAWN": "Nhân Viên (Trợ lực Đen)"
+        };
+
+        /* Application State Variables */
+        let activeNodeData = null;
+        let isBoardFlipped = false;
+        let gameLogs = [];
+
+        /* -------------------------------------------------------------
+           3. BOARD RENDERING & INITIALIZATION
+           ------------------------------------------------------------- */
+        document.addEventListener('DOMContentLoaded', () => {
+            renderBoardNodes();
+            updatePiecePreviews();
+            setupEventListeners();
+        });
+
+        // Render 90 Intersections on the 10x9 Chessboard
+        function renderBoardNodes() {
+            const container = document.getElementById('boardNodesContainer');
+            container.innerHTML = '';
+
+            let situationIdx = 0;
+
+            for (let r = 0; r < 10; r++) {
+                for (let c = 0; c < 9; c++) {
+                    const key = `${r}-${c}`;
+                    const situation = ALL_90_SITUATIONS[situationIdx % 90];
+                    situationIdx++;
+
+                    const piece = INITIAL_PIECES[key] || null;
+
+                    // Calculate percentage position
+                    // Row 0..9 -> Y: 5% .. 95%
+                    // Col 0..8 -> X: 5.55% .. 94.44%
+                    const leftPercent = (c * 100 / 8);
+                    const topPercent = (r * 100 / 9);
+
+                    // Create Node Wrapper Element
+                    const nodeEl = document.createElement('div');
+                    nodeEl.className = 'absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center cursor-pointer group z-20';
+                    nodeEl.style.left = `${5.55 + leftPercent * 0.889}%`;
+                    nodeEl.style.top = `${5 + topPercent * 0.9}%`;
+                    nodeEl.style.width = '10%';
+                    nodeEl.style.height = '9%';
+
+                    // Node Color Style based on type
+                    const isRisk = situation.type === 'RISK';
+                    const markerColorClass = isRisk ? 'bg-rose-500/80 group-hover:bg-rose-600' : 'bg-emerald-500/80 group-hover:bg-emerald-600';
+
+                    // HTML Content for the node
+                    nodeEl.innerHTML = `
+                        <!-- Intersection Marker Circle -->
+                        <div class="point-marker w-3 h-3 sm:w-4 sm:h-4 rounded-full ${markerColorClass} shadow-md border border-white/60 transition-transform duration-200 group-hover:scale-125 flex items-center justify-center">
+                            <span class="w-1 h-1 bg-white rounded-full"></span>
+                        </div>
+
+                        <!-- Piece Element if present on node -->
+                        ${piece ? `
+                            <div class="piece-content absolute inset-0 m-auto w-8 h-8 sm:w-11 sm:h-11 rounded-full flex items-center justify-center font-serif font-bold text-base sm:text-xl shadow-lg border-2 transition-transform active:scale-95 ${
+                                piece.side === 'red' 
+                                ? 'bg-amber-100 text-red-700 border-red-600 shadow-red-950/40' 
+                                : 'bg-slate-900 text-amber-100 border-slate-500 shadow-black/60'
+                            }">
+                                ${piece.char}
+                            </div>
+                        ` : ''}
+                    `;
+
+                    // Click event to inspect node
+                    nodeEl.addEventListener('click', () => {
+                        handleNodeClick(r, c, situation, piece);
+                    });
+
+                    container.appendChild(nodeEl);
+                }
+            }
+        }
+
+        /* -------------------------------------------------------------
+           4. NODE CLICK & MODAL DISPATCHER
+           ------------------------------------------------------------- */
+        function handleNodeClick(row, col, situation, piece) {
+            const playerRed = document.getElementById('playerRedName').value.trim() || "Bên Đỏ";
+            const playerBlack = document.getElementById('playerBlackName').value.trim() || "Bên Đen";
+            
+            const isRisk = situation.type === 'RISK';
+            const assignedPerson = piece ? (PIECE_ASSIGNMENTS[piece.type] || "Chưa gán") : null;
+            const ownerPlayer = piece ? (piece.side === 'red' ? playerRed : playerBlack) : null;
+
+            activeNodeData = {
+                row,
+                col,
+                situation,
+                piece,
+                assignedPerson,
+                ownerPlayer,
+                timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+            };
+
+            // Update UI modal values
+            const modal = document.getElementById('situationModal');
+            const badge = document.getElementById('modalCategoryBadge');
+            const coord = document.getElementById('modalCoordinate');
+            const title = document.getElementById('modalTitle');
+            const desc = document.getElementById('modalDescription');
+            const pieceBox = document.getElementById('modalPieceBox');
+            const pieceBadge = document.getElementById('modalPieceBadge');
+            const pieceOwner = document.getElementById('modalPieceOwner');
+            const pieceAssigned = document.getElementById('modalPieceAssigned');
+
+            // Category badge styling
+            if (isRisk) {
+                badge.className = 'px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase bg-rose-950 text-rose-300 border border-rose-700';
+                badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> Tình Huống Rủi Ro / Biến Cố';
+            } else {
+                badge.className = 'px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase bg-emerald-950 text-emerald-300 border border-emerald-700';
+                badge.innerHTML = '<i class="fa-solid fa-briefcase mr-1"></i> Lựa Chọn Sinh Kế / Nghề Nghiệp';
+            }
+
+            coord.innerText = `Vị trí giao điểm: hàng ${row + 1}, cột ${col + 1}`;
+            title.innerText = situation.data.title;
+            desc.innerText = situation.data.desc;
+
+            // Piece Box Info
+            if (piece) {
+                pieceBox.classList.remove('hidden');
+                pieceBadge.innerText = piece.char;
+                if (piece.side === 'red') {
+                    pieceBadge.className = 'w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl border-2 bg-amber-100 text-red-700 border-red-600 shadow-sm';
+                    pieceOwner.innerText = `Thuộc bên Đỏ: ${ownerPlayer}`;
+                } else {
+                    pieceBadge.className = 'w-10 h-10 rounded-full flex items-center justify-center font-bold text-xl border-2 bg-slate-900 text-amber-100 border-slate-500 shadow-sm';
+                    pieceOwner.innerText = `Thuộc bên Đen: ${ownerPlayer}`;
+                }
+                pieceAssigned.innerText = `Gắn với: ${piece.name} (${assignedPerson})`;
+            } else {
+                pieceBox.classList.add('hidden');
+            }
+
+            // Update bottom quick bar summary
+            document.getElementById('activeNodeSummary').innerText = `Hàng ${row + 1}, Cột ${col + 1}: ${situation.data.title} ${piece ? `[${piece.name}]` : ''}`;
+
+            // Show Modal with Animation
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('.transform').classList.remove('scale-95');
+                modal.querySelector('.transform').classList.add('scale-100');
+            }, 10);
+        }
+
+        // Close Modal Helper
+        function closeModal() {
+            const modal = document.getElementById('situationModal');
+            modal.classList.add('opacity-0');
+            modal.querySelector('.transform').classList.remove('scale-100');
+            modal.querySelector('.transform').classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        /* -------------------------------------------------------------
+           5. EVENT LOGGING & HISTORY MANAGER
+           ------------------------------------------------------------- */
+        function recordCurrentEvent() {
+            if (!activeNodeData) return;
+
+            const { row, col, situation, piece, assignedPerson, ownerPlayer, timestamp } = activeNodeData;
+            const isRisk = situation.type === 'RISK';
+
+            const logItem = {
+                id: Date.now(),
+                timestamp,
+                position: `Hàng ${row + 1}, Cột ${col + 1}`,
+                title: situation.data.title,
+                type: situation.type,
+                pieceInfo: piece ? `${piece.name} (${assignedPerson}) - ${ownerPlayer}` : null
+            };
+
+            gameLogs.unshift(logItem); // Insert at top
+            renderHistoryLogs();
+            closeModal();
+        }
+
+        function renderHistoryLogs() {
+            const logContainer = document.getElementById('historyLogList');
+            const emptyState = document.getElementById('emptyLogState');
+            const countBadge = document.getElementById('logCount');
+
+            countBadge.innerText = gameLogs.length;
+
+            if (gameLogs.length === 0) {
+                logContainer.innerHTML = '';
+                logContainer.appendChild(emptyState);
+                return;
+            }
+
+            logContainer.innerHTML = gameLogs.map(log => {
+                const isRisk = log.type === 'RISK';
+                return `
+                    <div class="bg-slate-900/90 border-l-4 ${isRisk ? 'border-rose-500' : 'border-emerald-500'} p-3 rounded-lg text-xs space-y-1 shadow animate-fadeIn">
+                        <div class="flex justify-between items-center text-slate-400 font-mono text-[11px]">
+                            <span><i class="fa-regular fa-clock mr-1"></i>${log.timestamp}</span>
+                            <span class="bg-slate-800 px-1.5 py-0.5 rounded text-amber-300">${log.position}</span>
+                        </div>
+                        <p class="font-bold text-slate-100 text-sm">${log.title}</p>
+                        ${log.pieceInfo ? `<p class="text-amber-400 font-semibold"><i class="fa-solid fa-chess-knight mr-1"></i>${log.pieceInfo}</p>` : ''}
+                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-semibold mt-1 ${isRisk ? 'bg-rose-950 text-rose-300' : 'bg-emerald-950 text-emerald-300'}">
+                            ${isRisk ? 'Biến Cố Rủi Ro' : 'Lựa Chọn Sinh Kế'}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        /* -------------------------------------------------------------
+           6. ASSIGNMENT MODAL & PREVIEWS
+           ------------------------------------------------------------- */
+        function openAssignModal() {
+            const redGrid = document.getElementById('redPiecesAssignGrid');
+            const blackGrid = document.getElementById('blackPiecesAssignGrid');
+
+            const redTypes = [
+                { type: "R_KING", label: "Tướng Đỏ (帥)" },
+                { type: "R_ADVISOR", label: "Sĩ Đỏ (仕)" },
+                { type: "R_ELEPHANT", label: "Tượng Đỏ (相)" },
+                { type: "R_KNIGHT", label: "Mã Đỏ (馬)" },
+                { type: "R_ROOK", label: "Xe Đỏ (車)" },
+                { type: "R_CANNON", label: "Pháo Đỏ (砲)" },
+                { type: "R_PAWN", label: "Tốt Đỏ (兵)" }
+            ];
+
+            const blackTypes = [
+                { type: "B_KING", label: "Tướng Đen (將)" },
+                { type: "B_ADVISOR", label: "Sĩ Đen (士)" },
+                { type: "B_ELEPHANT", label: "Tượng Đen (象)" },
+                { type: "B_KNIGHT", label: "Mã Đen (馬)" },
+                { type: "B_ROOK", label: "Xe Đen (車)" },
+                { type: "B_CANNON", label: "Pháo Đen (砲)" },
+                { type: "B_PAWN", label: "Tốt Đen (卒)" }
+            ];
+
+            redGrid.innerHTML = redTypes.map(item => `
+                <div class="bg-slate-800 p-2.5 rounded-lg border border-red-900/40 space-y-1">
+                    <label class="text-xs font-semibold text-red-300 block">${item.label}</label>
+                    <input type="text" data-piece-type="${item.type}" value="${PIECE_ASSIGNMENTS[item.type] || ''}" class="piece-input-field w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-slate-100 focus:outline-none focus:border-red-500">
+                </div>
+            `).join('');
+
+            blackGrid.innerHTML = blackTypes.map(item => `
+                <div class="bg-slate-800 p-2.5 rounded-lg border border-slate-700 space-y-1">
+                    <label class="text-xs font-semibold text-slate-300 block">${item.label}</label>
+                    <input type="text" data-piece-type="${item.type}" value="${PIECE_ASSIGNMENTS[item.type] || ''}" class="piece-input-field w-full bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-slate-100 focus:outline-none focus:border-slate-400">
+                </div>
+            `).join('');
+
+            const modal = document.getElementById('assignModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+            }, 10);
+        }
+
+        function closeAssignModal() {
+            const modal = document.getElementById('assignModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        function saveAssignments() {
+            const inputs = document.querySelectorAll('.piece-input-field');
+            inputs.forEach(input => {
+                const type = input.getAttribute('data-piece-type');
+                PIECE_ASSIGNMENTS[type] = input.value.trim() || "Chưa tên";
+            });
+            updatePiecePreviews();
+            closeAssignModal();
+        }
+
+        function updatePiecePreviews() {
+            const redPreview = document.getElementById('redPiecePreview');
+            const blackPreview = document.getElementById('blackPiecePreview');
+
+            redPreview.innerHTML = `
+                <span class="bg-red-950/80 text-red-300 px-2 py-0.5 rounded border border-red-800">Tướng: ${PIECE_ASSIGNMENTS['R_KING']}</span>
+                <span class="bg-red-950/80 text-red-300 px-2 py-0.5 rounded border border-red-800">Xe: ${PIECE_ASSIGNMENTS['R_ROOK']}</span>
+                <span class="bg-red-950/80 text-red-300 px-2 py-0.5 rounded border border-red-800">Pháo: ${PIECE_ASSIGNMENTS['R_CANNON']}</span>
+            `;
+
+            blackPreview.innerHTML = `
+                <span class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded border border-slate-700">Tướng: ${PIECE_ASSIGNMENTS['B_KING']}</span>
+                <span class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded border border-slate-700">Xe: ${PIECE_ASSIGNMENTS['B_ROOK']}</span>
+                <span class="bg-slate-900 text-slate-300 px-2 py-0.5 rounded border border-slate-700">Pháo: ${PIECE_ASSIGNMENTS['B_CANNON']}</span>
+            `;
+        }
+
+        /* -------------------------------------------------------------
+           7. EVENT LISTENERS SETUP
+           ------------------------------------------------------------- */
+        function setupEventListeners() {
+            // Flip Board Button (180 deg view toggle)
+            document.getElementById('flipBoardBtn').addEventListener('click', () => {
+                const board = document.getElementById('boardContainer');
+                isBoardFlipped = !isBoardFlipped;
+                if (isBoardFlipped) {
+                    board.classList.add('board-flipped');
+                } else {
+                    board.classList.remove('board-flipped');
+                }
+            });
+
+            // Modals Controls
+            document.getElementById('closeSituationModal').addEventListener('click', closeModal);
+            document.getElementById('recordEventBtn').addEventListener('click', recordCurrentEvent);
+
+            document.getElementById('openAssignModalBtn').addEventListener('click', openAssignModal);
+            document.getElementById('closeAssignModal').addEventListener('click', closeAssignModal);
+            document.getElementById('saveAssignmentsBtn').addEventListener('click', saveAssignments);
+
+            // Reset Logs
+            document.getElementById('resetLogBtn').addEventListener('click', () => {
+                if (confirm('Bạn có chắc chắn muốn xóa toàn bộ lịch sử ván chơi?')) {
+                    gameLogs = [];
+                    renderHistoryLogs();
+                }
+            });
+
+            // Close modals on background backdrop click
+            window.addEventListener('click', (e) => {
+                const sitModal = document.getElementById('situationModal');
+                const assModal = document.getElementById('assignModal');
+                if (e.target === sitModal) closeModal();
+                if (e.target === assModal) closeAssignModal();
+            });
+        }
+    </script>
+</body>
+</html>

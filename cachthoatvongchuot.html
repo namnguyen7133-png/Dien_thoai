@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thoát Khỏi Vòng Xoáy Mưu Sinh (Rat Race Calculator)</title>
+    <!-- Tải Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tải Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tải Chart.js cho biểu đồ trực quan -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Tải Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        /* Tùy chỉnh thanh cuộn mượt mà */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .money-input {
+            font-variant-numeric: tabular-nums;
+        }
+        .card-hover {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-indigo-100 selection:text-indigo-900">
+
+    <!-- Header Banner -->
+    <header class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-lg sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-amber-500/20 border border-amber-400/30 p-2.5 rounded-xl text-amber-400">
+                    <i data-lucide="compass" class="w-7 h-7"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-bold tracking-tight text-white">La Bàn Thoát Khỏi Rat Race</h1>
+                    <p class="text-xs sm:text-sm text-slate-300">Đo lường dòng tiền • Chặn lạm phát lối sống • Chạm tới Tự do Tài chính</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="resetDefaultData()" class="px-3 py-2 text-xs sm:text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Dữ liệu mẫu
+                </button>
+                <button onclick="clearAllData()" class="px-3 py-2 text-xs sm:text-sm font-medium bg-rose-950/60 hover:bg-rose-900/80 text-rose-200 rounded-lg border border-rose-800/50 transition flex items-center gap-1.5">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i> Xóa trắng
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+        <!-- Quote Banner -->
+        <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl shadow-sm flex items-start gap-3">
+            <i data-lucide="quote" class="w-6 h-6 text-amber-600 shrink-0 mt-0.5"></i>
+            <p class="text-sm sm:text-base text-amber-950 italic font-medium">
+                "Con chuột không thoát khỏi bánh xe vì nó chạy chưa đủ nhanh. Nó không thoát vì nó không bao giờ dừng lại để nhìn và bước xuống."
+            </p>
+        </div>
+
+        <!-- TOP DASHBOARD: 4 CHỈ SỐ CỐT LÕI -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Card 1: Khoảng cách Thu - Chi -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm card-hover">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Tiền Giữ Lại / Tháng</span>
+                    <span class="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><i data-lucide="wallet" class="w-4 h-4"></i></span>
+                </div>
+                <div id="dash-net-savings" class="text-2xl font-extrabold text-slate-900 money-input">0 ₫</div>
+                <p id="dash-savings-rate" class="text-xs font-medium text-slate-500 mt-1">Tỷ lệ giữ lại: 0%</p>
+            </div>
+
+            <!-- Card 2: Con số Tự do Tài chính -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm card-hover">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Con Số Tự Do (Mục Tiêu)</span>
+                    <span class="p-2 bg-indigo-50 text-indigo-600 rounded-lg"><i data-lucide="flag" class="w-4 h-4"></i></span>
+                </div>
+                <div id="dash-freedom-number" class="text-2xl font-extrabold text-indigo-600 money-input">0 ₫</div>
+                <p class="text-xs text-slate-500 mt-1">Thu nhập thụ động cần đạt / tháng</p>
+            </div>
+
+            <!-- Card 3: Chỉ số Tự do Tài chính (%) -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm card-hover">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Chỉ Số Thoát Rat Race</span>
+                    <span class="p-2 bg-amber-50 text-amber-600 rounded-lg"><i data-lucide="trending-up" class="w-4 h-4"></i></span>
+                </div>
+                <div id="dash-freedom-percent" class="text-2xl font-extrabold text-amber-600">0%</div>
+                <div class="w-full bg-slate-100 rounded-full h-2 mt-2 overflow-hidden">
+                    <div id="dash-freedom-bar" class="bg-amber-500 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Card 4: Khoảng đệm An toàn -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm card-hover">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Khoảng Đệm Sinh Tồn</span>
+                    <span class="p-2 bg-sky-50 text-sky-600 rounded-lg"><i data-lucide="shield-check" class="w-4 h-4"></i></span>
+                </div>
+                <div id="dash-runway-months" class="text-2xl font-extrabold text-sky-600">0 tháng</div>
+                <p id="dash-runway-status" class="text-xs text-slate-500 mt-1">Mục tiêu an toàn: 3 - 6 tháng</p>
+            </div>
+        </section>
+
+        <!-- SECTION 1 & 2: ĐO LƯỜNG VÒNG XOÁY MƯU SINH & CON SỐ TỰ DO -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Cột Trái: Bảng Nhập Dòng Tiền Hàng Tháng -->
+            <div class="lg:col-span-6 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                <div class="border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-2 text-indigo-600 font-semibold text-sm mb-1">
+                        <i data-lucide="calculator" class="w-4 h-4"></i> BƯỚC 1 & NGUYÊN NHÂN 1, 2, 5
+                    </div>
+                    <h2 class="text-xl font-bold text-slate-900">1. Đo Lường Vòng Xoáy Mưu Sinh (Thu - Chi)</h2>
+                    <p class="text-sm text-slate-500 mt-1">"Quyết định bạn có giàu không không nằm ở việc kiếm bao nhiêu, mà là giữ lại được bao nhiêu."</p>
+                </div>
+
+                <!-- Nhóm Thu Nhập -->
+                <div class="space-y-4">
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
+                        <i data-lucide="arrow-down-circle" class="w-4 h-4"></i> Nguồn Thu Nhập Hàng Tháng
+                    </h3>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">
+                            Thu nhập chủ động (Lương đổi 8-10h sức lao động)
+                        </label>
+                        <div class="relative">
+                            <input type="text" id="input-active-income" data-raw="25000000" value="25.000.000" 
+                                class="money-field money-input w-full pl-4 pr-12 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-semibold text-slate-900 transition">
+                            <span class="absolute right-4 top-2.5 text-slate-400 font-medium">VNĐ</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">
+                            Thu nhập thụ động hiện tại (Dòng tiền thứ 2 - Không cần đi làm)
+                        </label>
+                        <div class="relative">
+                            <input type="text" id="input-passive-income" data-raw="2500000" value="2.500.000" 
+                                class="money-field money-input w-full pl-4 pr-12 py-2.5 bg-emerald-50/50 border border-emerald-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-semibold text-emerald-900 transition">
+                            <span class="absolute right-4 top-2.5 text-emerald-600 font-medium">VNĐ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nhóm Chi Phí -->
+                <div class="space-y-4 pt-2 border-t border-slate-100">
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-rose-700 flex items-center gap-1.5">
+                        <i data-lucide="arrow-up-circle" class="w-4 h-4"></i> Dòng Tiền Ra Hàng Tháng
+                    </h3>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">
+                            Chi phí sinh hoạt thiết yếu (Tiền nhà, ăn uống, học hành, hóa đơn)
+                        </label>
+                        <div class="relative">
+                            <input type="text" id="input-essential-expense" data-raw="15000000" value="15.000.000" 
+                                class="money-field money-input w-full pl-4 pr-12 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-semibold text-slate-900 transition">
+                            <span class="absolute right-4 top-2.5 text-slate-400 font-medium">VNĐ</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">*Đây chính là <strong>Con số Tự do Tài chính</strong> tối thiểu của bạn.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">
+                            Chi phí nuôi tiêu sản & Lạm phát lối sống (Trả góp xe, đồ hiệu, lãi thẻ tín dụng...)
+                        </label>
+                        <div class="relative">
+                            <input type="text" id="input-liability-expense" data-raw="7500000" value="7.500.000" 
+                                class="money-field money-input w-full pl-4 pr-12 py-2.5 bg-rose-50/50 border border-rose-300 rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-rose-500 font-semibold text-rose-900 transition">
+                            <span class="absolute right-4 top-2.5 text-rose-500 font-medium">VNĐ</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hộp Cảnh Báo Trạng Thái Vòng Xoáy -->
+                <div id="rat-race-alert" class="p-4 rounded-xl border transition-all">
+                    <!-- Nội dung được render tự động bằng JS -->
+                </div>
+            </div>
+
+            <!-- Cột Phải: Biểu Đồ & Chỉ Số Tự Do Tài Chính -->
+            <div class="lg:col-span-6 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between space-y-6">
+                <div>
+                    <div class="border-b border-slate-100 pb-4">
+                        <div class="flex items-center gap-2 text-amber-600 font-semibold text-sm mb-1">
+                            <i data-lucide="target" class="w-4 h-4"></i> BƯỚC 1 & BƯỚC 4
+                        </div>
+                        <h2 class="text-xl font-bold text-slate-900">2. Tiến Độ Thoát Khỏi Bánh Xe Rat Race</h2>
+                        <p class="text-sm text-slate-500 mt-1">Tự do tài chính đạt được khi: <strong>Thu nhập thụ động &ge; Tổng chi phí sống thiết yếu</strong>.</p>
+                    </div>
+
+                    <!-- Thanh Tiến Trình Tự Do Lớn -->
+                    <div class="mt-6 bg-slate-50 p-5 rounded-2xl border border-slate-200/80">
+                        <div class="flex justify-between items-end mb-2">
+                            <div>
+                                <span class="text-xs font-bold uppercase text-slate-500">Mức độ tự do hiện tại</span>
+                                <div id="freedom-ratio-text" class="text-3xl font-extrabold text-indigo-600 mt-0.5">16.7%</div>
+                            </div>
+                            <div class="text-right">
+                                <span class="text-xs text-slate-500 block">Còn thiếu mỗi tháng</span>
+                                <span id="freedom-gap-amount" class="text-base font-bold text-rose-600 money-input">12.500.000 ₫</span>
+                            </div>
+                        </div>
+                        
+                        <div class="w-full bg-slate-200 rounded-full h-4 overflow-hidden p-0.5">
+                            <div id="freedom-main-bar" class="bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500 h-3 rounded-full transition-all duration-500" style="width: 16.7%"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-slate-500 mt-2 font-medium">
+                            <span>0% (Phụ thuộc 100% lương)</span>
+                            <span>50% (Bán tự do)</span>
+                            <span>100% (Thoát Rat Race!)</span>
+                        </div>
+                    </div>
+
+                    <!-- Công thức & Giải thích trực quan -->
+                    <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="p-4 rounded-xl bg-indigo-50/70 border border-indigo-100">
+                            <span class="text-xs font-semibold text-indigo-800 uppercase">Tổng Thu Nhập</span>
+                            <div id="summary-total-income" class="text-lg font-bold text-indigo-950 mt-1 money-input">27.500.000 ₫</div>
+                            <span class="text-xs text-indigo-600 mt-1 block">Chủ động + Thụ động</span>
+                        </div>
+                        <div class="p-4 rounded-xl bg-rose-50/70 border border-rose-100">
+                            <span class="text-xs font-semibold text-rose-800 uppercase">Tổng Chi Tiêu</span>
+                            <div id="summary-total-expense" class="text-lg font-bold text-rose-950 mt-1 money-input">22.500.000 ₫</div>
+                            <span id="liability-ratio-badge" class="text-xs text-rose-600 mt-1 block">Tiêu sản chiếm 33.3% chi tiêu</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Biểu đồ cấu trúc dòng tiền -->
+                <div class="pt-2">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 text-center">Bức Tranh Dòng Tiền Hàng Tháng</h4>
+                    <div class="h-48 w-full flex justify-center">
+                        <canvas id="cashflowChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 3 & 4: QUỸ DỰ PHÒNG & PHÂN BỔ 3 PHẦN + GIẢ LẬP TĂNG LƯƠNG -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Cột Trái: Kiểm Tra Quỹ Dự Phòng (Nguyên nhân 4) -->
+            <div class="lg:col-span-5 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+                <div class="border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-2 text-sky-600 font-semibold text-sm mb-1">
+                        <i data-lucide="shield" class="w-4 h-4"></i> NGUYÊN NHÂN 4
+                    </div>
+                    <h2 class="text-xl font-bold text-slate-900">3. Kiểm Tra Khoảng Đệm An Toàn</h2>
+                    <p class="text-sm text-slate-500 mt-1">Không có quỹ dự phòng khiến bạn không dám nghỉ việc chán ngắt hay nắm bắt cơ hội mới.</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">
+                        Quỹ tiền mặt dự phòng hiện có (Thanh khoản cao)
+                    </label>
+                    <div class="relative">
+                        <input type="text" id="input-emergency-fund" data-raw="30000000" value="30.000.000" 
+                            class="money-field money-input w-full pl-4 pr-12 py-2.5 bg-sky-50/50 border border-sky-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:border-sky-500 font-semibold text-sky-950 transition">
+                        <span class="absolute right-4 top-2.5 text-sky-600 font-medium">VNĐ</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-slate-600">Thời gian sống sót nếu mất lương:</span>
+                        <span id="emergency-months-result" class="text-lg font-extrabold text-sky-600">2.0 tháng</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-slate-600">Mức tối thiểu (3 tháng thiết yếu):</span>
+                        <span id="emergency-target-3m" class="font-semibold text-slate-800 money-input">45.000.000 ₫</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-slate-600">Mức lý tưởng (6 tháng thiết yếu):</span>
+                        <span id="emergency-target-6m" class="font-semibold text-slate-800 money-input">90.000.000 ₫</span>
+                    </div>
+                    <div class="pt-2 border-t border-slate-200 flex justify-between items-center text-sm">
+                        <span class="font-medium text-slate-700">Cần tích lũy thêm (đạt 6 tháng):</span>
+                        <span id="emergency-shortfall" class="font-bold text-amber-600 money-input">60.000.000 ₫</span>
+                    </div>
+                </div>
+
+                <div id="emergency-advice" class="text-xs p-3.5 rounded-xl bg-sky-50 text-sky-900 border border-sky-200 leading-relaxed">
+                    <!-- Lời khuyên tự động -->
+                </div>
+            </div>
+
+            <!-- Cột Phải: Phân Bổ Dòng Tiền 3 Phần & Giả Lập Tăng Lương (Bước 2 & 3) -->
+            <div class="lg:col-span-7 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+                <div class="border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-2 text-emerald-600 font-semibold text-sm mb-1">
+                        <i data-lucide="pie-chart" class="w-4 h-4"></i> BƯỚC 2 & BƯỚC 3
+                    </div>
+                    <h2 class="text-xl font-bold text-slate-900">4. Chia Tiền 3 Phần & Chặn Lạm Phát Lối Sống</h2>
+                    <p class="text-sm text-slate-500 mt-1">Nguyên tắc <strong>"Trả cho mình trước"</strong>: Khi tăng lương, giữ nguyên mức sống cũ và dồn phần tăng thêm vào đầu tư.</p>
+                </div>
+
+                <!-- Bảng Phân Bổ 3 Phần -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <!-- Phần 1 -->
+                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-xs font-bold text-slate-500 uppercase">Phần 1: Cuộc Sống</span>
+                            <span id="alloc-p1-pct" class="text-xs font-bold px-2 py-0.5 rounded bg-slate-200 text-slate-700">0%</span>
+                        </div>
+                        <div id="alloc-p1-val" class="text-base font-extrabold text-slate-900 money-input">0 ₫</div>
+                        <p class="text-xs text-slate-500 mt-1">Chi phí thiết yếu hàng tháng</p>
+                    </div>
+
+                    <!-- Phần 2 -->
+                    <div class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-xs font-bold text-emerald-700 uppercase">Phần 2: Đầu Tư</span>
+                            <span id="alloc-p2-pct" class="text-xs font-bold px-2 py-0.5 rounded bg-emerald-200 text-emerald-800">0%</span>
+                        </div>
+                        <div id="alloc-p2-val" class="text-base font-extrabold text-emerald-700 money-input">0 ₫</div>
+                        <p class="text-xs text-emerald-700/80 mt-1">Tài sản sinh lời & Học kỹ năng</p>
+                    </div>
+
+                    <!-- Phần 3 -->
+                    <div class="p-4 rounded-xl bg-sky-50/70 border border-sky-200">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-xs font-bold text-sky-700 uppercase">Phần 3: Dự Phòng</span>
+                            <span id="alloc-p3-pct" class="text-xs font-bold px-2 py-0.5 rounded bg-sky-200 text-sky-800">0%</span>
+                        </div>
+                        <div id="alloc-p3-val" class="text-base font-extrabold text-sky-700 money-input">0 ₫</div>
+                        <p class="text-xs text-sky-700/80 mt-1">Đắp đầy khoảng đệm 6 tháng</p>
+                    </div>
+                </div>
+
+                <!-- Bộ Giả Lập Tăng Lương (Chặn Đứng Lạm Phát Lối Sống) -->
+                <div class="bg-gradient-to-br from-indigo-50 via-white to-emerald-50 p-5 rounded-2xl border border-indigo-200/80 space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <h3 class="text-base font-bold text-indigo-950 flex items-center gap-1.5">
+                                <i data-lucide="zap" class="w-4 h-4 text-amber-500"></i> Bộ Giả Lập Tăng Lương (Trả Cho Mình Trước)
+                            </h3>
+                            <p class="text-xs text-slate-600">Giả sử bạn được tăng lương hoặc có thêm thu nhập tay trái, nhưng <strong>không tăng chi tiêu</strong>:</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Mức thu nhập tăng thêm / tháng:</label>
+                            <div class="relative">
+                                <input type="text" id="input-salary-raise" data-raw="5000000" value="5.000.000" 
+                                    class="money-field money-input w-full pl-3 pr-11 py-2 bg-white border border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 font-bold text-indigo-900 text-sm">
+                                <span class="absolute right-3 top-2 text-xs text-slate-400 font-medium">VNĐ</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Tỷ suất sinh lời đầu tư kỳ vọng (%/năm):</label>
+                            <div class="relative">
+                                <input type="number" id="input-roi-rate" value="10" min="1" max="50" step="0.5"
+                                    class="w-full pl-3 pr-10 py-2 bg-white border border-indigo-300 rounded-xl focus:ring-2 focus:ring-indigo-500 font-bold text-indigo-900 text-sm">
+                                <span class="absolute right-3 top-2 text-xs text-slate-400 font-medium">%/năm</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kết quả so sánh thời gian đạt tự do -->
+                    <div id="raise-simulation-result" class="bg-white/90 p-4 rounded-xl border border-indigo-100 text-sm space-y-2">
+                        <!-- Render bằng JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 5: PHÂN BIỆT TÀI SẢN VS TIÊU SẢN (NGUYÊN NHÂN 3) -->
+        <section class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                <div>
+                    <div class="flex items-center gap-2 text-purple-600 font-semibold text-sm mb-1">
+                        <i data-lucide="scale" class="w-4 h-4"></i> NGUYÊN NHÂN 3
+                    </div>
+                    <h2 class="text-xl font-bold text-slate-900">5. Máy Quét Tài Sản vs. Tiêu Sản</h2>
+                    <p class="text-sm text-slate-500 mt-1">
+                        <span class="text-emerald-600 font-semibold">Tài sản:</span> Bỏ tiền vào túi khi bạn ngủ (+) &nbsp;|&nbsp; 
+                        <span class="text-rose-600 font-semibold">Tiêu sản:</span> Móc tiền ra khỏi túi mỗi tháng (-)
+                    </p>
+                </div>
+                <div class="flex items-center gap-3 bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200">
+                    <span class="text-xs font-semibold text-slate-500 uppercase">Dòng tiền ròng danh mục:</span>
+                    <span id="assets-net-cashflow" class="text-lg font-extrabold text-slate-900 money-input">0 ₫/tháng</span>
+                </div>
+            </div>
+
+            <!-- Form thêm nhanh khoản mục -->
+            <form id="asset-form" class="grid grid-cols-1 sm:grid-cols-12 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                <div class="sm:col-span-5">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Tên khoản mục (Ví dụ: Xe hơi trả góp, Cổ tức, Phòng trọ...)</label>
+                    <input type="text" id="item-name" placeholder="Nhập tên món đồ / khoản đầu tư..." required
+                        class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="sm:col-span-3">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Hướng dòng tiền mỗi tháng</label>
+                    <select id="item-direction" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm font-medium focus:ring-2 focus:ring-indigo-500">
+                        <option value="in">Bỏ tiền vào túi (+ Tài sản)</option>
+                        <option value="out">Móc tiền ra khỏi túi (- Tiêu sản)</option>
+                    </select>
+                </div>
+                <div class="sm:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Số tiền / tháng</label>
+                    <input type="text" id="item-amount" placeholder="2.000.000" required
+                        class="money-field money-input w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-sm font-semibold focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="sm:col-span-2 flex items-end">
+                    <button type="submit" class="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg text-sm transition flex items-center justify-center gap-1.5 shadow-sm">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Thêm vào
+                    </button>
+                </div>
+            </form>
+
+            <!-- Bảng hiển thị danh sách Tài sản & Tiêu sản -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-slate-200 text-xs font-bold uppercase text-slate-500 bg-slate-50/50">
+                            <th class="py-3 px-4 rounded-tl-lg">Tên Khoản Mục</th>
+                            <th class="py-3 px-4">Phân Loại Thực Chất</th>
+                            <th class="py-3 px-4 text-right">Dòng Tiền / Tháng</th>
+                            <th class="py-3 px-4 text-center rounded-tr-lg w-20">Xóa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="asset-table-body" class="divide-y divide-slate-100 text-sm">
+                        <!-- Render bằng JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECTION 6: CHECKLIST HÀNH ĐỘNG TỐI NAY -->
+        <section class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white p-6 sm:p-8 rounded-2xl shadow-lg">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div class="space-y-2 max-w-2xl">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold uppercase tracking-wider border border-amber-500/30">
+                        <i data-lucide="moon" class="w-3.5 h-3.5"></i> Hành Động Ngay Tối Nay
+                    </div>
+                    <h2 class="text-2xl font-bold">2 Việc Nhỏ Để Bắt Đầu Bước Xuống Bánh Xe</h2>
+                    <p class="text-sm text-slate-300 leading-relaxed">
+                        Thoát khỏi vòng xoáy mưu sinh không có nghĩa là ngày mai bỗng dưng bỏ việc. Công việc hiện tại chính là nhiên liệu để xây dựng dòng tiền thứ hai.
+                    </p>
+                </div>
+
+                <div class="w-full md:w-auto flex-1 max-w-md space-y-3">
+                    <label class="flex items-start gap-3 p-4 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 cursor-pointer transition select-none">
+                        <input type="checkbox" id="check-task-1" class="mt-1 w-5 h-5 rounded text-emerald-500 focus:ring-emerald-500 bg-slate-800 border-slate-600 cursor-pointer">
+                        <div>
+                            <span class="font-semibold text-white block text-sm">1. Truy vết dòng tiền tháng vừa rồi</span>
+                            <span class="text-xs text-slate-300">Nhớ hoặc ghi lại toàn bộ số tiền đã chảy đi đâu trong 30 ngày qua.</span>
+                        </div>
+                    </label>
+
+                    <label class="flex items-start gap-3 p-4 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 cursor-pointer transition select-none">
+                        <input type="checkbox" id="check-task-2" class="mt-1 w-5 h-5 rounded text-emerald-500 focus:ring-emerald-500 bg-slate-800 border-slate-600 cursor-pointer">
+                        <div>
+                            <span class="font-semibold text-white block text-sm">2. Chốt "Con số Tự do Tài chính"</span>
+                            <span class="text-xs text-slate-300">Xác định chính xác số tiền tối thiểu cần mỗi tháng để sống thoải mái.</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-xs text-slate-400 border-t border-slate-200 mt-8">
+        Công cụ tính toán tài chính cá nhân mô phỏng nguyên lý thoát khỏi vòng xoáy mưu sinh (Rat Race). Dữ liệu được lưu tự động trên trình duyệt của bạn.
+    </footer>
+
+    <!-- Thông báo Toast (Thay thế hoàn toàn alert) -->
+    <div id="toast-box" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-2.5 text-sm font-medium">
+            <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400"></i>
+            <span id="toast-message">Đã cập nhật dữ liệu!</span>
+        </div>
+    </div>
+
+    <script>
+        // Khởi tạo biểu tượng Lucide
+        lucide.createIcons();
+
+        // --- QUẢN LÝ TRẠNG THÁI & DỮ LIỆU MẪU ---
+        const DEFAULT_ITEMS = [
+            { id: 1, name: "Trả góp xe hơi & xăng xe bảo dưỡng", direction: "out", amount: 5500000 },
+            { id: 2, name: "Trả góp điện thoại đời mới & thẻ tín dụng", direction: "out", amount: 2000000 },
+            { id: 3, name: "Lãi tiết kiệm & Cổ tức quỹ ETF", direction: "in", amount: 1500000 },
+            { id: 4, name: "Kênh nội dung số / Tài sản cho thuê nhỏ", direction: "in", amount: 1000000 }
+        ];
+
+        let assetItems = [...DEFAULT_ITEMS];
+        let cashflowChart = null;
+
+        // --- TIỆN ÍCH ĐỊNH DẠNG TIỀN TỆ VNĐ ---
+        function formatVND(number) {
+            if (isNaN(number)) return "0 ₫";
+            return Math.round(number).toLocaleString('vi-VN') + " ₫";
+        }
+
+        function formatNumberInput(number) {
+            if (isNaN(number) || number === 0) return "0";
+            return Math.round(number).toLocaleString('vi-VN');
+        }
+
+        function parseRawMoney(str) {
+            if (!str) return 0;
+            const cleaned = str.toString().replace(/[^\d]/g, '');
+            return parseInt(cleaned, 10) || 0;
+        }
+
+        // Hiển thị thông báo Toast mượt mà (không dùng alert)
+        function showToast(msg) {
+            const toast = document.getElementById('toast-box');
+            document.getElementById('toast-message').textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        // --- GẮN SỰ KIỆN TỰ ĐỘNG ĐỊNH DẠNG CHO CÁC Ô NHẬP TIỀN ---
+        function bindMoneyInputs() {
+            const inputs = document.querySelectorAll('.money-field');
+            inputs.forEach(input => {
+                input.addEventListener('input', function(e) {
+                    const raw = parseRawMoney(this.value);
+                    this.dataset.raw = raw;
+                    this.value = raw === 0 ? '' : raw.toLocaleString('vi-VN');
+                    calculateAll();
+                });
+                input.addEventListener('blur', function() {
+                    const raw = parseRawMoney(this.value);
+                    this.dataset.raw = raw;
+                    this.value = raw.toLocaleString('vi-VN');
+                    calculateAll();
+                });
+            });
+
+            document.getElementById('input-roi-rate').addEventListener('input', calculateAll);
+        }
+
+        // --- HÀM TÍNH TOÁN TỔNG HỢP THEO THỜI GIAN THỰC ---
+        function calculateAll() {
+            // 1. Lấy dữ liệu đầu vào
+            const activeIncome = parseRawMoney(document.getElementById('input-active-income').value);
+            const passiveIncome = parseRawMoney(document.getElementById('input-passive-income').value);
+            const essentialExpense = parseRawMoney(document.getElementById('input-essential-expense').value);
+            const liabilityExpense = parseRawMoney(document.getElementById('input-liability-expense').value);
+            const emergencyFund = parseRawMoney(document.getElementById('input-emergency-fund').value);
+            const salaryRaise = parseRawMoney(document.getElementById('input-salary-raise').value);
+            const roiRate = parseFloat(document.getElementById('input-roi-rate').value) || 10;
+
+            // 2. Tính toán Vòng xoáy Mưu sinh (Thu - Chi)
+            const totalIncome = activeIncome + passiveIncome;
+            const totalExpense = essentialExpense + liabilityExpense;
+            const netSavings = totalIncome - totalExpense;
+            const savingsRate = totalIncome > 0 ? ((netSavings / totalIncome) * 100) : 0;
+            const liabilityRatio = totalExpense > 0 ? ((liabilityExpense / totalExpense) * 100) : 0;
+
+            // 3. Tính toán Con số Tự do Tài chính (Bước 1)
+            const freedomNumber = essentialExpense; // Chi phí sống thiết yếu
+            const freedomPercent = freedomNumber > 0 ? Math.min(100, (passiveIncome / freedomNumber) * 100) : (passiveIncome > 0 ? 100 : 0);
+            const rawFreedomPercent = freedomNumber > 0 ? (passiveIncome / freedomNumber) * 100 : 0;
+            const freedomGap = Math.max(0, freedomNumber - passiveIncome);
+
+            // 4. Tính toán Quỹ Dự Phòng (Nguyên nhân 4)
+            const runwayMonths = essentialExpense > 0 ? (emergencyFund / essentialExpense) : 0;
+            const target3M = essentialExpense * 3;
+            const target6M = essentialExpense * 6;
+            const emergencyShortfall = Math.max(0, target6M - emergencyFund);
+
+            // --- CẬP NHẬT GIAO DIỆN DASHBOARD TRÊN CÙNG ---
+            const dashNetEl = document.getElementById('dash-net-savings');
+            dashNetEl.textContent = formatVND(netSavings);
+            dashNetEl.className = `text-2xl font-extrabold money-input ${netSavings >= 0 ? 'text-emerald-600' : 'text-rose-600'}`;
+            document.getElementById('dash-savings-rate').textContent = `Tỷ lệ giữ lại: ${savingsRate.toFixed(1)}% thu nhập`;
+
+            document.getElementById('dash-freedom-number').textContent = formatVND(freedomNumber);
+            document.getElementById('dash-freedom-percent').textContent = `${rawFreedomPercent.toFixed(1)}%`;
+            document.getElementById('dash-freedom-bar').style.width = `${freedomPercent}%`;
+
+            document.getElementById('dash-runway-months').textContent = `${runwayMonths.toFixed(1)} tháng`;
+            const runwayStatusEl = document.getElementById('dash-runway-status');
+            if (runwayMonths >= 6) {
+                runwayStatusEl.textContent = "An toàn vững chắc (Đạt chuẩn >= 6 tháng)";
+                runwayStatusEl.className = "text-xs font-semibold text-emerald-600 mt-1";
+            } else if (runwayMonths >= 3) {
+                runwayStatusEl.textContent = "Tạm ổn (Cần tích lũy thêm lên 6 tháng)";
+                runwayStatusEl.className = "text-xs font-semibold text-amber-600 mt-1";
+            } else {
+                runwayStatusEl.textContent = "Rủi ro cao (Dưới 3 tháng sinh tồn)";
+                runwayStatusEl.className = "text-xs font-semibold text-rose-600 mt-1";
+            }
+
+            // --- CẬP NHẬT CẢNH BÁO VÒNG XOÁY MƯU SINH & LẠM PHÁT LỐI SỐNG ---
+            const alertBox = document.getElementById('rat-race-alert');
+            if (netSavings < 0) {
+                alertBox.className = "p-4 rounded-xl border bg-rose-50 border-rose-300 text-rose-900 space-y-1";
+                alertBox.innerHTML = `
+                    <div class="font-bold text-sm flex items-center gap-1.5 text-rose-700">
+                        <i data-lucide="alert-triangle" class="w-4 h-4"></i> BÁO ĐỘNG ĐỎ: ÂM DÒNG TIỀN (${formatVND(netSavings)}/tháng)
+                    </div>
+                    <p class="text-xs leading-relaxed">Bạn đang chi nhiều hơn kiếm! Nguy cơ rơi vào bẫy nợ và lãi thẻ tín dụng chồng lãi (Nguyên nhân 5: Mù tài chính). Cần cắt ngay khoản nuôi tiêu sản.</p>
+                `;
+            } else if (savingsRate < 15) {
+                alertBox.className = "p-4 rounded-xl border bg-amber-50 border-amber-300 text-amber-900 space-y-1";
+                alertBox.innerHTML = `
+                    <div class="font-bold text-sm flex items-center gap-1.5 text-amber-700">
+                        <i data-lucide="alert-circle" class="w-4 h-4"></i> CẢNH BÁO: KẸT CHẶT TRONG BÁNH XE RAT RACE
+                    </div>
+                    <p class="text-xs leading-relaxed">Bạn chỉ giữ lại được <strong>${savingsRate.toFixed(1)}%</strong> thu nhập. Chi phí nuôi tiêu sản đang chiếm <strong>${liabilityRatio.toFixed(1)}%</strong> tổng chi tiêu. Nếu ngừng làm việc, dòng tiền sẽ lập tức đứt gãy.</p>
+                `;
+            } else {
+                alertBox.className = "p-4 rounded-xl border bg-emerald-50 border-emerald-300 text-emerald-900 space-y-1";
+                alertBox.innerHTML = `
+                    <div class="font-bold text-sm flex items-center gap-1.5 text-emerald-700">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i> KIỂM SOÁT TỐT: DƯ ĐỊA TÍCH LŨY ${savingsRate.toFixed(1)}%
+                    </div>
+                    <p class="text-xs leading-relaxed">Bạn đang giữ lại được <strong>${formatVND(netSavings)}/tháng</strong>. Hãy dùng khoản này để xây dựng dòng tiền thứ hai thay vì nâng cấp lối sống!</p>
+                `;
+            }
+
+            // --- CẬP NHẬT TIẾN ĐỘ TỰ DO TÀI CHÍNH (SECTION 2) ---
+            document.getElementById('freedom-ratio-text').textContent = `${rawFreedomPercent.toFixed(1)}%`;
+            document.getElementById('freedom-gap-amount').textContent = freedomGap === 0 ? "Đã đạt tự do!" : formatVND(freedomGap);
+            document.getElementById('freedom-main-bar').style.width = `${freedomPercent}%`;
+            document.getElementById('summary-total-income').textContent = formatVND(totalIncome);
+            document.getElementById('summary-total-expense').textContent = formatVND(totalExpense);
+            document.getElementById('liability-ratio-badge').textContent = `Tiêu sản chiếm ${liabilityRatio.toFixed(1)}% chi tiêu`;
+
+            // --- CẬP NHẬT QUỸ DỰ PHÒNG (SECTION 3) ---
+            document.getElementById('emergency-months-result').textContent = `${runwayMonths.toFixed(1)} tháng`;
+            document.getElementById('emergency-target-3m').textContent = formatVND(target3M);
+            document.getElementById('emergency-target-6m').textContent = formatVND(target6M);
+            document.getElementById('emergency-shortfall').textContent = emergencyShortfall === 0 ? "Đã đủ quỹ 6 tháng!" : formatVND(emergencyShortfall);
+
+            const adviceEl = document.getElementById('emergency-advice');
+            if (emergencyShortfall > 0) {
+                const monthsToFill = netSavings > 0 ? Math.ceil(emergencyShortfall / netSavings) : "∞";
+                adviceEl.innerHTML = `💡 <strong>Gợi ý hành động:</strong> Với mức tiền giữ lại hiện tại (${formatVND(Math.max(0, netSavings))}/tháng), bạn cần khoảng <strong>${monthsToFill} tháng</strong> để lấp đầy khoảng đệm 6 tháng an toàn.`;
+            } else {
+                adviceEl.innerHTML = `🎉 <strong>Tuyệt vời!</strong> Khoảng đệm an toàn của bạn đã vượt mức 6 tháng chi phí sống. Bạn đã có đủ tự tin để đàm phán công việc hoặc khởi đầu dự án kinh doanh riêng.`;
+            }
+
+            // --- CẬP NHẬT PHÂN BỔ DÒNG TIỀN 3 PHẦN (SECTION 4) ---
+            // Nguyên tắc: Phần 1 = Chi phí sống thiết yếu. Phần dư ra (nếu có) chia cho Dự phòng (nếu chưa đủ 6 tháng) và Đầu tư dài hạn.
+            const availableSurplus = Math.max(0, totalIncome - essentialExpense);
+            let p3Reserve = 0;
+            let p2Invest = 0;
+
+            if (emergencyShortfall > 0) {
+                // Ưu tiên 40% phần dư cho quỹ dự phòng cho đến khi đủ 6 tháng, 60% cho đầu tư & phát triển bản thân
+                p3Reserve = Math.min(emergencyShortfall, Math.round(availableSurplus * 0.4));
+                p2Invest = availableSurplus - p3Reserve;
+            } else {
+                // Đã đủ quỹ dự phòng -> Dồn toàn bộ phần dư vào đầu tư tài sản & bản thân
+                p3Reserve = 0;
+                p2Invest = availableSurplus;
+            }
+
+            const p1Pct = totalIncome > 0 ? ((essentialExpense / totalIncome) * 100).toFixed(0) : 0;
+            const p2Pct = totalIncome > 0 ? ((p2Invest / totalIncome) * 100).toFixed(0) : 0;
+            const p3Pct = totalIncome > 0 ? ((p3Reserve / totalIncome) * 100).toFixed(0) : 0;
+
+            document.getElementById('alloc-p1-val').textContent = formatVND(essentialExpense);
+            document.getElementById('alloc-p1-pct').textContent = `${p1Pct}%`;
+
+            document.getElementById('alloc-p2-val').textContent = formatVND(p2Invest);
+            document.getElementById('alloc-p2-pct').textContent = `${p2Pct}%`;
+
+            document.getElementById('alloc-p3-val').textContent = formatVND(p3Reserve);
+            document.getElementById('alloc-p3-pct').textContent = `${p3Pct}%`;
+
+            // --- GIẢ LẬP TĂNG LƯƠNG & RÚT NGẮN THỜI GIAN TỰ DO ---
+            simulateFreedomTimeline(freedomGap, Math.max(0, netSavings), salaryRaise, roiRate);
+
+            // --- CẬP NHẬT BIỂU ĐỒ ---
+            updateChart(essentialExpense, liabilityExpense, Math.max(0, netSavings));
+
+            // Lưu trạng thái vào localStorage
+            saveToLocalStorage();
+            lucide.createIcons();
+        }
+
+        // --- TÍNH TOÁN THỜI GIAN ĐẠT TỰ DO TÀI CHÍNH (LÃI KÉP) ---
+        function monthsToReachTarget(targetCapital, monthlyContribution, annualRate) {
+            if (targetCapital <= 0) return 0;
+            if (monthlyContribution <= 0) return Infinity;
+            const r = (annualRate / 100) / 12;
+            if (r === 0) return Math.ceil(targetCapital / monthlyContribution);
+            // Công thức FV = PMT * (((1 + r)^n - 1) / r) => giải tìm n
+            const n = Math.log((targetCapital * r) / monthlyContribution + 1) / Math.log(1 + r);
+            return Math.ceil(n);
+        }
+
+        function simulateFreedomTimeline(freedomGap, currentMonthlyInvest, salaryRaise, roiRate) {
+            const simContainer = document.getElementById('raise-simulation-result');
+            if (freedomGap <= 0) {
+                simContainer.innerHTML = `<div class="text-emerald-700 font-bold">🎉 Bạn đã đạt Tự do Tài chính! Thu nhập thụ động hiện tại đã đủ trang trải toàn bộ chi phí sống thiết yếu.</div>`;
+                return;
+            }
+
+            // Vốn đầu tư cần thiết để sinh ra khoản thu nhập thụ động còn thiếu với tỷ suất roiRate%/năm
+            const monthlyRate = (roiRate / 100) / 12;
+            const requiredCapital = freedomGap / monthlyRate;
+
+            const monthsBefore = monthsToReachTarget(requiredCapital, currentMonthlyInvest, roiRate);
+            const monthsAfter = monthsToReachTarget(requiredCapital, currentMonthlyInvest + salaryRaise, roiRate);
+
+            const formatDuration = (m) => {
+                if (m === Infinity) return "Không thể đạt được (do chưa có tiền dư đầu tư)";
+                const years = Math.floor(m / 12);
+                const remMonths = m % 12;
+                if (years === 0) return `${remMonths} tháng`;
+                return `${years} năm ${remMonths} tháng`;
+            };
+
+            let savedTimeHtml = "";
+            if (monthsBefore !== Infinity && monthsAfter !== Infinity && monthsBefore > monthsAfter) {
+                const diffMonths = monthsBefore - monthsAfter;
+                const diffYears = (diffMonths / 12).toFixed(1);
+                savedTimeHtml = `<div class="mt-2 pt-2 border-t border-indigo-100 text-emerald-700 font-semibold">
+                    🚀 Nhờ chặn đứng lạm phát lối sống, bạn rút ngắn được <strong>${diffMonths} tháng (~${diffYears} năm)</strong> chạy trong bánh xe Rat Race!
+                </div>`;
+            }
+
+            simContainer.innerHTML = `
+                <div class="flex justify-between text-xs text-slate-500">
+                    <span>Quỹ tài sản cần xây thêm (với lãi suất ${roiRate}%/năm):</span>
+                    <span class="font-bold text-slate-800">${formatVND(requiredCapital)}</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                    <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                        <span class="text-xs text-slate-500 block">Tốc độ hiện tại (${formatVND(currentMonthlyInvest)}/tháng):</span>
+                        <span class="font-bold text-slate-800">${formatDuration(monthsBefore)}</span>
+                    </div>
+                    <div class="p-2.5 rounded-lg bg-indigo-50 border border-indigo-200">
+                        <span class="text-xs text-indigo-700 block">Khi dồn 100% lương tăng (${formatVND(currentMonthlyInvest + salaryRaise)}/tháng):</span>
+                        <span class="font-bold text-indigo-700">${formatDuration(monthsAfter)}</span>
+                    </div>
+                </div>
+                ${savedTimeHtml}
+            `;
+        }
+
+        // --- CẬP NHẬT BIỂU ĐỒ DONUT CHART.JS ---
+        function updateChart(essential, liability, savings) {
+            const ctx = document.getElementById('cashflowChart').getContext('2d');
+            const dataValues = [essential, liability, savings];
+
+            if (cashflowChart) {
+                cashflowChart.data.datasets[0].data = dataValues;
+                cashflowChart.update();
+                return;
+            }
+
+            cashflowChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Chi phí sống thiết yếu', 'Nuôi tiêu sản / Lạm phát lối sống', 'Tiền giữ lại (Tích lũy & Đầu tư)'],
+                    datasets: [{
+                        data: dataValues,
+                        backgroundColor: ['#6366f1', '#f43f5e', '#10b981'],
+                        borderWidth: 2,
+                        borderColor: '#ffffff',
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                boxWidth: 12,
+                                font: { family: 'Inter', size: 11 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ' ' + context.label + ': ' + formatVND(context.raw);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- QUẢN LÝ BẢNG TÀI SẢN VS TIÊU SẢN (SECTION 5) ---
+        function renderAssetTable() {
+            const tbody = document.getElementById('asset-table-body');
+            tbody.innerHTML = '';
+
+            let netCashflow = 0;
+
+            if (assetItems.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="py-6 text-center text-slate-400 text-sm">Chưa có khoản mục nào. Hãy thêm tài sản hoặc tiêu sản của bạn ở trên!</td></tr>`;
+            } else {
+                assetItems.forEach(item => {
+                    const isAsset = item.direction === 'in';
+                    netCashflow += isAsset ? item.amount : -item.amount;
+
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50/80 transition";
+                    tr.innerHTML = `
+                        <td class="py-3 px-4 font-medium text-slate-800">${item.name}</td>
+                        <td class="py-3 px-4">
+                            ${isAsset 
+                                ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800"><i data-lucide="arrow-down-left" class="w-3.5 h-3.5"></i> Tài Sản (Bỏ tiền vào túi)</span>`
+                                : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800"><i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i> Tiêu Sản (Móc tiền ra túi)</span>`
+                            }
+                        </td>
+                        <td class="py-3 px-4 text-right font-bold money-input ${isAsset ? 'text-emerald-600' : 'text-rose-600'}">
+                            ${isAsset ? '+' : '-'}${formatVND(item.amount)}
+                        </td>
+                        <td class="py-3 px-4 text-center">
+                            <button onclick="deleteAssetItem(${item.id})" class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition" title="Xóa khoản mục">
+                                <i data-lucide="x" class="w-4 h-4"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            const netEl = document.getElementById('assets-net-cashflow');
+            netEl.textContent = `${netCashflow >= 0 ? '+' : ''}${formatVND(netCashflow)}/tháng`;
+            netEl.className = `text-lg font-extrabold money-input ${netCashflow >= 0 ? 'text-emerald-600' : 'text-rose-600'}`;
+            
+            lucide.createIcons();
+            saveToLocalStorage();
+        }
+
+        document.getElementById('asset-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('item-name');
+            const dirInput = document.getElementById('item-direction');
+            const amountInput = document.getElementById('item-amount');
+
+            const amount = parseRawMoney(amountInput.value);
+            if (!nameInput.value.trim() || amount <= 0) return;
+
+            assetItems.push({
+                id: Date.now(),
+                name: nameInput.value.trim(),
+                direction: dirInput.value,
+                amount: amount
+            });
+
+            nameInput.value = '';
+            amountInput.value = '';
+            renderAssetTable();
+            showToast("Đã thêm khoản mục vào danh sách quét!");
+        });
+
+        function deleteAssetItem(id) {
+            assetItems = assetItems.filter(item => item.id !== id);
+            renderAssetTable();
+        }
+
+        // --- LƯU TRỮ & KHÔI PHỤC DỮ LIỆU ---
+        function saveToLocalStorage() {
+            const state = {
+                activeIncome: parseRawMoney(document.getElementById('input-active-income').value),
+                passiveIncome: parseRawMoney(document.getElementById('input-passive-income').value),
+                essentialExpense: parseRawMoney(document.getElementById('input-essential-expense').value),
+                liabilityExpense: parseRawMoney(document.getElementById('input-liability-expense').value),
+                emergencyFund: parseRawMoney(document.getElementById('input-emergency-fund').value),
+                salaryRaise: parseRawMoney(document.getElementById('input-salary-raise').value),
+                roiRate: document.getElementById('input-roi-rate').value,
+                assetItems: assetItems,
+                check1: document.getElementById('check-task-1').checked,
+                check2: document.getElementById('check-task-2').checked
+            };
+            localStorage.setItem('rat_race_calculator_v1', JSON.stringify(state));
+        }
+
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('rat_race_calculator_v1');
+            if (!saved) return;
+            try {
+                const state = JSON.parse(saved);
+                document.getElementById('input-active-income').value = formatNumberInput(state.activeIncome);
+                document.getElementById('input-passive-income').value = formatNumberInput(state.passiveIncome);
+                document.getElementById('input-essential-expense').value = formatNumberInput(state.essentialExpense);
+                document.getElementById('input-liability-expense').value = formatNumberInput(state.liabilityExpense);
+                document.getElementById('input-emergency-fund').value = formatNumberInput(state.emergencyFund);
+                document.getElementById('input-salary-raise').value = formatNumberInput(state.salaryRaise);
+                if (state.roiRate) document.getElementById('input-roi-rate').value = state.roiRate;
+                if (Array.isArray(state.assetItems)) assetItems = state.assetItems;
+                document.getElementById('check-task-1').checked = !!state.check1;
+                document.getElementById('check-task-2').checked = !!state.check2;
+            } catch (e) {
+                console.error("Lỗi đọc dữ liệu đã lưu:", e);
+            }
+        }
+
+        function resetDefaultData() {
+            document.getElementById('input-active-income').value = "25.000.000";
+            document.getElementById('input-passive-income').value = "2.500.000";
+            document.getElementById('input-essential-expense').value = "15.000.000";
+            document.getElementById('input-liability-expense').value = "7.500.000";
+            document.getElementById('input-emergency-fund').value = "30.000.000";
+            document.getElementById('input-salary-raise').value = "5.000.000";
+            document.getElementById('input-roi-rate').value = "10";
+            assetItems = [...DEFAULT_ITEMS];
+            renderAssetTable();
+            calculateAll();
+            showToast("Đã khôi phục bộ số liệu mẫu!");
+        }
+
+        function clearAllData() {
+            document.getElementById('input-active-income').value = "0";
+            document.getElementById('input-passive-income').value = "0";
+            document.getElementById('input-essential-expense').value = "0";
+            document.getElementById('input-liability-expense').value = "0";
+            document.getElementById('input-emergency-fund').value = "0";
+            document.getElementById('input-salary-raise').value = "0";
+            assetItems = [];
+            document.getElementById('check-task-1').checked = false;
+            document.getElementById('check-task-2').checked = false;
+            renderAssetTable();
+            calculateAll();
+            showToast("Đã xóa trắng toàn bộ số liệu!");
+        }
+
+        // Lắng nghe checklist tối nay
+        document.getElementById('check-task-1').addEventListener('change', saveToLocalStorage);
+        document.getElementById('check-task-2').addEventListener('change', saveToLocalStorage);
+
+        // Khởi chạy ứng dụng khi tải xong trang
+        window.addEventListener('DOMContentLoaded', () => {
+            loadFromLocalStorage();
+            bindMoneyInputs();
+            renderAssetTable();
+            calculateAll();
+        });
+    </script>
+</body>
+</html>

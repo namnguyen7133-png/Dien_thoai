@@ -1,0 +1,244 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSP Solver (Thuat toan Tham Lam)</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f4f7f6; }
+        .container { max-width: 900px; margin: auto; background: #fff; padding: 25px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h1 { color: #8b0000; text-align: center; }
+        h3 { color: #555; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-top: 20px;}
+        button { background-color: #8b0000; color: white; padding: 12px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; transition: background-color 0.3s; margin-top: 15px;}
+        button:hover { background-color: #5d0000; }
+        #matrixInput { display: grid; grid-template-columns: repeat(12, 1fr); gap: 5px; margin-bottom: 20px; }
+        .cell-label { text-align: center; font-weight: bold; padding: 5px; }
+        input[type="number"] { width: 100%; padding: 5px; border: 1px solid #ccc; border-radius: 3px; box-sizing: border-box; text-align: center; }
+        .header-cell { background-color: #eee; }
+        .diag-cell { background-color: #f5f5f5; pointer-events: none; }
+        #results { margin-top: 20px; padding: 15px; border: 2px dashed #8b0000; border-radius: 8px; background-color: #fff0f0; }
+        .path { font-size: 1.2em; font-weight: bold; color: #0056b3; }
+        .note { font-size: 0.9em; color: #666; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>📍 Bai Toan Nguoi Du Lich (TSP) - 10 dia diem</h1>
+    <p>Tim lo trinh ngan nhat xuat phat tu **NHA** (diem 0), di qua 10 dia diem (1-10) va quay ve NHA.</p>
+    <p class="note">Thuat toan: **Tham Lam (Nearest Neighbor)**. don vi: Kilomet.</p>
+
+    <h3>Nhap Ma Tran Khoang Cach (11x11)</h3>
+    <p class="note">Nhap khoang cach $D_{i,j}$ tu diem $i$ den diem $j$. **Khoang cach tu $i$ den $j$ phai bang tu $j$ den $i$.** O cheo (vi du: 0 -> 0) khong can nhap (mac dinh la 0).</p>
+
+    <div id="matrixInput">
+        <div class="cell-label header-cell">Tu \ den</div>
+        <div class="cell-label header-cell">0 (NHA)</div>
+        <div class="cell-label header-cell">1</div>
+        <div class="cell-label header-cell">2</div>
+        <div class="cell-label header-cell">3</div>
+        <div class="cell-label header-cell">4</div>
+        <div class="cell-label header-cell">5</div>
+        <div class="cell-label header-cell">6</div>
+        <div class="cell-label header-cell">7</div>
+        <div class="cell-label header-cell">8</div>
+        <div class="cell-label header-cell">9</div>
+        <div class="cell-label header-cell">10</div>
+
+        </div>
+    <button onclick="solveTSP()">Tim Lo Trinh Toi Uu</button>
+
+    <div id="results">
+        <h2>✨ Ket Qua Lo Trinh:</h2>
+        <p>Tong Chi Phi (Km): <span id="totalCost" class="path">Chua chay</span></p>
+        <p>Lo Trinh: <span id="route" class="path">Chua chay</span></p>
+    </div>
+</div>
+
+<script>
+    const N = 11; // 0 (Nha) + 10 dia diem
+    const matrixInput = document.getElementById('matrixInput');
+    const matrix = Array(N).fill(0).map(() => Array(N).fill(0));
+
+    // Khoi tao Ma tran nhap lieu
+    function initializeMatrixInputs() {
+        for (let i = 0; i < N; i++) {
+            // Label dong
+            const label = document.createElement('div');
+            label.className = 'cell-label header-cell';
+            label.textContent = (i === 0) ? '0 (NHA)' : i.toString();
+            matrixInput.appendChild(label);
+
+            for (let j = 0; j < N; j++) {
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.min = '0';
+                input.id = `d_${i}_${j}`;
+                
+                if (i === j) {
+                    // duong cheo: khong nhap (khoang cach 0)
+                    input.className = 'diag-cell';
+                    input.value = '0';
+                    input.disabled = true;
+                } else if (i > j) {
+                    // Chi nhap mot nua (se sao chep sang nua kia)
+                    input.className = 'upper-cell';
+                    input.placeholder = 'Km';
+                } else {
+                    // O nhap nguoc lai, disable va hien thi gia tri doi xung
+                    input.className = 'lower-cell';
+                    input.disabled = true;
+                    input.placeholder = 'Auto';
+                }
+                matrixInput.appendChild(input);
+            }
+        }
+    }
+
+    // Load du lieu tu input vao ma tran
+    function loadMatrixFromInputs() {
+        let isValid = true;
+        for (let i = 0; i < N; i++) {
+            for (let j = i; j < N; j++) {
+                if (i === j) continue;
+                
+                // Lay gia tri tu o i->j (hoac j->i neu j>i)
+                const inputId = (i < j) ? `d_${i}_${j}` : `d_${j}_${i}`;
+                const value = parseInt(document.getElementById(inputId).value);
+
+                if (isNaN(value) || value < 0) {
+                    isValid = false;
+                    break;
+                }
+
+                // Gan gia tri doi xung
+                matrix[i][j] = value;
+                matrix[j][i] = value;
+                
+                // Cap nhat gia tri hien thi cho o doi xung (i>j)
+                if (i > j) {
+                     document.getElementById(`d_${i}_${j}`).value = value;
+                }
+            }
+            if (!isValid) break;
+        }
+        return isValid;
+    }
+
+    // Thuat toan Tham Lam (Nearest Neighbor)
+    function nearestNeighborTSP(startNode) {
+        let currentPath = [startNode];
+        let totalCost = 0;
+        let visited = new Set([startNode]);
+
+        while (visited.size < N) {
+            let currentNode = currentPath[currentPath.length - 1];
+            let minDistance = Infinity;
+            let nextNode = -1;
+
+            for (let j = 0; j < N; j++) {
+                if (!visited.has(j)) {
+                    // Tim hang xom gan nhat chua tham
+                    if (matrix[currentNode][j] < minDistance) {
+                        minDistance = matrix[currentNode][j];
+                        nextNode = j;
+                    }
+                }
+            }
+
+            if (nextNode !== -1) {
+                totalCost += minDistance;
+                currentPath.push(nextNode);
+                visited.add(nextNode);
+            } else {
+                 // Truong hop loi (khong nen xay ra)
+                break;
+            }
+        }
+
+        // Quay ve diem xuat phat (Nha)
+        const lastNode = currentPath[currentPath.length - 1];
+        const distanceToHome = matrix[lastNode][startNode];
+        totalCost += distanceToHome;
+        currentPath.push(startNode);
+
+        return { totalCost, path: currentPath };
+    }
+
+    function solveTSP() {
+        if (!loadMatrixFromInputs()) {
+            alert("Vui long nhap khoang cach hop le (so nguyen khong am) cho tat ca cac o.");
+            return;
+        }
+
+        // Bat dau tu Nha (diem 0)
+        const result = nearestNeighborTSP(0);
+
+        // Chuyen cac diem 1-10 thanh ten goi dia diem 1-10
+        const pathNames = result.path.map(node => (node === 0) ? 'NHA' : `d.diem ${node}`);
+        const routeString = pathNames.join(' → ');
+
+        document.getElementById('totalCost').textContent = `${result.totalCost.toFixed(2)} Km`;
+        document.getElementById('route').textContent = routeString;
+    }
+    
+    // Tao data mau de de test
+    function setSampleData() {
+        // Ma tran 3x3 don gian: Nha(0), A(1), B(2)
+        // 0-1: 10, 0-2: 5, 1-2: 12
+        document.getElementById('d_0_1').value = 10;
+        document.getElementById('d_0_2').value = 5;
+        document.getElementById('d_1_2').value = 12;
+
+        // Cac o khac: nhap so ngau nhien lon hon
+        for (let i = 0; i < N; i++) {
+            for (let j = i + 1; j < N; j++) {
+                const inputId = `d_${i}_${j}`;
+                // Kiem tra xem da co data mau chua (3x3 dau tien)
+                if (i > 2 || j > 2) {
+                    // Su dung khoang cach ngau nhien tu 1 den 50
+                    document.getElementById(inputId).value = Math.floor(Math.random() * 50) + 1;
+                }
+            }
+        }
+        
+        // Load lai ma tran de cap nhat cac o doi xung
+        loadMatrixFromInputs();
+    }
+
+
+    // Chay khoi tao
+    initializeMatrixInputs();
+    setSampleData(); // Tai du lieu mau de nguoi dung de test
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

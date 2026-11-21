@@ -1,0 +1,211 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>BHXH & Can Chi – Ke hoach tuoi gia</title>
+<style>
+body { font-family: Arial; margin: 20px; line-height: 1.6; }
+h2,h3 { color: #003366; }
+select,input,button { padding: 6px; margin: 4px; }
+table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+th,td { border: 1px solid #999; padding: 6px; text-align: center; }
+th { background: #f0f0f0; }
+.box { border: 1px solid #ccc; padding: 10px; margin-top: 15px; }
+.note { color: #555; font-style: italic; }
+</style>
+</head>
+<body>
+
+<h2>📌 BHXH – Can Chi – Ke hoach tuoi gia</h2>
+
+<div class="box">
+<h3>1⃣ Chon Can Chi</h3>
+
+<label>Bang Can Chi:</label>
+<select id="bang">
+  <option value="60">Luc thap hoa giap (60)</option>
+  <option value="107">Bang mo rong (107)</option>
+</select>
+
+<label>Can Chi:</label>
+<select id="canChiSelect"></select>
+
+<br><br>
+<label>Hoac nhap nam sinh:</label>
+<input type="number" id="namSinh" placeholder="VD: 1971">
+<button onclick="chonTheoNam()">Lay Can Chi</button>
+
+<p id="hienCanChi" class="note"></p>
+
+<button onclick="traCuu()">🔍 Tra muc BHXH</button>
+</div>
+
+<div class="box">
+<h3>2⃣ Ket qua tra cuu</h3>
+
+<table>
+<thead>
+<tr>
+<th>STT BH</th>
+<th>Thu nhap</th>
+<th>Muc dong</th>
+</tr>
+</thead>
+<tbody id="ketqua"></tbody>
+</table>
+
+<p>
+<strong>Tong thu nhap:</strong> <span id="tongThuNhap">0</span> VNd<br>
+<strong>Tong muc dong:</strong> <span id="tongDong">0</span> VNd
+</p>
+</div>
+
+<div class="box">
+<h3>3⃣ Du tinh luong huu</h3>
+
+<label>So nam dong:</label>
+<input type="number" id="soNam" value="20">
+
+<button onclick="tinhHuu()">Tinh luong huu</button>
+
+<p>
+<strong>Thu nhap binh quan:</strong> <span id="binhQuan">0</span> VNd<br>
+<strong>Ty le huong:</strong> <span id="tyLe">0</span> %<br>
+<strong>Luong huu / thang:</strong> <span id="luongHuu">0</span> VNd
+</p>
+</div>
+
+<div class="box">
+<h3>4⃣ 3 muc – 3 loi khuyen</h3>
+
+<ul>
+<li><strong>Muc A (thap):</strong> Giu quyen huu – phu hop thu nhap bap benh</li>
+<li><strong>Muc B (trung):</strong> Toi uu – du song – it rui ro</li>
+<li><strong>Muc C (cao):</strong> An nhan – chu dong tuoi gia</li>
+</ul>
+
+<p class="note">
+Khuyen nghi: tre → A/B, trung nien → B, 10–15 nam cuoi → nang C
+</p>
+</div>
+
+<script>
+// ===== CAN CHI =====
+const canChi60 = [
+"Giap Ty","At Suu","Binh Dan","dinh Mao","Mau Thin","Ky Ty",
+"Canh Ngo","Tan Mui","Nham Than","Quy Dau",
+"Giap Tuat","At Hoi","Binh Ty","dinh Suu","Mau Dan","Ky Mao",
+"Canh Thin","Tan Ty","Nham Ngo","Quy Mui",
+"Giap Than","At Dau","Binh Tuat","dinh Hoi",
+"Mau Ty","Ky Suu","Canh Dan","Tan Mao","Nham Thin","Quy Ty",
+"Giap Ngo","At Mui","Binh Than","dinh Dau","Mau Tuat","Ky Hoi",
+"Canh Ty","Tan Suu","Nham Dan","Quy Mao",
+"Giap Thin","At Ty","Binh Ngo","dinh Mui","Mau Than","Ky Dau",
+"Canh Tuat","Tan Hoi","Nham Ty","Quy Suu",
+"Giap Dan","At Mao","Binh Thin","dinh Ty","Mau Ngo","Ky Mui",
+"Canh Than","Tan Dau","Nham Tuat","Quy Hoi"
+];
+
+// ===== BHXH DATA =====
+const bhxh = [];
+let thu = 1500000, dong = 330000;
+for (let i = 1; i <= 155; i++) {
+  bhxh.push({ stt: i, thu, dong, selected:false });
+  thu += 50000;
+  dong += 11000;
+}
+
+// ===== LOAD CAN CHI =====
+function loadCanChi() {
+  const select = document.getElementById("canChiSelect");
+  select.innerHTML = "";
+  canChi60.forEach((cc,i)=>{
+    let o=document.createElement("option");
+    o.value=i+1;
+    o.text=(i+1)+" – "+cc;
+    select.appendChild(o);
+  });
+}
+loadCanChi();
+
+// ===== CAN CHI NAM =====
+function canChiNam(y){
+  const can=["Giap","At","Binh","dinh","Mau","Ky","Canh","Tan","Nham","Quy"];
+  const chi=["Ty","Suu","Dan","Mao","Thin","Ty","Ngo","Mui","Than","Dau","Tuat","Hoi"];
+  return can[(y-4)%10] + " " + chi[(y-4)%12];
+}
+
+function chonTheoNam(){
+  const y=parseInt(document.getElementById("namSinh").value);
+  if(!y) return;
+  const cc=canChiNam(y);
+  document.getElementById("hienCanChi").innerText="Can Chi nam sinh: "+cc;
+  const idx=canChi60.indexOf(cc);
+  if(idx>=0) document.getElementById("canChiSelect").value=idx+1;
+}
+
+// ===== TRA CUU =====
+function traCuu(){
+  const can=parseInt(canChiSelect.value);
+  let tongThu=0,tongDong=0;
+  ketqua.innerHTML="";
+  bhxh.forEach(r=>{
+    r.selected=false;
+    let du=r.stt%60; if(du===0) du=60;
+    if(du===can){
+      r.selected=true;
+      tongThu+=r.thu; tongDong+=r.dong;
+      ketqua.innerHTML+=`<tr>
+      <td>${r.stt}</td>
+      <td>${r.thu.toLocaleString()}</td>
+      <td>${r.dong.toLocaleString()}</td></tr>`;
+    }
+  });
+  tongThuNhap.innerText=tongThu.toLocaleString();
+  tongDong.innerText=tongDong.toLocaleString();
+}
+
+// ===== TINH HUU =====
+function tinhHuu(){
+  let sum=0,cnt=0;
+  bhxh.forEach(r=>{ if(r.selected){ sum+=r.thu; cnt++; }});
+  if(cnt===0) return alert("Chua co du lieu tra");
+  const binh=sum/cnt;
+  let nam=parseInt(soNam.value);
+  let tl=45+(nam-20)*2; if(tl>75) tl=75;
+  binhQuan.innerText=Math.round(binh).toLocaleString();
+  tyLe.innerText=tl;
+  luongHuu.innerText=Math.round(binh*tl/100).toLocaleString();
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

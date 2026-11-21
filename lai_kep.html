@@ -1,0 +1,50 @@
+<div style="max-width: 550px; border: 3px solid #f1c40f; padding: 25px; border-radius: 15px; background: #fffdf0; font-family: sans-serif; margin: auto;">
+    <h2 style="color: #9a7d0a; text-align: center;">LỘ TRÌNH 10 NĂM ĐẠT 50 TỶ</h2>
+    
+    <div style="margin-bottom: 15px;">
+        <label><b>Vốn ban đầu (Tỷ VNĐ):</b></label>
+        <input type="number" id="v_start" value="16.6" style="width:100%; padding:10px; border: 1px solid #d4af37;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <label><b>Lãi suất kỳ vọng (%/năm):</b></label>
+        <input type="number" id="v_rate" value="12" style="width:100%; padding:10px; border: 1px solid #d4af37;">
+    </div>
+
+    <button onclick="showStepByStep()" style="width:100%; background:#f1c40f; color:#000; padding:12px; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">XEM TIỀN ĐẺ RA TIỀN THEO NĂM</button>
+
+    <div id="step_res" style="margin-top:20px; max-height: 300px; overflow-y: auto; display:none; border-top: 2px solid #f1c40f; padding-top: 10px;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.9em;">
+            <thead>
+                <tr style="background: #f1c40f;">
+                    <th style="padding: 5px; border: 1px solid #ddd;">Năm (Tuổi)</th>
+                    <th style="padding: 5px; border: 1px solid #ddd;">Số tiền (Tỷ)</th>
+                    <th style="padding: 5px; border: 1px solid #ddd;">Lãi trong năm</th>
+                </tr>
+            </thead>
+            <tbody id="table_body"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function showStepByStep() {
+    let cash = parseFloat(document.getElementById('v_start').value);
+    const rate = parseFloat(document.getElementById('v_rate').value) / 100;
+    const tbody = document.getElementById('table_body');
+    tbody.innerHTML = '';
+    document.getElementById('step_res').style.display = 'block';
+
+    for (let i = 1; i <= 10; i++) {
+        let interest = cash * rate;
+        cash = cash + interest;
+        
+        let row = `<tr>
+            <td style="padding:8px; border:1px solid #ddd; text-align:center;">Năm ${i} (${56 + i}t)</td>
+            <td style="padding:8px; border:1px solid #ddd; text-align:right;"><b>${cash.toFixed(2)}</b></td>
+            <td style="padding:8px; border:1px solid #ddd; text-align:right; color: green;">+${interest.toFixed(2)}</td>
+        </tr>`;
+        tbody.innerHTML += row;
+    }
+}
+</script>

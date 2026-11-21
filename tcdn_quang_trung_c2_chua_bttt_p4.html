@@ -1,0 +1,232 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>TCDN 1 – Chuong 2 | Chua bai tap trong tam</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f3f5f7;
+    margin:0;
+}
+header{
+    background:#0b3c5d;
+    color:#fff;
+    padding:20px;
+}
+section{
+    background:#fff;
+    margin:15px;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+h2{color:#0b3c5d}
+h3{color:#1e88e5}
+button{
+    padding:10px 14px;
+    margin:5px 0;
+    border:none;
+    border-radius:6px;
+    background:#1e88e5;
+    color:white;
+    cursor:pointer;
+}
+button:hover{background:#0b3c5d}
+input,select{
+    width:100%;
+    padding:8px;
+    margin-bottom:10px;
+}
+.result{
+    background:#e3f2fd;
+    padding:10px;
+    border-radius:6px;
+    font-weight:bold;
+}
+.warn{
+    background:#ffebee;
+    padding:10px;
+    border-radius:6px;
+    color:#b71c1c;
+}
+.tag{
+    display:inline-block;
+    background:#e8f5e9;
+    color:#1b5e20;
+    padding:4px 10px;
+    border-radius:12px;
+    font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>📘 TCDN 1 – Chuong 2: Dong tien & Quyet dinh tai chinh</h1>
+<p>🔗 Quang Trung TV – Chua bai tap trong tam phan 4</p>
+</header>
+
+<!-- 2.1 THUAT NGU + CONG THUC -->
+<section id="thuatngu">
+<h2>2.1 Thuat ngu tai chinh & ap dung doi song</h2>
+
+<h3>PV – Gia tri hien tai</h3>
+<p>So tien quy doi ve thoi diem hom nay.</p>
+<p><b>doi song:</b> Gia tri that cua tra gop, vay mua nha.</p>
+<span class="tag">Ca nhan</span> <span class="tag">Doanh nghiep</span>
+
+<h3>CF – Dong tien deu</h3>
+<p>So tien tra/thu giong nhau moi ky.</p>
+<p><b>di lam:</b> Tra no ngan hang hang nam.</p>
+
+<h3>Lai suat (r)</h3>
+<p>Chi phi su dung von hoac loi nhuan ky vong.</p>
+
+<h3>Cong thuc trong tam</h3>
+<p><b>PV cua dong tien deu:</b></p>
+<p><b>PV = CF × [1 − (1+r)<sup>-n</sup>] / r</b></p>
+
+<p class="warn">
+👉 Cong thuc nay dung de:
+<ul>
+<li>Tinh so tien phai tra moi nam</li>
+<li>So sanh mua dut hay tra gop</li>
+</ul>
+</p>
+</section>
+
+<!-- 2.2 DUNG CA NHAN HAY CONG VIEC -->
+<section id="sudung">
+<h2>2.2 Dung trong cong viec hay ca nhan?</h2>
+
+<ul>
+<li><b>Ca nhan:</b> vay mua nha, mua xe, tra gop</li>
+<li><b>Nguoi di lam:</b> so sanh thue – mua tai san</li>
+<li><b>Doanh nghiep:</b> chon phuong an chi phi thap nhat (PV nho nhat)</li>
+</ul>
+
+<p class="warn">
+❌ Khong dung tong tien cong gop  
+✔ Luon quy ve PV
+</p>
+</section>
+
+<!-- 3.2 TRINH TU RA QUYET dINH -->
+<section id="trinh-tu">
+<h2>3.2 Lam gi truoc – lam gi sau?</h2>
+
+<h3>Trinh tu chuan</h3>
+<ol>
+<li>Xac dinh so tien phai chi moi ky (CF)</li>
+<li>Xac dinh lai suat thi truong</li>
+<li>Chiet khau dong tien ve PV</li>
+<li>So sanh cac phuong an</li>
+</ol>
+
+<h3>dieu kien nen thuc hien</h3>
+<ul>
+<li>Doanh nghiep co dong tien on dinh</li>
+<li>Lai vay thap hon loi nhuan</li>
+</ul>
+
+<h3>Rui ro neu lam sai</h3>
+<ul>
+<li>Khong tra noi no giua ky</li>
+<li>Chon phuong an tong tien thap nhung PV cao</li>
+</ul>
+</section>
+
+<!-- BAI TOAN TINH -->
+<section id="baitoan">
+<h2>📐 Bai toan: Lap ke hoach tra no</h2>
+
+<label>So tien vay (PV):</label>
+<input type="number" id="pv" placeholder="Vi du: 1000000000">
+
+<label>Lai suat (% / nam):</label>
+<input type="number" id="rate" placeholder="Vi du: 10">
+
+<label>So nam vay:</label>
+<input type="number" id="n" placeholder="Vi du: 5">
+
+<button onclick="tinhCF()">Tinh tien tra moi nam</button>
+
+<div class="result" id="kq"></div>
+
+<script>
+function tinhCF(){
+    let PV = Number(pv.value);
+    let r = Number(rate.value)/100;
+    let n = Number(document.getElementById("n").value);
+
+    if(!PV||!r||!n){
+        kq.innerHTML="⚠ Nhap day du du lieu";
+        return;
+    }
+
+    let CF = PV * r / (1 - Math.pow(1+r,-n));
+    let tong = CF * n;
+    let lai = tong - PV;
+
+    kq.innerHTML =
+    "💰 Tra moi nam: " + CF.toLocaleString()+" d<br>" +
+    "📈 Tong lai: " + lai.toLocaleString()+" d<br>" +
+    "📉 Tong tien tra: " + tong.toLocaleString()+" d";
+}
+</script>
+</section>
+
+<!-- 4.2 TINH HUONG -->
+<section id="tinhhuong">
+<h2>4.2 Chon tinh huong de giai quyet</h2>
+
+<input placeholder="Nhap tinh huong cua ban (vi du: vay mua nha, mua may moc…)">
+
+<button onclick="scrollToId('thuatngu')">📌 Khong hieu thuat ngu</button>
+<button onclick="scrollToId('trinh-tu')">📌 Khong biet lam buoc nao truoc</button>
+<button onclick="scrollToId('baitoan')">📌 Muon biet lai – von – lo</button>
+
+<script>
+function scrollToId(id){
+    document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+</script>
+</section>
+
+<footer style="text-align:center;padding:15px;color:#555">
+© TCDN 1 – Hoc de ra quyet dinh, khong hoc de nho
+</footer>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

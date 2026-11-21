@@ -1,0 +1,595 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinh Tuoi & Mau Sac Quan Ao</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #4a6fa5;
+            grid-column: 1 / -1;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            color: #555;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .input-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .result-section {
+            background-color: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #4a6fa5;
+            outline: none;
+        }
+        
+        .color-preview {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+            border: 1px solid #ddd;
+        }
+        
+        button {
+            background-color: #4a6fa5;
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background-color: #3a5a80;
+        }
+        
+        .results-container {
+            margin-top: 20px;
+        }
+        
+        .result-item {
+            background-color: #f8f9fa;
+            border-left: 4px solid #4a6fa5;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 0 6px 6px 0;
+        }
+        
+        .result-title {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .color-result {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: white;
+            border-radius: 6px;
+            border: 1px solid #eaeaea;
+        }
+        
+        .clothing-item {
+            padding: 8px 12px;
+            background-color: #eef5ff;
+            border-radius: 4px;
+            margin: 5px 0;
+            border-left: 3px solid #4a6fa5;
+        }
+        
+        .person-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        
+        .person-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .person-item:hover {
+            background-color: #f0f7ff;
+        }
+        
+        .person-item:last-child {
+            border-bottom: none;
+        }
+        
+        .person-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .person-dob {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .explanation {
+            font-style: italic;
+            color: #555;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 0.95rem;
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+        
+        .time-unit {
+            color: #4a6fa5;
+            font-weight: 700;
+        }
+        
+        .color-name {
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .hex-code {
+            background-color: #f0f0f0;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Ung Dung Tinh Tuoi & Mau Sac Quan Ao</h1>
+        <p class="description">Nhap thong tin hoac chon tu danh sach de tinh tuoi theo nhieu don vi thoi gian va nhan de xuat mau sac quan ao phu hop.</p>
+    </header>
+    
+    <div class="container">
+        <div class="input-section">
+            <h2>Thong tin dau vao</h2>
+            
+            <div class="form-group">
+                <label for="currentDate">Ngay thang nam hien tai:</label>
+                <input type="date" id="currentDate" value="">
+            </div>
+            
+            <div class="form-group">
+                <label for="birthDate">Ngay thang nam sinh:</label>
+                <input type="date" id="birthDate">
+            </div>
+            
+            <div class="form-group">
+                <label for="name">Ho va ten:</label>
+                <input type="text" id="name" placeholder="Nhap ho va ten">
+            </div>
+            
+            <div class="form-group">
+                <label>Danh sach nguoi (chon de tu dien):</label>
+                <div class="person-list" id="personList">
+                    <!-- Danh sach nguoi se duoc tao bang JavaScript -->
+                </div>
+            </div>
+            
+            <button id="calculateBtn">Tinh toan va de xuat</button>
+        </div>
+        
+        <div class="result-section">
+            <h2>Ket qua tinh toan</h2>
+            <div id="resultsContainer" class="results-container">
+                <p>Vui long nhap thong tin va nhan "Tinh toan va de xuat" de xem ket qua.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Du lieu nguoi
+        const people = [
+            { id: 1, name: "NGUYENKHACNANG", dob: "1944-06-04" },
+            { id: 2, name: "TOTHIHA", dob: "1948-08-29" },
+            { id: 3, name: "NGUYENMINHNAM", dob: "1971-03-03" },
+            { id: 4, name: "THANTHIKIMANH", dob: "1981-09-23" },
+            { id: 5, name: "NGUYENTONGANAN", dob: "2014-09-28" },
+            { id: 6, name: "NGUYENTOMINHCHAU", dob: "2016-07-25" },
+            { id: 7, name: "NGUYENTOBICHNGOC", dob: "2020-02-05" },
+            { id: 8, name: "NGUYENTHIMINHHANG", dob: "1974-01-07" },
+            { id: 9, name: "NGOQUYCUONG", dob: "1973-05-23" },
+            { id: 10, name: "NGOGIABACH", dob: "2000-10-12" },
+            { id: 11, name: "NGOGIALINH", dob: "2005-04-05" },
+            { id: 12, name: "NGUYENTHIMINHPHUONG", dob: "1978-11-06" },
+            { id: 13, name: "HOANGANHDUNG", dob: "1978-09-21" },
+            { id: 14, name: "HOANGHAIVINH", dob: "2010-06-03" },
+            { id: 15, name: "HOANGTHIENBACHANH", dob: "2015-11-14" },
+            { id: 16, name: "TO KIM HUE", dob: "1960-08-09" },
+            { id: 17, name: "NGUYEN TUAN ANH", dob: "1983-10-23" },
+            { id: 18, name: "NGUYEN THE ANH", dob: "2001-03-24" },
+            { id: 19, name: "NGO THI MAI", dob: "1948-12-12" },
+            { id: 20, name: "TO VIET HUNG", dob: "1996-06-17" },
+            { id: 21, name: "TO THI HONG", dob: "1964-10-10" },
+            { id: 22, name: "VU VAN HIEP", dob: "1974-04-24" },
+            { id: 23, name: "NGUYEN THI CHI", dob: "1946-02-08" },
+            { id: 24, name: "NGUYEN TAN BAC", dob: "1957-11-30" },
+            { id: 25, name: "NGUYEN THI TAM", dob: "1954-08-08" }
+        ];
+
+        // Bang ma thang
+        const monthCodeTable = {
+            12: 6, 11: 4, 10: 1, 9: 6, 8: 3, 7: 0,
+            6: 5, 5: 2, 4: 0, 3: 4, 2: 4, 1: 1
+        };
+
+        // Bang mau (6 bang, moi bang 14 mau)
+        const colorTables = [
+            ["dO", "VANG", "KIM LOAI", "XANH BIEN", "XANH LA", "dO", "VANG", "CAM", "XANH BIEN", "XANH LA", "dO", "VANG", "TRANG", "XANH BIEN"],
+            ["dEN", "TRANG", "DA TROI", "XANH LA", "XANH BIEN", "TIM", "dO", "CAM", "VANG", "dEN", "TRANG", "DA TROI", "XANH LA", "XANH BIEN"],
+            ["VANG", "dO", "HONG", "GHI", "TRANG", "dEN", "DA TROI", "XANH LA", "VANG", "dO", "HONG", "GHI", "TRANG", "dEN"],
+            ["dO", "VANG", "CAM", "XANH BIEN", "XANH LA", "XANH LA MA", "TIM", "dO", "VANG", "DA CAM", "XANH BIEN", "XANH LA", "XANH LA MA", "TIM"],
+            ["dO", "VANG", "XANH LA", "dO", "VANG", "XANH LA", "dO", "VANG", "XANH LA", "dO", "VANG", "XANH LA", "dO", "VANG"],
+            ["XANH LA", "dO", "VANG", "dEN", "XANH LA", "dO", "VANG", "dEN", "LAM", "dO", "VANG", "dEN", "", ""]
+        ];
+
+        // Ma hex cho cac mau
+        const colorHexCodes = {
+            "dO": "#FF0000", "VANG": "#FFFF00", "KIM LOAI": "#C0C0C0", "XANH BIEN": "#0077BE", 
+            "XANH LA": "#00AA00", "CAM": "#FF6600", "TRANG": "#FFFFFF", "dEN": "#000000", 
+            "DA TROI": "#87CEEB", "TIM": "#800080", "HONG": "#FFC0CB", "GHI": "#808080",
+            "XANH LA MA": "#90EE90", "DA CAM": "#FF8C00", "LAM": "#0000FF", "": "#CCCCCC"
+        };
+
+        // Bang quan ao theo mau
+        const clothingTable = {
+            "DA TROI": ["AO SO MI HB", "AO SO-MI KE XANH DA TROI", "AO KHOAC THE THAO SEAGAME", "deo khau trang"],
+            "VANG": ["AO SOMI VANG DT 30 33", "CAVAT VANG", "QUAN DAI VANG NHAT", "AO CHO", "AO MANGTO VANG", "AO SOI KE NGANG VANG GHI", "AO SOI O TRAM dEN VANG", "COI TRAN", "QUAN SHORT VANG 27 33"],
+            "DA CAM": ["AO SOMI CAM DT30 33", "CAVAT CAM", "AO HO"],
+            "TRANG": ["AO SOMI TRANG 30 33", "QUAN DAI TRANG COMPLE", "AO CAPTAN", "AO FONG TRANG SPORT", "AO SAT NACH TRANG", "AO KHOAC TRANG LUC", "AO JILE VAI TRANG 20", "AO JILE LEN TRANG", "AO BU DONG TRANG", "AO LEN TRANG LAM dEN 3", "AO SOI LONG VANG GHI", "COMPLE TRANG", "QUAN SHORT TRANG 27 33", "di tat ngu"],
+            "dO": ["DAY CHU Y", "AO SOMI KE TRANG DO 30 33", "CAVAT DO KE", "AO KHOAC VAI dO dEN", "AO KHOAC DEN DO", "AO SOI O TRAM DEN VANG", "COMPLE BE", "2 QUAN DAI"],
+            "GHI": ["AO SOMI KE DEN TO", "CAVAT GHI 06 27", "QUAN DAI TRANG COMPLE", "AO FONG TRANG NGUA BONG", "AO SAT NACH GHI MOI", "AO KHOAC GHI DEN Khoa hong", "AO JILE GHI 26", "AO BU DONG GHI", "AO LEN GHI", "AO SOI LONG GHI TRANG", "COMPLE GUONG", "BO TDTT GHI", "QUAN THUN GHI", "QUAN NGU GHI 1", "QUAN NGU GHI 2"],
+            "XANH LA": ["CAVAT LAM 06 27", "QUAN DAI BO DOI 1", "AO FONG LAM KE CHAM TRANG U2", "AO SAT NACH LUC MOI 33 37", "AO JILE BUDONG LAM", "AO BU DONG LAM", "AO LEN LAM", "AO LEN TRANG LAM dEN 1", "AO SOI LONG VANG GHI", "AO GIU NHIET LAM", "AO VET KE CA RO", "QUAN SHORT LAM 27 33", "QUAN DAI BV"],
+            "TIM": ["CAVAT TIM 06 27", "AO NGUA", "AO BU DONG TIM", "AO SOI LONG GHI TRANG"],
+            "HONG": ["CAVAT HONG", "AO SAT NACH HONG 33 37", "COI TRAN"],
+            "dEN": ["QUAN DAI DEN", "AO FONG VANG SO 7", "AO SAT NACH DEN CU 33 37", "AO KHOAC DEN THE THAO", "AO BU DONG dEN", "AO LEN DEN", "AO LEN TRANG LAM dEN 2", "AO SOI O TRAM DEN VANG", "COI TRAN", "COMPLE TO", "QUAN SHORT DEN 27 33", "QUAN THE THAO dEN dO", "GIAY MOI", "GIAY CONG SO dEN 21 33", "DI XE MAY - 2 DO", "di tat ngu", "QUAN TT BONG DO DEN"],
+            "XANH BIEN": ["AO FONG LUC TRANG NIKE", "AO KHOAC LUC BV", "AO KHOAC THE THAO SEAGAME", "AO KHOAC TRANG LUC", "AO BU DONG LUC", "COMPLE LUC", "QUAN SHORT BO 27 33", "BO TT"],
+            "LAM": ["MU LUOI TRAI LAM TRANG 25 33", "MU LUOI TRAI dO 25 38"],
+            "NGOC": ["QUAN DAI XANH NGOC", "0"],
+            "LUC": ["QUAN BO", "MU LUOI TRAI LUC 25 33"],
+            "NAU": ["GIAY MOI HE"],
+            "DO": ["MU LUOI TRAI dO 25 38", "2 QUAN DAI"],
+            "TRANG": ["MU LUOI TRAI XAM 25 33"],
+            "LUC": ["MU LUOI TRAI LUC 25 33"],
+            "HB": ["deo khau trang"],
+            "": ["QUAN DAI", "COMPLE"]
+        };
+
+        // Giai thich mau sac theo cam xuc, hoan canh
+        const colorExplanations = {
+            "dO": "Mau do tuong trung cho nang luong, dam me va quyet tam. Phu hop cho cac su kien quan trong, buoi thuyet trinh hoac khi can the hien su tu tin.",
+            "VANG": "Mau vang mang lai cam giac vui ve, lac quan va sang tao. Thich hop cho cac buoi gap go xa giao, su kien vui choi hoac khi can truyen cam hung.",
+            "XANH LA": "Mau xanh la tuong trung cho su phat trien, hoa binh va on dinh. Phu hop cho moi truong lam viec, hoc tap hoac khi can su can bang.",
+            "XANH BIEN": "Mau xanh bien the hien su tin cay, tri tue va yen binh. Thich hop cho cac cuoc hop quan trong, moi truong chuyen nghiep hoac khi can su nghiem tuc.",
+            "TRANG": "Mau trang tuong trung cho su tinh khiet, don gian va tuoi moi. Phu hop cho cac dip trang trong, su kien mua he hoac khi muon tao an tuong sach se, gon gang.",
+            "dEN": "Mau den the hien su thanh lich, quyen luc va bi an. Thich hop cho cac su kien trang trong, buoi toi hoac khi muon tao phong cach toi gian, hien dai.",
+            "TIM": "Mau tim tuong trung cho su sang trong, sang tao va tam linh. Phu hop cho cac su kien van hoa, nghe thuat hoac khi muon the hien su doc dao.",
+            "CAM": "Mau cam mang lai cam giac nhiet huyet, vui tuoi va nang dong. Thich hop cho cac hoat dong ngoai troi, the thao hoac khi can thu hut su chu y.",
+            "HONG": "Mau hong tuong trung cho su diu dang, lang man va an can. Phu hop cho cac buoi hen ho, gap go than mat hoac khi muon tao cam giac am ap.",
+            "GHI": "Mau ghi the hien su trung tinh, can bang va chuyen nghiep. Thich hop cho moi truong cong so, cac cuoc hop hoac khi muon ket hop voi nhieu mau khac.",
+            "DA TROI": "Mau da troi mang lai cam giac nhe nhang, thanh binh va thu thai. Phu hop cho cac hoat dong thu gian, du lich hoac khi muon tao cam giac mat me.",
+            "KIM LOAI": "Mau kim loai the hien su hien dai, cong nghe va manh me. Thich hop cho cac su kien dac biet, buoi tiec hoac khi muon tao diem nhan."
+        };
+
+        // Khoi tao ngay hien tai
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('currentDate').value = formattedDate;
+            
+            // Tao danh sach nguoi
+            const personList = document.getElementById('personList');
+            people.forEach(person => {
+                const personItem = document.createElement('div');
+                personItem.className = 'person-item';
+                personItem.innerHTML = `
+                    <div class="person-name">${person.id}. ${person.name}</div>
+                    <div class="person-dob">Ngay sinh: ${formatDateForDisplay(person.dob)}</div>
+                `;
+                
+                personItem.addEventListener('click', function() {
+                    document.getElementById('name').value = person.name;
+                    document.getElementById('birthDate').value = person.dob;
+                });
+                
+                personList.appendChild(personItem);
+            });
+            
+            // Xu ly khi nhan nut tinh toan
+            document.getElementById('calculateBtn').addEventListener('click', calculateAndDisplay);
+        });
+
+        // Ham dinh dang ngay thang de hien thi
+        function formatDateForDisplay(dateString) {
+            const date = new Date(dateString);
+            return date.getDate().toString().padStart(2, '0') + '/' + 
+                   (date.getMonth() + 1).toString().padStart(2, '0') + '/' + 
+                   date.getFullYear();
+        }
+
+        // Ham tinh toan va hien thi ket qua
+        function calculateAndDisplay() {
+            const currentDate = document.getElementById('currentDate').value;
+            const birthDate = document.getElementById('birthDate').value;
+            const name = document.getElementById('name').value;
+            
+            if (!currentDate || !birthDate || !name) {
+                alert('Vui long nhap day du thong tin hoac chon tu danh sach');
+                return;
+            }
+            
+            // Tinh toan cac loai tuoi
+            const ageInYears = calculateAgeInYears(birthDate, currentDate);
+            const ageInMonths = calculateAgeInMonths(birthDate, currentDate);
+            const ageInWeeks = calculateAgeInWeeks(birthDate, currentDate);
+            const ageInDays = calculateAgeInDays(birthDate, currentDate);
+            const ageInHours = calculateAgeInHours(birthDate, currentDate);
+            
+            // Tinh toan ma mau cho tung loai tuoi
+            const yearColorIndex = getColorIndex(ageInYears);
+            const monthColorIndex = getColorIndex(ageInMonths);
+            const weekColorIndex = getColorIndex(ageInWeeks);
+            const dayColorIndex = getColorIndex(ageInDays);
+            const hourColorIndex = getColorIndex(ageInHours);
+            
+            // Lay mau tu cac bang
+            const yearColor = colorTables[0][yearColorIndex - 1];
+            const monthColor = colorTables[1][monthColorIndex - 1];
+            const weekColor = colorTables[2][weekColorIndex - 1];
+            const dayColor = colorTables[3][dayColorIndex - 1];
+            const hourColor = colorTables[4][hourColorIndex - 1];
+            
+            // Lay quan ao tuong ung
+            const yearClothing = clothingTable[yearColor] || ["Khong co de xuat"];
+            const monthClothing = clothingTable[monthColor] || ["Khong co de xuat"];
+            const weekClothing = clothingTable[weekColor] || ["Khong co de xuat"];
+            const dayClothing = clothingTable[dayColor] || ["Khong co de xuat"];
+            const hourClothing = clothingTable[hourColor] || ["Khong co de xuat"];
+            
+            // Hien thi ket qua
+            displayResults(name, birthDate, currentDate, {
+                years: { value: ageInYears, color: yearColor, clothing: yearClothing },
+                months: { value: ageInMonths, color: monthColor, clothing: monthClothing },
+                weeks: { value: ageInWeeks, color: weekColor, clothing: weekClothing },
+                days: { value: ageInDays, color: dayColor, clothing: dayClothing },
+                hours: { value: ageInHours, color: hourColor, clothing: hourClothing }
+            });
+        }
+
+        // Tinh tuoi theo nam
+        function calculateAgeInYears(birthDate, currentDate) {
+            const birth = new Date(birthDate);
+            const current = new Date(currentDate);
+            
+            let years = current.getFullYear() - birth.getFullYear();
+            const monthDiff = current.getMonth() - birth.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && current.getDate() < birth.getDate())) {
+                years--;
+            }
+            
+            return years;
+        }
+
+        // Tinh tuoi theo thang
+        function calculateAgeInMonths(birthDate, currentDate) {
+            const birth = new Date(birthDate);
+            const current = new Date(currentDate);
+            
+            let months = (current.getFullYear() - birth.getFullYear()) * 12;
+            months += current.getMonth() - birth.getMonth();
+            
+            if (current.getDate() < birth.getDate()) {
+                months--;
+            }
+            
+            return months;
+        }
+
+        // Tinh tuoi theo tuan
+        function calculateAgeInWeeks(birthDate, currentDate) {
+            const birth = new Date(birthDate);
+            const current = new Date(currentDate);
+            
+            const diffTime = Math.abs(current - birth);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            return Math.floor(diffDays / 7);
+        }
+
+        // Tinh tuoi theo ngay
+        function calculateAgeInDays(birthDate, currentDate) {
+            const birth = new Date(birthDate);
+            const current = new Date(currentDate);
+            
+            const diffTime = Math.abs(current - birth);
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        // Tinh tuoi theo gio
+        function calculateAgeInHours(birthDate, currentDate) {
+            const birth = new Date(birthDate);
+            const current = new Date(currentDate);
+            
+            const diffTime = Math.abs(current - birth);
+            return Math.floor(diffTime / (1000 * 60 * 60));
+        }
+
+        // Tinh chi so mau dua tren gia tri tuoi
+        function getColorIndex(ageValue) {
+            let result = ageValue % 12;
+            return result === 0 ? 12 : result;
+        }
+
+        // Hien thi ket qua
+        function displayResults(name, birthDate, currentDate, results) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            
+            let html = `
+                <div class="result-item">
+                    <div class="result-title">Thong tin ca nhan</div>
+                    <p><strong>Ho ten:</strong> ${name}</p>
+                    <p><strong>Ngay sinh:</strong> ${formatDateForDisplay(birthDate)}</p>
+                    <p><strong>Ngay hien tai:</strong> ${formatDateForDisplay(currentDate)}</p>
+                </div>
+            `;
+            
+            // Hien thi ket qua cho tung loai tuoi
+            const timeUnits = [
+                { key: 'years', label: 'Tuoi (nam)', unit: 'nam' },
+                { key: 'months', label: 'Tuoi (thang)', unit: 'thang' },
+                { key: 'weeks', label: 'Tuoi (tuan)', unit: 'tuan' },
+                { key: 'days', label: 'Tuoi (ngay)', unit: 'ngay' },
+                { key: 'hours', label: 'Tuoi (gio)', unit: 'gio' }
+            ];
+            
+            timeUnits.forEach(unit => {
+                const data = results[unit.key];
+                const colorHex = colorHexCodes[data.color] || "#CCCCCC";
+                
+                html += `
+                    <div class="result-item">
+                        <div class="result-title">${unit.label}: <span class="highlight">${data.value} ${unit.unit}</span></div>
+                        
+                        <div class="color-result">
+                            <div class="color-preview" style="background-color: ${colorHex};"></div>
+                            <span class="color-name">${data.color}</span>
+                            <span class="hex-code">${colorHex}</span>
+                        </div>
+                        
+                        <div class="explanation">${colorExplanations[data.color] || "Khong co giai thich cho mau nay."}</div>
+                        
+                        <div><strong>de xuat quan ao:</strong></div>
+                `;
+                
+                // Hien thi quan ao
+                data.clothing.forEach(item => {
+                    html += `<div class="clothing-item">${item}</div>`;
+                });
+                
+                html += `</div>`;
+            });
+            
+            resultsContainer.innerHTML = html;
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

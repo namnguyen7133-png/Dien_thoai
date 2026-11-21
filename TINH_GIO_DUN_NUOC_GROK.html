@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tối ưu Đun Nước Than Tổ Ong - Đã sửa logic lịch & công suất</title>
+<style>
+:root{--p:#0f766e;--a:#ea580c;--bg:#f1f5f9;--c:#fff;--t:#1e293b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--t);padding:12px;line-height:1.45}
+h1{text-align:center;color:var(--p);font-size:1.35rem;margin-bottom:6px}
+h2{color:var(--p);font-size:1.05rem;margin:14px 0 8px;border-bottom:2px solid #99f6e4;padding-bottom:3px}
+.card{background:var(--c);border-radius:10px;padding:14px;margin-bottom:12px;box-shadow:0 1px 6px rgba(0,0,0,.07)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+label{display:flex;align-items:center;gap:6px;font-size:.9rem;margin:3px 0;flex-wrap:wrap}
+input[type=number],input[type=text],select{padding:4px 6px;border:1px solid #cbd5e1;border-radius:5px}
+input[type=number]{width:65px}
+input[type=checkbox]{width:16px;height:16px;accent-color:var(--p)}
+button{background:var(--p);color:#fff;border:none;padding:9px 14px;border-radius:6px;cursor:pointer;font-weight:600;margin:3px;font-size:.9rem}
+button:hover{filter:brightness(1.08)}
+button.sec{background:#64748b} button.acc{background:var(--a)} button.del{background:#dc2626;padding:3px 7px;font-size:.78rem}
+table{width:100%;border-collapse:collapse;font-size:.85rem;margin:6px 0}
+th,td{border:1px solid #e2e8f0;padding:5px 7px;text-align:left}
+th{background:#ccfbf1}
+.result{background:#f0fdfa;border-left:4px solid var(--p);padding:14px;margin-top:10px;border-radius:0 8px 8px 0;white-space:pre-wrap;font-family:ui-monospace,monospace;font-size:.88rem;min-height:120px}
+.note{font-size:.8rem;color:#64748b;margin-top:5px}
+.flex{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.warning{background:#fff7ed;border-left:4px solid var(--a);padding:10px;margin:8px 0;border-radius:0 6px 6px 0;font-size:.9rem}
+.huongdan{background:#ecfdf5;padding:8px 10px;border-radius:6px;margin-bottom:10px;color:#065f46;font-size:.85rem;line-height:1.5}
+</style>
+</head>
+<body>
+<h1>🔥 Tối ưu Đun Nước Than Tổ Ong (Đã sửa logic)</h1>
+<p style="text-align:center;color:#64748b;font-size:.88rem;margin-bottom:10px">
+Không làm việc trong giờ ngủ 23:00–05:30 • Chiều chỉ đun đúng mức đang thiếu (không cộng thừa nhu cầu ngày) • Tính theo công suất 1 viên
+</p>
+
+<div class="card">
+<h2>1. Thông số than & giá</h2>
+<div class="grid">
+<label>Nhóm than (giờ): <input type="number" id="tNhom" value="1" step="0.1" min="0.5"></label>
+<label>Cháy mạnh 1 viên (giờ): <input type="number" id="tChay" value="3" step="0.5"></label>
+<label>1 viên đun được (lít): <input type="number" id="litVien" value="14" step="0.5"></label>
+<label>Mồi viên mới (phút): <input type="number" id="tMoi" value="20"></label>
+<label>Âm ỉ tối đa (giờ): <input type="number" id="tAm" value="12"></label>
+<label>Giá 1 viên than (đồng): <input type="number" id="giaThan" value="5000" step="500"></label>
+<label>Số viên than còn lại: <input type="number" id="conThan" value="10" min="0"></label>
+</div>
+<div class="flex" style="margin-top:8px">
+<label>Than củi: <input type="number" id="giaCui" value="15000"></label>
+<label>Cồn khô: <input type="number" id="giaConKho" value="30000"></label>
+<label>Cồn chai: <input type="number" id="giaConChai" value="20000"></label>
+</div>
+<button onclick="saveParams()">💾 Lưu thông số</button>
+</div>
+
+<div class="card">
+<h2>2. Danh sách dụng cụ (thêm / sửa / xóa)</h2>
+<table id="tblItems">
+<thead><tr><th>Tên</th><th>SL</th><th>Lít</th><th>Loại</th><th></th></tr></thead>
+<tbody></tbody>
+</table>
+<div class="flex" style="margin-top:8px">
+<input type="text" id="newName" placeholder="Tên đồ" style="width:130px">
+<input type="number" id="newQty" value="1" min="1" style="width:50px">
+<input type="number" id="newLit" value="2" step="0.5" style="width:55px">
+<select id="newType">
+<option value="soi">Nước sôi</option>
+<option value="dun">Đun</option>
+<option value="nguoi">Nguội</option>
+<option value="nguon">Nguồn</option>
+</select>
+<button onclick="addItem()">+ Thêm</button>
+<button class="sec" onclick="resetItems()">↺ Mặc định</button>
+</div>
+</div>
+
+<div class="card">
+<h2>3. Chọn món đang cạn + nhu cầu</h2>
+<div class="huongdan">
+📌 <b>Cách dùng (không cần đo lít):</b><br>
+1. Chọn <b>Thời điểm kiểm tra</b> (Sáng / Chiều).<br>
+2. Tích món đang cạn → chọn mức còn lại:<br>
+• <b>Hết</b> = 0% &nbsp;• <b>Còn ít</b> ≈ 20% &nbsp;• <b>Còn nửa</b> ≈ 50% &nbsp;• <b>Còn nhiều</b> ≈ 80%<br>
+3. <b>Sáng</b>: Đun theo nhu cầu cố định/ngày.<br>
+   <b>Chiều</b>: Chỉ đun đúng lượng đang thiếu (mức cạn = nhu cầu đã dùng) → <b>không tính thừa</b>.
+</div>
+<div id="checkList" class="grid"></div>
+<label>Nhu cầu nước sôi cố định/ngày (L): <input type="number" id="nhuCau" value="12" min="5"></label>
+<label>Nhu cầu nước sôi lúc 04:00 (L): <input type="number" id="nhuCau4h" value="2" min="0"></label>
+<label>Thêm rán cá (giờ than): <input type="number" id="ranCa" value="0" step="0.25" min="0"></label>
+<label>Thêm rán trứng/xào (phút): <input type="number" id="ranTrung" value="0" step="5" min="0"></label>
+<label>Thời điểm kiểm tra: 
+  <select id="thoiDiem">
+    <option value="sang">Buổi sáng (trước khi đun)</option>
+    <option value="chieu" selected>Buổi chiều (sau khi đã đun sáng)</option>
+  </select>
+</label>
+<br>
+<button class="acc" onclick="tinhToan()">⚡ TÍNH TOÁN LỊCH + THAN + TIỀN</button>
+</div>
+
+<div class="card">
+<h2>4. Kết quả chi tiết & lịch đề xuất</h2>
+<div id="ketQua" class="result">Nhấn nút màu cam ở trên để tính toán...</div>
+</div>
+
+<div class="card">
+<h2>5. Lịch 24 giờ mẫu (tuyệt đối không làm 23:00–05:30)</h2>
+<div class="warning">
+⚠️ Giờ ngủ 23:00 – 05:30: Không xách nước, không nhóm than, không đun.
+</div>
+<table>
+<tr><th>Giờ</th><th>Xách lên</th><th>Đun than</th><th>Nguội & phân phối</th></tr>
+<tr><td>05:30–07:00</td><td>—</td><td>Nhóm than + đun 15L → 5–7 phích</td><td>—</td></tr>
+<tr><td>08:00–10:00</td><td>1–2 bình</td><td>Bổ sung nếu cần</td><td>Để nguội</td></tr>
+<tr><td>09:30–11:00</td><td>—</td><td>—</td><td>Trút + mang xuống 4 phòng</td></tr>
+<tr><td>14:00–16:00</td><td>1–2 bình</td><td>—</td><td>Luân chuyển</td></tr>
+<tr><td>15:30–17:00</td><td>—</td><td>Đun chiều (chỉ khi thiếu)</td><td>—</td></tr>
+<tr><td>17:00–21:00</td><td>Cuối ngày</td><td>Âm ỉ</td><td>Phân phối tối</td></tr>
+<tr><td>21:00–21:30</td><td>—</td><td>Đun thêm cho 04:00 hôm sau</td><td>—</td></tr>
+<tr><td>21:30</td><td>—</td><td>Tắt bếp</td><td>Cất đồ</td></tr>
+</table>
+<p class="note">Cuối tuần: 08:00–09:00 & 14:00–15:00 nhờ trẻ 6/10/13 tuổi hứng nước.</p>
+</div>
+
+<div class="card">
+<h2>6. Phân phối 4 khu vực + đề xuất tối ưu</h2>
+<ul style="padding-left:18px;font-size:.9rem">
+<li><b>Bếp dưới nhà:</b> 3 phích to + 2 phích con</li>
+<li><b>Phòng ăn:</b> 1 bình nhựa 7,5 L</li>
+<li><b>Phòng ngủ:</b> 2 Aquafina + 1 bình nhựa 7,5 L</li>
+<li><b>Phòng đun (gác):</b> 1 phích 1L + ấm điện + 2 bình sứ + 2 ấm inox</li>
+</ul>
+<p class="note">
+<b>Chiến lược tối ưu:</b> Đun 1 lèo sáng 15 L vào 5–7 phích. Đun thêm tối 21:00 nếu cần nước sôi 04:00. 
+Thêm 2–3 phích 2 L để dự trữ 10–12 L. Khi chỉ cạn 1 phích → đợi mẻ gần nhất, không nhóm than riêng.
+</p>
+</div>
+
+<script>
+const DEFAULT = [
+{name:'Phích con',qty:3,lit:1,type:'soi'},
+{name:'Ấm điện cũ',qty:1,lit:1,type:'soi'},
+{name:'Bình sứ',qty:2,lit:4,type:'nguoi'},
+{name:'Phích to',qty:3,lit:2,type:'soi'},
+{name:'Ấm inox to',qty:1,lit:5,type:'dun'},
+{name:'Ấm inox nhỏ',qty:1,lit:3.5,type:'dun'},
+{name:'Xoong 4L',qty:1,lit:4,type:'dun'},
+{name:'Xoong 5L',qty:1,lit:5,type:'dun'},
+{name:'Bình nhựa',qty:2,lit:7.5,type:'nguoi'},
+{name:'Aquafina',qty:8,lit:5,type:'nguon'}
+];
+
+let items = JSON.parse(localStorage.getItem('nuoc_items') || 'null') || JSON.parse(JSON.stringify(DEFAULT));
+
+function saveItems() {
+  localStorage.setItem('nuoc_items', JSON.stringify(items));
+  render();
+}
+
+function saveParams() {
+  const p = {
+    tNhom: +tNhom.value, tChay: +tChay.value, litVien: +litVien.value,
+    tMoi: +tMoi.value, tAm: +tAm.value, giaThan: +giaThan.value,
+    conThan: +conThan.value, giaCui: +giaCui.value,
+    giaConKho: +giaConKho.value, giaConChai: +giaConChai.value
+  };
+  localStorage.setItem('nuoc_params', JSON.stringify(p));
+  alert('Đã lưu thông số than & giá!');
+}
+
+function loadParams() {
+  const p = JSON.parse(localStorage.getItem('nuoc_params') || '{}');
+  ['tNhom','tChay','litVien','tMoi','tAm','giaThan','conThan','giaCui','giaConKho','giaConChai'].forEach(k => {
+    if (p[k] !== undefined) document.getElementById(k).value = p[k];
+  });
+}
+
+function render() {
+  const tb = document.querySelector('#tblItems tbody');
+  tb.innerHTML = '';
+  const cl = document.getElementById('checkList');
+  cl.innerHTML = '';
+
+  items.forEach((it, i) => {
+    tb.innerHTML += `<tr>
+      <td><input type="text" value="${it.name}" onchange="items[${i}].name=this.value;saveItems()" style="width:110px"></td>
+      <td><input type="number" value="${it.qty}" min="1" onchange="items[${i}].qty=+this.value;saveItems()" style="width:48px"></td>
+      <td><input type="number" value="${it.lit}" step="0.5" min="0.5" onchange="items[${i}].lit=+this.value;saveItems()" style="width:55px"></td>
+      <td>${it.type}</td>
+      <td><button class="del" onclick="items.splice(${i},1);saveItems()">X</button></td>
+    </tr>`;
+
+    cl.innerHTML += `<label style="background:#f8fafc;padding:6px 8px;border-radius:6px">
+      <input type="checkbox" class="ck" data-i="${i}">
+      <b>${it.name}</b> (${it.qty}×${it.lit}L)
+      <select class="clai" data-i="${i}" style="width:120px;margin-left:4px">
+        <option value="0">Hết (0%)</option>
+        <option value="0.2" selected>Còn ít (~20%)</option>
+        <option value="0.5">Còn nửa (~50%)</option>
+        <option value="0.8">Còn nhiều (~80%)</option>
+      </select>
+    </label>`;
+  });
+}
+
+function addItem() {
+  const name = document.getElementById('newName').value.trim() || 'Đồ mới';
+  items.push({
+    name: name,
+    qty: +document.getElementById('newQty').value || 1,
+    lit: +document.getElementById('newLit').value || 2,
+    type: document.getElementById('newType').value
+  });
+  document.getElementById('newName').value = '';
+  saveItems();
+}
+
+function resetItems() {
+  if (confirm('Reset về danh sách mặc định?')) {
+    items = JSON.parse(JSON.stringify(DEFAULT));
+    saveItems();
+  }
+}
+
+function tinhToan() {
+  let tongCanTuCacDo = 0; // Nước cần bổ sung từ các đồ đang cạn
+  let chiTiet = [];
+  let tongDungTichSoi = 0; // Tổng dung tích các đồ chứa nước sôi
+
+  document.querySelectorAll('.ck').forEach(ck => {
+    if (ck.checked) {
+      const i = +ck.dataset.i;
+      const full = items[i].lit * items[i].qty;
+      const tyLeCon = +document.querySelector(`.clai[data-i="${i}"]`).value || 0;
+      const con = full * tyLeCon;
+      const can = Math.max(0, full - con);
+      tongCanTuCacDo += can;
+      const muc = tyLeCon === 0 ? 'Hết' : tyLeCon === 0.2 ? 'Còn ít' : tyLeCon === 0.5 ? 'Còn nửa' : 'Còn nhiều';
+      chiTiet.push(`${items[i].name} (${muc}): +${can.toFixed(1)}L`);
+    }
+  });
+
+  // Tính tổng dung tích nước sôi có sẵn (để biết dự trữ)
+  items.forEach(it => {
+    if (it.type === 'soi') tongDungTichSoi += it.lit * it.qty;
+  });
+
+  const nhuCau = +document.getElementById('nhuCau').value || 12;
+  const nhu4h = +document.getElementById('nhuCau4h').value || 0;
+  const thoiDiem = document.getElementById('thoiDiem').value; // 'sang' hoặc 'chieu'
+  const lit1 = +document.getElementById('litVien').value || 14; // 1 viên đun được bao nhiêu lít (công suất tỏa nhiệt)
+  const tN = +document.getElementById('tNhom').value || 1;
+  const tC = +document.getElementById('tChay').value || 3;
+  const ranCa = +document.getElementById('ranCa').value || 0;
+  const ranT = (+document.getElementById('ranTrung').value || 0) / 60;
+
+  // === LOGIC ĐÃ SỬA LẠI (tránh tính thừa) ===
+  // - Buổi sáng: Đun theo nhu cầu cố định + dự trữ. Mức cạn chỉ tham khảo.
+  // - Buổi chiều: Mức cạn hiện tại ≈ lượng đã dùng trong ngày → chỉ đun BẰNG lượng đang thiếu (không cộng thêm nhuCau nữa).
+  //   Vì nhu cầu hàng ngày chính là cái đã làm cho các đồ cạn đi.
+
+  let nuocCanDunHomNay = 0; // Tổng nước cần đun (cho than)
+  let nuocDunSang = 0;      // Lượng đun buổi sáng (proactive)
+  let nuocDunChieu = 0;     // Lượng đun bổ sung chiều (reactive)
+  let ghiChuThoiDiem = '';
+
+  if (thoiDiem === 'sang') {
+    // Kiểm tra sáng: Đun theo nhu cầu ngày + dự trữ
+    nuocDunSang = Math.max(nhuCau, 12);
+    if (tongDungTichSoi < 10) nuocDunSang = Math.max(nuocDunSang, 15);
+    nuocDunChieu = 0;
+    nuocCanDunHomNay = nuocDunSang + nhu4h;
+    ghiChuThoiDiem = 'Bạn đang kiểm tra BUỔI SÁNG → Đun chính vào sáng theo nhu cầu cố định. Mức cạn chỉ để tham khảo (sáng thường còn nhiều).';
+  } else {
+    // Kiểm tra chiều: Mức cạn = lượng đã tiêu thụ → chỉ cần đun lại đúng phần đang thiếu
+    // KHÔNG cộng thêm nhuCau (vì nhuCau chính là cái đã làm cho đồ cạn)
+    nuocDunSang = 0; // Không tính lại sáng (đã qua)
+    nuocDunChieu = tongCanTuCacDo; // Chỉ đun đúng lượng đang thiếu
+
+    // Nếu không chọn đồ nào hoặc thiếu quá ít → không đun chiều, chỉ lo nước 4h
+    if (nuocDunChieu < 2) {
+      nuocDunChieu = 0;
+      nuocCanDunHomNay = nhu4h;
+      ghiChuThoiDiem = 'Bạn đang kiểm tra BUỔI CHIỀU → Các đồ gần như còn đủ. Không cần đun bổ sung chiều. Chỉ lo nước 04:00 nếu có.';
+    } else {
+      // Đun đúng lượng thiếu + một chút dự trữ nhỏ (tối đa +2L), + nước 4h
+      const duTruNho = Math.min(2, Math.max(0, 8 - tongCanTuCacDo * 0.3)); // dự trữ nhẹ
+      nuocDunChieu = tongCanTuCacDo + duTruNho;
+      nuocCanDunHomNay = nuocDunChieu + nhu4h;
+      ghiChuThoiDiem = 'Bạn đang kiểm tra BUỔI CHIỀU → Chỉ đun đúng lượng đang thiếu (mức cạn ≈ nhu cầu đã dùng trong ngày). KHÔNG cộng thêm nhu cầu cố định để tránh thừa.';
+    }
+  }
+
+  // Tính số viên than dựa trên công suất tỏa nhiệt (litVien = lượng nước 1 viên đun được)
+  let soVien = Math.ceil(nuocCanDunHomNay / lit1);
+  const soVienNauAn = Math.ceil((ranCa + ranT) / tC);
+  soVien += soVienNauAn;
+  if (nhu4h > 0 && soVien < 1) soVien = 1; // Ít nhất 1 viên nếu cần nước 4h
+
+  // Nếu chỉ đun chiều lượng nhỏ ≤ 1 viên thì giữ 1 viên
+  if (thoiDiem === 'chieu' && nuocDunChieu > 0 && nuocDunChieu <= lit1) {
+    soVien = Math.max(1, soVienNauAn);
+  }
+  if (soVien < 1) soVien = 0;
+
+  const conLai = Math.max(0, (+document.getElementById('conThan').value || 0) - soVien);
+  const tien = soVien * (+document.getElementById('giaThan').value || 5000);
+  const soBinh = Math.ceil(Math.max(nuocCanDunHomNay, 5) / 5);
+
+  // Thời gian đun ước tính dựa trên công suất
+  const luongDunChinh = thoiDiem === 'sang' ? nuocDunSang : nuocDunChieu;
+  const thoiGianDunUoc = luongDunChinh > 0 ? ((luongDunChinh / lit1) * tC).toFixed(1) : '0';
+
+  let batXach = '08:00';
+  let xongDunSang = '07:00';
+  if (nuocDunSang > 18) xongDunSang = '07:30';
+  if (nuocDunSang > 25) xongDunSang = '08:00';
+
+  // === XUẤT KẾT QUẢ ===
+  let html = `=== KẾT QUẢ TÍNH TOÁN (ĐÃ SỬA LOGIC - KHÔNG TÍNH THỪA) ===\n\n`;
+  html += `📌 ${ghiChuThoiDiem}\n\n`;
+
+  html += `--- NHU CẦU NƯỚC ---\n`;
+  html += `Nhu cầu cố định/ngày (dùng khi tính sáng): ${nhuCau} L\n`;
+  html += `Nhu cầu nước sôi lúc 04:00: ${nhu4h} L → đun từ tối (21:00)\n`;
+  html += `Tổng từ các đồ đang cạn: ${tongCanTuCacDo.toFixed(1)} L\n`;
+  if (chiTiet.length) html += `Chi tiết cạn: ${chiTiet.join(' | ')}\n`;
+  else html += `Chi tiết cạn: Không chọn đồ nào\n`;
+  html += `\n`;
+
+  html += `--- DỰ TÍNH LƯỢNG ĐUN (công suất 1 viên = ${lit1} L) ---\n`;
+  html += `Công suất tỏa nhiệt: 1 viên đun được ${lit1} L (cháy mạnh ${tC} giờ)\n`;
+  if (thoiDiem === 'sang') {
+    html += `→ Lượng đun BUỔI SÁNG: ${nuocDunSang.toFixed(1)} L\n`;
+  } else {
+    html += `→ Lượng đun BỔ SUNG CHIỀU (đúng mức đang thiếu): ${nuocDunChieu.toFixed(1)} L\n`;
+  }
+  html += `→ Tổng nước cần đun (than): ${nuocCanDunHomNay.toFixed(1)} L\n`;
+  html += `→ Số viên than cần: ${soVien} viên${soVienNauAn > 0 ? ' (gồm ' + soVienNauAn + ' viên nấu ăn)' : ''}\n`;
+  html += `→ Ước thời gian đun: ~${thoiGianDunUoc} giờ cháy mạnh\n\n`;
+
+  html += `Số bình Aquafina 5L cần xách: ${soBinh} bình\n`;
+  html += `→ Bắt đầu xách từ: ${batXach} (tránh giờ ngủ)\n\n`;
+
+  html += `Số viên than còn lại sau khi đun: ${conLai} viên\n`;
+  html += `Tiền than: ${tien.toLocaleString('vi-VN')} đồng\n\n`;
+
+  html += `=== LỊCH ĐỀ XUẤT ===\n`;
+  if (thoiDiem === 'sang') {
+    html += `05:30: Nhóm than (mất ${tN} giờ)\n`;
+    html += `06:30 – ${xongDunSang}: Đun ${nuocDunSang.toFixed(0)} L vào 5–7 phích (theo nhu cầu ngày)\n`;
+    html += `08:00 – 10:00: Xách nước lọc lên + để nguội\n`;
+    html += `09:30 – 11:00: Trút bình + phân phối xuống 4 phòng\n`;
+    html += `15:30 – 17:00: Chỉ đun nếu thiếu thật sự\n`;
+  } else {
+    html += `(Sáng đã qua – không tính lại)\n`;
+    html += `08:00 – 10:00: Xách nước lọc (nếu còn thiếu)\n`;
+    html += `09:30 – 11:00: Phân phối nếu cần\n`;
+    if (nuocDunChieu > 0) {
+      html += `15:30 – 17:00: Đun BỔ SUNG ${nuocDunChieu.toFixed(1)} L (đúng mức đang cạn, không thừa)\n`;
+    } else {
+      html += `15:30 – 17:00: Không cần đun chiều (đồ còn đủ)\n`;
+    }
+  }
+  html += `21:00 – 21:30: Đun thêm ${nhu4h} L cho sáng 04:00 hôm sau\n`;
+  html += `21:30: Tắt bếp\n\n`;
+
+  html += `=== SO SÁNH CHI PHÍ ===\n`;
+  html += `Than tổ ong: ${(+giaThan.value).toLocaleString()} đ/viên\n`;
+  html += `Than củi: ${(+giaCui.value).toLocaleString()} đ\n`;
+  html += `Cồn khô: ${(+giaConKho.value).toLocaleString()} đ | Cồn chai: ${(+giaConChai.value).toLocaleString()} đ\n`;
+  html += `→ Than tổ ong rẻ và bền nhất.\n\n`;
+
+  html += `Dự trữ khuyến nghị: ≥ 8–10 L nước sôi + 15 L nước nguội.\n`;
+  html += `Khi chỉ cạn 1–2 phích → đợi mẻ gần nhất, không nhóm than riêng.\n\n`;
+  html += `💡 Điểm sửa: Chiều chỉ đun đúng lượng đang thiếu (mức cạn ≈ nhu cầu đã dùng). Không cộng thêm nhu cầu cố định → tránh tính thừa.`;
+
+  document.getElementById('ketQua').textContent = html;
+}
+
+// Khởi tạo
+loadParams();
+render();
+</script>
+</body>
+</html>

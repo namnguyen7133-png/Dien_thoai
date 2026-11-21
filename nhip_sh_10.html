@@ -1,0 +1,240 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phan tich ngay y khoa</title>
+
+<style>
+body{
+  font-family:Arial;
+  padding:10px;
+  max-width:100%;
+  overflow-x:hidden;
+}
+input,select,button{
+  padding:10px;
+  margin:6px 0;
+  width:100%;
+  font-size:16px;
+}
+button{font-weight:bold}
+
+table{
+  border-collapse:collapse;
+  width:100%;
+  margin-top:15px;
+  font-size:12px;
+}
+th,td{
+  border:1px solid #666;
+  padding:5px;
+  text-align:center;
+}
+th{background:#eee}
+
+.big-alert{
+  font-size:2.2em;   /* ~ gap 10 chu thuong */
+  color:#b30000;
+  font-weight:bold;
+  border:3px solid #b30000;
+  padding:10px;
+  margin:10px 0;
+  border-radius:10px;
+  word-wrap:break-word;
+}
+.warn{color:red;font-weight:bold}
+</style>
+</head>
+
+<body>
+
+<h2>PHAN TICH NGAY THEO BANG 2</h2>
+
+<label>Ngay hien tai</label>
+<input type="date" id="today">
+
+<label>Chon ten</label>
+<select id="name"></select>
+
+<label>Ngay sinh</label>
+<input type="date" id="birth" readonly>
+
+<button onclick="calcOne()">🔵 TINH 1 NGUOI</button>
+<button onclick="calcAll()">🟢 TINH TAT CA MOI NGUOI</button>
+<button onclick="resetAll()">🔴 XOA / NHAP LAI</button>
+
+<div id="alerts"></div>
+<div id="out"></div>
+
+<script>
+// ================= BANG 1 =================
+const people=[
+["NGUYENKHACNANG","1944-06-04"],["TOTHIHA","1948-08-29"],
+["NGUYENMINHNAM","1971-03-03"],["THANTHIKIMANH","1981-09-23"],
+["NGUYENTONGANAN","2014-09-28"],["NGUYENTOMINHCHAU","2016-07-25"],
+["NGUYENTOBICHNGOC","2020-02-05"],["NGUYENTHIMINHHANG","1974-01-07"],
+["NGOQUYCUONG","1973-05-23"],["NGOGIABACH","2000-10-12"],
+["NGOGIALINH","2005-04-05"],["NGUYENTHIMINHPHUONG","1978-11-06"],
+["HOANGANHDUNG","1978-09-21"],["HOANGHAIVINH","2010-06-03"],
+["HOANGTHIENBACHANH","2015-11-14"],["TOKIMHUE","1960-08-09"],
+["NGUYENTUANANH","1983-10-23"],["NGUYENTHEANH","2001-03-24"],
+["NGOTHIMAI","1948-12-12"],["TOVIETHUNG","1996-06-17"],
+["TOTHIHONG","1964-10-10"],["VUVANHIEP","1974-04-24"],
+["NGUYENTHICHI","1946-02-08"],["NGUYENTANBAC","1957-11-30"],
+["NGUYENTHITAM","1954-08-08"]
+];
+
+// ================= BANG 2 =================
+const divisors=[
+23,28,33,38,43,53,
+108,285,298,318,
+644,759,874,924,989,
+1064,1204,1219,1254,
+1419,1484,1634,1690,
+1749,1911,2014,2279,
+4850,21252,24472,27692,
+34132,35112,39732,
+48972,53922,66462,86602
+];
+
+// ================= COT 10 =================
+const col10Msg={
+23:"Can nghi ngoi, khong leo treo, lam nang 6 gio tiep theo",
+28:"Hay nghe nhac, xem phim tam ly, di dao ngoai troi 12 gio tiep theo",
+33:"Khong hoc hanh nghien cuu sau 18 gio tiep theo",
+43:"Khong binh luan, chi xem trinh dien thoi trang 24 gio tiep theo",
+53:"Khong den noi am i, giu tinh lang 28 gio tiep theo"
+};
+
+// ================= KHOI TAO =================
+window.onload=()=>{
+  let s=document.getElementById("name");
+  s.innerHTML="<option value=''>-- chon --</option>";
+  people.forEach(p=>{
+    let o=document.createElement("option");
+    o.value=p[1]; o.text=p[0];
+    s.appendChild(o);
+  });
+  s.onchange=()=>birth.value=s.value;
+  today.value=new Date().toISOString().split("T")[0];
+};
+
+// ================= CORE =================
+function runCalc(personName,birth){
+  let todayD=new Date(today.value);
+  let diff=Math.floor((todayD-new Date(birth))/86400000);
+  let alerts=[];
+
+  let html=`<h3>${personName}</h3>
+  <table>
+<tr>
+<th>STT</th><th>So chia</th><th>Thuong</th><th>Du</th>
+<th>Thuong 2</th><th>Hieu</th><th>Ngay moi</th>
+<th>Du&lt;7</th><th>TB chinh</th><th>TB cot 10</th>
+</tr>`;
+
+  divisors.forEach((d,i)=>{
+    let thuong=Math.floor(diff/d);
+    let du=diff%d;
+    let lan2=Math.floor(thuong/d);
+    let hieu=d-du;
+
+    let nd=new Date(todayD);
+    nd.setDate(nd.getDate()+hieu);
+    let nds=nd.toISOString().split("T")[0];
+
+    let warn=du<7?"⚠":"";
+    let msg="",msg10="";
+
+    if(lan2===0){
+      if(d<100 && du===0) msg="Co so 0 – can theo doi";
+      else if(d>=100 && thuong.toString().includes("0")){
+        if(d>=10000) msg="Nghi 5 ngay theo bac si";
+        else if(d>=1000) msg="Nghi 4 ngay theo bac si";
+        else msg="Nghi 3 ngay theo bac si";
+      }
+    }
+
+    if(hieu===0 && col10Msg[d]) msg10=col10Msg[d];
+
+    if(warn||msg||msg10){
+      alerts.push(`So ${d}: ${msg||""} ${msg10||""}`);
+    }
+
+    html+=`<tr>
+<td>${i+1}</td><td>${d}</td><td>${thuong}</td><td>${du}</td>
+<td>${lan2}</td><td>${hieu}</td><td>${nds}</td>
+<td class="warn">${warn}</td>
+<td class="warn">${msg}</td>
+<td class="warn">${msg10}</td>
+</tr>`;
+  });
+
+  html+="</table>";
+  return {html,alerts};
+}
+
+// ================= NUT =================
+function calcOne(){
+  if(!birth.value)return alert("Chua chon nguoi");
+  let r=runCalc(name.options[name.selectedIndex].text,birth.value);
+  out.innerHTML=r.html;
+  showAlerts(r.alerts);
+}
+
+function calcAll(){
+  let allHTML="",allAlerts=[];
+  people.forEach(p=>{
+    let r=runCalc(p[0],p[1]);
+    allHTML+=r.html;
+    allAlerts=allAlerts.concat(r.alerts);
+  });
+  out.innerHTML=allHTML;
+  showAlerts(allAlerts);
+}
+
+function showAlerts(arr){
+  alerts.innerHTML=arr.length
+    ? arr.map(a=>`<div class="big-alert">${a}</div>`).join("")
+    : "";
+}
+
+function resetAll(){
+  out.innerHTML="";
+  alerts.innerHTML="";
+  name.value="";
+  birth.value="";
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

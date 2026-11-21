@@ -1,0 +1,2190 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hanh Trinh Tai Chinh - Tu Ngheo den dai Gia</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(90deg, #ff9a00, #ffd166, #06d6a0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #b0b0d0;
+            margin-bottom: 20px;
+        }
+        
+        /* Game Layout */
+        .game-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 1200px) {
+            .game-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Player Stats */
+        .player-stats {
+            background: rgba(30, 30, 60, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(100, 100, 255, 0.2);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            margin-bottom: 25px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid;
+        }
+        
+        .stat-item.cash {
+            border-left-color: #ffd166;
+        }
+        
+        .stat-item.income {
+            border-left-color: #06d6a0;
+        }
+        
+        .stat-item.level {
+            border-left-color: #118ab2;
+        }
+        
+        .stat-item.assets {
+            border-left-color: #ef476f;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #b0b0d0;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        
+        .level-progress {
+            margin-top: 20px;
+        }
+        
+        .level-bar {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .level-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff9a00, #ffd166);
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+        
+        .level-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: #b0b0d0;
+        }
+        
+        /* Game Area */
+        .game-area {
+            background: rgba(20, 20, 40, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(100, 100, 255, 0.2);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            padding: 15px 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .tab.active {
+            background: rgba(100, 100, 255, 0.3);
+            color: #6c8eff;
+        }
+        
+        .tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Items Grid */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .item-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .item-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(100, 100, 255, 0.3);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .item-card.owned {
+            border-color: #06d6a0;
+        }
+        
+        .item-card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .item-icon {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 15px;
+            color: #6c8eff;
+        }
+        
+        .item-name {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .item-price {
+            color: #ffd166;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+        
+        .item-income {
+            color: #06d6a0;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        
+        .item-level {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #ff9a00;
+            font-size: 0.8rem;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+        
+        .locked-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #ff6b6b;
+        }
+        
+        /* Right Panel */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .finance-panel, .education-panel, .event-panel, .guide-panel {
+            background: rgba(30, 30, 60, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(100, 100, 255, 0.2);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .panel-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #6c8eff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .panel-title i {
+            font-size: 1.5rem;
+        }
+        
+        .finance-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(90deg, #118ab2, #06d6a0);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(6, 214, 160, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(90deg, #ef476f, #ff9a00);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(239, 71, 111, 0.4);
+        }
+        
+        /* Event Panel */
+        .event-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ff9a00;
+        }
+        
+        .event-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #ffd166;
+        }
+        
+        .event-desc {
+            font-size: 0.9rem;
+            color: #b0b0d0;
+            margin-bottom: 10px;
+        }
+        
+        .event-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .event-btn {
+            padding: 8px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .event-btn.accept {
+            background: #06d6a0;
+            color: white;
+        }
+        
+        .event-btn.decline {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        /* Education Panel */
+        .education-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .education-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid #118ab2;
+        }
+        
+        .education-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .education-item h4 {
+            margin-bottom: 5px;
+            color: #6c8eff;
+        }
+        
+        .education-cost {
+            color: #ffd166;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+        
+        /* Guide Panel */
+        .guide-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .guide-step {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 4px solid #ff9a00;
+        }
+        
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #ff9a00;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .step-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+        
+        .step-desc {
+            font-size: 0.9rem;
+            color: #b0b0d0;
+            margin-top: 8px;
+        }
+        
+        /* Business Panel */
+        .business-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .business-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .business-info h4 {
+            margin-bottom: 5px;
+        }
+        
+        .business-income {
+            color: #06d6a0;
+            font-weight: bold;
+        }
+        
+        /* Game Log */
+        .game-log {
+            background: rgba(20, 20, 40, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(100, 100, 255, 0.2);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            margin-top: 25px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .log-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #6c8eff;
+        }
+        
+        .log-messages {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .log-message {
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            border-left: 3px solid;
+            animation: slideIn 0.3s;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .log-message.purchase {
+            border-left-color: #06d6a0;
+        }
+        
+        .log-message.income {
+            border-left-color: #ffd166;
+        }
+        
+        .log-message.event {
+            border-left-color: #ef476f;
+        }
+        
+        .log-message.level {
+            border-left-color: #118ab2;
+        }
+        
+        .log-message.education {
+            border-left-color: #6c8eff;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            width: 90%;
+            max-width: 800px;
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(100, 100, 255, 0.3);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #b0b0d0;
+            z-index: 1001;
+        }
+        
+        .close-modal:hover {
+            color: white;
+        }
+        
+        .modal-title {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #ff9a00, #ffd166);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-align: center;
+        }
+        
+        .modal-body {
+            margin-bottom: 25px;
+            line-height: 1.6;
+            color: #b0b0d0;
+        }
+        
+        .kim-quadrant {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .quadrant {
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .quadrant:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .quadrant.e {
+            background: rgba(239, 71, 111, 0.2);
+            border: 2px solid #ef476f;
+        }
+        
+        .quadrant.s {
+            background: rgba(255, 154, 0, 0.2);
+            border: 2px solid #ff9a00;
+        }
+        
+        .quadrant.b {
+            background: rgba(6, 214, 160, 0.2);
+            border: 2px solid #06d6a0;
+        }
+        
+        .quadrant.i {
+            background: rgba(108, 142, 255, 0.2);
+            border: 2px solid #6c8eff;
+        }
+        
+        .quadrant.active {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+        }
+        
+        .quadrant-title {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .modal-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #118ab2, #06d6a0);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        .back-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Real Estate Calculator */
+        .calculator {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .calc-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .calc-label {
+            color: #b0b0d0;
+        }
+        
+        .calc-value {
+            font-weight: bold;
+            color: #ffd166;
+        }
+        
+        .calc-total {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 15px;
+            margin-top: 15px;
+            font-size: 1.2rem;
+            color: #06d6a0;
+            font-weight: bold;
+        }
+        
+        /* Family Education */
+        .family-member {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .member-info h4 {
+            margin-bottom: 5px;
+        }
+        
+        .member-age {
+            color: #b0b0d0;
+            font-size: 0.9rem;
+        }
+        
+        .member-education {
+            color: #06d6a0;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .items-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .finance-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .kim-quadrant {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-crown"></i> HANH TRINH TAI CHINH GIA dINH</h1>
+            <p class="subtitle">Hoc tap - Lam viec - Kinh doanh - dau tu - Tich luy cho tuong lai</p>
+        </div>
+        
+        <div class="game-container">
+            <!-- Left Column: Player Stats & Game Area -->
+            <div class="left-column">
+                <div class="player-stats">
+                    <div class="stats-grid">
+                        <div class="stat-item cash">
+                            <div class="stat-label">TIEN MAT</div>
+                            <div class="stat-value" id="cashValue">50,000,000 ₫</div>
+                        </div>
+                        <div class="stat-item income">
+                            <div class="stat-label">THU NHAP/THANG</div>
+                            <div class="stat-value" id="incomeValue">10,000,000 ₫</div>
+                        </div>
+                        <div class="stat-item level">
+                            <div class="stat-label">CAP dO</div>
+                            <div class="stat-value" id="levelValue">TRUNG BINH</div>
+                        </div>
+                        <div class="stat-item assets">
+                            <div class="stat-label">TONG TAI SAN</div>
+                            <div class="stat-value" id="assetsValue">100,000,000 ₫</div>
+                        </div>
+                    </div>
+                    
+                    <div class="level-progress">
+                        <div class="level-text">
+                            <span>Cap do: <span id="currentLevel">Trung binh</span></span>
+                            <span>Tien toi: <span id="nextLevel">Kha gia</span></span>
+                        </div>
+                        <div class="level-bar">
+                            <div class="level-fill" id="levelFill" style="width: 30%;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="game-area">
+                    <div class="tabs">
+                        <div class="tab active" data-tab="jobs">💼 VIEC LAM</div>
+                        <div class="tab" data-tab="business">🏢 KINH DOANH</div>
+                        <div class="tab" data-tab="investment">📈 dAU TU</div>
+                        <div class="tab" data-tab="realestate">🏘 BAT dONG SAN</div>
+                        <div class="tab" data-tab="education">🎓 dAO TAO</div>
+                        <div class="tab" data-tab="family">👨‍👩‍👧‍👦 GIA dINH</div>
+                    </div>
+                    
+                    <div class="tab-content active" id="jobs-tab">
+                        <div class="items-grid" id="jobs-items">
+                            <!-- Jobs will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="business-tab">
+                        <div class="items-grid" id="business-items">
+                            <!-- Business items will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="investment-tab">
+                        <div class="items-grid" id="investment-items">
+                            <!-- Investment items will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="realestate-tab">
+                        <div class="items-grid" id="realestate-items">
+                            <!-- Real estate items will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="education-tab">
+                        <div class="items-grid" id="education-items">
+                            <!-- Education items will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="family-tab">
+                        <div class="family-members" id="family-container">
+                            <!-- Family members will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Panel: Finance, Education & Guides -->
+            <div class="right-panel">
+                <div class="guide-panel">
+                    <div class="panel-title">
+                        <i class="fas fa-road"></i> HUONG DAN 10 BUOC
+                    </div>
+                    <div class="guide-steps" id="guideSteps">
+                        <!-- Guide steps will be loaded here -->
+                    </div>
+                </div>
+                
+                <div class="finance-panel">
+                    <div class="panel-title">
+                        <i class="fas fa-coins"></i> QUAN LY TAI CHINH
+                    </div>
+                    
+                    <div class="finance-buttons">
+                        <button class="btn btn-primary" id="collectIncome">
+                            <i class="fas fa-hand-holding-usd"></i> Lanh Luong
+                        </button>
+                        <button class="btn btn-secondary" id="saveMoney">
+                            <i class="fas fa-piggy-bank"></i> Tiet Kiem
+                        </button>
+                        <button class="btn btn-secondary" id="investGold">
+                            <i class="fas fa-gem"></i> Mua Vang
+                        </button>
+                        <button class="btn btn-danger" id="quadrantBtn">
+                            <i class="fas fa-chess-board"></i> Kim Tu do
+                        </button>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h4 style="color: #b0b0d0; margin-bottom: 10px;">Tich luy giao duc:</h4>
+                        <div id="education-fund">0 ₫ / 500,000,000 ₫</div>
+                        <div class="level-bar" style="height: 8px; margin-top: 5px;">
+                            <div class="level-fill" id="educationFundFill" style="width: 0%; background: #6c8eff;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="education-panel">
+                    <div class="panel-title">
+                        <i class="fas fa-graduation-cap"></i> dAO TAO KY NANG
+                    </div>
+                    <div class="education-list" id="education-list">
+                        <!-- Education courses will be loaded here -->
+                    </div>
+                </div>
+                
+                <div class="event-panel">
+                    <div class="panel-title">
+                        <i class="fas fa-bullhorn"></i> SU KIEN CUOC SONG
+                    </div>
+                    <div id="events-container">
+                        <!-- Events will appear here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Game Log -->
+        <div class="game-log">
+            <div class="log-title">
+                <i class="fas fa-scroll"></i> NHAT KY TAI CHINH
+            </div>
+            <div class="log-messages" id="gameLog">
+                <!-- Game log messages will appear here -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Kim Tu do Modal -->
+    <div class="modal" id="kimModal">
+        <div class="modal-content">
+            <div class="close-modal" id="closeKimModal">&times;</div>
+            <h2 class="modal-title">KIM TU dO - CON dUONG TU DO TAI CHINH</h2>
+            <div class="modal-body">
+                <p>Robert Kiyosaki chia 4 nhom nguoi kiem tien. <strong>Muc tieu: di chuyen tu ben trai (E,S) sang ben phai (B,I)</strong></p>
+                
+                <div class="kim-quadrant">
+                    <div class="quadrant e" data-quadrant="E">
+                        <div class="quadrant-title">E - Employee (Nguoi lam cong)</div>
+                        <p><strong>Thu nhap:</strong> Luong, thuong</p>
+                        <p><strong>Uu diem:</strong> On dinh, an toan</p>
+                        <p><strong>Nhuoc diem:</strong> Thu nhap gioi han, phu thuoc vao cong ty</p>
+                        <p><strong>Vi du:</strong> Nhan vien van phong, cong nhan, giao vien</p>
+                    </div>
+                    <div class="quadrant s" data-quadrant="S">
+                        <div class="quadrant-title">S - Self-employed (Tu lam chu)</div>
+                        <p><strong>Thu nhap:</strong> Tu dich vu ca nhan</p>
+                        <p><strong>Uu diem:</strong> Tu chu, thu nhap cao hon</p>
+                        <p><strong>Nhuoc diem:</strong> Lam nhieu huong nhieu, kho mo rong</p>
+                        <p><strong>Vi du:</strong> Bac si tu, luat su, chu tiem nho</p>
+                    </div>
+                    <div class="quadrant b" data-quadrant="B">
+                        <div class="quadrant-title">B - Business Owner (Chu doanh nghiep)</div>
+                        <p><strong>Thu nhap:</strong> Loi nhuan tu he thong</p>
+                        <p><strong>Uu diem:</strong> Thu nhap thu dong, mo rong duoc</p>
+                        <p><strong>Nhuoc diem:</strong> Rui ro cao, can von lon</p>
+                        <p><strong>Vi du:</strong> Chu chuoi cua hang, nha hang, xuong san xuat</p>
+                    </div>
+                    <div class="quadrant i" data-quadrant="I">
+                        <div class="quadrant-title">I - Investor (Nha dau tu)</div>
+                        <p><strong>Thu nhap:</strong> dau tu, co tuc, cho thue</p>
+                        <p><strong>Uu diem:</strong> Tien lam viec cho minh, tu do thoi gian</p>
+                        <p><strong>Nhuoc diem:</strong>Can kien thuc, von lon, rui ro thi truong</p>
+                        <p><strong>Vi du:</strong> Nha dau tu bat dong san, chung khoan, vang</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px; padding: 20px; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                    <h3 style="color: #ffd166; margin-bottom: 15px;">📋 KE HOACH HANH dONG THEO TUNG O:</h3>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 15px;">
+                        <div>
+                            <h4 style="color: #ef476f;">O E & S (Ben trai):</h4>
+                            <ol style="padding-left: 20px; margin-top: 10px;">
+                                <li>Tiet kiem it nhat 10% thu nhap</li>
+                                <li>Hoc them ky nang de tang luong</li>
+                                <li>dau tu vao kien thuc tai chinh</li>
+                                <li>Bat dau kinh doanh nho ban thoi gian</li>
+                                <li>Mua tai san sinh loi (vang, chung khoan)</li>
+                            </ol>
+                        </div>
+                        <div>
+                            <h4 style="color: #06d6a0;">O B & I (Ben phai):</h4>
+                            <ol style="padding-left: 20px; margin-top: 10px;">
+                                <li>Xay dung he thong kinh doanh tu dong</li>
+                                <li>da dang hoa nguon thu nhap</li>
+                                <li>Tai dau tu loi nhuan</li>
+                                <li>Xay dung danh muc dau tu da dang</li>
+                                <li>Mua tai san, tranh tieu san</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                
+                <p id="currentQuadrant" style="font-weight: bold; text-align: center; margin-top: 25px; font-size: 1.2rem; color: #ffd166;">
+                    Ban hien dang o o: <span id="quadrantDisplay">E - Employee</span>
+                </p>
+            </div>
+            <button class="back-btn" id="backFromKimBtn"><i class="fas fa-arrow-left"></i> Quay lai tro choi</button>
+        </div>
+    </div>
+    
+    <!-- Real Estate Calculator Modal -->
+    <div class="modal" id="reCalculatorModal">
+        <div class="modal-content">
+            <div class="close-modal" id="closeRECalcModal">&times;</div>
+            <h2 class="modal-title">MAY TINH dAU TU BAT dONG SAN</h2>
+            <div class="modal-body">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                    <div>
+                        <h3 style="color: #ffd166; margin-bottom: 15px;">THONG SO dAU VAO</h3>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; color: #b0b0d0;">Gia mua bat dong san (VNd):</label>
+                            <input type="number" id="rePrice" value="2000000000" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white;">
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; color: #b0b0d0;">Tien thue hang thang (VNd):</label>
+                            <input type="number" id="reRent" value="15000000" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white;">
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; color: #b0b0d0;">Chi phi quan ly/thang (VNd):</label>
+                            <input type="number" id="reManagement" value="1000000" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white;">
+                        </div>
+                        
+                        <button class="btn btn-primary" id="calculateRE" style="width: 100%;">
+                            <i class="fas fa-calculator"></i> TINH TOAN
+                        </button>
+                    </div>
+                    
+                    <div>
+                        <h3 style="color: #06d6a0; margin-bottom: 15px;">KET QUA TINH TOAN</h3>
+                        
+                        <div class="calculator">
+                            <div class="calc-row">
+                                <span class="calc-label">Thu nhap thue/nam:</span>
+                                <span class="calc-value" id="calcYearlyRent">180,000,000 ₫</span>
+                            </div>
+                            <div class="calc-row">
+                                <span class="calc-label">Chi phi quan ly/nam:</span>
+                                <span class="calc-value" id="calcYearlyManagement">12,000,000 ₫</span>
+                            </div>
+                            <div class="calc-row">
+                                <span class="calc-label">Thu nhap rong/nam:</span>
+                                <span class="calc-value" id="calcNetYearly">168,000,000 ₫</span>
+                            </div>
+                            <div class="calc-row">
+                                <span class="calc-label">Ty suat loi nhuan (ROI):</span>
+                                <span class="calc-value" id="calcROI">8.4%</span>
+                            </div>
+                            <div class="calc-row">
+                                <span class="calc-label">Thoi gian hoan von:</span>
+                                <span class="calc-value" id="calcPayback">11.9 nam</span>
+                            </div>
+                            <div class="calc-total" id="calcVerdict">
+                                💰 <strong>dAU TU KHA THI</strong> - ROI &gt; 8%
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 25px; padding: 15px; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                            <h4 style="color: #ffd166; margin-bottom: 10px;">📊 NGUYEN TAC dAU TU BAT dONG SAN:</h4>
+                            <ul style="padding-left: 20px; color: #b0b0d0;">
+                                <li>ROI nen &gt; 8%/nam de danh bai lam phat</li>
+                                <li>Chi phi quan ly thuong 5-10% doanh thu thue</li>
+                                <li>Du phong 3-6 thang tien thue cho sua chua</li>
+                                <li>Uu tien vi tri tot, phap ly ro rang</li>
+                                <li>da dang hoa danh muc dau tu</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="back-btn" id="backFromRECalcBtn"><i class="fas fa-arrow-left"></i> Quay lai tro choi</button>
+        </div>
+    </div>
+    
+    <!-- Education Planning Modal -->
+    <div class="modal" id="educationModal">
+        <div class="modal-content">
+            <div class="close-modal" id="closeEducationModal">&times;</div>
+            <h2 class="modal-title">KE HOACH TICH LUY GIAO DUC CHO CON</h2>
+            <div class="modal-body">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                    <div>
+                        <h3 style="color: #ffd166; margin-bottom: 15px;">THIET LAP MUC TIEU</h3>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; color: #b0b0d0;">Tuoi hien tai cua con:</label>
+                            <input type="number" id="childAge" value="5" min="1" max="25" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white;">
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; color: #b0b0d0;">Tuoi bat dau dai hoc:</label>
+                            <input type="number" id="universityAge" value="18" min="17" max="25" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white;">
+                        </div>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 8px; color: #b0b0d0;">Chi phi dai hoc uoc tinh (VNd):</label>
+                            <select id="universityCost" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: white;">
+                                <option value="200000000">Trong nuoc: 200 trieu</option>
+                                <option value="500000000">Nuoc ngoai (chau A): 500 trieu</option>
+                                <option value="1000000000">Nuoc ngoai (chau Au/My): 1 ty</option>
+                                <option value="2000000000">Du hoc toan phan: 2 ty</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn btn-primary" id="calculateEducation" style="width: 100%;">
+                            <i class="fas fa-calculator"></i> TINH KE HOACH
+                        </button>
+                    </div>
+                    
+                    <div>
+                        <h3 style="color: #06d6a0; margin-bottom: 15px;">KE HOACH TICH LUY</h3>
+                        
+                        <div class="calculator">
+                            <div class="calc-row">
+                                <span class="calc-label">So nam con lai:</span>
+                                <span class="calc-value" id="calcYearsLeft">13 nam</span>
+                            </div>
+                            <div class="calc-row">
+                                <span class="calc-label">Tong can tich luy:</span>
+                                <span class="calc-value" id="calcTotalNeeded">200,000,000 ₫</span>
+                            </div>
+                            <div class="calc-row">
+                                <span class="calc-label">Can tiet kiem/nam:</span>
+                                <span class="calc-value" id="calcYearlySave">15,384,615 ₫</span>
+                            </div>
+                            <div class="calc-row">
+                                <span class="calc-label">Can tiet kiem/thang:</span>
+                                <span class="calc-value" id="calcMonthlySave">1,282,051 ₫</span>
+                            </div>
+                            <div class="calc-row">
+                                <span class="calc-label">% thu nhap can tiet kiem (neu thu nhap 20tr/thang):</span>
+                                <span class="calc-value" id="calcIncomePercent">6.4%</span>
+                            </div>
+                            <div class="calc-total">
+                                📚 <strong>KHUYEN NGHI:</strong> Bat dau tiet kiem NGAY tu bay gio!
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 25px; padding: 15px; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                            <h4 style="color: #ffd166; margin-bottom: 10px;">🎯 CHIEN LUOC TICH LUY GIAO DUC:</h4>
+                            <ol style="padding-left: 20px; color: #b0b0d0;">
+                                <li>Mo so tiet kiem rieng cho giao duc</li>
+                                <li>Gui tiet kiem ngan hang lai suat cao</li>
+                                <li>dau tu quy mo, trai phieu an toan</li>
+                                <li>Mua bao hiem nhan tho tich luy</li>
+                                <li>Tai dau tu lai suat hang nam</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="back-btn" id="backFromEducationBtn"><i class="fas fa-arrow-left"></i> Quay lai tro choi</button>
+        </div>
+    </div>
+
+    <script>
+        // Game State
+        const gameState = {
+            cash: 50000000, // 50 trieu VND
+            monthlyIncome: 10000000, // 10 trieu VND
+            level: "average",
+            levelProgress: 30,
+            totalAssets: 100000000,
+            ownedItems: [],
+            ownedBusinesses: [],
+            passiveIncome: 0,
+            educationFund: 0,
+            gameLog: [],
+            quadrant: "E",
+            familyMembers: [
+                { name: "Bo", age: 45, role: "father", education: "dai hoc", income: 15000000 },
+                { name: "Me", age: 42, role: "mother", education: "dai hoc", income: 12000000 },
+                { name: "Con trai lon", age: 18, role: "son", education: "Hoc sinh cap 3", income: 0 },
+                { name: "Con gai nho", age: 8, role: "daughter", education: "Hoc sinh tieu hoc", income: 0 },
+                { name: "Ong noi", age: 70, role: "grandfather", education: "Khong", income: 5000000 }
+            ]
+        };
+
+        // Wealth Levels Configuration
+        const wealthLevels = {
+            poor: {
+                name: "Ngheo",
+                minIncome: 5000000,
+                nextLevel: "average",
+                progressReq: 20,
+                color: "#ef476f",
+                jobs: [
+                    { id: "job1", name: "Cong nhan", price: 0, income: 5000000, icon: "👷", category: "jobs", levelReq: "poor", requirements: "Khong yeu cau bang cap" },
+                    { id: "job2", name: "Nhan vien phuc vu", price: 0, income: 4500000, icon: "🍽", category: "jobs", levelReq: "poor", requirements: "Khong yeu cau bang cap" },
+                    { id: "job3", name: "Xe om cong nghe", price: 0, income: 6000000, icon: "🛵", category: "jobs", levelReq: "poor", requirements: "Co xe may, bang lai" }
+                ]
+            },
+            average: {
+                name: "Trung binh",
+                minIncome: 20000000,
+                nextLevel: "rich",
+                progressReq: 40,
+                color: "#ffd166",
+                jobs: [
+                    { id: "job4", name: "Nhan vien van phong", price: 0, income: 12000000, icon: "💼", category: "jobs", levelReq: "average", requirements: "Bang dai hoc" },
+                    { id: "job5", name: "Giao vien", price: 0, income: 10000000, icon: "👨‍🏫", category: "jobs", levelReq: "average", requirements: "Bang su pham" },
+                    { id: "job6", name: "Ky thuat vien", price: 0, income: 15000000, icon: "🔧", category: "jobs", levelReq: "average", requirements: "Bang trung cap/cao dang" }
+                ],
+                businesses: [
+                    { id: "biz1", name: "Quan ca phe nho", price: 50000000, income: 3000000, icon: "☕", category: "business", levelReq: "average", description: "Von: 50 trieu, dien tich: 30m²" },
+                    { id: "biz2", name: "Cua hang tap hoa", price: 30000000, income: 2000000, icon: "🏪", category: "business", levelReq: "average", description: "Von: 30 trieu, mat tien nho" }
+                ],
+                investments: [
+                    { id: "inv1", name: "Tiet kiem ngan hang", price: 10000000, income: 80000, icon: "🏦", category: "investment", levelReq: "average", description: "Lai suat 8%/nam, an toan" },
+                    { id: "inv2", name: "Mua vang mieng", price: 5000000, income: 0, icon: "🥇", category: "investment", levelReq: "average", description: "dau tu tru am an toan" }
+                ]
+            },
+            rich: {
+                name: "Kha gia",
+                minIncome: 50000000,
+                nextLevel: "vip",
+                progressReq: 60,
+                color: "#06d6a0",
+                jobs: [
+                    { id: "job7", name: "Quan ly cap trung", price: 0, income: 30000000, icon: "👔", category: "jobs", levelReq: "rich", requirements: "Kinh nghiem 5+ nam, MBA" },
+                    { id: "job8", name: "Bac si", price: 0, income: 40000000, icon: "👨‍⚕", category: "jobs", levelReq: "rich", requirements: "Bang bac si, chung chi hanh nghe" },
+                    { id: "job9", name: "Ky su phan mem", price: 0, income: 35000000, icon: "💻", category: "jobs", levelReq: "rich", requirements: "Bang CNTT, kinh nghiem 3+ nam" }
+                ],
+                businesses: [
+                    { id: "biz3", name: "Nha hang", price: 200000000, income: 15000000, icon: "🍽", category: "business", levelReq: "rich", description: "Von: 200 trieu, dien tich: 100m²" },
+                    { id: "biz4", name: "Xuong san xuat", price: 300000000, income: 20000000, icon: "🏭", category: "business", levelReq: "rich", description: "Von: 300 trieu, 10 cong nhan" }
+                ],
+                investments: [
+                    { id: "inv3", name: "Chung khoan", price: 50000000, income: 300000, icon: "📈", category: "investment", levelReq: "rich", description: "Rui ro trung binh, loi nhuan 10-15%/nam" },
+                    { id: "inv4", name: "Cho thue can ho", price: 1000000000, income: 10000000, icon: "🏠", category: "investment", levelReq: "rich", description: "dau tu bat dong san cho thue" }
+                ],
+                realEstate: [
+                    { id: "re1", name: "Can ho chung cu", price: 2000000000, income: 15000000, icon: "🏢", category: "realestate", levelReq: "rich", description: "Dien tich: 60m², cho thue 15 trieu/thang" }
+                ]
+            },
+            vip: {
+                name: "dai gia",
+                minIncome: 200000000,
+                nextLevel: "corporate",
+                progressReq: 80,
+                color: "#118ab2",
+                jobs: [
+                    { id: "job10", name: "Giam doc dieu hanh", price: 0, income: 100000000, icon: "👨‍💼", category: "jobs", levelReq: "vip", requirements: "Kinh nghiem 10+ nam, MBA, quan he rong" }
+                ],
+                businesses: [
+                    { id: "biz5", name: "Chuoi cua hang", price: 1000000000, income: 80000000, icon: "🏬", category: "business", levelReq: "vip", description: "Von: 1 ty, 5 chi nhanh" },
+                    { id: "biz6", name: "Cong ty xuat nhap khau", price: 2000000000, income: 150000000, icon: "🚢", category: "business", levelReq: "vip", description: "Von: 2 ty, quan he quoc te" }
+                ],
+                investments: [
+                    { id: "inv5", name: "dau tu startup", price: 500000000, income: 0, icon: "🚀", category: "investment", levelReq: "vip", description: "Rui ro cao, loi nhuan tiem nang lon" },
+                    { id: "inv6", name: "Quy dau tu bat dong san", price: 1000000000, income: 80000000, icon: "🏘", category: "investment", levelReq: "vip", description: "dau tu vao du an lon" }
+                ],
+                realEstate: [
+                    { id: "re2", name: "Biet thu cho thue", price: 50000000000, income: 100000000, icon: "🏘", category: "realestate", levelReq: "vip", description: "Dien tich: 200m², cho thue 100 trieu/thang" },
+                    { id: "re3", name: "Can ho penthouse", price: 30000000000, income: 50000000, icon: "🏢", category: "realestate", levelReq: "vip", description: "Dien tich: 150m², view thanh pho" }
+                ]
+            },
+            corporate: {
+                name: "Tap doan",
+                minIncome: 1000000000,
+                nextLevel: null,
+                progressReq: 100,
+                color: "#6c8eff",
+                businesses: [
+                    { id: "biz7", name: "Tap doan da quoc gia", price: 100000000000, income: 10000000000, icon: "🌐", category: "business", levelReq: "corporate", description: "Von: 100 ty, hoat dong toan cau" }
+                ],
+                investments: [
+                    { id: "inv7", name: "Quy dau tu tu nhan", price: 50000000000, income: 5000000000, icon: "💰", category: "investment", levelReq: "corporate", description: "dau tu vao nhieu linh vuc" }
+                ],
+                realEstate: [
+                    { id: "re4", name: "Toa nha van phong", price: 500000000000, income: 5000000000, icon: "🏢", category: "realestate", levelReq: "corporate", description: "Cho thue van phong, doanh thu 5 ty/thang" },
+                    { id: "re5", name: "Khu nghi duong", price: 1000000000000, income: 10000000000, icon: "🏨", category: "realestate", levelReq: "corporate", description: "Resort 5 sao, doanh thu 10 ty/thang" }
+                ]
+            }
+        };
+
+        // Education Courses
+        const educationCourses = [
+            { id: "edu1", name: "Ky nang quan ly tai chinh ca nhan", cost: 2000000, incomeBoost: 0.1, icon: "💰", description: "Hoc cach lap ngan sach, tiet kiem, dau tu co ban" },
+            { id: "edu2", name: "Khoa hoc khoi nghiep", cost: 5000000, incomeBoost: 0.2, icon: "🚀", description: "Hoc cach lap ke hoach kinh doanh, tim von dau tu" },
+            { id: "edu3", name: "dau tu chung khoan co ban", cost: 3000000, incomeBoost: 0.15, icon: "📈", description: "Hieu ve thi truong chung khoan, cach dau tu an toan" },
+            { id: "edu4", name: "Bat dong san cho nguoi moi bat dau", cost: 4000000, incomeBoost: 0.25, icon: "🏠", description: "Hoc cach phan tich, mua ban, cho thue bat dong san" },
+            { id: "edu5", name: "Quan tri doanh nghiep vua va nho", cost: 8000000, incomeBoost: 0.3, icon: "🏢", description: "Hoc cach quan ly nhan su, tai chinh, marketing" },
+            { id: "edu6", name: "dau tu vang va ngoai te", cost: 2500000, incomeBoost: 0.12, icon: "🥇", description: "Hieu ve thi truong vang, ngoai te, cach dau tu hieu qua" }
+        ];
+
+        // Guide Steps - 10 Buoc de dat tu do tai chinh
+        const guideSteps = [
+            {
+                number: 1,
+                title: "danh gia tinh hinh tai chinh hien tai",
+                description: "Ghi lai tat ca thu nhap, chi tieu, no nan, tai san. Biet ro ban dang dung o dau."
+            },
+            {
+                number: 2,
+                title: "Lap ngan sach chi tieu hang thang",
+                description: "Chi tieu it hon thu nhap. Ap dung quy tac 50-30-20: 50% nhu cau, 30% mong muon, 20% tiet kiem/dau tu."
+            },
+            {
+                number: 3,
+                title: "Tra het no lai suat cao",
+                description: "Uu tien tra no the tin dung, vay tieu dung lai suat cao truoc khi dau tu."
+            },
+            {
+                number: 4,
+                title: "Xay dung quy khan cap",
+                description: "Tiet kiem 3-6 thang chi phi sinh hoat cho cac truong hop khan cap (om dau, mat viec)."
+            },
+            {
+                number: 5,
+                title: "dau tu vao giao duc ban than",
+                description: "Hoc ky nang moi de tang thu nhap. dau tu vao kien thuc tai chinh, dau tu."
+            },
+            {
+                number: 6,
+                title: "Bat dau dau tu som",
+                description: "Tan dung lai kep. Bat dau voi so tien nho, deu dan hang thang."
+            },
+            {
+                number: 7,
+                title: "da dang hoa nguon thu nhap",
+                description: "Khong phu thuoc vao mot nguon thu nhap. Tao thu nhap thu dong tu dau tu, kinh doanh."
+            },
+            {
+                number: 8,
+                title: "Mua tai san, tranh tieu san",
+                description: "Tai san dua tien vao tui ban (bat dong san cho thue, co phieu). Tieu san lay tien tu tui ban ra (xe hoi dat, do xa xi)."
+            },
+            {
+                number: 9,
+                title: "Lap ke hoach cho cac muc tieu lon",
+                description: "Ke hoach mua nha, cho con di hoc, nghi huu. Tinh toan so tien can tich luy moi thang."
+            },
+            {
+                number: 10,
+                title: "Cho di va tao di san",
+                description: "Khi da on dinh tai chinh, hay giup do nguoi khac va lap ke hoach di san cho con chau."
+            }
+        ];
+
+        // Game Events
+        const gameEvents = [
+            {
+                title: "THUA KE BAT NGO",
+                description: "Ban nhan duoc thua ke 500 trieu tu nguoi than. Ban se lam gi voi so tien nay?",
+                choices: [
+                    { text: "Gui tiet kiem ngan hang", effect: { cash: 500000000 }, type: "savings", message: "An toan nhung loi nhuan thap" },
+                    { text: "dau tu bat dong san", effect: { cash: 500000000, monthlyIncome: 5000000 }, type: "investment", message: "Loi nhuan cao hon nhung can kien thuc" },
+                    { text: "Mo rong kinh doanh", effect: { cash: 500000000, monthlyIncome: 10000000 }, type: "business", message: "Rui ro cao, loi nhuan tiem nang lon" }
+                ]
+            },
+            {
+                title: "CO HOI MUA VANG GIA TOT",
+                description: "Gia vang dang giam manh. Ban co co hoi mua vang voi gia tot. Ban co muon dau tu?",
+                choices: [
+                    { text: "Mua 5 luong vang (-75 trieu)", effect: { cash: -75000000 }, type: "gold", message: "Vang la kenh tru am an toan" },
+                    { text: "Khong mua, cho doi them", effect: {}, type: "wait", message: "Co the gia se tiep tuc giam" },
+                    { text: "Mua 10 luong vang (-150 trieu)", effect: { cash: -150000000 }, type: "gold", message: "dau tu manh khi co hoi tot" }
+                ]
+            },
+            {
+                title: "CON dUOC HOC BONG",
+                description: "Con ban duoc hoc bong 50% du hoc. Ban can bo sung 300 trieu trong 6 thang.",
+                choices: [
+                    { text: "Vay ngan hang", effect: { cash: 300000000, monthlyIncome: -3000000 }, type: "loan", message: "Chiu lai suat 6 trieu/thang trong 5 nam" },
+                    { text: "Ban bot tai san", effect: { cash: 300000000, totalAssets: -300000000 }, type: "sell", message: "Ban can ho cho thue tri gia 300 trieu" },
+                    { text: "Tu choi hoc bong", effect: { educationFund: -50000000 }, type: "decline", message: "Tiec nuoi nhung khong du kha nang tai chinh" }
+                ]
+            }
+        ];
+
+        // DOM Elements
+        const cashValueEl = document.getElementById('cashValue');
+        const incomeValueEl = document.getElementById('incomeValue');
+        const levelValueEl = document.getElementById('levelValue');
+        const assetsValueEl = document.getElementById('assetsValue');
+        const currentLevelEl = document.getElementById('currentLevel');
+        const nextLevelEl = document.getElementById('nextLevel');
+        const levelFillEl = document.getElementById('levelFill');
+        const gameLogEl = document.getElementById('gameLog');
+        const kimModal = document.getElementById('kimModal');
+        const reCalculatorModal = document.getElementById('reCalculatorModal');
+        const educationModal = document.getElementById('educationModal');
+        
+        // Initialize Game
+        function initGame() {
+            updateUI();
+            loadGuideSteps();
+            loadItemsForCurrentLevel();
+            loadFamilyMembers();
+            loadEducationCourses();
+            setupEventListeners();
+            generateRandomEvent();
+            
+            addToLog("Chao mung den voi Hanh Trinh Tai Chinh Gia dinh!", "level");
+            addToLog("Bat dau voi cong viec Nhan vien van phong, thu nhap 12 trieu/thang.", "income");
+            addToLog("Hay xem Huong dan 10 buoc de lap ke hoach tai chinh!", "education");
+        }
+
+        // Update UI
+        function updateUI() {
+            // Format numbers with commas
+            const formatMoney = (amount) => {
+                return amount.toLocaleString('vi-VN') + ' ₫';
+            };
+
+            cashValueEl.textContent = formatMoney(gameState.cash);
+            incomeValueEl.textContent = formatMoney(gameState.monthlyIncome);
+            levelValueEl.textContent = wealthLevels[gameState.level].name.toUpperCase();
+            assetsValueEl.textContent = formatMoney(gameState.totalAssets);
+            
+            currentLevelEl.textContent = wealthLevels[gameState.level].name;
+            nextLevelEl.textContent = wealthLevels[gameState.level].nextLevel ? 
+                wealthLevels[wealthLevels[gameState.level].nextLevel].name : "dINH CAO";
+            
+            levelFillEl.style.width = `${gameState.levelProgress}%`;
+            levelFillEl.style.background = wealthLevels[gameState.level].color;
+            
+            // Update education fund
+            const educationFundFill = document.getElementById('educationFundFill');
+            const educationFundPercent = Math.min((gameState.educationFund / 500000000) * 100, 100);
+            educationFundFill.style.width = `${educationFundPercent}%`;
+            document.getElementById('education-fund').textContent = 
+                `${formatMoney(gameState.educationFund)} / 500,000,000 ₫`;
+            
+            updateQuadrant();
+        }
+
+        // Load guide steps
+        function loadGuideSteps() {
+            const guideStepsContainer = document.getElementById('guideSteps');
+            guideStepsContainer.innerHTML = '';
+            
+            guideSteps.forEach(step => {
+                const stepEl = document.createElement('div');
+                stepEl.className = 'guide-step';
+                stepEl.innerHTML = `
+                    <div>
+                        <span class="step-number">${step.number}</span>
+                        <span class="step-title">${step.title}</span>
+                        <div class="step-desc">${step.description}</div>
+                    </div>
+                `;
+                guideStepsContainer.appendChild(stepEl);
+            });
+        }
+
+        // Load items based on current level
+        function loadItemsForCurrentLevel() {
+            const jobsContainer = document.getElementById('jobs-items');
+            const businessContainer = document.getElementById('business-items');
+            const investmentContainer = document.getElementById('investment-items');
+            const realEstateContainer = document.getElementById('realestate-items');
+            const educationContainer = document.getElementById('education-items');
+            
+            jobsContainer.innerHTML = '';
+            businessContainer.innerHTML = '';
+            investmentContainer.innerHTML = '';
+            realEstateContainer.innerHTML = '';
+            educationContainer.innerHTML = '';
+            
+            // Load items for current level
+            const levelData = wealthLevels[gameState.level];
+            
+            // Jobs
+            if (levelData.jobs) {
+                levelData.jobs.forEach(item => {
+                    const itemEl = createItemElement(item, "job");
+                    jobsContainer.appendChild(itemEl);
+                });
+            }
+            
+            // Businesses
+            if (levelData.businesses) {
+                levelData.businesses.forEach(item => {
+                    const itemEl = createItemElement(item, "business");
+                    businessContainer.appendChild(itemEl);
+                });
+            }
+            
+            // Investments
+            if (levelData.investments) {
+                levelData.investments.forEach(item => {
+                    const itemEl = createItemElement(item, "investment");
+                    investmentContainer.appendChild(itemEl);
+                });
+            }
+            
+            // Real Estate
+            if (levelData.realEstate) {
+                levelData.realEstate.forEach(item => {
+                    const itemEl = createItemElement(item, "realestate");
+                    realEstateContainer.appendChild(itemEl);
+                });
+            }
+            
+            // Education (always available)
+            educationCourses.forEach(course => {
+                const courseEl = document.createElement('div');
+                courseEl.className = 'item-card';
+                courseEl.dataset.id = course.id;
+                courseEl.dataset.cost = course.cost;
+                
+                if (course.cost > gameState.cash) {
+                    courseEl.classList.add('locked');
+                }
+                
+                courseEl.innerHTML = `
+                    <div class="item-icon">${course.icon}</div>
+                    <div class="item-name">${course.name}</div>
+                    <div class="item-price">${formatMoney(course.cost)}</div>
+                    <div class="item-income">Tang thu nhap: +${(course.incomeBoost * 100).toFixed(0)}%</div>
+                    <div style="font-size: 0.8rem; color: #b0b0d0; margin-top: 5px;">${course.description}</div>
+                    ${course.cost > gameState.cash ? '<div class="locked-overlay"><i class="fas fa-lock"></i></div>' : ''}
+                `;
+                
+                if (course.cost <= gameState.cash) {
+                    courseEl.addEventListener('click', () => purchaseEducation(course));
+                }
+                
+                educationContainer.appendChild(courseEl);
+            });
+        }
+
+        // Load family members
+        function loadFamilyMembers() {
+            const familyContainer = document.getElementById('family-container');
+            familyContainer.innerHTML = '';
+            
+            gameState.familyMembers.forEach(member => {
+                const memberEl = document.createElement('div');
+                memberEl.className = 'family-member';
+                
+                let incomeDisplay = '';
+                if (member.income > 0) {
+                    incomeDisplay = `<div style="color: #06d6a0; font-weight: bold;">Thu nhap: ${formatMoney(member.income)}/thang</div>`;
+                }
+                
+                memberEl.innerHTML = `
+                    <div class="member-info">
+                        <h4>${member.name} (${member.age} tuoi)</h4>
+                        <div class="member-age">Vai tro: ${member.role === 'father' ? 'Bo' : 
+                            member.role === 'mother' ? 'Me' : 
+                            member.role === 'son' ? 'Con trai' : 
+                            member.role === 'daughter' ? 'Con gai' : 'Ong noi'}</div>
+                        <div class="member-education">Trinh do: ${member.education}</div>
+                    </div>
+                    <div>
+                        ${incomeDisplay}
+                        ${member.age >= 18 && member.age <= 25 && member.income === 0 ? 
+                            `<button class="btn btn-secondary" style="padding: 8px 15px; margin-top: 5px;" data-member="${member.name}">
+                                dau tu giao duc
+                            </button>` : ''}
+                    </div>
+                `;
+                
+                familyContainer.appendChild(memberEl);
+                
+                // Add event listener for education button
+                if (member.age >= 18 && member.age <= 25 && member.income === 0) {
+                    memberEl.querySelector('button').addEventListener('click', function() {
+                        const memberName = this.dataset.member;
+                        addToLog(`Bat dau dau tu giao duc cho ${memberName}. Can 200 trieu cho 4 nam dai hoc.`, "education");
+                        showEducationModal();
+                    });
+                }
+            });
+            
+            // Add education calculator
+            const calculatorEl = document.createElement('div');
+            calculatorEl.className = 'family-member';
+            calculatorEl.style.border = '2px dashed #6c8eff';
+            calculatorEl.innerHTML = `
+                <div class="member-info">
+                    <h4><i class="fas fa-calculator"></i> May tinh tich luy giao duc</h4>
+                    <div style="color: #b0b0d0; font-size: 0.9rem;">Lap ke hoach tiet kiem cho con di hoc</div>
+                </div>
+                <button class="btn btn-primary" id="openEducationCalculator" style="padding: 10px 20px;">
+                    <i class="fas fa-graduation-cap"></i> Tinh ngay
+                </button>
+            `;
+            familyContainer.appendChild(calculatorEl);
+            
+            document.getElementById('openEducationCalculator').addEventListener('click', showEducationModal);
+        }
+
+        // Load education courses
+        function loadEducationCourses() {
+            const educationList = document.getElementById('education-list');
+            educationList.innerHTML = '';
+            
+            educationCourses.forEach(course => {
+                const courseEl = document.createElement('div');
+                courseEl.className = 'education-item';
+                courseEl.dataset.id = course.id;
+                
+                courseEl.innerHTML = `
+                    <h4>${course.name}</h4>
+                    <div style="font-size: 0.9rem; color: #b0b0d0; margin: 8px 0;">${course.description}</div>
+                    <div class="education-cost">Chi phi: ${formatMoney(course.cost)}</div>
+                    <div style="color: #06d6a0; font-size: 0.9rem; margin-top: 5px;">Tang thu nhap: +${(course.incomeBoost * 100).toFixed(0)}%</div>
+                `;
+                
+                courseEl.addEventListener('click', () => {
+                    if (gameState.cash >= course.cost) {
+                        purchaseEducation(course);
+                    } else {
+                        addToLog(`Khong du tien de hoc ${course.name}!`, "event");
+                    }
+                });
+                
+                educationList.appendChild(courseEl);
+            });
+        }
+
+        // Create item element
+        function createItemElement(item, type) {
+            const itemEl = document.createElement('div');
+            itemEl.className = 'item-card';
+            itemEl.dataset.id = item.id;
+            itemEl.dataset.price = item.price;
+            itemEl.dataset.income = item.income;
+            
+            if (item.price > gameState.cash && type !== "job") {
+                itemEl.classList.add('locked');
+            }
+            
+            const isOwned = isItemOwned(item.id);
+            if (isOwned) {
+                itemEl.classList.add('owned');
+            }
+            
+            let requirementsHTML = '';
+            if (item.requirements) {
+                requirementsHTML = `<div style="font-size: 0.8rem; color: #b0b0d0; margin-top: 5px;">Yeu cau: ${item.requirements}</div>`;
+            }
+            
+            let descriptionHTML = '';
+            if (item.description) {
+                descriptionHTML = `<div style="font-size: 0.8rem; color: #b0b0d0; margin-top: 5px;">${item.description}</div>`;
+            }
+            
+            itemEl.innerHTML = `
+                <div class="item-icon">${item.icon}</div>
+                <div class="item-name">${item.name}</div>
+                ${item.price > 0 ? `<div class="item-price">${formatMoney(item.price)}</div>` : ''}
+                ${item.income > 0 ? `<div class="item-income">+${formatMoney(item.income)}/thang</div>` : ''}
+                ${requirementsHTML}
+                ${descriptionHTML}
+                <div class="item-level">${wealthLevels[item.levelReq].name}</div>
+                ${item.price > gameState.cash && type !== "job" ? '<div class="locked-overlay"><i class="fas fa-lock"></i></div>' : ''}
+            `;
+            
+            if (!isOwned) {
+                if (type === "job") {
+                    itemEl.addEventListener('click', () => takeJob(item));
+                } else if (item.price <= gameState.cash) {
+                    itemEl.addEventListener('click', () => purchaseItem(item, type));
+                }
+            }
+            
+            return itemEl;
+        }
+
+        // Take a job
+        function takeJob(job) {
+            const oldIncome = gameState.monthlyIncome;
+            gameState.monthlyIncome = job.income;
+            
+            addToLog(`Ban da nhan cong viec ${job.name}. Thu nhap: ${formatMoney(job.income)}/thang.`, "income");
+            
+            // Increase level progress
+            gameState.levelProgress += 5;
+            if (gameState.levelProgress > 100) gameState.levelProgress = 100;
+            
+            checkLevelUp();
+            updateUI();
+        }
+
+        // Purchase item
+        function purchaseItem(item, type) {
+            if (gameState.cash < item.price) {
+                addToLog(`Khong du tien de mua ${item.name}!`, "event");
+                return;
+            }
+            
+            gameState.cash -= item.price;
+            gameState.ownedItems.push(item.id);
+            gameState.totalAssets += item.price;
+            
+            if (item.income > 0) {
+                gameState.monthlyIncome += item.income;
+                gameState.passiveIncome += item.income;
+                
+                if (type === "business") {
+                    gameState.ownedBusinesses.push({
+                        id: item.id,
+                        name: item.name,
+                        income: item.income
+                    });
+                }
+                
+                addToLog(`da mua ${item.name}. Thu nhap tang ${formatMoney(item.income)}/thang!`, "purchase");
+            } else {
+                addToLog(`da mua ${item.name} voi gia ${formatMoney(item.price)}!`, "purchase");
+            }
+            
+            // Increase level progress
+            gameState.levelProgress += Math.random() * 8 + 5;
+            if (gameState.levelProgress > 100) gameState.levelProgress = 100;
+            
+            // Check for level up
+            checkLevelUp();
+            
+            updateUI();
+            loadItemsForCurrentLevel();
+        }
+
+        // Purchase education
+        function purchaseEducation(course) {
+            if (gameState.cash < course.cost) {
+                addToLog(`Khong du tien de hoc ${course.name}!`, "event");
+                return;
+            }
+            
+            gameState.cash -= course.cost;
+            
+            // Calculate income boost
+            const incomeBoost = gameState.monthlyIncome * course.incomeBoost;
+            gameState.monthlyIncome += incomeBoost;
+            
+            addToLog(`da hoan thanh khoa hoc "${course.name}". Thu nhap tang ${formatMoney(incomeBoost)}/thang!`, "education");
+            
+            // Increase level progress
+            gameState.levelProgress += Math.random() * 10 + 5;
+            if (gameState.levelProgress > 100) gameState.levelProgress = 100;
+            
+            checkLevelUp();
+            updateUI();
+        }
+
+        // Check for level up
+        function checkLevelUp() {
+            const currentLevelData = wealthLevels[gameState.level];
+            
+            if (gameState.levelProgress >= currentLevelData.progressReq && currentLevelData.nextLevel) {
+                // Level up!
+                gameState.level = currentLevelData.nextLevel;
+                gameState.levelProgress = 10; // Reset progress for next level
+                
+                addToLog(`🎉 CHUC MUNG! Ban da len cap ${wealthLevels[gameState.level].name.toUpperCase()}!`, "level");
+                
+                // Load new items for new level
+                loadItemsForCurrentLevel();
+            }
+        }
+
+        // Collect income
+        function collectIncome() {
+            gameState.cash += gameState.monthlyIncome;
+            addToLog(`Nhan luong thang: ${formatMoney(gameState.monthlyIncome)}!`, "income");
+            
+            // Auto-save 10% to education fund
+            const savings = Math.floor(gameState.monthlyIncome * 0.1);
+            gameState.educationFund += savings;
+            addToLog(`Tu dong tiet kiem ${formatMoney(savings)} vao quy giao duc.`, "education");
+            
+            updateUI();
+        }
+
+        // Save money
+        function saveMoney() {
+            const savings = Math.floor(gameState.cash * 0.2); // Save 20% of cash
+            if (savings > 0) {
+                gameState.cash -= savings;
+                gameState.educationFund += savings;
+                addToLog(`da tiet kiem ${formatMoney(savings)} vao quy giao duc.`, "education");
+                updateUI();
+            } else {
+                addToLog("Khong co tien de tiet kiem!", "event");
+            }
+        }
+
+        // Invest in gold
+        function investGold() {
+            const goldInvestment = 5000000; // 5 trieu
+            if (gameState.cash < goldInvestment) {
+                addToLog("Khong du tien de mua vang!", "event");
+                return;
+            }
+            
+            gameState.cash -= goldInvestment;
+            
+            // Gold investment has potential for appreciation
+            const appreciation = Math.random() > 0.4 ? 1.15 : 0.95; // 60% chance of gain
+            const result = goldInvestment * appreciation;
+            
+            if (appreciation > 1) {
+                gameState.cash += result;
+                addToLog(`dau tu vang thanh cong! Lai ${formatMoney(result - goldInvestment)}.`, "income");
+            } else {
+                gameState.cash += result;
+                addToLog(`dau tu vang thua lo! Mat ${formatMoney(goldInvestment - result)}.`, "event");
+            }
+            
+            updateUI();
+        }
+
+        // Generate random event
+        function generateRandomEvent() {
+            const eventsContainer = document.getElementById('events-container');
+            eventsContainer.innerHTML = '';
+            
+            const randomEvent = gameEvents[Math.floor(Math.random() * gameEvents.length)];
+            const eventEl = document.createElement('div');
+            eventEl.className = 'event-card';
+            
+            let choicesHTML = '';
+            randomEvent.choices.forEach((choice, index) => {
+                choicesHTML += `
+                    <button class="event-btn ${choice.type === 'decline' ? 'decline' : 'accept'}" 
+                            data-choice-index="${index}">
+                        ${choice.text}
+                    </button>
+                `;
+            });
+            
+            eventEl.innerHTML = `
+                <div class="event-title">${randomEvent.title}</div>
+                <div class="event-desc">${randomEvent.description}</div>
+                <div class="event-buttons">${choicesHTML}</div>
+            `;
+            
+            eventsContainer.appendChild(eventEl);
+            
+            // Add event listeners to choice buttons
+            eventEl.querySelectorAll('.event-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const choiceIndex = parseInt(this.dataset.choiceIndex);
+                    handleEventChoice(randomEvent.choices[choiceIndex]);
+                    eventsContainer.innerHTML = '';
+                    
+                    // Generate new event after 5 seconds
+                    setTimeout(generateRandomEvent, 5000);
+                });
+            });
+        }
+
+        // Handle event choice
+        function handleEventChoice(choice) {
+            let message = `da chon: ${choice.text}. ${choice.message}`;
+            
+            if (choice.effect.cash) {
+                if (choice.effect.cash > 0) {
+                    gameState.cash += choice.effect.cash;
+                    gameState.totalAssets += choice.effect.cash;
+                } else {
+                    if (gameState.cash + choice.effect.cash < 0) {
+                        message += " Khong du tien!";
+                        addToLog(message, "event");
+                        return;
+                    }
+                    gameState.cash += choice.effect.cash;
+                    gameState.totalAssets += choice.effect.cash;
+                }
+            }
+            
+            if (choice.effect.monthlyIncome) {
+                gameState.monthlyIncome += choice.effect.monthlyIncome;
+            }
+            
+            if (choice.effect.totalAssets) {
+                gameState.totalAssets += choice.effect.totalAssets;
+            }
+            
+            if (choice.effect.educationFund) {
+                gameState.educationFund += choice.effect.educationFund;
+            }
+            
+            addToLog(message, "event");
+            updateUI();
+        }
+
+        // Update quadrant based on income
+        function updateQuadrant() {
+            const monthlyIncome = gameState.monthlyIncome;
+            let newQuadrant = "E";
+            
+            if (monthlyIncome >= 1000000000) { // 1 ty/thang
+                newQuadrant = "I";
+            } else if (monthlyIncome >= 100000000) { // 100 trieu/thang
+                newQuadrant = "B";
+            } else if (monthlyIncome >= 20000000) { // 20 trieu/thang
+                newQuadrant = "S";
+            }
+            
+            if (newQuadrant !== gameState.quadrant) {
+                gameState.quadrant = newQuadrant;
+                addToLog(`Ban da chuyen sang o ${newQuadrant} trong Kim Tu do!`, "level");
+            }
+            
+            const quadrantNames = {
+                "E": "E - Employee (Nguoi lam cong)",
+                "S": "S - Self-employed (Tu lam chu)",
+                "B": "B - Business Owner (Chu doanh nghiep)",
+                "I": "I - Investor (Nha dau tu)"
+            };
+            
+            document.getElementById('quadrantDisplay').textContent = quadrantNames[gameState.quadrant];
+        }
+
+        // Show real estate calculator
+        function showRealEstateCalculator() {
+            reCalculatorModal.classList.add('active');
+            calculateRealEstate(); // Initial calculation
+        }
+
+        // Calculate real estate investment
+        function calculateRealEstate() {
+            const price = parseInt(document.getElementById('rePrice').value) || 2000000000;
+            const rent = parseInt(document.getElementById('reRent').value) || 15000000;
+            const management = parseInt(document.getElementById('reManagement').value) || 1000000;
+            
+            const yearlyRent = rent * 12;
+            const yearlyManagement = management * 12;
+            const netYearly = yearlyRent - yearlyManagement;
+            const roi = (netYearly / price * 100).toFixed(1);
+            const payback = (price / netYearly).toFixed(1);
+            
+            document.getElementById('calcYearlyRent').textContent = formatMoney(yearlyRent);
+            document.getElementById('calcYearlyManagement').textContent = formatMoney(yearlyManagement);
+            document.getElementById('calcNetYearly').textContent = formatMoney(netYearly);
+            document.getElementById('calcROI').textContent = `${roi}%`;
+            document.getElementById('calcPayback').textContent = `${payback} nam`;
+            
+            let verdict = "";
+            if (parseFloat(roi) >= 10) {
+                verdict = "💰 <strong>dAU TU XUAT SAC</strong> - ROI > 10%";
+            } else if (parseFloat(roi) >= 8) {
+                verdict = "💰 <strong>dAU TU KHA THI</strong> - ROI > 8%";
+            } else if (parseFloat(roi) >= 6) {
+                verdict = "⚠ <strong>CAN NHAC</strong> - ROI thap hon lam phat";
+            } else {
+                verdict = "❌ <strong>KHONG NEN dAU TU</strong> - ROI qua thap";
+            }
+            
+            document.getElementById('calcVerdict').innerHTML = verdict;
+        }
+
+        // Show education planning modal
+        function showEducationModal() {
+            educationModal.classList.add('active');
+            calculateEducationPlan(); // Initial calculation
+        }
+
+        // Calculate education plan
+        function calculateEducationPlan() {
+            const childAge = parseInt(document.getElementById('childAge').value) || 5;
+            const universityAge = parseInt(document.getElementById('universityAge').value) || 18;
+            const universityCost = parseInt(document.getElementById('universityCost').value) || 200000000;
+            
+            const yearsLeft = universityAge - childAge;
+            const totalNeeded = universityCost;
+            const yearlySave = totalNeeded / yearsLeft;
+            const monthlySave = yearlySave / 12;
+            const incomePercent = (monthlySave / 20000000 * 100).toFixed(1); // Assuming 20 mil monthly income
+            
+            document.getElementById('calcYearsLeft').textContent = `${yearsLeft} nam`;
+            document.getElementById('calcTotalNeeded').textContent = formatMoney(totalNeeded);
+            document.getElementById('calcYearlySave').textContent = formatMoney(yearlySave);
+            document.getElementById('calcMonthlySave').textContent = formatMoney(monthlySave);
+            document.getElementById('calcIncomePercent').textContent = `${incomePercent}%`;
+        }
+
+        // Add message to game log
+        function addToLog(message, type = "event") {
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-message ${type}`;
+            
+            const timestamp = new Date().toLocaleTimeString('vi-VN', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            gameLogEl.prepend(logEntry);
+            
+            // Keep only last 10 messages
+            if (gameLogEl.children.length > 10) {
+                gameLogEl.removeChild(gameLogEl.lastChild);
+            }
+            
+            // Auto-scroll to top
+            gameLogEl.scrollTop = 0;
+        }
+
+        // Check if item is owned
+        function isItemOwned(itemId) {
+            return gameState.ownedItems.includes(itemId);
+        }
+
+        // Format money
+        function formatMoney(amount) {
+            return amount.toLocaleString('vi-VN') + ' ₫';
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.dataset.tab;
+                    
+                    // Update active tab
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding content
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+            
+            // Collect income button
+            document.getElementById('collectIncome').addEventListener('click', collectIncome);
+            
+            // Save money button
+            document.getElementById('saveMoney').addEventListener('click', saveMoney);
+            
+            // Invest gold button
+            document.getElementById('investGold').addEventListener('click', investGold);
+            
+            // Kim Tu do button
+            document.getElementById('quadrantBtn').addEventListener('click', () => {
+                kimModal.classList.add('active');
+            });
+            
+            // Close Kim Tu do modal
+            document.getElementById('closeKimModal').addEventListener('click', () => {
+                kimModal.classList.remove('active');
+            });
+            
+            // Back from Kim Tu do button
+            document.getElementById('backFromKimBtn').addEventListener('click', () => {
+                kimModal.classList.remove('active');
+            });
+            
+            // Real Estate Calculator
+            document.getElementById('calculateRE').addEventListener('click', calculateRealEstate);
+            
+            // Close Real Estate Calculator modal
+            document.getElementById('closeRECalcModal').addEventListener('click', () => {
+                reCalculatorModal.classList.remove('active');
+            });
+            
+            // Back from Real Estate Calculator button
+            document.getElementById('backFromRECalcBtn').addEventListener('click', () => {
+                reCalculatorModal.classList.remove('active');
+            });
+            
+            // Education Calculator
+            document.getElementById('calculateEducation').addEventListener('click', calculateEducationPlan);
+            
+            // Close Education modal
+            document.getElementById('closeEducationModal').addEventListener('click', () => {
+                educationModal.classList.remove('active');
+            });
+            
+            // Back from Education button
+            document.getElementById('backFromEducationBtn').addEventListener('click', () => {
+                educationModal.classList.remove('active');
+            });
+            
+            // Real estate calculator inputs
+            document.getElementById('rePrice').addEventListener('input', calculateRealEstate);
+            document.getElementById('reRent').addEventListener('input', calculateRealEstate);
+            document.getElementById('reManagement').addEventListener('input', calculateRealEstate);
+            
+            // Education calculator inputs
+            document.getElementById('childAge').addEventListener('input', calculateEducationPlan);
+            document.getElementById('universityAge').addEventListener('input', calculateEducationPlan);
+            document.getElementById('universityCost').addEventListener('change', calculateEducationPlan);
+            
+            // Quadrant selection in Kim Tu do modal
+            document.querySelectorAll('.quadrant').forEach(quadrant => {
+                quadrant.addEventListener('click', function() {
+                    // Remove active class from all quadrants
+                    document.querySelectorAll('.quadrant').forEach(q => q.classList.remove('active'));
+                    
+                    // Add active class to clicked quadrant
+                    this.classList.add('active');
+                    
+                    const quadrantType = this.dataset.quadrant;
+                    addToLog(`Ban dang tap trung phat trien theo huong ${quadrantType} cua Kim Tu do.`, "education");
+                });
+            });
+            
+            // Auto-collect income every 30 seconds (simulate monthly income)
+            setInterval(() => {
+                if (gameState.monthlyIncome > 0) {
+                    // Small automatic income collection
+                    const autoIncome = gameState.monthlyIncome / 30; // Daily income
+                    gameState.cash += autoIncome;
+                    
+                    // Update UI less frequently for performance
+                    if (Math.random() > 0.7) { // 30% chance to update UI
+                        updateUI();
+                    }
+                }
+            }, 30000); // Every 30 seconds
+            
+            // Random events every 45 seconds
+            setInterval(() => {
+                if (Math.random() > 0.5) { // 50% chance
+                    generateRandomEvent();
+                }
+            }, 45000);
+        }
+
+        // Initialize the game when page loads
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

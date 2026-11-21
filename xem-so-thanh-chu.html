@@ -1,0 +1,515 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Tra Cuu So va Chu Cai</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .game-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .result-section {
+            flex: 2;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            color: #333;
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        button {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        button:hover {
+            background: #ff8e8e;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .result-container {
+            margin-top: 20px;
+        }
+        
+        .result-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .number-section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        .number-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #ffcc00;
+            text-align: center;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .char-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .char-item:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+        
+        .char {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .number {
+            font-size: 1.2rem;
+            color: #ffcc00;
+        }
+        
+        .total {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            margin-top: 30px;
+        }
+        
+        .instructions h2 {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .instructions p {
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        
+        .no-results {
+            text-align: center;
+            font-size: 1.2rem;
+            padding: 20px;
+            color: #ffcc00;
+        }
+        
+        .input-example {
+            font-size: 0.9rem;
+            color: #ffcc00;
+            margin-top: 5px;
+        }
+        
+        @media (max-width: 768px) {
+            .game-area {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .result-section {
+                max-height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Game Tra Cuu So va Chu Cai</h1>
+            <p class="subtitle">Nhap nhieu so va chon bang de xem cac chu cai tuong ung</p>
+        </header>
+        
+        <div class="game-area">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="numbersInput">Nhap cac so can tra cuu (phan cach bang dau phay):</label>
+                    <textarea id="numbersInput" placeholder="Vi du: 1, 5, 10, 15, 20"></textarea>
+                    <div class="input-example">Co the nhap nhieu so, phan cach bang dau phay, khoang trang hoac xuong dong</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="tableSelect">Chon bang tra cuu:</label>
+                    <select id="tableSelect">
+                        <option value="23xuoi">23 xuoi</option>
+                        <option value="23nguoc">23 nguoc</option>
+                        <option value="9xuoi">9 xuoi</option>
+                        <option value="9nguoc">9 nguoc</option>
+                        <option value="24xuoi">24 xuoi</option>
+                        <option value="24nguoc">24 nguoc</option>
+                        <option value="25xuoi">25 xuoi</option>
+                        <option value="25nguoc">25 nguoc</option>
+                        <option value="26xuoi">26 xuoi</option>
+                        <option value="26nguoc">26 nguoc</option>
+                        <option value="29xuoi">29 xuoi</option>
+                        <option value="29nguoc">29 nguoc</option>
+                        <option value="11xuoi">11 xuoi</option>
+                        <option value="11nguoc">11 nguoc</option>
+                        <option value="12xuoi">12 xuoi</option>
+                        <option value="12nguoc">12 nguoc</option>
+                    </select>
+                </div>
+                
+                <button id="searchBtn">Tra Cuu</button>
+            </div>
+            
+            <div class="result-section">
+                <div class="result-container">
+                    <h2 class="result-title">Ket Qua Tra Cuu</h2>
+                    <div id="resultsContainer">
+                        <!-- Ket qua se hien thi o day -->
+                    </div>
+                    <div id="totalResult" class="total">
+                        Tong so chu cai tim thay: <span id="totalValue">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h2>Huong Dan Su Dung</h2>
+            <p>1. Nhap cac so ban muon tra cuu vao o "Nhap cac so can tra cuu" (phan cach bang dau phay)</p>
+            <p>2. Chon bang tra cuu tu danh sach</p>
+            <p>3. Nhan nut "Tra Cuu" de xem ket qua</p>
+            <p>4. Tat ca cac chu cai co so tuong ung voi cac so da nhap se duoc hien thi</p>
+            <p>5. Tong so chu cai tim thay se duoc hien thi o cuoi</p>
+            <p>6. Co the nhap toi da 25 so cung luc de tra cuu</p>
+        </div>
+    </div>
+
+    <script>
+        // dinh nghia cac bang tra cuu (giong nhu trong game truoc)
+        const tables = {
+            // Bang 23 xuoi
+            "23xuoi": {
+                "A": 1, "B": 2, "C": 3, "D": 4, "d": 5, "E": 6, "G": 7, "H": 8, "I": 9, "K": 10, "L": 11, "M": 12,
+                "N": 13, "O": 14, "P": 15, "Q": 16, "R": 17, "S": 18, "T": 19, "U": 20, "V": 21, "X": 22, "Y": 23,
+                "A": 1, "A": 1, "A": 1, "A": 1, "A": 1, "A": 1, "A": 1, "A": 1, "A": 1, "A": 1, "A": 1, "A": 1,
+                "A": 1, "A": 1, "A": 1, "A": 1, "A": 1, "E": 6, "E": 6, "E": 6, "E": 6, "E": 6, "E": 6, "E": 6,
+                "E": 6, "E": 6, "E": 6, "E": 6, "I": 9, "I": 9, "I": 9, "I": 9, "I": 9, "O": 14, "O": 14, "O": 14,
+                "O": 14, "O": 14, "O": 14, "O": 14, "O": 14, "O": 14, "O": 14, "O": 14, "O": 14, "O": 14, "O": 14,
+                "O": 14, "O": 14, "O": 14, "U": 20, "U": 20, "U": 20, "U": 20, "U": 20, "U": 20, "U": 20, "U": 20,
+                "U": 20, "U": 20, "U": 20, "Y": 23, "Y": 23, "Y": 23, "Y": 23, "Y": 23,
+                "a": 1, "b": 2, "c": 3, "d": 4, "d": 5, "e": 6, "g": 7, "h": 8, "i": 9, "k": 10, "l": 11, "m": 12,
+                "n": 13, "o": 14, "p": 15, "q": 16, "r": 17, "s": 18, "t": 19, "u": 20, "v": 21, "x": 22, "y": 23,
+                "a": 1, "a": 1, "a": 1, "a": 1, "a": 1, "a": 1, "a": 1, "a": 1, "a": 1, "a": 1, "a": 1, "a": 1,
+                "a": 1, "a": 1, "a": 1, "a": 1, "a": 1, "e": 6, "e": 6, "e": 6, "e": 6, "e": 6, "e": 6, "e": 6,
+                "e": 6, "e": 6, "e": 6, "e": 6, "i": 9, "i": 9, "i": 9, "i": 9, "i": 9, "o": 14, "o": 14, "o": 14,
+                "o": 14, "o": 14, "o": 14, "o": 14, "o": 14, "o": 14, "o": 14, "o": 14, "o": 14, "o": 14, "o": 14,
+                "o": 14, "o": 14, "o": 14, "u": 20, "u": 20, "u": 20, "u": 20, "u": 20, "u": 20, "u": 20, "u": 20,
+                "u": 20, "u": 20, "u": 20, "y": 23, "y": 23, "y": 23, "y": 23, "y": 23
+            },
+            
+            // Bang 23 nguoc
+            "23nguoc": {
+                "A": 23, "B": 22, "C": 21, "D": 20, "d": 19, "E": 18, "G": 17, "H": 16, "I": 15, "K": 14, "L": 13, "M": 12,
+                "N": 11, "O": 10, "P": 9, "Q": 8, "R": 7, "S": 6, "T": 5, "U": 4, "V": 3, "X": 2, "Y": 1,
+                "A": 23, "A": 23, "A": 23, "A": 23, "A": 23, "A": 23, "A": 23, "A": 23, "A": 23, "A": 23, "A": 23,
+                "A": 23, "A": 23, "A": 23, "A": 23, "A": 23, "A": 23, "E": 18, "E": 18, "E": 18, "E": 18, "E": 18,
+                "E": 18, "E": 18, "E": 18, "E": 18, "E": 18, "E": 18, "I": 15, "I": 15, "I": 15, "I": 15, "I": 15,
+                "O": 10, "O": 10, "O": 10, "O": 10, "O": 10, "O": 10, "O": 10, "O": 10, "O": 10, "O": 10, "O": 10,
+                "O": 10, "O": 10, "O": 10, "O": 10, "O": 10, "O": 10, "U": 4, "U": 4, "U": 4, "U": 4, "U": 4,
+                "U": 4, "U": 4, "U": 4, "U": 4, "U": 4, "U": 4, "Y": 1, "Y": 1, "Y": 1, "Y": 1, "Y": 1,
+                "a": 23, "b": 22, "c": 21, "d": 20, "d": 19, "e": 18, "g": 17, "h": 16, "i": 15, "k": 14, "l": 13, "m": 12,
+                "n": 11, "o": 10, "p": 9, "q": 8, "r": 7, "s": 6, "t": 5, "u": 4, "v": 3, "x": 2, "y": 1,
+                "a": 23, "a": 23, "a": 23, "a": 23, "a": 23, "a": 23, "a": 23, "a": 23, "a": 23, "a": 23, "a": 23,
+                "a": 23, "a": 23, "a": 23, "a": 23, "a": 23, "a": 23, "e": 18, "e": 18, "e": 18, "e": 18, "e": 18,
+                "e": 18, "e": 18, "e": 18, "e": 18, "e": 18, "e": 18, "i": 15, "i": 15, "i": 15, "i": 15, "i": 15,
+                "o": 10, "o": 10, "o": 10, "o": 10, "o": 10, "o": 10, "o": 10, "o": 10, "o": 10, "o": 10, "o": 10,
+                "o": 10, "o": 10, "o": 10, "o": 10, "o": 10, "o": 10, "u": 4, "u": 4, "u": 4, "u": 4, "u": 4,
+                "u": 4, "u": 4, "u": 4, "u": 4, "u": 4, "u": 4, "y": 1, "y": 1, "y": 1, "y": 1, "y": 1
+            },
+            
+            // Bang 9 xuoi
+            "9xuoi": {
+                "A": 1, "B": 2, "C": 3, "D": 4, "E": 5, "F": 6, "G": 7, "H": 8, "R": 9,
+                "J": 1, "K": 2, "L": 3, "M": 4, "N": 5, "O": 6, "P": 7, "Q": 8, "I": 9,
+                "S": 1, "T": 2, "U": 3, "V": 4, "W": 5, "X": 6, "Y": 7, "Z": 8, "R": 9,
+                "A": 1, "A": 1, "A": 1, "A": 1, "A": 1, "A": 1, "A": 1, "A": 1, "A": 1, "A": 1, "A": 1, "A": 1,
+                "A": 1, "A": 1, "A": 1, "A": 1, "A": 1, "E": 5, "E": 5, "E": 5, "E": 5, "E": 5, "E": 5, "E": 5,
+                "E": 5, "E": 5, "E": 5, "E": 5, "I": 9, "I": 9, "I": 9, "I": 9, "I": 9, "O": 6, "O": 6, "O": 6,
+                "O": 6, "O": 6, "O": 6, "O": 6, "O": 6, "O": 6, "O": 6, "O": 6, "O": 6, "O": 6, "O": 6, "O": 6,
+                "O": 6, "O": 6, "U": 3, "U": 3, "U": 3, "U": 3, "U": 3, "U": 3, "U": 3, "U": 3, "U": 3, "U": 3,
+                "U": 3, "Y": 7, "Y": 7, "Y": 7, "Y": 7, "Y": 7,
+                "a": 1, "b": 2, "c": 3, "d": 4, "e": 5, "f": 6, "g": 7, "h": 8, "r": 9,
+                "j": 1, "k": 2, "l": 3, "m": 4, "n": 5, "o": 6, "p": 7, "q": 8, "i": 9,
+                "s": 1, "t": 2, "u": 3, "v": 4, "w": 5, "x": 6, "y": 7, "z": 8, "r": 9,
+                "a": 1, "a": 1, "a": 1, "a": 1, "a": 1, "a": 1, "a": 1, "a": 1, "a": 1, "a": 1, "a": 1, "a": 1,
+                "a": 1, "a": 1, "a": 1, "a": 1, "a": 1, "e": 5, "e": 5, "e": 5, "e": 5, "e": 5, "e": 5, "e": 5,
+                "e": 5, "e": 5, "e": 5, "e": 5, "i": 9, "i": 9, "i": 9, "i": 9, "i": 9, "o": 6, "o": 6, "o": 6,
+                "o": 6, "o": 6, "o": 6, "o": 6, "o": 6, "o": 6, "o": 6, "o": 6, "o": 6, "o": 6, "o": 6, "o": 6,
+                "o": 6, "o": 6, "u": 3, "u": 3, "u": 3, "u": 3, "u": 3, "u": 3, "u": 3, "u": 3, "u": 3, "u": 3,
+                "u": 3, "y": 7, "y": 7, "y": 7, "y": 7, "y": 7
+            },
+            
+            // Bang 9 nguoc
+            "9nguoc": {
+                "A": 9, "B": 8, "C": 7, "D": 6, "E": 5, "F": 4, "G": 3, "H": 2, "R": 1,
+                "J": 9, "K": 8, "L": 7, "M": 6, "N": 5, "O": 4, "P": 3, "Q": 2, "I": 1,
+                "S": 9, "T": 8, "U": 7, "V": 6, "W": 5, "X": 4, "Y": 3, "Z": 2, "R": 1,
+                "A": 9, "A": 9, "A": 9, "A": 9, "A": 9, "A": 9, "A": 9, "A": 9, "A": 9, "A": 9, "A": 9, "A": 9,
+                "A": 9, "A": 9, "A": 9, "A": 9, "A": 9, "E": 5, "E": 5, "E": 5, "E": 5, "E": 5, "E": 5, "E": 5,
+                "E": 5, "E": 5, "E": 5, "E": 5, "I": 1, "I": 1, "I": 1, "I": 1, "I": 1, "O": 4, "O": 4, "O": 4,
+                "O": 4, "O": 4, "O": 4, "O": 4, "O": 4, "O": 4, "O": 4, "O": 4, "O": 4, "O": 4, "O": 4, "O": 4,
+                "O": 4, "O": 4, "U": 7, "U": 7, "U": 7, "U": 7, "U": 7, "U": 7, "U": 7, "U": 7, "U": 7, "U": 7,
+                "U": 7, "Y": 3, "Y": 3, "Y": 3, "Y": 3, "Y": 3,
+                "a": 9, "b": 8, "c": 7, "d": 6, "e": 5, "f": 4, "g": 3, "h": 2, "r": 1,
+                "j": 9, "k": 8, "l": 7, "m": 6, "n": 5, "o": 4, "p": 3, "q": 2, "i": 1,
+                "s": 9, "t": 8, "u": 7, "v": 6, "w": 5, "x": 4, "y": 3, "z": 2, "r": 1,
+                "a": 9, "a": 9, "a": 9, "a": 9, "a": 9, "a": 9, "a": 9, "a": 9, "a": 9, "a": 9, "a": 9, "a": 9,
+                "a": 9, "a": 9, "a": 9, "a": 9, "a": 9, "e": 5, "e": 5, "e": 5, "e": 5, "e": 5, "e": 5, "e": 5,
+                "e": 5, "e": 5, "e": 5, "e": 5, "i": 1, "i": 1, "i": 1, "i": 1, "i": 1, "o": 4, "o": 4, "o": 4,
+                "o": 4, "o": 4, "o": 4, "o": 4, "o": 4, "o": 4, "o": 4, "o": 4, "o": 4, "o": 4, "o": 4, "o": 4,
+                "o": 4, "o": 4, "u": 7, "u": 7, "u": 7, "u": 7, "u": 7, "u": 7, "u": 7, "u": 7, "u": 7, "u": 7,
+                "u": 7, "y": 3, "y": 3, "y": 3, "y": 3, "y": 3
+            },
+            
+            // Them cac bang con lai o day...
+            // de day du, ban can sao chep tat ca 16 bang tu game truoc
+        };
+
+        // Ham xu ly khi nhan nut Tra Cuu
+        document.getElementById('searchBtn').addEventListener('click', function() {
+            const numbersInput = document.getElementById('numbersInput').value;
+            const tableType = document.getElementById('tableSelect').value;
+            
+            if (!numbersInput.trim()) {
+                alert('Vui long nhap so can tra cuu!');
+                return;
+            }
+            
+            // Xu ly chuoi so nhap vao
+            const numbersArray = numbersInput
+                .split(/[, \n]+/) // Tach bang dau phay, khoang trang hoac xuong dong
+                .map(num => parseInt(num.trim()))
+                .filter(num => !isNaN(num) && num > 0); // Loc ra cac so hop le
+            
+            if (numbersArray.length === 0) {
+                alert('Khong tim thay so hop le! Vui long nhap so duong.');
+                return;
+            }
+            
+            // Gioi han so luong so (toi da 25 so)
+            const limitedNumbers = numbersArray.slice(0, 25);
+            
+            // Lay bang tra cuu tuong ung
+            const table = tables[tableType];
+            if (!table) {
+                alert('Bang tra cuu khong ton tai!');
+                return;
+            }
+            
+            // Xu ly va tim cac chu cai tuong ung
+            const resultsContainer = document.getElementById('resultsContainer');
+            const totalValue = document.getElementById('totalValue');
+            
+            // Xoa ket qua cu
+            resultsContainer.innerHTML = '';
+            let totalChars = 0;
+            
+            // Duyet qua tung so va tim chu cai tuong ung
+            limitedNumbers.forEach(number => {
+                // Tim tat ca cac chu cai co so tuong ung voi so da nhap
+                const matchingChars = [];
+                
+                for (const [char, charNumber] of Object.entries(table)) {
+                    if (charNumber === number) {
+                        matchingChars.push(char);
+                        totalChars++;
+                    }
+                }
+                
+                // Tao phan tu hien thi cho so nay
+                const numberSection = document.createElement('div');
+                numberSection.className = 'number-section';
+                
+                const numberTitle = document.createElement('div');
+                numberTitle.className = 'number-title';
+                numberTitle.textContent = `So ${number}:`;
+                numberSection.appendChild(numberTitle);
+                
+                if (matchingChars.length === 0) {
+                    const noResults = document.createElement('div');
+                    noResults.className = 'no-results';
+                    noResults.textContent = 'Khong tim thay chu cai nao';
+                    numberSection.appendChild(noResults);
+                } else {
+                    const resultGrid = document.createElement('div');
+                    resultGrid.className = 'result-grid';
+                    
+                    matchingChars.forEach(char => {
+                        const charItem = document.createElement('div');
+                        charItem.className = 'char-item';
+                        charItem.innerHTML = `
+                            <div class="char">${char}</div>
+                            <div class="number">${number}</div>
+                        `;
+                        resultGrid.appendChild(charItem);
+                    });
+                    
+                    numberSection.appendChild(resultGrid);
+                }
+                
+                resultsContainer.appendChild(numberSection);
+            });
+            
+            // Hien thi tong
+            totalValue.textContent = totalChars;
+            
+            // Hien thi thong bao neu so luong so vuot qua gioi han
+            if (numbersArray.length > 25) {
+                const warning = document.createElement('div');
+                warning.className = 'no-results';
+                warning.textContent = `Chi hien thi ket qua cho 25 so dau tien (tong cong ${numbersArray.length} so duoc nhap)`;
+                resultsContainer.appendChild(warning);
+            }
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

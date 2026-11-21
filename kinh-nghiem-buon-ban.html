@@ -1,0 +1,573 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>11 Phep Tinh Kinh Doanh Xuong Mau Cua Nguoi Hoa</title>
+    <style>
+        /* Bien mau sac de de chinh sua */
+        :root {
+            --primary-color: #C62828;
+            --secondary-color: #1565C0;
+            --accent-color: #FF9800;
+            --light-color: #FFF8F0;
+            --dark-color: #333333;
+            --success-color: #2E7D32;
+            --warning-color: #F57C00;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark-color);
+            line-height: 1.6;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--warning-color));
+            color: white;
+            padding: 20px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        /* Tabs dieu huong */
+        .tab-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .tab-button {
+            padding: 12px 16px;
+            background-color: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .tab-button:hover {
+            background-color: rgba(198, 40, 40, 0.1);
+        }
+        
+        .tab-button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* Cac section cua tab */
+        .tab-content {
+            display: none;
+            background-color: white;
+            padding: 20px 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Tieu de phep tinh */
+        .calc-title {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent-color);
+            font-size: 1.3rem;
+        }
+        
+        /* Cac o nhap lieu */
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+        
+        /* Nut tinh toan */
+        .calculate-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 15px 0;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .calculate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(21, 101, 192, 0.2);
+        }
+        
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Ket qua */
+        .result-box {
+            background-color: var(--light-color);
+            border-left: 5px solid var(--success-color);
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .result-box h3 {
+            color: var(--success-color);
+            margin-bottom: 10px;
+        }
+        
+        .result-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+        
+        .result-note {
+            font-style: italic;
+            color: #666;
+            font-size: 0.95rem;
+            margin-top: 10px;
+        }
+        
+        /* Thong tin giai thich */
+        .explanation {
+            background-color: #E3F2FD;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .explanation h4 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+        
+        /* Responsive dieu chinh */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 90%;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .tab-button {
+                flex: none;
+                padding: 12px 20px;
+            }
+            
+            .input-row {
+                display: flex;
+                gap: 15px;
+            }
+            
+            .input-row .input-group {
+                flex: 1;
+            }
+        }
+        
+        /* Hieu ung nhan manh */
+        .highlight {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>11 PHEP TINH "XUONG MAU" CUA NGUOI HOA</h1>
+            <p>Kinh doanh khong phai la cam tinh - Hay tinh toan nhu nguoi Hoa de luon co lai</p>
+        </div>
+        
+        <!-- Tab dieu huong -->
+        <div class="tab-container">
+            <button class="tab-button active" data-tab="break-even">diem Hoa Von</button>
+            <button class="tab-button" data-tab="cash-flow">Dong Tien</button>
+            <button class="tab-button" data-tab="profit">Toi Uu Loi Nhuan</button>
+            <button class="tab-button" data-tab="management">Quan Tri</button>
+            <button class="tab-button" data-tab="customer">Khach Hang</button>
+        </div>
+        
+        <!-- Tab 1: diem hoa von -->
+        <div id="break-even" class="tab-content active">
+            <h2 class="calc-title">1. diem Hoa Von (Break-Even Point)</h2>
+            <p><strong>Cau hoi:</strong> "Mot ngay toi phai ban duoc bao nhieu bat pho thi moi bat dau co lai?"</p>
+            
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="fixed-cost">Tong chi phi co dinh (dong)</label>
+                    <input type="number" id="fixed-cost" placeholder="Vi du: 10000000">
+                </div>
+                
+                <div class="input-group">
+                    <label for="avg-price">Gia ban trung binh 1 san pham (dong)</label>
+                    <input type="number" id="avg-price" placeholder="Vi du: 50000">
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="variable-cost">Chi phi bien doi trung binh 1 san pham (dong)</label>
+                <input type="number" id="variable-cost" placeholder="Vi du: 25000">
+            </div>
+            
+            <button class="calculate-btn" id="calculate-break-even">Tinh diem Hoa Von</button>
+            
+            <div class="result-box" id="break-even-result">
+                <h3>Ket Qua diem Hoa Von</h3>
+                <p>Ban can ban: <span class="result-value" id="break-even-value">0</span> san pham de dat diem hoa von.</p>
+                <p class="result-note">day la con so quan trong nhat, quyet dinh su song con cua quan.</p>
+            </div>
+            
+            <div class="explanation">
+                <h4>Giai thich:</h4>
+                <p><span class="highlight">diem hoa von</span> la so luong san pham ban can ban de trang trai tat ca chi phi (co dinh va bien doi).</p>
+                <p><strong>Cong thuc:</strong> diem hoa von = Tong chi phi co dinh / (Gia ban trung binh 1 san pham - Chi phi bien doi trung binh 1 san pham)</p>
+            </div>
+        </div>
+        
+        <!-- Tab 2: Dong tien -->
+        <div id="cash-flow" class="tab-content">
+            <h2 class="calc-title">2. Dong Tien (Cash Flow)</h2>
+            <p><strong>Cau hoi:</strong> "Tien trong ket co du de tra tien nha, luong nhan vien va tien hang thang sau khong?"</p>
+            
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="cash-in">Tien thu vao (dong)</label>
+                    <input type="number" id="cash-in" placeholder="Vi du: 50000000">
+                </div>
+                
+                <div class="input-group">
+                    <label for="cash-out">Tien chi ra (dong)</label>
+                    <input type="number" id="cash-out" placeholder="Vi du: 35000000">
+                </div>
+            </div>
+            
+            <button class="calculate-btn" id="calculate-cash-flow">Tinh Dong Tien</button>
+            
+            <div class="result-box" id="cash-flow-result">
+                <h3>Ket Qua Dong Tien</h3>
+                <p>Dong tien cua ban: <span class="result-value" id="cash-flow-value">0</span> dong</p>
+                <p class="result-note">Nguoi Hoa am anh voi dong tien. Lai tren giay khong quan trong bang tien that trong tui.</p>
+            </div>
+            
+            <div class="explanation">
+                <h4>Giai thich:</h4>
+                <p><span class="highlight">Dong tien</span> la su chenh lech giua tien thu vao va tien chi ra trong mot khoang thoi gian nhat dinh.</p>
+                <p><strong>Cong thuc:</strong> Dong tien = Tien thu vao - Tien chi ra</p>
+            </div>
+        </div>
+        
+        <!-- Tab 3: Toi uu loi nhuan -->
+        <div id="profit" class="tab-content">
+            <h2 class="calc-title">PHEP TINH TOI UU LOI NHUAN</h2>
+            
+            <h3>3. Ty le Lai gop (Gross Profit Margin)</h3>
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="revenue">Doanh thu (dong)</label>
+                    <input type="number" id="revenue" placeholder="Vi du: 200000000">
+                </div>
+                
+                <div class="input-group">
+                    <label for="cogs">Gia von hang ban (dong)</label>
+                    <input type="number" id="cogs" placeholder="Vi du: 120000000">
+                </div>
+            </div>
+            
+            <button class="calculate-btn" id="calculate-gross-margin">Tinh Ty le Lai gop</button>
+            
+            <div class="result-box" id="gross-margin-result">
+                <h3>Ket Qua Ty le Lai gop</h3>
+                <p>Ty le lai gop: <span class="result-value" id="gross-margin-value">0</span>%</p>
+                <p class="result-note">Neu chi so nay qua thap, hoac la gia ban cua ban qua re, hoac la gia nhap nguyen lieu cua ban qua cao.</p>
+            </div>
+            
+            <div class="explanation">
+                <h4>Giai thich tu ngu:</h4>
+                <p><span class="highlight">Ty le Lai gop</span> cho biet phan tram loi nhuan con lai sau khi tru gia von hang ban.</p>
+                <p><strong>Cong thuc:</strong> Lai gop (%) = ((Doanh thu - Gia von hang ban) / Doanh thu) x 100</p>
+                <p><span class="highlight">Gia von hang ban (COGS)</span> la chi phi truc tiep de san xuat/san xuat hang hoa ban ra.</p>
+            </div>
+        </div>
+        
+        <!-- Tab 4: Quan tri -->
+        <div id="management" class="tab-content">
+            <h2 class="calc-title">PHEP TINH QUAN TRI</h2>
+            
+            <h3>6. Doanh thu tren moi met vuong (Revenue per Square Meter)</h3>
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="total-revenue">Tong doanh thu (dong)</label>
+                    <input type="number" id="total-revenue" placeholder="Vi du: 300000000">
+                </div>
+                
+                <div class="input-group">
+                    <label for="total-area">Tong dien tich quan (m²)</label>
+                    <input type="number" id="total-area" placeholder="Vi du: 50">
+                </div>
+            </div>
+            
+            <button class="calculate-btn" id="calculate-revenue-per-area">Tinh Doanh thu/m²</button>
+            
+            <div class="result-box" id="revenue-per-area-result">
+                <h3>Ket Qua Doanh thu/m²</h3>
+                <p>Doanh thu tren moi met vuong: <span class="result-value" id="revenue-per-area-value">0</span> dong/m²</p>
+                <p class="result-note">Giup ban biet lieu mat bang co dang duoc su dung hieu qua hay khong.</p>
+            </div>
+            
+            <div class="explanation">
+                <h4>Giai thich tu ngu:</h4>
+                <p><span class="highlight">Doanh thu tren moi met vuong</span> la chi so do luong hieu qua su dung mat bang kinh doanh.</p>
+                <p><strong>Cong thuc:</strong> Doanh thu/m² = Tong doanh thu / Tong dien tich quan</p>
+            </div>
+        </div>
+        
+        <!-- Tab 5: Khach hang -->
+        <div id="customer" class="tab-content">
+            <h2 class="calc-title">PHEP TINH VE KHACH HANG</h2>
+            
+            <h3>8. Gia tri don hang Trung binh (Average Order Value - AOV)</h3>
+            <div class="input-row">
+                <div class="input-group">
+                    <label for="total-revenue-aov">Tong doanh thu (dong)</label>
+                    <input type="number" id="total-revenue-aov" placeholder="Vi du: 150000000">
+                </div>
+                
+                <div class="input-group">
+                    <label for="total-invoices">Tong so hoa don</label>
+                    <input type="number" id="total-invoices" placeholder="Vi du: 1000">
+                </div>
+            </div>
+            
+            <button class="calculate-btn" id="calculate-aov">Tinh Gia tri don hang Trung binh</button>
+            
+            <div class="result-box" id="aov-result">
+                <h3>Ket Qua AOV</h3>
+                <p>Gia tri don hang trung binh: <span class="result-value" id="aov-value">0</span> dong</p>
+                <p class="result-note">Tim moi cach de tang chi so nay (upsell, cross-sell, combo...).</p>
+            </div>
+            
+            <div class="explanation">
+                <h4>Giai thich tu ngu:</h4>
+                <p><span class="highlight">Gia tri don hang Trung binh (AOV)</span> la so tien trung binh moi khach hang chi tieu trong mot lan mua hang.</p>
+                <p><strong>Cong thuc:</strong> AOV = Tong doanh thu / Tong so hoa don</p>
+                <p><span class="highlight">Upsell</span>: Ban phien ban cao cap hon cua san pham khach dang mua.</p>
+                <p><span class="highlight">Cross-sell</span>: Ban san pham bo sung lien quan den san pham khach dang mua.</p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Bai hoc cot loi:</strong> Kinh doanh khong phai la cam tinh. dang sau tu duy "lam chu" cua nguoi Hoa la su am anh voi nhung con so.</p>
+            <p>Ai nam duoc nhung con so nay, nguoi do nam duoc van menh cua doanh nghiep minh.</p>
+        </div>
+    </div>
+    
+    <script>
+        // Ham chuyen doi tab
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', function() {
+                // Xoa class active khoi tat ca cac tab va nut
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Them class active vao tab va nut duoc chon
+                this.classList.add('active');
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // 1. Tinh diem Hoa Von
+        document.getElementById('calculate-break-even').addEventListener('click', function() {
+            const fixedCost = parseFloat(document.getElementById('fixed-cost').value) || 0;
+            const avgPrice = parseFloat(document.getElementById('avg-price').value) || 0;
+            const variableCost = parseFloat(document.getElementById('variable-cost').value) || 0;
+            
+            if (avgPrice <= variableCost) {
+                alert("Gia ban phai lon hon chi phi bien doi!");
+                return;
+            }
+            
+            const breakEvenPoint = Math.ceil(fixedCost / (avgPrice - variableCost));
+            
+            document.getElementById('break-even-value').textContent = breakEvenPoint.toLocaleString('vi-VN');
+            document.getElementById('break-even-result').style.display = 'block';
+        });
+        
+        // 2. Tinh Dong Tien
+        document.getElementById('calculate-cash-flow').addEventListener('click', function() {
+            const cashIn = parseFloat(document.getElementById('cash-in').value) || 0;
+            const cashOut = parseFloat(document.getElementById('cash-out').value) || 0;
+            
+            const cashFlow = cashIn - cashOut;
+            
+            document.getElementById('cash-flow-value').textContent = cashFlow.toLocaleString('vi-VN');
+            document.getElementById('cash-flow-result').style.display = 'block';
+        });
+        
+        // 3. Tinh Ty le Lai gop
+        document.getElementById('calculate-gross-margin').addEventListener('click', function() {
+            const revenue = parseFloat(document.getElementById('revenue').value) || 0;
+            const cogs = parseFloat(document.getElementById('cogs').value) || 0;
+            
+            if (revenue === 0) {
+                alert("Doanh thu khong the bang 0!");
+                return;
+            }
+            
+            const grossMargin = ((revenue - cogs) / revenue) * 100;
+            
+            document.getElementById('gross-margin-value').textContent = grossMargin.toFixed(2);
+            document.getElementById('gross-margin-result').style.display = 'block';
+        });
+        
+        // 6. Tinh Doanh thu/m²
+        document.getElementById('calculate-revenue-per-area').addEventListener('click', function() {
+            const totalRevenue = parseFloat(document.getElementById('total-revenue').value) || 0;
+            const totalArea = parseFloat(document.getElementById('total-area').value) || 0;
+            
+            if (totalArea === 0) {
+                alert("Dien tich khong the bang 0!");
+                return;
+            }
+            
+            const revenuePerArea = totalRevenue / totalArea;
+            
+            document.getElementById('revenue-per-area-value').textContent = revenuePerArea.toLocaleString('vi-VN');
+            document.getElementById('revenue-per-area-result').style.display = 'block';
+        });
+        
+        // 8. Tinh Gia tri don hang Trung binh (AOV)
+        document.getElementById('calculate-aov').addEventListener('click', function() {
+            const totalRevenue = parseFloat(document.getElementById('total-revenue-aov').value) || 0;
+            const totalInvoices = parseInt(document.getElementById('total-invoices').value) || 0;
+            
+            if (totalInvoices === 0) {
+                alert("Tong so hoa don khong the bang 0!");
+                return;
+            }
+            
+            const aov = totalRevenue / totalInvoices;
+            
+            document.getElementById('aov-value').textContent = aov.toLocaleString('vi-VN');
+            document.getElementById('aov-result').style.display = 'block';
+        });
+        
+        // Tu dong hien thi tab dau tien khi trang tai xong
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('break-even-result').style.display = 'block';
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

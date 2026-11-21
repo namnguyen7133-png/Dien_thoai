@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quan ly Link GitHub - Anti Spam</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 20px auto; padding: 10px; line-height: 1.6; }
+        textarea { width: 100%; height: 100px; margin-bottom: 10px; }
+        .controls { display: flex; gap: 10px; margin-bottom: 20px; }
+        #display-area { padding: 15px; border: 2px dashed #007bff; background: #f8f9fa; text-align: center; }
+        .btn { padding: 10px 20px; cursor: pointer; border: none; border-radius: 4px; color: white; }
+        .btn-save { background: #28a745; }
+        .btn-copy { background: #007bff; width: 100%; font-size: 1.1em; font-weight: bold; }
+        #status { font-size: 0.8em; color: #666; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h3>Cau hinh Link GitHub</h3>
+    <p style="font-size: 0.9em;">Nhap moi link mot dong:</p>
+    <textarea id="linkInput" placeholder="Dan danh sach link vao day..."></textarea>
+    
+    <div class="controls">
+        <button class="btn btn-save" onclick="saveLinks()">Luu Danh Sach</button>
+    </div>
+
+    <hr>
+
+    <h3>Link San Sang (da tron)</h3>
+    <div id="display-area">
+        <div id="currentLink">Chua co link nao</div>
+        <div id="status">So link con lai trong hang doi: 0</div>
+    </div>
+    <br>
+    <button class="btn btn-copy" onclick="copyAndRotate()">Bam de Copy & doi Link</button>
+
+    <script>
+        let linkQueue = [];
+
+        // 1. Ham tron mang ngau nhien (Fisher-Yates Shuffle)
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // 2. Luu link vao localStorage va tron
+        function saveLinks() {
+            const text = document.getElementById('linkInput').value;
+            const links = text.split('\n').map(l => l.trim()).filter(l => l !== "");
+            
+            if (links.length === 0) return alert("Vui long nhap link!");
+
+            localStorage.setItem('raw_links', JSON.stringify(links));
+            prepareQueue(links);
+            alert("da luu va tron deu danh sach!");
+        }
+
+        // 3. Chuan bi hang doi (Queue)
+        function prepareQueue(links) {
+            linkQueue = shuffle([...links]);
+            updateDisplay();
+        }
+
+        // 4. Hien thi link hien tai
+        function updateDisplay() {
+            const display = document.getElementById('currentLink');
+            const status = document.getElementById('status');
+            
+            if (linkQueue.length > 0) {
+                display.innerText = linkQueue[0];
+                status.innerText = `So link con lai trong hang doi: ${linkQueue.length}`;
+            } else {
+                display.innerText = "Het link! dang khoi tao lai...";
+                const saved = JSON.parse(localStorage.getItem('raw_links') || "[]");
+                if (saved.length > 0) prepareQueue(saved);
+            }
+        }
+
+        // 5. Copy va xoay vong link
+        function copyAndRotate() {
+            if (linkQueue.length === 0) return;
+
+            const linkToCopy = linkQueue[0];
+
+            // Copy vao bo nho tam
+            navigator.clipboard.writeText(linkToCopy).then(() => {
+                // dua link vua dung xuong cuoi hang doi (Xoay vong)
+                const usedLink = linkQueue.shift();
+                linkQueue.push(usedLink);
+                
+                updateDisplay();
+                
+                // Hieu ung thong bao nho
+                const btn = document.querySelector('.btn-copy');
+                const originalText = btn.innerText;
+                btn.innerText = "dA COPY!";
+                btn.style.background = "#28a745";
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.style.background = "#007bff";
+                }, 800);
+            });
+        }
+
+        // 6. Tai lai du lieu khi load trang
+        window.onload = () => {
+            const saved = JSON.parse(localStorage.getItem('raw_links') || "[]");
+            if (saved.length > 0) {
+                document.getElementById('linkInput').value = saved.join('\n');
+                prepareQueue(saved);
+            }
+        };
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

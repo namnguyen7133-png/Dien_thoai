@@ -1,0 +1,391 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinh Tuoi Am Lich & Trung Tang</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #8B0000, #B22222);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            border-bottom: 5px solid #FFD700;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .input-section {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #8B0000;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #B22222;
+            box-shadow: 0 0 0 2px rgba(178, 34, 34, 0.2);
+            outline: none;
+        }
+        
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .col {
+            flex: 1;
+        }
+        
+        button {
+            background: linear-gradient(to right, #8B0000, #B22222);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            font-size: 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:hover {
+            background: linear-gradient(to right, #B22222, #8B0000);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .result-section {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .result-title {
+            color: #8B0000;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid #FFD700;
+            padding-bottom: 10px;
+        }
+        
+        .result-content {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .good-result {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            color: #155724;
+        }
+        
+        .bad-result {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            color: #721c24;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            color: #856404;
+        }
+        
+        .note {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 20px;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        @media (max-width: 600px) {
+            .row {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f8ff;
+            border-radius: 6px;
+            border-left: 4px solid #4d79ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Tinh Tuoi Am Lich & Kiem Tra Trung Tang</h1>
+            <p class="subtitle">Theo phuong phap bam don dan gian Viet Nam</p>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="tuoiMup">Tuoi mu (tuoi am lich):</label>
+                    <input type="number" id="tuoiMup" min="1" max="120" required>
+                </div>
+                
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="ngayMat">Ngay mat (am lich):</label>
+                            <input type="number" id="ngayMat" min="1" max="30" required>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="gioMat">Gio mat (am lich):</label>
+                            <select id="gioMat" required>
+                                <option value="">-- Chon gio --</option>
+                                <option value="1">Ty (23h-1h)</option>
+                                <option value="2">Suu (1h-3h)</option>
+                                <option value="3">Dan (3h-5h)</option>
+                                <option value="4">Mao (5h-7h)</option>
+                                <option value="5">Thin (7h-9h)</option>
+                                <option value="6">Ty (9h-11h)</option>
+                                <option value="7">Ngo (11h-13h)</option>
+                                <option value="8">Mui (13h-15h)</option>
+                                <option value="9">Than (15h-17h)</option>
+                                <option value="10">Dau (17h-19h)</option>
+                                <option value="11">Tuat (19h-21h)</option>
+                                <option value="12">Hoi (21h-23h)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="gender">Gioi tinh nguoi mat:</label>
+                    <select id="gender" required>
+                        <option value="">-- Chon gioi tinh --</option>
+                        <option value="male">Nam</option>
+                        <option value="female">Nu</option>
+                    </select>
+                </div>
+                
+                <button id="calculateBtn">Tinh Toan</button>
+            </div>
+            
+            <div class="result-section" id="resultSection">
+                <h2 class="result-title">Ket Qua</h2>
+                <div class="result-content" id="resultContent">
+                    <!-- Ket qua se duoc hien thi o day -->
+                </div>
+                
+                <div class="explanation" id="explanationSection">
+                    <!-- Giai thich cach tinh se duoc hien thi o day -->
+                </div>
+                
+                <div class="warning">
+                    <strong>Luu y:</strong> Ket qua nay chi mang tinh chat tham khao dua tren tin nguong dan gian. Trung tang la mot khai niem trong tam linh, khong co co so khoa hoc. Hay tham khao y kien chuyen gia neu can thong tin chinh xac.
+                </div>
+            </div>
+            
+            <div class="note">
+                Ung dung nay giup tinh trung tang theo phuong phap bam don dan gian Viet Nam, dua tren tuoi mu, ngay va gio mat (am lich).
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Bai tho bam don trung tang
+        const baiThoTrungTang = [
+            { stt: 1, cau: "Nhat la Kiep truoc oan gia", soChu: 6, yNghia: "Chet binh thuong (khong trung)", ketQua: "TOT" },
+            { stt: 2, cau: "Nhi la Trung phuc ca nha chang yen", soChu: 8, yNghia: "Trung phuc (co trung, nhe)", ketQua: "XAU" },
+            { stt: 3, cau: "Ba la Trung chinh lien mien", soChu: 6, yNghia: "Trung nang (can chu y ky)", ketQua: "XAU" },
+            { stt: 4, cau: "Bon la Trung diep xuong mien am ty", soChu: 8, yNghia: "Trung lien tiep, rat xau", ketQua: "XAU" },
+            { stt: 5, cau: "Nam la Thien dang ho tri", soChu: 6, yNghia: "Lanh", ketQua: "TOT" },
+            { stt: 6, cau: "Sau la dia nguc quy thi tranh xa", soChu: 8, yNghia: "Xau (am binh keo di)", ketQua: "XAU" },
+            { stt: 7, cau: "Bay la dau thai chuyen sinh", soChu: 6, yNghia: "Binh thuong", ketQua: "TOT" },
+            { stt: 8, cau: "Tam la Khong xuong, khong len, luan quan", soChu: 8, yNghia: "Linh hon chua sieu thoat", ketQua: "XAU" },
+            { stt: 9, cau: "Chin la Len thang Thien dinh", soChu: 6, yNghia: "Rat tot", ketQua: "TOT" },
+            { stt: 10, cau: "Muoi la Sieu thoat hoi minh Phat dai", soChu: 8, yNghia: "Sieu thoat, binh an", ketQua: "TOT" }
+        ];
+
+        // Tong so chu trong bai tho
+        const tongSoChu = baiThoTrungTang.reduce((tong, cau) => tong + cau.soChu, 0);
+
+        document.getElementById('calculateBtn').addEventListener('click', function() {
+            // Lay du lieu tu form
+            const tuoiMup = parseInt(document.getElementById('tuoiMup').value);
+            const ngayMat = parseInt(document.getElementById('ngayMat').value);
+            const gioMat = parseInt(document.getElementById('gioMat').value);
+            const gender = document.getElementById('gender').value;
+            
+            // Kiem tra du lieu hop le
+            if (!tuoiMup || !ngayMat || !gioMat || !gender) {
+                alert('Vui long nhap day du thong tin!');
+                return;
+            }
+            
+            // Tinh toan ket qua trung tang
+            const ketQuaTrungTang = tinhTrungTang(tuoiMup, ngayMat, gioMat);
+            
+            // Hien thi ket qua
+            hienThiKetQua(ketQuaTrungTang, tuoiMup, ngayMat, gioMat);
+            
+            // Hien thi phan ket qua
+            document.getElementById('resultSection').style.display = 'block';
+        });
+        
+        function tinhTrungTang(tuoiMup, ngayMat, gioMat) {
+            // Tinh tong so chu can dem
+            const tongDem = tuoiMup + ngayMat + gioMat;
+            
+            // Tinh so du khi chia cho 10
+            const soDu = tongDem % 10;
+            
+            // Xac dinh cau tho tuong ung (neu so du la 0 thi la cau 10)
+            const cauThu = soDu === 0 ? 10 : soDu;
+            
+            // Tra ve ket qua
+            return baiThoTrungTang[cauThu - 1];
+        }
+        
+        function hienThiKetQua(ketQua, tuoiMup, ngayMat, gioMat) {
+            const resultContent = document.getElementById('resultContent');
+            const explanationSection = document.getElementById('explanationSection');
+            
+            // Xac dinh lop CSS dua tren ket qua
+            const resultClass = ketQua.ketQua === "TOT" ? "good-result" : "bad-result";
+            const resultText = ketQua.ketQua === "TOT" ? "TOT" : "XAU";
+            
+            // Hien thi ket qua
+            let html = `
+                <div class="${resultClass}">
+                    <h3>Ket qua: ${resultText}</h3>
+                    <p><strong>Cau tho:</strong> ${ketQua.cau}</p>
+                    <p><strong>Y nghia:</strong> ${ketQua.yNghia}</p>
+                </div>
+            `;
+            
+            resultContent.innerHTML = html;
+            
+            // Hien thi giai thich cach tinh
+            const gioText = document.getElementById('gioMat').options[gioMat-1].text;
+            let explanation = `
+                <h3>Giai thich cach tinh:</h3>
+                <p><strong>Tong so chu can dem:</strong> Tuoi mu (${tuoiMup}) + Ngay mat (${ngayMat}) + Gio mat (${gioMat} - ${gioText}) = ${tuoiMup + ngayMat + gioMat}</p>
+                <p><strong>Phep tinh:</strong> ${tuoiMup + ngayMat + gioMat} mod 10 = ${(tuoiMup + ngayMat + gioMat) % 10}</p>
+                <p><strong>Ket qua:</strong> Dung o cau tho so ${ketQua.stt}</p>
+            `;
+            
+            explanationSection.innerHTML = explanation;
+        }
+        
+        // dat gia tri mac dinh cho cac truong
+        document.getElementById('tuoiMup').value = 67;
+        document.getElementById('ngayMat').value = 17;
+        document.getElementById('gioMat').value = 10;
+        document.getElementById('gender').value = 'male';
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

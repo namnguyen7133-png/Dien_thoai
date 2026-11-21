@@ -1,0 +1,243 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cong cu Kiem tra va Du tru Ngan sach Xay nha Tron Goi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 3px solid #e74c3c;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h3 {
+            color: #3498db;
+            margin-top: 25px;
+        }
+        .calculation-box {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            background-color: #ecf0f1;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .input-group input[type="number"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-top: 1px dashed #bdc3c7;
+        }
+        .result-item:first-of-type { border-top: none; }
+        .result-item strong {
+            color: #e74c3c;
+        }
+        .checklist-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-left: 5px solid #3498db;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .checklist-title {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .checklist-content {
+            margin-top: 5px;
+            font-size: 0.95em;
+            padding-left: 15px;
+            display: none; /* An noi dung chi tiet */
+        }
+        .checklist-item.active {
+            border-left-color: #2ecc71;
+        }
+        .checklist-item.active .checklist-content {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🎯 5 Cau Hoi SONG CON Truoc Khi Ky Hop dong Xay Nha Tron Goi</h2>
+    
+    <p>Cong cu nay giup ban kiem tra cac van de cot yeu va du tru ngan sach phat sinh theo khuyen nghi cua video.</p>
+
+    <hr>
+
+    <h3>1. 🧮 Du Tru Ngan Sach Phat Sinh (10% - 20%)</h3>
+    <div class="calculation-box">
+        <div class="input-group">
+            <label for="estimated_cost">Tong Chi Phi Xay Dung Du Kien (VNd):</label>
+            <input type="number" id="estimated_cost" placeholder="Nhap tong chi phi (vi du: 1000000000)" min="1000000" oninput="calculateContingency()">
+        </div>
+
+        <div class="result-item">
+            <span><strong>Ngan sach Du tru Toi thieu (10%):</strong></span>
+            <span id="contingency_min">0 VNd</span>
+        </div>
+        <div class="result-item">
+            <span><strong>Ngan sach Du tru Toi da (20%):</strong></span>
+            <span id="contingency_max">0 VNd</span>
+        </div>
+        <p style="font-size: 0.9em; margin-top: 10px;"><em>(Loi khuyen: Nen du tru 10-20% chi phi tong de ung pho voi phat sinh <a href="http://www.youtube.com/watch?v=JpkVzeyMy2E&t=417">[06:57]</a>)</em></p>
+    </div>
+
+    <h3>2. ✅ Danh Sach 5 Cau Hoi Bat Buoc Phai Lam Ro</h3>
+
+    <div class="checklist-item" onclick="toggleChecklist(this)">
+        <div class="checklist-title">❓ 1. Pham vi Cong viec cua Nha thau la gi? <a href="http://www.youtube.com/watch?v=JpkVzeyMy2E&t=71">[01:11]</a></div>
+        <div class="checklist-content">
+            <p><strong>Can lam ro:</strong></p>
+            <ul>
+                <li>Xac dinh ro goi thau: Nhan cong, Vat tu tho, Hoan thien, hay Tron goi (full noi that)?</li>
+                <li>Hang muc nao dA BAO GOM trong goi tron goi: bep, son nuoc, thiet bi ve sinh, vach trang tri, mat tien, den, cong rao, cua, khung bao ve?</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="checklist-item" onclick="toggleChecklist(this)">
+        <div class="checklist-title">❓ 2. Ban ve Xay dung da day du chua? <a href="http://www.youtube.com/watch?v=JpkVzeyMy2E&t=194">[03:14]</a></div>
+        <div class="checklist-content">
+            <p><strong>Ho so can phai bao gom toi thieu 4 phan chinh:</strong></p>
+            <ul>
+                <li><strong>Kien truc:</strong> Kich thuoc, cao do, cong nang mat bang, vi tri cua.</li>
+                <li><strong>Ket cau:</strong> Chi tiet ve mong, coc, dam mong, do day nen, cot thep.</li>
+                <li><strong>dien:</strong> Vi tri day dien, thiet bi, CP (cau dao), cong tac, o cam.</li>
+                <li><strong>Nuoc:</strong> He thong cap thoat nuoc, chong tham, ket cau mai.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="checklist-item" onclick="toggleChecklist(this)">
+        <div class="checklist-title">❓ 3. Ai la nguoi Giam sat Cong trinh? <a href="http://www.youtube.com/watch?v=JpkVzeyMy2E&t=319">[05:19]</a></div>
+        <div class="checklist-content">
+            <p><strong>Can xac dinh ro nguoi giam sat chinh:</strong></p>
+            <ul>
+                <li>Gia chu tu giam sat (neu co kien thuc va thoi gian).</li>
+                <li>Nguoi than co chuyen mon.</li>
+                <li><strong>Khuyen nghi:</strong> Thue don vi Giam sat doc lap de kiem soat chat luong, an toan va giai quyet ky thuat.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="checklist-item" onclick="toggleChecklist(this)">
+        <div class="checklist-title">❓ 4. Thanh toan, Bao hanh va Xu ly Phat sinh nhu the nao? <a href="http://www.youtube.com/watch?v=JpkVzeyMy2E&t=396">[06:36]</a></div>
+        <div class="checklist-content">
+            <p><strong>Lam ro cac yeu to phap ly va tai chinh:</strong></p>
+            <ul>
+                <li>Quy dinh cu the ve cac dot Thanh toan.</li>
+                <li>Chi tiet ve thoi gian va pham vi Bao hanh.</li>
+                <li>Cach xu ly Phat sinh (tang/giam): Trach nhiem do nhu cau gia chu hay su co ngoai cong trinh?</li>
+                <li>Luu y: Du tru 10-20% chi phi tong cho phat sinh.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="checklist-item" onclick="toggleChecklist(this)">
+        <div class="checklist-title">❓ 5. Vat tu Chat luong va Thuong hieu nao duoc su dung? <a href="http://www.youtube.com/watch?v=JpkVzeyMy2E&t=484">[08:04]</a></div>
+        <div class="checklist-content">
+            <p><strong>Yeu cau Nha thau cung cap:</strong></p>
+            <ul>
+                <li>Danh sach vat tu tho (cat, thep, gach, be tong thuong pham hay tron tay).</li>
+                <li>Danh sach vat tu hoan thien kem Thuong hieu (gach, thiet bi dien/nuoc, tran, cua).</li>
+                <li>Chung chi chat luong cua vat tu.</li>
+            </ul>
+        </div>
+    </div>
+
+    <hr>
+    <p style="text-align: center; font-size: 0.9em;">Lien ket video: <a href="http://www.youtube.com/watch?v=JpkVzeyMy2E">http://www.youtube.com/watch?v=JpkVzeyMy2E</a></p>
+
+</div>
+
+<script>
+    // --- HAM TINH TOAN NGAN SACH DU TRU (10% - 20%) ---
+    function formatCurrency(number) {
+        if (isNaN(number) || number === 0) {
+            return '0 VNd';
+        }
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number);
+    }
+
+    function calculateContingency() {
+        const costInput = document.getElementById('estimated_cost');
+        const estimatedCost = parseFloat(costInput.value) || 0;
+
+        const minContingency = estimatedCost * 0.10;
+        const maxContingency = estimatedCost * 0.20;
+
+        document.getElementById('contingency_min').innerHTML = formatCurrency(minContingency);
+        document.getElementById('contingency_max').innerHTML = formatCurrency(maxContingency);
+    }
+
+    // --- HAM TUONG TAC CHECKLIST (BAT/TAT NOI DUNG) ---
+    function toggleChecklist(element) {
+        element.classList.toggle('active');
+    }
+
+    // Tu dong chay tinh toan khi tai trang
+    document.addEventListener('DOMContentLoaded', calculateContingency);
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

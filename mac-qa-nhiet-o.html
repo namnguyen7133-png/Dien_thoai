@@ -1,0 +1,1000 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tim kiem va phan tich tu trong van ban</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 30px;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        label {
+            display: block;
+            margin-top: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+        
+        textarea, input, select {
+            width: 100%;
+            margin-top: 8px;
+            padding: 14px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            transition: border 0.3s;
+            background-color: #fff;
+        }
+        
+        textarea:focus, input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        textarea {
+            height: 180px;
+            resize: vertical;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        button {
+            padding: 14px 28px;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s;
+            min-height: 60px;
+        }
+        
+        #searchBtn {
+            background-color: #3498db;
+            color: white;
+            flex-grow: 1;
+        }
+        
+        #searchBtn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        #clearBtn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        #clearBtn:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        #highlightBtn {
+            background-color: #27ae60;
+            color: white;
+            flex-grow: 1;
+        }
+        
+        #highlightBtn:hover {
+            background-color: #219653;
+            transform: translateY(-2px);
+        }
+        
+        #calculateBtn {
+            background-color: #9b59b6;
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        #calculateBtn:hover {
+            background-color: #8e44ad;
+            transform: translateY(-2px);
+        }
+        
+        #result {
+            margin-top: 30px;
+            padding: 25px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            min-height: 100px;
+            font-size: 17px;
+        }
+        
+        .result-section {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px dashed #ddd;
+        }
+        
+        .result-section:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .highlight {
+            background-color: #ffeb3b;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .found-item {
+            padding: 12px;
+            margin: 8px 0;
+            background-color: white;
+            border-left: 5px solid #3498db;
+            border-radius: 6px;
+            font-size: 17px;
+        }
+        
+        .word-count {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 16px;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+            margin: 5px 10px;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .stat-label {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .no-results {
+            color: #7f8c8d;
+            font-style: italic;
+            text-align: center;
+            padding: 25px;
+            font-size: 18px;
+        }
+        
+        .priority-high {
+            border-left-color: #e74c3c !important;
+            background-color: #ffeaea;
+        }
+        
+        .priority-medium {
+            border-left-color: #f39c12 !important;
+            background-color: #fff8e1;
+        }
+        
+        .priority-low {
+            border-left-color: #27ae60 !important;
+            background-color: #e8f6ef;
+        }
+        
+        .person-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            background-color: #f9f9f9;
+            font-size: 16px;
+        }
+        
+        .person-item {
+            padding: 12px;
+            margin: 8px 0;
+            border-left: 4px solid #3498db;
+            background-color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .person-item:hover {
+            background-color: #f0f8ff;
+            transform: translateX(5px);
+        }
+        
+        .selected-person {
+            background-color: #e3f2fd !important;
+            border-left-color: #e74c3c !important;
+            border-left-width: 6px !important;
+        }
+        
+        .calculation-result {
+            background-color: #e8f6ef;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 6px solid #27ae60;
+            font-size: 17px;
+        }
+        
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .info-text {
+            font-size: 15px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .output-box {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: 700;
+            text-align: center;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @media (max-width: 900px) {
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .stats {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .stat-item {
+                margin: 10px 0;
+            }
+            
+            body {
+                margin: 15px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+        }
+        
+        .large-text {
+            font-size: 18px !important;
+        }
+        
+        .clear-font {
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+        
+        .last-letters-display {
+            background-color: #e1f5fe;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 5px solid #0288d1;
+        }
+        
+        .letter-box {
+            display: inline-block;
+            background-color: #0288d1;
+            color: white;
+            padding: 8px 15px;
+            margin: 0 5px;
+            border-radius: 6px;
+            font-size: 24px;
+            font-weight: bold;
+            min-width: 40px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Tim kiem va phan tich tu trong van ban</h2>
+    
+    <div class="two-columns">
+        <div>
+            <label>Danh sach nguoi (tu dong chon nguoi theo ngay hien tai)</label>
+            <div class="info-text">Nhan vao ten nguoi de chon tu dong</div>
+            <div class="person-list" id="personList">
+                <!-- Danh sach se duoc tao bang JavaScript -->
+            </div>
+            
+            <label>O 1: Nhap ngay hien tai (DD/MM/YYYY)</label>
+            <input type="text" id="currentDateInput" placeholder="DD/MM/YYYY" value="">
+            <div class="info-text">de trong de su dung ngay hom nay</div>
+            <button id="calculateBtn" onclick="calculateAndSelectPerson()">Tinh toan va chon nguoi</button>
+            
+            <div id="calculationResult" class="calculation-result"></div>
+        </div>
+        
+        <div>
+            <label>O 2: Nhap van ban (copy tu anh, email, tai lieu...)</label>
+            <textarea id="textInput" placeholder="Vi du: Cong ty ABC dang tim kiem nhan vien kinh doanh tai Ha Noi va TP.HCM. Uu tien ung vien co kinh nghiem tu 2 nam tro len." class="large-text clear-font"></textarea>
+            <div id="textStats" class="info-text"></div>
+            
+            <label>O 3: Nhap tu/cum tu muon tim (tu dong dien ten nguoi duoc chon)</label>
+            <input type="text" id="searchInput" placeholder="Ten nguoi se tu dong dien vao day" class="large-text clear-font">
+            <div class="info-text">Ten nguoi se tu dong dien khi ban chon tu danh sach</div>
+            
+            <div class="last-letters-display">
+                <div class="section-title">Chu cai cuoi cung cua moi tu trong ten:</div>
+                <div id="lastLettersContainer"></div>
+            </div>
+            
+            <div class="output-box" id="outputBox">
+                Ket qua se hien thi o day
+            </div>
+            
+            <div class="button-group">
+                <button id="searchBtn" onclick="analyzeText()">Tim kiem</button>
+                <button id="highlightBtn" onclick="highlightText()">danh dau trong van ban</button>
+                <button id="clearBtn" onclick="clearSearch()">Xoa ket qua</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="result"></div>
+</div>
+
+<script>
+// Danh sach nguoi voi ten day du dau
+const personList = [
+    { id: 1, name: "NGUYEN KHAC NANG", birthDate: "04/06/1944" },
+    { id: 2, name: "TO THI HA", birthDate: "29/08/1948" },
+    { id: 3, name: "NGUYEN MINH NAM", birthDate: "03/03/1971" },
+    { id: 4, name: "THAN THI KIM ANH", birthDate: "23/09/1981" },
+    { id: 5, name: "NGUYEN TO NGAN AN", birthDate: "28/09/2014" },
+    { id: 6, name: "NGUYEN TO MINH CHAU", birthDate: "25/07/2016" },
+    { id: 7, name: "NGUYEN TO BICH NGOC", birthDate: "05/02/2020" },
+    { id: 8, name: "NGUYEN THI MINH HANG", birthDate: "07/01/1974" },
+    { id: 9, name: "NGO QUY CUONG", birthDate: "23/05/1973" },
+    { id: 10, name: "NGO GIA BACH", birthDate: "12/10/2000" },
+    { id: 11, name: "NGO GIA LINH", birthDate: "05/04/2005" },
+    { id: 12, name: "NGUYEN THI MINH PHUONG", birthDate: "06/11/1978" },
+    { id: 13, name: "HOANG ANH DUNG", birthDate: "21/09/1978" },
+    { id: 14, name: "HOANG HAI VINH", birthDate: "03/06/2010" },
+    { id: 15, name: "HOANG THIEN BACH ANH", birthDate: "14/11/2015" },
+    { id: 16, name: "TO KIM HUE", birthDate: "09/08/1960" },
+    { id: 17, name: "NGUYEN TUAN ANH", birthDate: "23/10/1983" },
+    { id: 18, name: "NGUYEN THE ANH", birthDate: "24/03/2001" },
+    { id: 19, name: "NGO THI MAI", birthDate: "12/12/1948" },
+    { id: 20, name: "TO VIET HUNG", birthDate: "17/06/1996" },
+    { id: 21, name: "TO THI HONG", birthDate: "10/10/1964" },
+    { id: 22, name: "VU VAN HIEP", birthDate: "24/04/1974" },
+    { id: 23, name: "NGUYEN THI CHI", birthDate: "08/02/1946" },
+    { id: 24, name: "NGUYEN TAN BAC", birthDate: "30/11/1957" },
+    { id: 25, name: "NGUYEN THI TAM", birthDate: "08/08/1954" }
+];
+
+let selectedPersonIndex = -1;
+
+// Ham de hien thi danh sach nguoi
+function displayPersonList() {
+    const personListDiv = document.getElementById("personList");
+    personListDiv.innerHTML = '';
+    
+    personList.forEach((person, index) => {
+        const personDiv = document.createElement("div");
+        personDiv.className = "person-item";
+        personDiv.id = `person-${index}`;
+        personDiv.innerHTML = `
+            <strong style="font-size: 18px;">${person.id}. ${person.name}</strong>
+            <div style="font-size: 16px; color: #666;">Ngay sinh: ${person.birthDate}</div>
+        `;
+        
+        personDiv.addEventListener("click", () => {
+            selectPerson(index);
+        });
+        
+        personListDiv.appendChild(personDiv);
+    });
+}
+
+// Ham lay chu cai cuoi cung cua moi tu trong ten
+function getLastLettersOfName(fullName) {
+    // Tach ten thanh cac tu
+    const words = fullName.split(' ');
+    // Loc bo cac tu trong
+    const nonEmptyWords = words.filter(word => word.trim().length > 0);
+    // Lay chu cai cuoi cung cua moi tu
+    const lastLetters = nonEmptyWords.map(word => {
+        // Lay ky tu cuoi cung
+        const lastChar = word.charAt(word.length - 1);
+        return lastChar;
+    });
+    
+    return lastLetters;
+}
+
+// Ham hien thi chu cai cuoi cung
+function displayLastLetters(fullName) {
+    const lastLetters = getLastLettersOfName(fullName);
+    const container = document.getElementById("lastLettersContainer");
+    
+    let html = '<div style="margin: 10px 0;">';
+    
+    // Hien thi giai thich
+    html += `<div style="margin-bottom: 10px; font-size: 16px;">Ten: <strong>${fullName}</strong></div>`;
+    html += '<div style="margin-bottom: 10px;">Chu cai cuoi cung cua moi tu:</div>';
+    
+    // Hien thi tung chu cai trong box
+    lastLetters.forEach((letter, index) => {
+        html += `<span class="letter-box">${letter}</span>`;
+    });
+    
+    // Hien thi ket qua gop
+    if (lastLetters.length > 0) {
+        const combinedLetters = lastLetters.join('');
+        html += `<div style="margin-top: 15px; font-size: 18px; font-weight: bold;">Ket qua: <span style="color: #e74c3c;">${combinedLetters}</span></div>`;
+        
+        // Cap nhat o output box
+        document.getElementById("outputBox").innerHTML = `Ket qua: <span style="font-size: 36px; color: #e74c3c;">${combinedLetters}</span>`;
+    }
+    
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// Ham de chon nguoi tu danh sach
+function selectPerson(index) {
+    // Bo chon nguoi cu
+    if (selectedPersonIndex >= 0) {
+        const oldPersonDiv = document.getElementById(`person-${selectedPersonIndex}`);
+        oldPersonDiv.classList.remove("selected-person");
+    }
+    
+    // Chon nguoi moi
+    selectedPersonIndex = index;
+    const newPersonDiv = document.getElementById(`person-${index}`);
+    newPersonDiv.classList.add("selected-person");
+    
+    // Lay ten nguoi day du
+    const personName = personList[index].name;
+    
+    // dien ten vao o tim kiem (co the chuan hoa hoac khong)
+    document.getElementById("searchInput").value = personName;
+    
+    // Hien thi chu cai cuoi cung
+    displayLastLetters(personName);
+    
+    // Cuon den nguoi duoc chon
+    newPersonDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+// Ham chuan hoa van ban: viet thuong va bo dau
+function normalizeText(text) {
+    return text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/d/g, "d")
+        .replace(/d/g, "d");
+}
+
+// Ham tinh toan va chon nguoi theo ngay hien tai
+function calculateAndSelectPerson() {
+    const dateInput = document.getElementById("currentDateInput").value.trim();
+    let currentDate;
+    
+    // Neu khong nhap ngay, su dung ngay hien tai
+    if (!dateInput) {
+        currentDate = new Date();
+    } else {
+        // Phan tich ngay nhap vao
+        const parts = dateInput.split('/');
+        if (parts.length !== 3) {
+            alert("Vui long nhap ngay theo dinh dang DD/MM/YYYY");
+            return;
+        }
+        
+        const day = parseInt(parts[0]);
+        const month = parseInt(parts[1]) - 1; // Thang bat dau tu 0
+        const year = parseInt(parts[2]);
+        
+        if (isNaN(day) || isNaN(month) || isNaN(year)) {
+            alert("Ngay thang nam khong hop le");
+            return;
+        }
+        
+        currentDate = new Date(year, month, day);
+        if (isNaN(currentDate.getTime())) {
+            alert("Ngay thang nam khong hop le");
+            return;
+        }
+    }
+    
+    // Tinh so ngay tu 1/1/1900 den ngay hien tai
+    const baseDate = new Date(1900, 0, 1); // 1/1/1900
+    const timeDiff = currentDate.getTime() - baseDate.getTime();
+    const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+    
+    // Tinh so du khi chia cho tong so nguoi
+    const totalPeople = personList.length;
+    let remainder = daysDiff % totalPeople;
+    
+    // Neu so du la 0, lay dung so chia (tong so nguoi)
+    if (remainder === 0) {
+        remainder = totalPeople;
+    }
+    
+    // Chon nguoi (index bat dau tu 0)
+    const selectedIndex = remainder - 1;
+    
+    // Hien thi ket qua tinh toan
+    const calculationResultDiv = document.getElementById("calculationResult");
+    calculationResultDiv.innerHTML = `
+        <strong style="font-size: 18px;">Ket qua tinh toan:</strong><br><br>
+        - Ngay hien tai: ${formatDate(currentDate)}<br>
+        - So ngay tu 1/1/1900: ${daysDiff} ngay<br>
+        - Tong so nguoi trong danh sach: ${totalPeople}<br>
+        - Phep tinh: ${daysDiff} % ${totalPeople} = ${remainder}<br>
+        - <strong style="font-size: 18px; color: #e74c3c;">Nguoi duoc chon: ${remainder}. ${personList[selectedIndex].name}</strong>
+    `;
+    
+    // Chon nguoi trong danh sach
+    selectPerson(selectedIndex);
+}
+
+// Ham dinh dang ngay
+function formatDate(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
+// Khoi tao ngay hien tai trong o nhap
+function initializeCurrentDate() {
+    const today = new Date();
+    const formattedDate = formatDate(today);
+    document.getElementById("currentDateInput").value = formattedDate;
+    
+    // Tinh toan va chon nguoi tu dong khi trang duoc tai
+    calculateAndSelectPerson();
+}
+
+// Cac ham tim kiem va phan tich van ban
+function analyzeText() {
+    const text = document.getElementById("textInput").value;
+    const search = document.getElementById("searchInput").value.trim();
+    const resultDiv = document.getElementById("result");
+    
+    if (!text) {
+        resultDiv.innerHTML = '<div class="no-results">Vui long nhap van ban can tim kiem.</div>';
+        return;
+    }
+    
+    if (!search) {
+        resultDiv.innerHTML = '<div class="no-results">Vui long nhap tu/cum tu can tim.</div>';
+        return;
+    }
+    
+    // Chuan hoa tu tim kiem
+    const normalizedSearch = normalizeText(search);
+    const searchTerms = normalizedSearch.split(/[,;\s]+/).filter(term => term.length > 0);
+    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    const words = text.split(/\s+/).filter(w => w.length > 0);
+    
+    let resultHTML = '';
+    let totalMatches = 0;
+    let exactPhraseMatches = [];
+    let allTermsMatches = [];
+    let partialMatches = [];
+    
+    // Tim kiem cum tu chinh xac (toan bo cum tu tim kiem)
+    const exactPhrase = search.trim();
+    if (exactPhrase.length > 0) {
+        // Tim ca phien ban co dau va khong dau
+        const exactRegex = new RegExp(`\\b${escapeRegExp(exactPhrase)}\\b`, 'gi');
+        const exactMatches = text.match(exactRegex);
+        
+        if (exactMatches) {
+            exactPhraseMatches = exactMatches;
+            totalMatches += exactMatches.length;
+        }
+        
+        // Tim phien ban da chuan hoa
+        const normalizedExactPhrase = normalizeText(exactPhrase);
+        const normalizedTextForSearch = normalizeText(text);
+        const normalizedExactRegex = new RegExp(`\\b${escapeRegExp(normalizedExactPhrase)}\\b`, 'gi');
+        const normalizedExactMatches = normalizedTextForSearch.match(normalizedExactRegex);
+        
+        if (normalizedExactMatches && normalizedExactMatches.length > exactPhraseMatches.length) {
+            totalMatches += (normalizedExactMatches.length - exactPhraseMatches.length);
+            exactPhraseMatches = [...new Set([...exactPhraseMatches, ...normalizedExactMatches])];
+        }
+    }
+    
+    // Tim kiem cac tu trong cung mot cau (uu tien cao)
+    for (let i = 0; i < sentences.length; i++) {
+        const sentence = sentences[i].trim();
+        const normalizedSentence = normalizeText(sentence);
+        let sentenceHasAllTerms = true;
+        
+        // Kiem tra xem cau co chua tat ca cac tu tim kiem khong
+        for (let term of searchTerms) {
+            const termRegex = new RegExp(`\\b${escapeRegExp(term)}\\b`, 'i');
+            if (!termRegex.test(normalizedSentence)) {
+                sentenceHasAllTerms = false;
+                break;
+            }
+        }
+        
+        if (sentenceHasAllTerms && searchTerms.length > 1) {
+            allTermsMatches.push({
+                sentence: sentence,
+                normalizedSentence: normalizedSentence,
+                index: i + 1
+            });
+            totalMatches++;
+        }
+    }
+    
+    // Tim kiem tung tu rieng le (uu tien thap)
+    for (let term of searchTerms) {
+        if (term.length === 0) continue;
+        
+        const normalizedTextForSearch = normalizeText(text);
+        const termRegex = new RegExp(`\\b${escapeRegExp(term)}\\b`, 'gi');
+        const termMatches = normalizedTextForSearch.match(termRegex);
+        
+        if (termMatches) {
+            partialMatches.push({
+                term: term,
+                count: termMatches.length,
+                matches: termMatches
+            });
+            totalMatches += termMatches.length;
+        }
+    }
+    
+    // Xay dung ket qua HTML
+    resultHTML += '<div class="stats">';
+    resultHTML += `<div class="stat-item"><div class="stat-value">${totalMatches}</div><div class="stat-label">Tong ket qua</div></div>`;
+    resultHTML += `<div class="stat-item"><div class="stat-value">${exactPhraseMatches.length}</div><div class="stat-label">Cum chinh xac</div></div>`;
+    resultHTML += `<div class="stat-item"><div class="stat-value">${allTermsMatches.length}</div><div class="stat-label">Cau co du tu</div></div>`;
+    resultHTML += `<div class="stat-item"><div class="stat-value">${searchTerms.length}</div><div class="stat-label">Tu can tim</div></div>`;
+    resultHTML += '</div>';
+    
+    // Hien thi ket qua cum tu chinh xac
+    if (exactPhraseMatches.length > 0) {
+        resultHTML += '<div class="result-section">';
+        resultHTML += '<div class="section-title">🎯 Tim thay cum tu chinh xac:</div>';
+        resultHTML += `<div class="found-item priority-high">"<span class="highlight">${exactPhrase}</span>" xuat hien <span class="word-count">${exactPhraseMatches.length} lan</span></div>`;
+        
+        // Hien thi cac ngu canh
+        const contextRegex = new RegExp(`([^.!?]*?\\b${escapeRegExp(exactPhrase)}\\b[^.!?]*[.!?])`, 'gi');
+        const contexts = text.match(contextRegex) || [];
+        
+        contexts.slice(0, 5).forEach(context => {
+            const highlightedContext = context.replace(
+                new RegExp(`(${escapeRegExp(exactPhrase)})`, 'gi'), 
+                '<span class="highlight">$1</span>'
+            );
+            resultHTML += `<div class="found-item priority-medium">${highlightedContext}</div>`;
+        });
+        
+        if (contexts.length > 5) {
+            resultHTML += `<div class="found-item">... va ${contexts.length - 5} ngu canh khac</div>`;
+        }
+        
+        resultHTML += '</div>';
+    }
+    
+    // Hien thi ket qua cau co day du cac tu tim kiem
+    if (allTermsMatches.length > 0) {
+        resultHTML += '<div class="result-section">';
+        resultHTML += `<div class="section-title">✅ Tim thay ${allTermsMatches.length} cau chua day du cac tu: "${searchTerms.join(', ')}"</div>`;
+        
+        allTermsMatches.forEach(match => {
+            let highlightedSentence = match.sentence;
+            // danh dau tung tu trong cau
+            searchTerms.forEach(term => {
+                const termRegex = new RegExp(`\\b(${escapeRegExp(term)})\\b`, 'gi');
+                // Tim tu trong cau da chuan hoa de biet vi tri
+                const normalizedSentence = match.normalizedSentence;
+                const termMatch = normalizedSentence.match(termRegex);
+                if (termMatch) {
+                    // danh dau trong cau goc
+                    const wordsInSentence = match.sentence.split(/\s+/);
+                    for (let i = 0; i < wordsInSentence.length; i++) {
+                        const normalizedWord = normalizeText(wordsInSentence[i]);
+                        if (normalizedWord === term.toLowerCase()) {
+                            wordsInSentence[i] = `<span class="highlight">${wordsInSentence[i]}</span>`;
+                        }
+                    }
+                    highlightedSentence = wordsInSentence.join(' ');
+                }
+            });
+            resultHTML += `<div class="found-item priority-high">Cau ${match.index}: ${highlightedSentence}</div>`;
+        });
+        
+        resultHTML += '</div>';
+    }
+    
+    // Hien thi ket qua tung tu rieng le
+    if (partialMatches.length > 0 && (exactPhraseMatches.length === 0 || searchTerms.length > 1)) {
+        resultHTML += '<div class="result-section">';
+        resultHTML += '<div class="section-title">📊 Ket qua tim kiem tung tu rieng le:</div>';
+        
+        partialMatches.forEach(match => {
+            resultHTML += `<div class="found-item priority-low">Tu "<span class="highlight">${match.term}</span>" xuat hien <span class="word-count">${match.count} lan</span></div>`;
+        });
+        
+        resultHTML += '</div>';
+    }
+    
+    // Thong bao neu khong tim thay ket qua
+    if (exactPhraseMatches.length === 0 && allTermsMatches.length === 0 && partialMatches.length === 0) {
+        resultHTML += '<div class="no-results">Khong tim thay ket qua phu hop voi tu tim kiem.</div>';
+    }
+    
+    resultDiv.innerHTML = resultHTML;
+}
+
+function highlightText() {
+    const text = document.getElementById("textInput").value;
+    const search = document.getElementById("searchInput").value.trim();
+    
+    if (!text || !search) {
+        alert("Vui long nhap day du van ban va tu tim kiem.");
+        return;
+    }
+    
+    const searchTerms = search.split(/[,;\s]+/).filter(term => term.length > 0);
+    let highlightedText = text;
+    
+    // danh dau cum tu chinh xac truoc
+    const exactPhrase = search.trim();
+    if (exactPhrase.length > 0) {
+        const exactRegex = new RegExp(`\\b(${escapeRegExp(exactPhrase)})\\b`, 'gi');
+        highlightedText = highlightedText.replace(exactRegex, '<mark style="background-color: #ffeb3b; font-weight: bold; padding: 2px 4px; border-radius: 3px;">$1</mark>');
+    }
+    
+    // danh dau cac tu rieng le (neu khong co cum tu chinh xac)
+    if (exactPhrase.length === 0 || searchTerms.length > 1) {
+        searchTerms.forEach(term => {
+            if (term.length === 0) return;
+            // Tim va danh dau ca phien ban co dau va khong dau
+            const words = text.split(/\s+/);
+            words.forEach(word => {
+                const normalizedWord = normalizeText(word);
+                if (normalizedWord.includes(term) || term.includes(normalizedWord)) {
+                    const wordRegex = new RegExp(`\\b${escapeRegExp(word)}\\b`, 'g');
+                    highlightedText = highlightedText.replace(wordRegex, `<mark style="background-color: #a8e6cf; padding: 2px 4px; border-radius: 3px; font-weight: bold;">${word}</mark>`);
+                }
+            });
+        });
+    }
+    
+    // Hien thi van ban da danh dau trong mot cua so moi
+    const newWindow = window.open();
+    newWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Van ban da danh dau</title>
+            <style>
+                body { 
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                    margin: 30px; 
+                    line-height: 1.8; 
+                    font-size: 18px;
+                    color: #333;
+                    background-color: #f5f7fa;
+                }
+                .header { 
+                    background-color: #2c3e50; 
+                    color: white; 
+                    padding: 25px; 
+                    margin-bottom: 25px; 
+                    border-radius: 8px;
+                }
+                .content { 
+                    padding: 25px; 
+                    background-color: white; 
+                    border-radius: 8px; 
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                    line-height: 1.8;
+                    font-size: 18px;
+                }
+                mark { 
+                    border-radius: 4px; 
+                    padding: 3px 6px;
+                    font-weight: 600;
+                }
+                h2 {
+                    font-size: 24px;
+                    margin-bottom: 10px;
+                }
+                p {
+                    font-size: 17px;
+                    margin: 8px 0;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h2>Van ban da danh dau tu tim kiem: "${search}"</h2>
+                <p>Tu duoc danh dau mau vang: cum tu chinh xac | Tu duoc danh dau mau xanh: tu rieng le</p>
+                <p>Nguoi tim kiem: ${selectedPersonIndex >= 0 ? personList[selectedPersonIndex].name : "Chua chon"}</p>
+                <p>Chu cai cuoi cung: ${selectedPersonIndex >= 0 ? getLastLettersOfName(personList[selectedPersonIndex].name).join('') : ""}</p>
+                <p>Ngay: ${new Date().toLocaleDateString('vi-VN')}</p>
+            </div>
+            <div class="content">${highlightedText}</div>
+        
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+        </html>
+    `);
+    newWindow.document.close();
+}
+
+function clearSearch() {
+    if (selectedPersonIndex >= 0) {
+        document.getElementById("searchInput").value = personList[selectedPersonIndex].name;
+        displayLastLetters(personList[selectedPersonIndex].name);
+    } else {
+        document.getElementById("searchInput").value = "";
+        document.getElementById("lastLettersContainer").innerHTML = "";
+        document.getElementById("outputBox").innerHTML = "Ket qua se hien thi o day";
+    }
+    document.getElementById("result").innerHTML = "";
+}
+
+// Ham ho tro: escape ky tu dac biet trong regex
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Them su kien Enter de tim kiem
+document.getElementById("searchInput").addEventListener("keyup", function(event) {
+    if (event.key === "Enter") {
+        analyzeText();
+    }
+});
+
+// Them su kien cho textarea
+document.getElementById("textInput").addEventListener("input", function() {
+    const charCount = this.value.length;
+    const wordCount = this.value.split(/\s+/).filter(w => w.length > 0).length;
+    
+    // Hien thi thong ke
+    document.getElementById("textStats").textContent = `Ky tu: ${charCount} | Tu: ${wordCount}`;
+});
+
+// Khoi tao khi trang duoc tai
+window.onload = function() {
+    displayPersonList();
+    initializeCurrentDate();
+};
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

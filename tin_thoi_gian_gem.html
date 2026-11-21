@@ -1,0 +1,358 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cong Cu Tinh Toan & Du doan dac Biet V2</title>
+    <style>
+        /* CSS tuong tu phien ban truoc, dam bao noi bat tren dien thoai */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f39c12 0%, #e74c3c 100%); /* Mau nen moi: Vang cam do */
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.85);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.9);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #f1c40f;
+            margin-bottom: 25px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #ecf0f1;
+            font-size: 0.95em;
+        }
+
+        .date-time-inputs {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="date"],
+        input[type="time"],
+        input[type="text"] { /* Dung type="text" de xu ly so lon/chuoi so */
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+        
+        input[type="date"] { flex: 2; }
+        input[type="time"] { flex: 1; }
+        input[type="text"] { width: 100%; margin-top: 5px; }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        #calculateButton {
+            background-color: #2ecc71; /* Mau xanh la cay noi bat */
+            color: white;
+        }
+
+        #resetButton {
+            background-color: #95a5a6; /* Mau xam */
+        }
+
+        #result {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            white-space: pre-wrap;
+            color: #ecf0f1;
+            word-wrap: break-word;
+            font-size: 0.95em;
+        }
+        
+        .highlight {
+            color: #f1c40f; /* Vang */
+            font-weight: bold;
+        }
+        
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.85em;
+        }
+        .result-table th, .result-table td {
+            padding: 8px 5px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .result-table th {
+            background-color: rgba(46, 204, 113, 0.3); /* Xanh la mo */
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🔢 Thuat Toan Ghep So dac Biet</h1>
+
+    <div class="input-group">
+        <label>⏰ O 1: Ngay Hien Tai (16/12/2025)</label>
+        <input type="date" id="currentDateInput" value="2025-12-16">
+    </div>
+    <div class="input-group">
+        <label>🕒 O 2: Gio Hien Tai (19:00:00)</label>
+        <input type="time" id="currentTimeInput" value="19:00:00" step="1">
+    </div>
+
+    <div class="input-group">
+        <label for="numberInput">🔢 O 3: Nhap so (1 den 15 chu so. VD: 311211)</label>
+        <input type="text" id="numberInput" placeholder="VD: 311211" maxlength="15">
+    </div>
+
+    <button id="calculateButton" onclick="calculate()">✨ Tinh Toan Ghep So & Du doan Ngay</button>
+    <button id="resetButton" onclick="resetForm()">❌ Xoa di & Nhap Lai</button>
+
+    <div id="result">
+        **Ket qua se hien thi o day.**
+    </div>
+</div>
+
+<script>
+    // Khai bao ngay chuan: 1/1/1900 UTC
+    const STANDARD_DATE = new Date('1900-01-01T00:00:00Z');
+
+    /**
+     * Ham chuyen doi miliseconds thanh Chuoi "Ngay Gio Phut Giay"
+     */
+    function msToDayTime(ms) {
+        if (isNaN(ms) || ms < 0) return "Du lieu khong hop le.";
+        
+        const totalSeconds = Math.floor(ms / 1000);
+        const totalMinutes = Math.floor(totalSeconds / 60);
+        const totalHours = Math.floor(totalMinutes / 60);
+        const days = Math.floor(totalHours / 24);
+
+        const seconds = totalSeconds % 60;
+        const minutes = totalMinutes % 60;
+        const hours = totalHours % 24;
+
+        return `${days} ngay, ${hours} gio, ${minutes} phut, ${seconds} giay.`;
+    }
+
+    /**
+     * Thuat toan Hoan vi (Permutation) - Tao ra tat ca cac so co the
+     */
+    function getPermutations(arr) {
+        if (arr.length === 0) return [[]];
+        if (arr.length === 1) return [[arr[0]]];
+
+        const first = arr[0];
+        const rest = arr.slice(1);
+        const permsWithoutFirst = getPermutations(rest);
+        const allPerms = [];
+
+        permsWithoutFirst.forEach(perm => {
+            for (let i = 0; i <= perm.length; i++) {
+                const p = [...perm.slice(0, i), first, ...perm.slice(i)];
+                allPerms.push(p);
+            }
+        });
+        return allPerms;
+    }
+
+    /**
+     * Ham tinh toan chinh
+     */
+    function calculate() {
+        const currentDateStr = document.getElementById('currentDateInput').value;
+        const currentTimeStr = document.getElementById('currentTimeInput').value;
+        const numberInput = document.getElementById('numberInput').value;
+        const resultDiv = document.getElementById('result');
+
+        resultDiv.innerHTML = "dang tinh toan...";
+
+        if (!currentDateStr || !currentTimeStr || !numberInput) {
+            resultDiv.innerHTML = "Vui long nhap day du Ngay, Gio va So can Hoan vi (O 1, O 2, O 3).";
+            return;
+        }
+        
+        // --- 1. TINH T0 (Tong Giay Hien Tai) ---
+        // Ghep ngay va gio nhap vao
+        const currentDateTime = new Date(`${currentDateStr}T${currentTimeStr}`);
+        const currentMs = currentDateTime.getTime();
+        
+        // Tinh tong mili-giay tu 1/1/1900
+        const diffToStandardMs = currentMs - STANDARD_DATE.getTime();
+        const totalCurrentSeconds = Math.floor(diffToStandardMs / 1000); 
+        const T0 = String(totalCurrentSeconds); // Chuyen thanh chuoi de de dang thao tac
+
+        let output = `## 1. Moc Thoi Gian Co So (T₀)\n\n`;
+        output += `⏰ Thoi diem tinh toan: <span class="highlight">${currentDateTime.toLocaleString('vi-VN')}</span>\n`;
+        output += `➡ T₀ (Tong so giay tu 01/01/1900): <span class="highlight">${T0.toLocaleString('vi-VN')} giay</span>\n\n`;
+
+        // --- 2. HOAN VI SO NHAP VAO (O 3) ---
+        const digits = numberInput.split('');
+        const permutations = getPermutations(digits);
+        const uniquePerms = [...new Set(permutations.map(arr => arr.join('')))].sort((a, b) => {
+            // Sap xep so (dung BigInt neu can)
+            return BigInt(a) > BigInt(b) ? 1 : -1;
+        });
+        
+        output += `## 2. Hoan Vi So (${numberInput})\n\n`;
+        output += `➡ Tong so hoan vi doc nhat: <span class="highlight">${uniquePerms.length}</span>\n\n`;
+        
+        // --- 3. AP DUNG THUAT TOAN GHEP SO dAC BIET ---
+        output += `## 3. Ket Qua Ghep So va Du doan Ngay/Gio\n\n`;
+        
+        const results = [];
+
+        // Xac dinh do dai so hoan vi de biet vi tri chu so can thay the trong T0
+        // Neu so hoan vi co 6 chu so (111123), chu so can thay the la chu so thu 7 (4).
+        // Neu so hoan vi co 5 chu so (11123), chu so can thay the la chu so thu 6.
+        const L = uniquePerms[0].length; // do dai cua so hoan vi
+        const V = T0.length - L;        // Vi tri (index) chu so can thay the trong chuoi T0
+        
+        if (V < 0 || V >= T0.length) {
+            output += `<span style="color:#e74c3c;">Loi: So hoan vi (${L} chu so) qua dai so voi T₀.</span>`;
+            resultDiv.innerHTML = output;
+            return;
+        }
+
+        // Chu so can thay the (Vi du T0='3974900400', L=6, V=4. Chu so la '4')
+        const charToReplace = T0.charAt(V - 1); // JS index bat dau tu 0
+        const replacementDigit = String(Number(charToReplace) + 1); // Cong them 1 (Vi du: 4 -> 5)
+
+        // Tien to cua T0 (truoc chu so can thay the)
+        const prefix = T0.substring(0, V - 1); // Vi du: '397'
+        
+        // Ghi lai logic da ap dung
+        output += `* Logic Ghep so: Chu so thu <span class="highlight">${V}</span> cua T₀ duoc thay bang ${charToReplace} + 1 = ${replacementDigit}, sau do ghep voi so hoan vi.\n\n`;
+        output += `<table class="result-table">
+            <thead><tr><th>So Ghep Muc Tieu</th><th>Thoi Gian Can Them</th><th>Ngay/Gio Du doan</th></tr></thead>
+            <tbody>`;
+
+        uniquePerms.forEach(perm => {
+            // 1. GHEP SO (Tao So Muc Tieu)
+            const targetSecondsStr = prefix + replacementDigit + perm; 
+            const targetSeconds = BigInt(targetSecondsStr); // Vi du: 3975 + 111123 = 3975111123
+
+            // 2. TINH KHOANG CACH THOI GIAN
+            const currentSecondsBigInt = BigInt(T0);
+            const differenceSecondsBigInt = targetSeconds - currentSecondsBigInt;
+
+            if (differenceSecondsBigInt <= 0) {
+                 // Bo qua neu moc da troi qua
+                 return;
+            }
+
+            const differenceMs = Number(differenceSecondsBigInt) * 1000;
+            
+            // 3. TINH NGAY/GIO DU dOAN
+            const targetMs = currentMs + differenceMs;
+            const targetDate = new Date(targetMs);
+            
+            // dinh dang ket qua
+            const timeToAdd = msToDayTime(differenceMs);
+            const predictedTime = targetDate.toLocaleString('vi-VN', { 
+                year: 'numeric', month: '2-digit', day: '2-digit', 
+                hour: '2-digit', minute: '2-digit', second: '2-digit', 
+                hour12: false 
+            });
+
+            // Hien thi trong bang
+            output += `<tr>
+                <td><span class="highlight">${targetSeconds.toLocaleString('vi-VN')}</span></td>
+                <td>${timeToAdd}</td>
+                <td>${predictedTime}</td>
+            </tr>`;
+        });
+
+        output += `</tbody></table>`;
+        resultDiv.innerHTML = output;
+    }
+
+    /**
+     * Xoa du lieu cac truong nhap va ket qua
+     */
+    function resetForm() {
+        // dat lai ngay va gio theo yeu cau (16/12/2025, 19:00:00)
+        document.getElementById('currentDateInput').value = '2025-12-16';
+        document.getElementById('currentTimeInput').value = '19:00:00';
+        
+        // dat lai so hoan vi mau (311211)
+        document.getElementById('numberInput').value = '311211'; 
+
+        document.getElementById('result').innerHTML = "**Ket qua se hien thi o day.**";
+    }
+
+    // dat gia tri mac dinh khi tai trang
+    document.addEventListener('DOMContentLoaded', (event) => {
+        resetForm();
+    });
+
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

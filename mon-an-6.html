@@ -1,0 +1,905 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra Cuu Mon An Theo Benh & Thuc don 7 Ngay</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f9f7;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #2c7a5e 0%, #3a9e7a 100%);
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 20px rgba(44, 122, 94, 0.2);
+        }
+
+        header h1 {
+            font-size: 2.4rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            max-width: 900px;
+            margin: 0 auto;
+            opacity: 0.95;
+        }
+
+        .search-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c7a5e;
+            font-size: 1.1rem;
+        }
+
+        .disease-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .disease-option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background-color: #f0f7f4;
+            border: 2px solid #d1e7dd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .disease-option:hover {
+            background-color: #e2f1eb;
+            border-color: #2c7a5e;
+        }
+
+        .disease-option.selected {
+            background-color: #2c7a5e;
+            color: white;
+            border-color: #2c7a5e;
+        }
+
+        .disease-option i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+
+        .button {
+            background-color: #2c7a5e;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .button:hover {
+            background-color: #23664f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(35, 102, 79, 0.3);
+        }
+
+        .button-clear {
+            background-color: #6c757d;
+            margin-left: 15px;
+        }
+
+        .button-clear:hover {
+            background-color: #5a6268;
+        }
+
+        .results-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .results-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+        }
+
+        .card h2 {
+            color: #2c7a5e;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9f5ef;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h2 i {
+            font-size: 1.4rem;
+        }
+
+        .dishes-list {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        /* Custom scrollbar */
+        .dishes-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .dishes-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .dishes-list::-webkit-scrollbar-thumb {
+            background: #b8d5c9;
+            border-radius: 10px;
+        }
+
+        .dish-item {
+            background-color: #f9fdfb;
+            border-left: 5px solid #3a9e7a;
+            margin-bottom: 18px;
+            padding: 20px;
+            border-radius: 8px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .dish-item h3 {
+            color: #2c7a5e;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dish-item p {
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .calorie-badge {
+            background-color: #e6f4ee;
+            color: #2c7a5e;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .property {
+            display: inline-block;
+            background-color: #e9f5ef;
+            color: #2c7a5e;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-right: 8px;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        /* Menu styles */
+        .menu-day {
+            background-color: #f9fdfb;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #e2f1eb;
+        }
+
+        .menu-day h3 {
+            color: #2c7a5e;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #d1e7dd;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .meal-time {
+            margin-bottom: 15px;
+        }
+
+        .meal-time h4 {
+            color: #3a9e7a;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .meal-details {
+            background-color: white;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid #b8d5c9;
+        }
+
+        .ingredients {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 8px;
+            padding-left: 15px;
+        }
+
+        .menu-note {
+            background-color: #fff9e6;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #e6b400;
+            margin-top: 20px;
+            grid-column: 1 / -1;
+        }
+
+        .menu-note h3 {
+            color: #b58900;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .warning {
+            background-color: #ffeaea;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #e63946;
+            margin-top: 30px;
+            grid-column: 1 / -1;
+        }
+
+        .warning h3 {
+            color: #e63946;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #ddd;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: #888;
+            font-style: italic;
+        }
+
+        .total-calories {
+            background-color: #e6f4ee;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 600;
+            color: #2c7a5e;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-stethoscope"></i> Tra Cuu Mon An Theo Benh & Thuc don 7 Ngay</h1>
+        <p>Chon benh/tinh trang suc khoe de xem cac mon an phu hop va thuc don 7 ngay chi tiet voi dinh luong, calo va luu y cu the.</p>
+    </header>
+
+    <div class="search-container">
+        <div class="search-box">
+            <label for="diseaseSearch"><i class="fas fa-heartbeat"></i> Chon benh/tinh trang suc khoe cua ban:</label>
+            <div class="disease-options" id="diseaseOptions">
+                <div class="disease-option" data-disease="tieu-duong">
+                    <i class="fas fa-syringe"></i> Tieu duong
+                </div>
+                <div class="disease-option" data-disease="tieu-duong-beo-phi">
+                    <i class="fas fa-weight"></i> Tieu duong + Beo phi
+                </div>
+                <div class="disease-option" data-disease="tieu-duong-gay-yeu">
+                    <i class="fas fa-user-injured"></i> Tieu duong + Gay yeu
+                </div>
+                <div class="disease-option" data-disease="cao-huyet-ap">
+                    <i class="fas fa-heart"></i> Cao huyet ap
+                </div>
+                <div class="disease-option" data-disease="mo-mau">
+                    <i class="fas fa-tint"></i> Mo mau cao
+                </div>
+                <div class="disease-option" data-disease="mat-ngu">
+                    <i class="fas fa-bed"></i> Mat ngu
+                </div>
+                <div class="disease-option" data-disease="suy-nhuoc">
+                    <i class="fas fa-procedures"></i> Suy nhuoc co the
+                </div>
+                <div class="disease-option" data-disease="khat-nuoc">
+                    <i class="fas fa-tint"></i> Khat nuoc nhieu (Am hu)
+                </div>
+            </div>
+        </div>
+        
+        <div class="search-box">
+            <label for="customSearch"><i class="fas fa-search"></i> Hoac tim kiem theo trieu chung/mon an:</label>
+            <input type="text" id="customSearch" placeholder="Vi du: ha duong huyet, thanh nhiet, mon chao..." style="width: 100%; padding: 15px; border: 2px solid #d1e7dd; border-radius: 8px; font-size: 1rem;">
+        </div>
+        
+        <div style="display: flex; justify-content: center; margin-top: 20px;">
+            <button class="button" id="searchButton">
+                <i class="fas fa-search"></i> Tim Kiem & Hien Thuc don
+            </button>
+            <button class="button button-clear" id="clearButton">
+                <i class="fas fa-eraser"></i> Xoa Tim
+            </button>
+        </div>
+    </div>
+
+    <div class="results-container" id="resultsContainer" style="display: none;">
+        <!-- Cot 1: Mon an phu hop -->
+        <div class="card">
+            <h2><i class="fas fa-utensils"></i> Mon An Phu Hop</h2>
+            <div class="dishes-list" id="dishesList">
+                <!-- Danh sach mon an se duoc dien boi JavaScript -->
+            </div>
+        </div>
+
+        <!-- Cot 2: Thuc don 7 ngay chi tiet -->
+        <div class="card">
+            <h2><i class="fas fa-calendar-alt"></i> Thuc don 7 Ngay Chi Tiet</h2>
+            <div id="weeklyMenu">
+                <!-- Thuc don 7 ngay se duoc dien boi JavaScript -->
+            </div>
+        </div>
+
+        <!-- Luu y chung -->
+        <div class="menu-note">
+            <h3><i class="fas fa-info-circle"></i> Nguyen Tac Chung Khi Ap Dung Thuc don</h3>
+            <ul>
+                <li><strong>Thuc don tinh cho 1 nguoi truong thanh</strong> (~55-70kg), co the dieu chinh tang giam 10-20% tuy nhu cau.</li>
+                <li><strong>Calo la uoc tinh gan dung</strong> (±10-15%), phu hop cho kiem soat benh man tinh.</li>
+                <li><strong>Uong du nuoc</strong> (1.5-2 lit/ngay), co the dung tra thao moc khong duong.</li>
+                <li><strong>An cham, nhai ky</strong>, chia nho bua neu can (5-6 bua/ngay).</li>
+            </ul>
+        </div>
+
+        <!-- Canh bao ve thuoc Tay -->
+        <div class="warning">
+            <h3><i class="fas fa-exclamation-triangle"></i> Luu Y Quan Trong Voi Thuoc Tay</h3>
+            <ul>
+                <li><strong>dang dung Metformin/Insulin</strong>: Khong an qua nhieu kho qua, tra rau bap, dau xanh trong cung ngay de tranh tut duong huyet.</li>
+                <li><strong>dang dung thuoc huyet ap</strong>: Tranh uong tra rau bap lien tuc qua 5 ngay.</li>
+                <li><strong>dang dung Statin (ha mo mau)</strong>: Khong an buoi, khong uong ruou.</li>
+                <li><strong>Mon an chi ho tro, khong thay the thuoc</strong>: Luon tham van bac si truoc khi thay doi che do an khi dang dieu tri.</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Cong cu duoc xay dung dua tren nguyen tac dong - Tay y ket hop, uu tien nguyen lieu de tim, gia ca phai chang.</p>
+        <p>© 2025 - Thong tin mang tinh chat tham khao, khong thay the tu van y te chuyen nghiep.</p>
+    </footer>
+
+    <script>
+        // ========== CO SO DU LIEU MON AN THEO BENH ==========
+        const dishesByDisease = {
+            "tieu-duong": [
+                {
+                    name: "Chao gao lut hat sen",
+                    description: "Chao ngu coc nguyen hat, de tieu hoa, on dinh duong huyet.",
+                    calories: "~230 kcal",
+                    effects: ["On dinh duong huyet", "An than", "Bo ty vi"],
+                    ingredients: ["Gao lut: 40g", "Hat sen: 30g", "Nuoc: 600ml"]
+                },
+                {
+                    name: "Canh kho qua nhoi thit",
+                    description: "Mon canh thanh mat, giup ha duong huyet tu nhien.",
+                    calories: "~220 kcal",
+                    effects: ["Ha duong huyet", "Thanh nhiet", "Giai doc"],
+                    ingredients: ["Kho qua: 200g", "Thit heo nac: 80g", "Gia vi nhat"]
+                },
+                {
+                    name: "Ca loc hap gung",
+                    description: "Ca dong hap voi gung, giau dam chat luong cao.",
+                    calories: "~240 kcal",
+                    effects: ["Bo ty vi", "Khang khuan", "On dinh duong"],
+                    ingredients: ["Ca loc: 120g", "Gung: 5g", "Hanh la"]
+                },
+                {
+                    name: "Rau luoc cham nuoc mam nhat",
+                    description: "Cac loai rau xanh luoc, cung cap chat xo va vitamin.",
+                    calories: "~50-80 kcal",
+                    effects: ["Bo sung chat xo", "Thanh nhiet", "Ho tro tieu hoa"],
+                    ingredients: ["Rau cai/xa lach: 150g", "Nuoc mam pha loang"]
+                }
+            ],
+            "tieu-duong-beo-phi": [
+                {
+                    name: "Canh bi dao nau tom",
+                    description: "Mon canh thanh mat, it calo, giup giam can lanh manh.",
+                    calories: "~150 kcal",
+                    effects: ["Thanh nhiet", "Loi tieu", "Ho tro giam can"],
+                    ingredients: ["Bi dao: 200g", "Tom tuoi: 50g", "Hanh ngo"]
+                },
+                {
+                    name: "Salad rau song khong dau",
+                    description: "Rau tuoi tron giam tao hoac chanh, it calo.",
+                    calories: "~60 kcal",
+                    effects: ["Giau chat xo", "Thanh nhiet", "Ho tro giam beo"],
+                    ingredients: ["Xa lach, dua leo, ca chua: 200g", "Giam tao/chanh"]
+                },
+                {
+                    name: "Uc ga hap",
+                    description: "Thit ga khong da, hap cach thuy voi it gia vi.",
+                    calories: "~180 kcal",
+                    effects: ["Cung cap dam nac", "It chat beo", "Giam cam giac them an"],
+                    ingredients: ["Uc ga: 120g", "Gung, sa", "Gia vi nhat"]
+                },
+                {
+                    name: "Sup lo luoc",
+                    description: "Sup lo trang hoac xanh luoc chin toi.",
+                    calories: "~70 kcal",
+                    effects: ["Giau chat xo", "Chong oxy hoa", "Ho tro giam can"],
+                    ingredients: ["Sup lo: 200g", "Muoi (rat it)"]
+                }
+            ],
+            "tieu-duong-gay-yeu": [
+                {
+                    name: "Chao ga ta ham hat sen",
+                    description: "Chao bo duong, giup tang can lanh manh cho nguoi tieu duong.",
+                    calories: "~320 kcal",
+                    effects: ["Bo khi huyet", "An than", "Tang cuong dinh duong"],
+                    ingredients: ["Ga ta: 100g", "Gao lut: 40g", "Hat sen: 30g"]
+                },
+                {
+                    name: "Trung ga hap nam",
+                    description: "Trung hap voi nam rom, mem de an, giau dinh duong.",
+                    calories: "~200 kcal",
+                    effects: ["Bo sung dam chat luong", "De tieu hoa", "Tang cuong suc khoe"],
+                    ingredients: ["Trung ga: 2 qua", "Nam rom: 50g", "Hanh la"]
+                },
+                {
+                    name: "Ca chep hap gung",
+                    description: "Ca chep hap voi gung, bo ty vi, de hap thu.",
+                    calories: "~280 kcal",
+                    effects: ["Bo ty vi", "Tang cuong dinh duong", "De tieu"],
+                    ingredients: ["Ca chep: 150g", "Gung: 10g", "Nam huong"]
+                },
+                {
+                    name: "dau hu sot ca chua",
+                    description: "dau hu non sot voi ca chua, mem de an.",
+                    calories: "~180 kcal",
+                    effects: ["Bo sung dam thuc vat", "De tieu hoa", "Cung cap nang luong"],
+                    ingredients: ["dau hu non: 150g", "Ca chua: 100g", "Hanh toi (it)"]
+                }
+            ],
+            "cao-huyet-ap": [
+                {
+                    name: "Canh can tay nau tom",
+                    description: "Can tay co tac dung ha huyet ap tu nhien.",
+                    calories: "~140 kcal",
+                    effects: ["Ha huyet ap", "Loi tieu", "Thanh nhiet"],
+                    ingredients: ["Can tay: 150g", "Tom tuoi: 60g", "Nuoc dung nhat"]
+                },
+                {
+                    name: "Ca hoi ap chao khong dau",
+                    description: "Ca hoi giau Omega-3 tot cho tim mach.",
+                    calories: "~250 kcal",
+                    effects: ["Tot cho tim mach", "Giam viem", "On dinh huyet ap"],
+                    ingredients: ["Ca hoi phi-le: 120g", "Chanh, tieu", "Rau thom"]
+                },
+                {
+                    name: "Chao yen mach",
+                    description: "Yen mach giup giam cholesterol va huyet ap.",
+                    calories: "~180 kcal",
+                    effects: ["Ha cholesterol", "On dinh huyet ap", "Giau chat xo"],
+                    ingredients: ["Yen mach can: 50g", "Nuoc: 500ml", "Me den: 5g"]
+                },
+                {
+                    name: "Nuoc ep can tay",
+                    description: "Nuoc ep can tay tuoi, uong truoc bua an.",
+                    calories: "~30 kcal",
+                    effects: ["Ha huyet ap", "Loi tieu", "Thanh nhiet"],
+                    ingredients: ["Can tay: 200g", "Nuoc loc: 100ml"]
+                }
+            ]
+        };
+
+        // ========== THUC dON 7 NGAY THEO BENH ==========
+        const weeklyMenus = {
+            "tieu-duong": [
+                {
+                    day: "Ngay 1",
+                    meals: {
+                        morning: { name: "Chao gao lut hat sen", details: "Gao lut: 40g, Hat sen: 30g, Nuoc: 600ml", calories: "~230 kcal" },
+                        lunch: { name: "Canh kho qua nhoi thit", details: "Kho qua: 200g, Thit heo nac: 80g, Gia vi nhat", calories: "~220 kcal" },
+                        dinner: { name: "Ca loc hap gung + Rau luoc", details: "Ca loc: 120g, Rau cai: 150g, Gung: 5g", calories: "~240 kcal" }
+                    },
+                    totalCalories: "~690 kcal",
+                    note: "Ngay dau tien nhe nhang, de tieu hoa. Uong tra rau bap sau bua trua 30 phut."
+                },
+                {
+                    day: "Ngay 2",
+                    meals: {
+                        morning: { name: "Yen mach + me den", details: "Yen mach can: 40g, Me den: 10g, Nuoc: 400ml", calories: "~260 kcal" },
+                        lunch: { name: "Ga ta ham nam rom", details: "Ga ta bo da: 120g, Nam rom: 100g, Gung: 5g", calories: "~280 kcal" },
+                        dinner: { name: "Canh rau ngot thit bam", details: "Rau ngot: 150g, Thit nac: 50g, Nuoc dung", calories: "~160 kcal" }
+                    },
+                    totalCalories: "~700 kcal",
+                    note: "Hom nay co thit ga, cung cap dam chat luong cao. Khong uong tra rau bap neu dang dung Metformin."
+                },
+                {
+                    day: "Ngay 3",
+                    meals: {
+                        morning: { name: "Khoai lang luoc", details: "Khoai lang: 100g (khoang 1 cu vua)", calories: "~90 kcal" },
+                        lunch: { name: "Ca chep nau ca chua", details: "Ca chep: 120g, Ca chua: 100g, Hanh la", calories: "~250 kcal" },
+                        dinner: { name: "dau hu hap + Canh bi dao", details: "dau hu: 120g, Bi dao: 200g, Nam: 30g", calories: "~150 kcal" }
+                    },
+                    totalCalories: "~490 kcal",
+                    note: "Ngay nhe nhang, thanh dam. Co the them 1 qua chuoi chin vua vao buoi chieu neu doi."
+                },
+                {
+                    day: "Ngay 4",
+                    meals: {
+                        morning: { name: "Chao gao lut + dau xanh", details: "Gao lut: 40g, dau xanh: 30g, Nuoc: 600ml", calories: "~240 kcal" },
+                        lunch: { name: "Canh ca loc + bi dao", details: "Ca loc: 120g, Bi dao: 200g, Hanh ngo", calories: "~260 kcal" },
+                        dinner: { name: "dau hu hap + rau luoc", details: "dau hu: 120g, Rau cai/ngot: 150g", calories: "~160 kcal" }
+                    },
+                    totalCalories: "~660 kcal",
+                    note: "Lap lai ngay 1 voi bien tau nhe. Uong du nuoc trong ngay."
+                },
+                {
+                    day: "Ngay 5",
+                    meals: {
+                        morning: { name: "Yen mach + me den", details: "Yen mach can: 40g, Me den: 10g, Nuoc: 400ml", calories: "~260 kcal" },
+                        lunch: { name: "Ga ta ham nam rom", details: "Ga ta bo da: 120g, Nam rom: 100g, Gung: 5g", calories: "~280 kcal" },
+                        dinner: { name: "Canh kho qua", details: "Kho qua: 150g, Nuoc dung trong", calories: "~40 kcal" }
+                    },
+                    totalCalories: "~580 kcal",
+                    note: "Ngay it calo, phu hop neu it van dong. Khong an them trai cay ngot."
+                },
+                {
+                    day: "Ngay 6",
+                    meals: {
+                        morning: { name: "Khoai lang luoc", details: "Khoai lang: 100g (khoang 1 cu vua)", calories: "~90 kcal" },
+                        lunch: { name: "Ca chep kho nhat", details: "Ca chep: 120g, Gung, hanh, nuoc mam nhat", calories: "~240 kcal" },
+                        dinner: { name: "Canh rau ngot", details: "Rau ngot: 200g, Nuoc dung trong", calories: "~60 kcal" }
+                    },
+                    totalCalories: "~390 kcal",
+                    note: "Ngay nhe nhat trong tuan. Co the an them 1 hop sua chua khong duong vao buoi toi."
+                },
+                {
+                    day: "Ngay 7",
+                    meals: {
+                        morning: { name: "Chao gao lut hat sen", details: "Gao lut: 40g, Hat sen: 30g, Nuoc: 600ml", calories: "~230 kcal" },
+                        lunch: { name: "Ca loc hap gung + rau", details: "Ca loc: 120g, Rau luoc: 150g, Gung: 5g", calories: "~240 kcal" },
+                        dinner: { name: "Canh bi dao nau tom", details: "Bi dao: 200g, Tom tuoi: 50g, Hanh ngo", calories: "~150 kcal" }
+                    },
+                    totalCalories: "~620 kcal",
+                    note: "Ket thuc tuan voi thuc don can bang. Chuan bi di cho cho tuan moi."
+                }
+            ],
+            "tieu-duong-beo-phi": [
+                {
+                    day: "Ngay 1",
+                    meals: {
+                        morning: { name: "Chao yen mach loang", details: "Yen mach: 30g, Nuoc: 500ml", calories: "~120 kcal" },
+                        lunch: { name: "Canh bi dao nau tom", details: "Bi dao: 250g, Tom: 50g", calories: "~150 kcal" },
+                        dinner: { name: "Salad rau song khong dau", details: "Rau tuoi cac loai: 200g, Giam tao", calories: "~60 kcal" }
+                    },
+                    totalCalories: "~330 kcal",
+                    note: "Ngay dau tien it calo, thanh loc co the. Uong nhieu nuoc."
+                },
+                // Cac ngay tiep theo co cau truc tuong tu
+            ]
+        };
+
+        // ========== KHOI TAO TRANG ==========
+        let selectedDisease = null;
+        const diseaseOptions = document.querySelectorAll('.disease-option');
+        
+        // Gan su kien click cho cac lua chon benh
+        diseaseOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Bo chon tat ca
+                diseaseOptions.forEach(opt => opt.classList.remove('selected'));
+                // Chon option duoc click
+                this.classList.add('selected');
+                selectedDisease = this.getAttribute('data-disease');
+                // dien vao o tim kiem
+                document.getElementById('customSearch').value = this.textContent.trim();
+            });
+        });
+
+        // Gan su kien cho nut tim kiem
+        document.getElementById('searchButton').addEventListener('click', function() {
+            performSearch();
+        });
+
+        // Gan su kien cho nut xoa
+        document.getElementById('clearButton').addEventListener('click', function() {
+            clearSearch();
+        });
+
+        // Cho phep tim kiem bang Enter
+        document.getElementById('customSearch').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // ========== HAM TIM KIEM ==========
+        function performSearch() {
+            const customSearch = document.getElementById('customSearch').value.toLowerCase().trim();
+            let searchDisease = selectedDisease;
+            
+            // Neu co tim kiem tuy chinh, uu tien no
+            if (customSearch) {
+                // Tim benh phu hop voi tu khoa tuy chinh
+                const matchedDisease = findDiseaseByKeyword(customSearch);
+                if (matchedDisease) {
+                    searchDisease = matchedDisease;
+                    // Cap nhat giao dien de hien the benh duoc chon
+                    diseaseOptions.forEach(opt => {
+                        opt.classList.remove('selected');
+                        if (opt.getAttribute('data-disease') === matchedDisease) {
+                            opt.classList.add('selected');
+                        }
+                    });
+                } else {
+                    // Neu khong tim thay benh cu the, tim mon an chung
+                    searchDisease = "general";
+                }
+            }
+            
+            // Neu khong co gi duoc chon
+            if (!searchDisease && !customSearch) {
+                alert("Vui long chon mot benh/tinh trang suc khoe hoac nhap tu khoa tim kiem.");
+                return;
+            }
+            
+            // Hien thi ket qua
+            displayResults(searchDisease, customSearch);
+        }
+
+        // Ham tim benh theo tu khoa
+        function findDiseaseByKeyword(keyword) {
+            const keywordToDisease = {
+                "tieu duong": "tieu-duong",
+                "dai thao duong": "tieu-duong",
+                "duong huyet": "tieu-duong",
+                "beo phi": "tieu-duong-beo-phi",
+                "thua can": "tieu-duong-beo-phi",
+                "giam can": "tieu-duong-beo-phi",
+                "gay yeu": "tieu-duong-gay-yeu",
+                "suy nhuoc": "tieu-duong-gay-yeu",
+                "huyet ap": "cao-huyet-ap",
+                "tang huyet ap": "cao-huyet-ap",
+                "mo mau": "mo-mau",
+                "cholesterol": "mo-mau",
+                "mat ngu": "mat-ngu",
+                "kho ngu": "mat-ngu",
+                "khat nuoc": "khat-nuoc",
+                "am hu": "khat-nuoc"
+            };
+            
+            for (const [key, disease] of Object.entries(keywordToDisease)) {
+                if (keyword.includes(key)) {
+                    return disease;
+                }
+            }
+            
+            return null;
+        }
+
+        // Ham hien thi ket qua
+        function displayResults(disease, customSearch) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            const dishesList = document.getElementById('dishesList');
+            const weeklyMenu = document.getElementById('weeklyMenu');
+            
+            // Hien thi container ket qua
+            resultsContainer.style.display = 'grid';
+            
+            // Hien thi mon an phu hop
+            dishesList.innerHTML = '';
+            
+            let dishesToShow = [];
+            if (dishesByDisease[disease]) {
+                dishesToShow = dishesByDisease[disease];
+            } else if (customSearch) {
+                // Tim mon an theo tu khoa tuy chinh
+                dishesToShow = searchDishesByKeyword(customSearch);
+            }
+            
+            if (dishesToShow.length > 0) {
+                dishesToShow.forEach(dish => {
+                    const dishElement = document.createElement('div');
+                    dishElement.className = 'dish-item';
+                    
+                    const effectsHtml = dish.effects.map(effect => `<span class="property">${effect}</span>`).join(' ');
+                    
+                    dishElement.innerHTML = `
+                        <h3>${dish.name} <span class="calorie-badge">${dish.calories}</span></h3>
+                        <p>${dish.description}</p>
+                        <div class="ingredients"><strong>Nguyen lieu:</strong> ${dish.ingredients.join(', ')}</div>
+                        <div style="margin-top: 10px;">${effectsHtml}</div>
+                    `;
+                    dishesList.appendChild(dishElement);
+                });
+            } else {
+                dishesList.innerHTML = '<p class="no-results">Khong tim thay mon an nao phu hop. Vui long thu tu khoa khac.</p>';
+            }
+            
+            // Hien thi thuc don 7 ngay
+            weeklyMenu.innerHTML = '';
+            
+            if (weeklyMenus[disease]) {
+                weeklyMenus[disease].forEach(dayMenu => {
+                    const dayElement = document.createElement('div');
+                    dayElement.className = 'menu-day';
+                    
+                    dayElement.innerHTML = `
+                        <h3><i class="far fa-calendar"></i> ${dayMenu.day}</h3>
+                        <div class="meal-time">
+                            <h4><i class="fas fa-sun"></i> Bua sang</h4>
+                            <div class="meal-details">
+                                <strong>${dayMenu.meals.morning.name}</strong>
+                                <p>${dayMenu.meals.morning.details}</p>
+                                <div><em>Calo: ${dayMenu.meals.morning.calories}</em></div>
+                            </div>
+                        </div>
+                        <div class="meal-time">
+                            <h4><i class="fas fa-utensils"></i> Bua trua</h4>
+                            <div class="meal-details">
+                                <strong>${dayMenu.meals.lunch.name}</strong>
+                                <p>${dayMenu.meals.lunch.details}</p>
+                                <div><em>Calo: ${dayMenu.meals.lunch.calories}</em></div>
+                            </div>
+                        </div>
+                        <div class="meal-time">
+                            <h4><i class="fas fa-moon"></i> Bua toi</h4>
+                            <div class="meal-details">
+                                <strong>${dayMenu.meals.dinner.name}</strong>
+                                <p>${dayMenu.meals.dinner.details}</p>
+                                <div><em>Calo: ${dayMenu.meals.dinner.calories}</em></div>
+                            </div>
+                        </div>
+                        <div class="total-calories">
+                            <i class="fas fa-fire"></i> Tong calo trong ngay: ${dayMenu.totalCalories}
+                        </div>
+                        <div style="margin-top: 10px; padding: 10px; background-color: #f0f7f4; border-radius: 5px;">
+                            <strong><i class="fas fa-lightbulb"></i> Luu y:</strong> ${dayMenu.note}
+                        </div>
+                    `;
+                    
+                    weeklyMenu.appendChild(dayElement);
+                });
+            } else {
+                weeklyMenu.innerHTML = `
+                    <div class="no-results">
+                        <p>Thuc don 7 ngay chi tiet cho tinh trang nay dang duoc cap nhat.</p>
+                        <p>Ban co the tham khao thuc don mau cho benh tieu duong o tren.</p>
+                        <p>de co thuc don ca nhan hoa, vui long tham van chuyen gia dinh duong.</p>
+                    </div>
+                `;
+            }
+            
+            // Cuon den ket qua
+            resultsContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Ham tim mon an theo tu khoa (cho tim kiem tuy chinh)
+        function searchDishesByKeyword(keyword) {
+            let results = [];
+            
+            // Tim trong tat ca cac mon an cua tat ca benh
+            for (const disease in dishesByDisease) {
+                const dishes = dishesByDisease[disease];
+                dishes.forEach(dish => {
+                    // Tim trong ten, mo ta, cong dung
+                    const searchText = (dish.name + ' ' + dish.description + ' ' + dish.effects.join(' ')).toLowerCase();
+                    if (searchText.includes(keyword.toLowerCase())) {
+                        results.push(dish);
+                    }
+                });
+            }
+            
+            // Gioi han ket qua
+            return results.slice(0, 8);
+        }
+
+        // Ham xoa tim kiem
+        function clearSearch() {
+            selectedDisease = null;
+            diseaseOptions.forEach(opt => opt.classList.remove('selected'));
+            document.getElementById('customSearch').value = '';
+            document.getElementById('resultsContainer').style.display = 'none';
+        }
+
+        // Hien thi mac dinh khi trang duoc tai
+        window.addEventListener('DOMContentLoaded', function() {
+            // Khong hien thi gi mac dinh, cho nguoi dung tim kiem
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Thức Siêu Cấp - Neon Night</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #3b82f6;
+            --neon: #00f2ff;
+            --danger: #ff0055;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Đồng hồ số khổng lồ */
+        .digital-clock {
+            font-size: 6rem;
+            font-weight: 800;
+            margin-top: 50px;
+            color: var(--neon);
+            text-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
+            letter-spacing: -2px;
+        }
+
+        .container {
+            background: var(--card);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 450px;
+            margin-top: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        h2 { text-align: center; font-size: 1.5rem; margin-bottom: 25px; color: #cbd5e1; }
+
+        /* Input thiết kế đẹp */
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 8px; font-size: 0.9rem; color: #94a3b8; }
+        
+        input {
+            width: 100%;
+            padding: 15px;
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+        input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
+
+        .btn-add {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--accent), #1d4ed8);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-add:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4); }
+
+        /* Danh sách báo thức */
+        .alarm-list { margin-top: 30px; max-height: 200px; overflow-y: auto; }
+        .alarm-item {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--accent);
+        }
+        .alarm-info b { font-size: 1.2rem; display: block; color: var(--neon); }
+        .btn-del { background: #ef4444; border: none; color: white; padding: 8px 12px; border-radius: 8px; cursor: pointer; }
+
+        /* MÀN HÌNH BÁO ĐỘNG KHẨN CẤP */
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--danger);
+            z-index: 10000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            animation: shake 0.1s infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            40% { transform: translate(3px, 2px) rotate(-1deg); }
+            60% { transform: translate(-1px, -1px) rotate(1deg); }
+            80% { transform: translate(-3px, 1px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        #overlay h1 { font-size: 10rem; margin: 0; line-height: 1; text-transform: uppercase; }
+        #overlay p { font-size: 3rem; font-weight: bold; margin: 20px 0; }
+        
+        .btn-stop {
+            padding: 25px 80px;
+            font-size: 2rem;
+            font-weight: 900;
+            border-radius: 50px;
+            border: none;
+            background: white;
+            color: var(--danger);
+            cursor: pointer;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            transition: 0.3s;
+        }
+        .btn-stop:hover { transform: scale(1.1); }
+
+    </style>
+</head>
+<body>
+
+    <div class="digital-clock" id="liveClock">00:00:00</div>
+
+    <div class="container">
+        <h2>Cài đặt báo thức</h2>
+        
+        <div class="input-group">
+            <label>Tên lời nhắc</label>
+            <input type="text" id="alarmName" placeholder="Ví dụ: Dậy đi học ngay!">
+        </div>
+
+        <div class="input-group">
+            <label>Chọn thời gian</label>
+            <input type="time" id="alarmTime" step="1">
+        </div>
+
+        <button class="btn-add" onclick="addAlarm()">+ THÊM BÁO THỨC</button>
+
+        <div class="alarm-list" id="alarmList">
+            </div>
+    </div>
+
+    <div id="overlay">
+        <h1 id="alertTime">07:00</h1>
+        <p id="alertName">DẬY MAU!</p>
+        <button class="btn-stop" onclick="stopAlarm()">TẮT CHUÔNG</button>
+    </div>
+
+    <audio id="snd" loop>
+        <source src="https://assets.mixkit.co/active_storage/sfx/995/995-preview.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        let alarms = [];
+        const snd = document.getElementById('snd');
+
+        // Cập nhật đồng hồ chính
+        function updateLiveClock() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('liveClock').innerText = `${h}:${m}:${s}`;
+            
+            // Kiểm tra báo thức
+            const currentTime = `${h}:${m}:${s}`;
+            const currentShort = `${h}:${m}`;
+
+            alarms.forEach(alarm => {
+                if (alarm.active && (alarm.time === currentTime || alarm.time === currentShort)) {
+                    triggerAlarm(alarm);
+                    alarm.active = false; // Tạm tắt để không reo liên tục trong 1 giây
+                }
+            });
+        }
+
+        function addAlarm() {
+            const time = document.getElementById('alarmTime').value;
+            const name = document.getElementById('alarmName').value || "Báo thức";
+            if (!time) return alert("Vui lòng chọn giờ!");
+
+            alarms.push({ time, name, active: true });
+            renderAlarms();
+            document.getElementById('alarmName').value = "";
+        }
+
+        function renderAlarms() {
+            const list = document.getElementById('alarmList');
+            list.innerHTML = alarms.map((a, i) => `
+                <div class="alarm-item">
+                    <div class="alarm-info">
+                        <b>${a.time}</b>
+                        <span>${a.name}</span>
+                    </div>
+                    <button class="btn-del" onclick="removeAlarm(${i})">Xóa</button>
+                </div>
+            `).join('');
+        }
+
+        function removeAlarm(index) {
+            alarms.splice(index, 1);
+            renderAlarms();
+        }
+
+        function triggerAlarm(alarm) {
+            const overlay = document.getElementById('overlay');
+            document.getElementById('alertTime').innerText = alarm.time;
+            document.getElementById('alertName').innerText = alarm.name;
+            overlay.style.display = 'flex';
+            snd.play().catch(e => console.log("Cần tương tác với web để phát nhạc"));
+        }
+
+        function stopAlarm() {
+            document.getElementById('overlay').style.display = 'none';
+            snd.pause();
+            snd.currentTime = 0;
+            renderAlarms(); // Cập nhật lại danh sách
+        }
+
+        setInterval(updateLiveClock, 1000);
+    </script>
+</body>
+</html>

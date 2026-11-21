@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống tư vấn thực đơn - Cân bằng dinh dưỡng, giá cả, thay thế thông minh</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f7f0;
+            margin: 0;
+            padding: 20px;
+            color: #2d3e2d;
+        }
+        .container {
+            max-width: 1400px;
+            margin: auto;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        header {
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+        }
+        h1 { margin: 0; font-size: 1.8rem; }
+        .sub { opacity: 0.9; margin-top: 8px; }
+        .two-columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 25px;
+        }
+        .sidebar {
+            flex: 1;
+            min-width: 280px;
+            background: #f9fdf9;
+            border-radius: 20px;
+            padding: 20px;
+            border: 1px solid #c8e6c9;
+        }
+        .main-content {
+            flex: 2;
+            min-width: 400px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #1b5e20;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #c8e6c9;
+            border-radius: 12px;
+            font-size: 14px;
+            background: white;
+        }
+        button {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+        button:hover {
+            background: #1b5e20;
+            transform: scale(1.02);
+        }
+        .meal-card {
+            background: #fff;
+            border-radius: 20px;
+            border-left: 8px solid #ffb74d;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .meal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        .meal-items {
+            list-style: none;
+            padding: 0;
+        }
+        .meal-items li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e8f5e9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .badge {
+            background: #e8f5e9;
+            padding: 4px 10px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: normal;
+        }
+        .price {
+            color: #e65100;
+            font-weight: bold;
+        }
+        .stats {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 16px;
+            margin-top: 20px;
+        }
+        .warning {
+            background: #ffebee;
+            border-left: 5px solid #f44336;
+            padding: 12px;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+        .replace-suggestion {
+            background: #fff8e1;
+            border-left: 5px solid #ffa000;
+            padding: 10px;
+            margin-top: 8px;
+            font-size: 13px;
+        }
+        @media (max-width: 800px) {
+            .two-columns { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>🌾 Ẩm thực đa chiều + Đi chợ thông minh</h1>
+        <div class="sub">Cân bằng Âm Dương - Ngũ hành - Dinh dưỡng - Calo - Giá cả - Thay thế món khó mua</div>
+    </header>
+    <div class="two-columns">
+        <div class="sidebar">
+            <h3>🧑 Thông tin người dùng</h3>
+            <div class="form-group">
+                <label>Tuổi</label>
+                <input type="number" id="age" value="30">
+            </div>
+            <div class="form-group">
+                <label>Giới tính</label>
+                <select id="gender">
+                    <option value="male">Nam</option>
+                    <option value="female">Nữ</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Cân nặng (kg)</label>
+                <input type="number" id="weight" value="65">
+            </div>
+            <div class="form-group">
+                <label>Chiều cao (cm)</label>
+                <input type="number" id="height" value="165">
+            </div>
+            <div class="form-group">
+                <label>Mức độ vận động</label>
+                <select id="activity">
+                    <option value="1.2">Ít vận động (dân văn phòng)</option>
+                    <option value="1.375">Nhẹ nhàng (1-3 buổi/tuần)</option>
+                    <option value="1.55">Vừa phải (3-5 buổi)</option>
+                    <option value="1.725">Năng động (6-7 buổi)</option>
+                    <option value="1.9">Vận động nặng</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Mục tiêu</label>
+                <select id="goal">
+                    <option value="maintain">Duy trì</option>
+                    <option value="lose">Giảm cân (thâm hụt 300-500 calo)</option>
+                    <option value="gain">Tăng cân (tăng thêm 300-500 calo)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Thể trạng Âm/Dương</label>
+                <select id="bodyType">
+                    <option value="binh">Bình (cân bằng)</option>
+                    <option value="han">Hàn (tay chân lạnh, thích ấm)</option>
+                    <option value="nhiệt">Nhiệt (dễ nóng, thích mát)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Ngũ hành bản mệnh</label>
+                <select id="element">
+                    <option value="Thổ">Thổ</option>
+                    <option value="Kim">Kim</option>
+                    <option value="Mộc">Mộc</option>
+                    <option value="Hỏa">Hỏa</option>
+                    <option value="Thủy">Thủy</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Bệnh lý (chọn nhiều, Ctrl+click)</label>
+                <select multiple id="disease" size="4">
+                    <option value="tỳ vị yếu">Tỳ vị yếu (khó tiêu)</option>
+                    <option value="mất ngủ">Mất ngủ</option>
+                    <option value="nóng gan">Nóng gan</option>
+                    <option value="huyết áp thấp">Huyết áp thấp</option>
+                    <option value="béo phì">Béo phì / thừa cân</option>
+                    <option value="thiếu máu">Thiếu máu</option>
+                </select>
+                <small>Giữ Ctrl để chọn nhiều</small>
+            </div>
+            <div class="form-group">
+                <label>Mùa / Tiết khí hiện tại</label>
+                <select id="season">
+                    <option value="Xuân phân">Xuân (ấm, nhuận)</option>
+                    <option value="Hạ chí">Hạ (nóng, ưu hàn)</option>
+                    <option value="Thu phân">Thu (mát, dưỡng âm)</option>
+                    <option value="Đông chí">Đông (lạnh, ưu nhiệt)</option>
+                </select>
+            </div>
+            <button onclick="generateMealPlan()">🌿 TẠO THỰC ĐƠN + DỰ TOÁN CHỢ</button>
+        </div>
+
+        <div class="main-content" id="resultArea">
+            <div style="text-align: center; padding: 40px; color: #6d8f6d;">
+                <h3>✨ Nhập thông tin và nhấn "Tạo thực đơn" ✨</h3>
+                <p>Hệ thống sẽ tính TDEE, cân bằng âm dương, ngũ hành, đủ dinh dưỡng, ước tính giá và đề xuất thay thế</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ================== CSDL MÓN ĂN MỞ RỘNG (có giá, thay thế) ==================
+    const FOOD_DB = [
+        { name: "Gạo lứt", calo: 130, group: "ngũ cốc", yinYang: "bình", nguHanh: "Thổ", vitamin: "B1,E", pricePer100g: 5000, difficultToBuy: true, substitute: "Gạo tẻ trắng (dễ mua, giá 3000đ/100g, calo 130, tính bình, hành Thổ)" },
+        { name: "Yến mạch", calo: 90, group: "ngũ cốc", yinYang: "bình", nguHanh: "Thổ", vitamin: "B1", pricePer100g: 8000, difficultToBuy: true, substitute: "Bột gạo lứt hoặc ngô hạt (dễ mua, 4000đ/100g)" },
+        { name: "Bánh mì nguyên cám", calo: 250, group: "ngũ cốc", yinYang: "bình", nguHanh: "Thổ", vitamin: "B", pricePer100g: 7000, difficultToBuy: false, substitute: "" },
+        { name: "Ức gà luộc", calo: 165, group: "protein", yinYang: "nhiệt", nguHanh: "Hỏa", vitamin: "B6,B12", pricePer100g: 25000, difficultToBuy: false, substitute: "" },
+        { name: "Cá hồi áp chảo", calo: 208, group: "protein", yinYang: "ấm", nguHanh: "Thủy", vitamin: "D,B12", pricePer100g: 120000, difficultToBuy: true, substitute: "Cá basa hoặc cá rô đồng (40000đ/100g, tính hàn, hành Thủy)" },
+        { name: "Đậu phụ sốt cà", calo: 120, group: "protein", yinYang: "bình", nguHanh: "Thổ", vitamin: "B1", pricePer100g: 8000, difficultToBuy: false, substitute: "" },
+        { name: "Thịt bò nạc", calo: 200, group: "protein", yinYang: "ấm", nguHanh: "Hỏa", vitamin: "B12", pricePer100g: 120000, difficultToBuy: false, substitute: "" },
+        { name: "Trứng ốp la", calo: 150, group: "protein", yinYang: "nhiệt", nguHanh: "Hỏa", vitamin: "A,D,B12", pricePer100g: 10000, difficultToBuy: false, substitute: "" },
+        { name: "Rau muống xào tỏi", calo: 90, group: "rau", yinYang: "hàn", nguHanh: "Mộc", vitamin: "C,K", pricePer100g: 4000, difficultToBuy: false, substitute: "" },
+        { name: "Bông cải xanh luộc", calo: 55, group: "rau", yinYang: "lương", nguHanh: "Mộc", vitamin: "C,K", pricePer100g: 12000, difficultToBuy: false, substitute: "" },
+        { name: "Cà rốt luộc", calo: 40, group: "rau", yinYang: "bình", nguHanh: "Thổ", vitamin: "A", pricePer100g: 5000, difficultToBuy: false, substitute: "" },
+        { name: "Bí đỏ hấp", calo: 45, group: "rau", yinYang: "ấm", nguHanh: "Hỏa", vitamin: "A", pricePer100g: 7000, difficultToBuy: false, substitute: "" },
+        { name: "Khoai lang", calo: 90, group: "ngũ cốc", yinYang: "ấm", nguHanh: "Thổ", vitamin: "A,C", pricePer100g: 6000, difficultToBuy: false, substitute: "" },
+        { name: "Kiwi", calo: 60, group: "trái cây", yinYang: "lương", nguHanh: "Mộc", vitamin: "C,E", pricePer100g: 20000, difficultToBuy: true, substitute: "Cam hoặc quýt (dễ mua, 15000đ/100g, tính lương, hành Mộc)" },
+        { name: "Táo", calo: 52, group: "trái cây", yinYang: "lương", nguHanh: "Mộc", vitamin: "C", pricePer100g: 18000, difficultToBuy: false, substitute: "" },
+        { name: "Chuối", calo: 90, group: "trái cây", yinYang: "hàn", nguHanh: "Mộc", vitamin: "B6,C", pricePer100g: 8000, difficultToBuy: false, substitute: "" },
+        { name: "Sữa chua không đường", calo: 80, group: "sữa", yinYang: "hàn", nguHanh: "Thủy", vitamin: "B2,Canxi", pricePer100g: 12000, difficultToBuy: false, substitute: "" },
+        { name: "Phô mai tươi", calo: 120, group: "sữa", yinYang: "ấm", nguHanh: "Thổ", vitamin: "A,Canxi", pricePer100g: 25000, difficultToBuy: false, substitute: "" }
+    ];
+
+    // Hàm tính TDEE
+    function calculateTDEE(age, gender, weight, height, activity, goal) {
+        let bmr;
+        if (gender === "male") bmr = 66 + (13.7 * weight) + (5 * height) - (6.8 * age);
+        else bmr = 655 + (9.6 * weight) + (1.8 * height) - (4.7 * age);
+        let tdee = bmr * parseFloat(activity);
+        if (goal === "lose") tdee -= 400;
+        else if (goal === "gain") tdee += 400;
+        return Math.round(tdee);
+    }
+
+    // Lọc món theo bệnh, âm dương, ngũ hành, mùa
+    function filterFoods(bodyType, userElement, diseases, season) {
+        let foods = [...FOOD_DB];
+        if (diseases && diseases.length) {
+            foods = foods.filter(f => {
+                for (let d of diseases) {
+                    if (f.diseaseFit && f.diseaseFit.includes(d)) return true;
+                }
+                return false;
+            });
+            if (foods.length < 6) foods = [...FOOD_DB];
+        }
+        let seasonMap = { "Xuân phân": "bình", "Hạ chí": "hàn", "Thu phân": "lương", "Đông chí": "nhiệt" };
+        let seasonYinYang = seasonMap[season] || "bình";
+        let targetYin = [];
+        if (bodyType === "han") targetYin = ["nhiệt", "ấm", "bình"];
+        else if (bodyType === "nhiệt") targetYin = ["hàn", "lương", "bình"];
+        else targetYin = ["bình"];
+        if (seasonYinYang === "hàn") targetYin = ["hàn","lương","bình"];
+        if (seasonYinYang === "nhiệt") targetYin = ["nhiệt","ấm","bình"];
+        foods = foods.filter(f => targetYin.includes(f.yinYang));
+        
+        let elementPriority = [userElement];
+        if (userElement === "Thổ") elementPriority.push("Hỏa","Kim");
+        else if (userElement === "Kim") elementPriority.push("Thổ","Thủy");
+        else if (userElement === "Thủy") elementPriority.push("Kim","Mộc");
+        else if (userElement === "Mộc") elementPriority.push("Thủy","Hỏa");
+        else if (userElement === "Hỏa") elementPriority.push("Mộc","Thổ");
+        foods = foods.filter(f => elementPriority.includes(f.nguHanh));
+        if (foods.length < 5) foods = [...FOOD_DB];
+        return foods;
+    }
+
+    // Tạo bữa ăn đảm bảo calo và group
+    function buildMeals(foods, tdee) {
+        let breakfastCal = Math.round(tdee * 0.25);
+        let lunchCal = Math.round(tdee * 0.4);
+        let dinnerCal = Math.round(tdee * 0.35);
+        
+        function selectMeal(targetCal, groupsRequired) {
+            let selected = [];
+            let total = 0;
+            let available = [...foods];
+            for (let grp of groupsRequired) {
+                let candidates = available.filter(f => f.group === grp);
+                if (candidates.length) {
+                    let chosen = candidates[Math.floor(Math.random() * candidates.length)];
+                    if (total + chosen.calo <= targetCal + 80) {
+                        selected.push(chosen);
+                        total += chosen.calo;
+                        available = available.filter(f => f.name !== chosen.name);
+                    }
+                }
+            }
+            while (total < targetCal - 50 && available.length) {
+                let extra = available[Math.floor(Math.random() * available.length)];
+                if (total + extra.calo <= targetCal + 100) {
+                    selected.push(extra);
+                    total += extra.calo;
+                    available = available.filter(f => f.name !== extra.name);
+                } else break;
+            }
+            return { items: selected, totalCal: total };
+        }
+        
+        let breakfast = selectMeal(breakfastCal, ["ngũ cốc", "sữa", "trái cây"]);
+        let lunch = selectMeal(lunchCal, ["ngũ cốc", "protein", "rau"]);
+        let dinner = selectMeal(dinnerCal, ["protein", "rau", "trái cây"]);
+        let totalActual = breakfast.totalCal + lunch.totalCal + dinner.totalCal;
+        return { breakfast, lunch, dinner, totalActual, target: tdee };
+    }
+    
+    // Ước tính tổng tiền cho 2 ngày (mỗi ngày 3 bữa, giả sử mỗi món 150g khẩu phần)
+    function estimateCostForTwoDays(breakfast, lunch, dinner) {
+        let allItems = [...breakfast.items, ...lunch.items, ...dinner.items];
+        let cost = 0;
+        allItems.forEach(item => {
+            let grams = 150; // mỗi món ăn 150g/người/bữa
+            cost += (item.pricePer100g * grams / 100);
+        });
+        return cost * 2; // nhân 2 ngày
+    }
+    
+    // Tìm kiếm thay thế cho món khó mua
+    function getSubstituteMessage(item) {
+        if (item.difficultToBuy && item.substitute) {
+            return `<div class="replace-suggestion">🔄 Gợi ý thay thế: ${item.substitute}</div>`;
+        }
+        return "";
+    }
+
+    function generateMealPlan() {
+        let age = parseInt(document.getElementById("age").value);
+        let gender = document.getElementById("gender").value;
+        let weight = parseFloat(document.getElementById("weight").value);
+        let height = parseFloat(document.getElementById("height").value);
+        let activity = document.getElementById("activity").value;
+        let goal = document.getElementById("goal").value;
+        let bodyType = document.getElementById("bodyType").value;
+        let userElement = document.getElementById("element").value;
+        let season = document.getElementById("season").value;
+        let diseaseSelect = document.getElementById("disease");
+        let diseases = Array.from(diseaseSelect.selectedOptions).map(opt => opt.value);
+        
+        let tdee = calculateTDEE(age, gender, weight, height, activity, goal);
+        let filteredFoods = filterFoods(bodyType, userElement, diseases, season);
+        if (filteredFoods.length < 6) {
+            document.getElementById("resultArea").innerHTML = `<div class="warning">⚠️ CSDL món ăn quá ít. Vui lòng bổ sung món hoặc bớt bệnh.</div>`;
+            return;
+        }
+        
+        let meals = buildMeals(filteredFoods, tdee);
+        let cost2Days = estimateCostForTwoDays(meals.breakfast, meals.lunch, meals.dinner);
+        
+        let allFoods = [...meals.breakfast.items, ...meals.lunch.items, ...meals.dinner.items];
+        let vitaminSet = new Set();
+        allFoods.forEach(f => f.vitamin.split(",").forEach(v => vitaminSet.add(v.trim())));
+        
+        let warningMsg = "";
+        if (Math.abs(meals.totalActual - tdee) > 200) {
+            warningMsg = `<div class="warning">⚠️ Tổng calo thực tế (${meals.totalActual}) chênh lệch so với nhu cầu (${tdee}). Bạn có thể ăn thêm 1 bữa phụ nhẹ như trái cây hoặc sữa chua.</div>`;
+        }
+        
+        let html = `
+            <div class="stats">
+                🔥 Nhu cầu calo: <strong>${tdee} kcal/ngày</strong> (${goal==='lose'?'giảm cân':goal==='gain'?'tăng cân':'duy trì'})<br>
+                🛒 <strong>Dự trù kinh phí 2 ngày (sáng đi chợ 2 ngày/lần): ${cost2Days.toLocaleString()}đ</strong><br>
+                💡 Mua thực phẩm dễ bảo quản: trứng, đậu phụ, gạo, khoai lang, cá đông lạnh. Rau xanh mua đủ 2 ngày.
+            </div>
+            <div class="meal-card">
+                <div class="meal-title">☀️ BỮA SÁNG (25% calo)</div>
+                <ul class="meal-items">
+                    ${meals.breakfast.items.map(m => `<li><strong>${m.name}</strong> <span class="badge">${m.calo} kcal | ${m.group} | ${m.yinYang} | ${m.nguHanh} | ${m.pricePer100g}đ/100g</span>${getSubstituteMessage(m)}</li>`).join('')}
+                </ul>
+                <div>Tổng: ${meals.breakfast.totalCal} kcal</div>
+            </div>
+            <div class="meal-card">
+                <div class="meal-title">🌞 BỮA TRƯA (40% calo)</div>
+                <ul class="meal-items">
+                    ${meals.lunch.items.map(m => `<li><strong>${m.name}</strong> <span class="badge">${m.calo} kcal | ${m.group} | ${m.yinYang} | ${m.nguHanh} | ${m.pricePer100g}đ/100g</span>${getSubstituteMessage(m)}</li>`).join('')}
+                </ul>
+                <div>Tổng: ${meals.lunch.totalCal} kcal</div>
+            </div>
+            <div class="meal-card">
+                <div class="meal-title">🌙 BỮA TỐI (35% calo)</div>
+                <ul class="meal-items">
+                    ${meals.dinner.items.map(m => `<li><strong>${m.name}</strong> <span class="badge">${m.calo} kcal | ${m.group} | ${m.yinYang} | ${m.nguHanh} | ${m.pricePer100g}đ/100g</span>${getSubstituteMessage(m)}</li>`).join('')}
+                </ul>
+                <div>Tổng: ${meals.dinner.totalCal} kcal</div>
+            </div>
+            <div class="stats">
+                📊 Tổng calo thực đơn: ${meals.totalActual} / ${tdee} kcal 
+                <br>🍎 Vitamin nổi bật: ${Array.from(vitaminSet).join(', ') || 'Chưa đủ dữ liệu'}
+                <br>🕒 Lịch đi chợ: Sáng ngày thứ 2 & thứ 4 (hoặc thứ 3 & thứ 6), ưu tiên chợ gần nhà.
+                <br>💰 Tổng chi phí ước tính cho 2 ngày (đã bao gồm thay thế nếu có): <strong>${cost2Days.toLocaleString()} VNĐ</strong>
+                ${warningMsg}
+            </div>
+        `;
+        document.getElementById("resultArea").innerHTML = html;
+    }
+    
+    // Gán hàm vào global
+    window.generateMealPlan = generateMealPlan;
+</script>
+</body>
+</html>

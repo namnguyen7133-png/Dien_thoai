@@ -1,0 +1,957 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ngu Hanh An Uong Theo Gio - Duong Sinh Toan Dien</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --moc: #2ecc71;
+      --hoa: #e74c3c;
+      --tho: #f39c12;
+      --kim: #95a5a6;
+      --thuy: #3498db;
+      --primary: #2c3e50;
+      --light: #f8f9fa;
+      --white: #ffffff;
+      --shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      color: #333;
+      line-height: 1.6;
+      padding: 10px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    
+    @media (min-width: 768px) {
+      .container {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .full-width {
+        grid-column: 1 / span 2;
+      }
+    }
+    
+    header {
+      text-align: center;
+      padding: 25px 15px;
+      background: linear-gradient(to right, var(--primary), #34495e);
+      color: white;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+    
+    header h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
+    
+    header h1 i {
+      color: var(--moc);
+    }
+    
+    header p {
+      font-size: 16px;
+      opacity: 0.9;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .section {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease;
+    }
+    
+    .section:hover {
+      transform: translateY(-5px);
+    }
+    
+    .section-title {
+      color: var(--primary);
+      border-bottom: 3px solid;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .section-title i {
+      font-size: 22px;
+    }
+    
+    /* Bang Ngu Hanh */
+    .table-container {
+      overflow-x: auto;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    
+    thead {
+      background: var(--primary);
+      color: white;
+    }
+    
+    th {
+      padding: 12px 15px;
+      text-align: left;
+      font-weight: 600;
+    }
+    
+    tbody tr {
+      border-bottom: 1px solid #e0e0e0;
+      transition: background 0.2s;
+    }
+    
+    tbody tr:hover {
+      background: #f9f9f9;
+    }
+    
+    td {
+      padding: 12px 15px;
+    }
+    
+    /* Card Ngu Tang */
+    .card-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .card {
+      padding: 15px;
+      border-radius: 8px;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    
+    .card i {
+      font-size: 24px;
+    }
+    
+    .card-content h3 {
+      margin-bottom: 5px;
+      font-size: 18px;
+    }
+    
+    .moc-card { background: linear-gradient(to right, var(--moc), #27ae60); }
+    .hoa-card { background: linear-gradient(to right, var(--hoa), #c0392b); }
+    .tho-card { background: linear-gradient(to right, var(--tho), #e67e22); }
+    .kim-card { background: linear-gradient(to right, var(--kim), #7f8c8d); }
+    .thuy-card { background: linear-gradient(to right, var(--thuy), #2980b9); }
+    
+    /* Timeline Gio Sinh Hoc */
+    .timeline {
+      list-style: none;
+      position: relative;
+      padding-left: 30px;
+    }
+    
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--primary);
+    }
+    
+    .timeline li {
+      background: var(--light);
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      position: relative;
+      border-left: 5px solid var(--thuy);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .timeline li::before {
+      content: '';
+      position: absolute;
+      left: -28px;
+      top: 20px;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 3px solid white;
+    }
+    
+    .timeline li b {
+      color: var(--primary);
+      font-size: 17px;
+      display: block;
+      margin-bottom: 5px;
+    }
+    
+    /* Chon Menh */
+    .menh-selector {
+      padding: 20px;
+      text-align: center;
+    }
+    
+    select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      background: white;
+      margin-bottom: 20px;
+      cursor: pointer;
+      transition: border 0.3s;
+    }
+    
+    select:focus {
+      border-color: var(--primary);
+      outline: none;
+    }
+    
+    .goiy-box {
+      background: #e8f4fc;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 5px solid var(--thuy);
+    }
+    
+    .goiy-box h3 {
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+    
+    /* Nguyen tac an uong */
+    .principles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .principle {
+      flex: 1;
+      min-width: 200px;
+      background: var(--light);
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      border-top: 4px solid var(--moc);
+    }
+    
+    .principle i {
+      font-size: 24px;
+      color: var(--moc);
+      margin-bottom: 10px;
+    }
+    
+    /* An uong theo gio */
+    .eating-schedule {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .eating-time {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+      border-top: 4px solid;
+    }
+    
+    .morning { border-color: var(--moc); }
+    .noon { border-color: var(--hoa); }
+    .afternoon { border-color: var(--tho); }
+    .evening { border-color: var(--kim); }
+    .night { border-color: var(--thuy); }
+    
+    .eating-time h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+    
+    .eating-time p {
+      font-size: 14px;
+      color: #555;
+    }
+    
+    /* Phan An uong theo gio co ban */
+    .basic-eating-guide {
+      margin: 20px 0;
+      padding: 20px;
+      background: #f0f8ff;
+      border-radius: 10px;
+      border-left: 5px solid var(--moc);
+    }
+    
+    .basic-eating-guide h2 {
+      color: var(--primary);
+      margin-bottom: 15px;
+    }
+    
+    .basic-guide-item {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px dashed #ddd;
+    }
+    
+    .basic-guide-item:last-child {
+      border-bottom: none;
+    }
+    
+    .basic-guide-item h3 {
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .basic-guide-item ul {
+      padding-left: 20px;
+    }
+    
+    .basic-guide-item li {
+      margin-bottom: 5px;
+    }
+    
+    .highlight-summary {
+      background: #fff9e6;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      text-align: center;
+      font-style: italic;
+      border-left: 5px solid var(--tho);
+    }
+    
+    /* Phan Sua Chua dac Biet */
+    .special-food {
+      background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 20px 0;
+      border-left: 6px solid #ff9800;
+      box-shadow: 0 5px 15px rgba(255, 152, 0, 0.1);
+    }
+    
+    .special-food-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .special-food-header i {
+      font-size: 32px;
+      color: #ff9800;
+    }
+    
+    .yogurt-timing {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    
+    .yogurt-time {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+    }
+    
+    .yogurt-time.recommended {
+      border: 2px solid #4caf50;
+      background: #f1f8e9;
+    }
+    
+    .yogurt-time.not-recommended {
+      border: 2px solid #f44336;
+      background: #ffebee;
+      opacity: 0.8;
+    }
+    
+    .yogurt-time h4 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    
+    .yogurt-time.recommended h4 {
+      color: #2e7d32;
+    }
+    
+    .yogurt-time.not-recommended h4 {
+      color: #c62828;
+    }
+    
+    .benefits-list {
+      margin: 15px 0;
+      padding-left: 20px;
+    }
+    
+    .benefits-list li {
+      margin-bottom: 8px;
+      position: relative;
+    }
+    
+    .benefits-list li:before {
+      content: "✓";
+      color: #4caf50;
+      font-weight: bold;
+      position: absolute;
+      left: -20px;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 30px;
+      color: #7f8c8d;
+      font-size: 14px;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .highlight {
+      background: #fff9e6;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border-left: 5px solid var(--tho);
+      font-style: italic;
+    }
+    
+    .tag {
+      display: inline-block;
+      padding: 4px 10px;
+      background: var(--light);
+      border-radius: 20px;
+      font-size: 12px;
+      margin-right: 5px;
+      margin-top: 5px;
+    }
+    
+    .health-tip {
+      background: #e3f2fd;
+      padding: 12px 15px;
+      border-radius: 8px;
+      margin: 10px 0;
+      border-left: 4px solid #2196f3;
+      font-size: 14px;
+    }
+    
+    /* Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="full-width">
+      <h1><i class="fas fa-leaf"></i> Ngu Hanh An Uong Theo Gio</h1>
+      <p>"Sang chua – Trua dang – Chieu ngot – Toi cay – dem man" - Ung dung Ngu Hanh vao bua an hang ngay de can bang suc khoe</p>
+    </header>
+    
+    <!-- PHAN AN UONG THEO GIO CO BAN -->
+    <section class="section full-width">
+      <h2 class="section-title"><i class="fas fa-utensils"></i> Ngu Hanh An Uong Theo Gio</h2>
+      
+      <div class="basic-eating-guide">
+        <h2>Buoi sang – Vi chua nhe (Moc)</h2>
+        <div class="basic-guide-item">
+          <h3><i class="fas fa-sun" style="color: var(--moc);"></i> Muc dich: danh thuc gan, khoi dong tieu hoa</h3>
+          <ul>
+            <li>1 coc nuoc am + 3–5 giot chanh</li>
+            <li>Hoac 1/2 qua cam</li>
+          </ul>
+          <p><b>dinh luong:</b> toi da 100–150g</p>
+          <span class="tag">5-7h</span>
+        </div>
+        
+        <h2>Buoi trua – Vi dang nhe (Hoa)</h2>
+        <div class="basic-guide-item">
+          <h3><i class="fas fa-fire" style="color: var(--hoa);"></i> Muc dich: Xa nhiet, mat tim</h3>
+          <ul>
+            <li>2–3 lat muop dang</li>
+            <li>1 bat rau ma nho</li>
+          </ul>
+          <span class="tag">11-13h</span>
+        </div>
+        
+        <h2>Buoi chieu – Vi ngot vua (Tho)</h2>
+        <div class="basic-guide-item">
+          <h3><i class="fas fa-seedling" style="color: var(--tho);"></i> Muc dich: Nuoi ty vi, giu suc</h3>
+          <ul>
+            <li>Com, chao, khoai, bi do</li>
+            <li>1 qua chuoi nho hoac tao</li>
+          </ul>
+          <span class="tag">15-17h</span>
+        </div>
+        
+        <h2>Buoi toi – Vi cay nhe (Kim)</h2>
+        <div class="basic-guide-item">
+          <h3><i class="fas fa-wind" style="color: var(--kim);"></i> Muc dich: Thong khi, tranh day bung</h3>
+          <ul>
+            <li>1–2 lat gung nau chin</li>
+            <li>Hanh, toi vua phai</li>
+          </ul>
+          <span class="tag">19-21h</span>
+        </div>
+        
+        <h2>Ban dem – Vi man nhe (Thuy)</h2>
+        <div class="basic-guide-item">
+          <h3><i class="fas fa-tint" style="color: var(--thuy);"></i> Muc dich: Giu tinh, bo than</h3>
+          <ul>
+            <li>1 bat canh xuong nhat</li>
+          </ul>
+          <span class="tag">21-23h</span>
+        </div>
+        
+        <div class="highlight-summary">
+          <p><i class="fas fa-lightbulb"></i> <b>Tom tat nguyen tac:</b> Sang chua – Trua dang – Chieu ngot – Toi cay – dem man</p>
+        </div>
+      </div>
+    </section>
+    
+    <!-- PHAN SUA CHUA THEO NGU HANH -->
+    <section class="section full-width">
+      <div class="special-food">
+        <div class="special-food-header">
+          <i class="fas fa-blender"></i>
+          <div>
+            <h2 style="color: #ff9800; margin: 0;">SUA CHUA TRONG NGU HANH</h2>
+            <p style="color: #666; margin-top: 5px;">Huong dan an sua chua dung thoi diem theo Ngu Hanh</p>
+          </div>
+        </div>
+        
+        <div class="health-tip">
+          <i class="fas fa-info-circle"></i> <strong>Sua chua thuoc hanh Tho</strong> (vi chua ngot, tinh mat, vao Ty Vi). Nhung tuy thoi diem an se tuong tac voi cac hanh khac.
+        </div>
+        
+        <div class="yogurt-timing">
+          <!-- Thoi diem TOT NHAT -->
+          <div class="yogurt-time recommended pulse">
+            <h4><i class="fas fa-check-circle"></i> TOT NHAT: Buoi chieu (15-17h)</h4>
+            <p><strong>Hanh Tho (Ty Vi)</strong></p>
+            <ul class="benefits-list">
+              <li>Ty vi hoat dong manh nhat</li>
+              <li>Ho tro tieu hoa bua trua</li>
+              <li>Cung cap nang luong cuoi ngay</li>
+              <li>Loi khuan phat trien tot</li>
+            </ul>
+            <p><em>Luong: 1 hop 100g</em></p>
+          </div>
+          
+          <!-- Thoi diem TOT -->
+          <div class="yogurt-time recommended">
+            <h4><i class="fas fa-thumbs-up"></i> TOT: Sau bua sang 1-2h (9-10h)</h4>
+            <p><strong>Hanh Tho sinh Kim</strong></p>
+            <ul class="benefits-list">
+              <li>Da day da tieu hoa xong</li>
+              <li>Bo sung loi khuan cho ruot</li>
+              <li>Chuan bi nang luong cho trua</li>
+            </ul>
+            <p><em>Luong: 1/2 hop 50g</em></p>
+          </div>
+          
+          <!-- Thoi diem KHONG NEN -->
+          <div class="yogurt-time not-recommended">
+            <h4><i class="fas fa-times-circle"></i> KHONG NEN: Buoi sang som (5-7h)</h4>
+            <p><strong>Hanh Moc (Gan)</strong></p>
+            <ul style="color: #c62828;">
+              <li>Lam lanh ty vi khi moi ngu day</li>
+              <li>Uc che hoat dong cua gan</li>
+              <li>Gay day bung, kho tieu</li>
+            </ul>
+          </div>
+          
+          <!-- Thoi diem CAN TRANH -->
+          <div class="yogurt-time not-recommended">
+            <h4><i class="fas fa-ban"></i> TRANH: Buoi toi muon (sau 20h)</h4>
+            <p><strong>Hanh Thuy (Than)</strong></p>
+            <ul style="color: #c62828;">
+              <li>Lam than phai lam viec nhieu</li>
+              <li>Tich tu dom, am trong co the</li>
+              <li>De gay ho, viem hong</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="highlight" style="margin-top: 20px;">
+          <h4><i class="fas fa-lightbulb"></i> MEO AN SUA CHUA THEO NGU HANH</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
+            <div>
+              <p><strong>Ket hop tot:</strong></p>
+              <ul>
+                <li>Voi chuoi (bo Tho)</li>
+                <li>Voi tao (bo Phe)</li>
+                <li>Voi mat ong (on Ty)</li>
+              </ul>
+            </div>
+            <div>
+              <p><strong>Tranh ket hop:</strong></p>
+              <ul>
+                <li>Voi do lanh (hai Ty)</li>
+                <li>Voi hai san (sinh dom)</li>
+                <li>Khi bung doi (ton Vi)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        
+        <div class="health-tip" style="background: #f3e5f5; border-left-color: #9c27b0;">
+          <i class="fas fa-user-md"></i> <strong>Nguyen tac vang:</strong> An sua chua o nhiet do phong (khong lanh), sau khi an no 30-60 phut, vao buoi chieu la tot nhat theo Ngu Hanh.
+        </div>
+      </div>
+    </section>
+    
+    <section class="section">
+      <h2 class="section-title"><i class="fas fa-yin-yang"></i> Ngu Hanh Tuong Ung</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Hanh</th>
+              <th>Tang</th>
+              <th>Vi</th>
+              <th>Gio</th>
+              <th>Thuc pham tieu bieu</th>
+            </tr>
+          </thead>
+          <tbody id="hanh"></tbody>
+        </table>
+      </div>
+    </section>
+    
+    <section class="section">
+      <h2 class="section-title"><i class="fas fa-heart"></i> Ngu Tang & Cam Xuc</h2>
+      <div class="card-container">
+        <div class="card moc-card">
+          <div class="card-content">
+            <h3>Moc – Gan</h3>
+            <p>Cam xuc: Gian</p>
+            <small>Gio: 23-3h</small>
+          </div>
+          <i class="fas fa-tree"></i>
+        </div>
+        
+        <div class="card hoa-card">
+          <div class="card-content">
+            <h3>Hoa – Tim</h3>
+            <p>Cam xuc: Vui</p>
+            <small>Gio: 11-13h</small>
+          </div>
+          <i class="fas fa-fire"></i>
+        </div>
+        
+        <div class="card tho-card">
+          <div class="card-content">
+            <h3>Tho – Ty</h3>
+            <p>Cam xuc: Lo</p>
+            <small>Gio: 7-9h</small>
+          </div>
+          <i class="fas fa-mountain"></i>
+        </div>
+        
+        <div class="card kim-card">
+          <div class="card-content">
+            <h3>Kim – Phoi</h3>
+            <p>Cam xuc: Buon</p>
+            <small>Gio: 3-7h</small>
+          </div>
+          <i class="fas fa-gem"></i>
+        </div>
+        
+        <div class="card thuy-card">
+          <div class="card-content">
+            <h3>Thuy – Than</h3>
+            <p>Cam xuc: So</p>
+            <small>Gio: 17-19h</small>
+          </div>
+          <i class="fas fa-tint"></i>
+        </div>
+      </div>
+    </section>
+    
+    <section class="section">
+      <h2 class="section-title"><i class="fas fa-clock"></i> Gio Sinh Hoc</h2>
+      <ul class="timeline" id="gio"></ul>
+    </section>
+    
+    <section class="section">
+      <h2 class="section-title"><i class="fas fa-star"></i> Chon Menh Cua Ban</h2>
+      <div class="menh-selector">
+        <select id="menh">
+          <option value="Moc">Moc</option>
+          <option value="Hoa">Hoa</option>
+          <option value="Tho">Tho</option>
+          <option value="Kim">Kim</option>
+          <option value="Thuy">Thuy</option>
+        </select>
+        
+        <div class="goiy-box">
+          <h3>Goi y Hop & Khac</h3>
+          <p id="goiy">Chon menh cua ban de xem goi y</p>
+        </div>
+      </div>
+    </section>
+    
+    <section class="section full-width">
+      <h2 class="section-title"><i class="fas fa-balance-scale"></i> Nguyen Tac Duong Sinh</h2>
+      <p>Trang nay tong hop kien thuc ung dung Ngu Hanh trong doi song: an uong theo am duong, duong sinh gia dinh, va ung dung cho nguoi benh, nguoi gia, tre em.</p>
+      
+      <div class="principles">
+        <div class="principle">
+          <i class="fas fa-clock"></i>
+          <h3>An theo gio</h3>
+          <p>Khong theo mieng</p>
+        </div>
+        <div class="principle">
+          <i class="fas fa-balance-scale"></i>
+          <h3>An vua vi</h3>
+          <p>Khong cuc doan</p>
+        </div>
+        <div class="principle">
+          <i class="fas fa-heartbeat"></i>
+          <h3>dieu than truoc</h3>
+          <p>Thuoc sau</p>
+        </div>
+      </div>
+      
+      <div class="eating-schedule">
+        <div class="eating-time morning">
+          <h3>🌅 Buoi sang (Moc)</h3>
+          <p><b>Vi chua nhe</b> - danh thuc gan</p>
+          <p>• Nuoc am + vai giot chanh</p>
+          <p>• 1/2 qua cam</p>
+          <p><span style="color: #c62828;">✗ Khong sua chua</span></p>
+          <span class="tag">5-7h</span>
+        </div>
+        
+        <div class="eating-time noon">
+          <h3>☀ Buoi trua (Hoa)</h3>
+          <p><b>Vi dang nhe</b> - Mat tim</p>
+          <p>• 2-3 lat muop dang</p>
+          <p>• 1 bat rau ma nho</p>
+          <p><span style="color: #666;">○ Co the an it</span></p>
+          <span class="tag">11-13h</span>
+        </div>
+        
+        <div class="eating-time afternoon">
+          <h3>🌇 Buoi chieu (Tho)</h3>
+          <p><b>Vi ngot vua</b> - Nuoi ty vi</p>
+          <p>• Com, chao, khoai</p>
+          <p>• Chuoi, tao</p>
+          <p><span style="color: #2e7d32;">✓ Tot nhat cho sua chua</span></p>
+          <span class="tag">15-17h</span>
+        </div>
+        
+        <div class="eating-time evening">
+          <h3>🌙 Buoi toi (Kim)</h3>
+          <p><b>Vi cay nhe</b> - Thong khi</p>
+          <p>• 1-2 lat gung nau</p>
+          <p>• Hanh, toi vua phai</p>
+          <p><span style="color: #c62828;">✗ Tranh sua chua</span></p>
+          <span class="tag">19-21h</span>
+        </div>
+        
+        <div class="eating-time night">
+          <h3>🌌 Ban dem (Thuy)</h3>
+          <p><b>Vi man nhe</b> - Bo than</p>
+          <p>• Canh xuong nhat</p>
+          <p>• It muoi</p>
+          <p><span style="color: #c62828;">✗ Tuyet doi khong</span></p>
+          <span class="tag">21-23h</span>
+        </div>
+      </div>
+    </section>
+    
+    <footer class="full-width">
+      <p>Ngu Hanh An Uong Theo Gio - Ung dung duong sinh trong doi song hien dai</p>
+      <p>Luu y: Thong tin chi mang tinh chat tham khao, khong thay the tu van y te chuyen nghiep</p>
+      <p style="margin-top: 10px; font-size: 12px; color: #999;">"Sang chua – Trua dang – Chieu ngot – Toi cay – dem man"</p>
+    </footer>
+  </div>
+
+  <script>
+    // Du lieu Ngu Hanh (da bo sung thuc pham tieu bieu)
+    const hanh = [
+      ["Moc", "Gan", "Chua", "23–3h", "#2ecc71", "Chanh, cam, dua chuot"],
+      ["Hoa", "Tim", "dang", "11–13h", "#e74c3c", "Muop dang, rau ma, kho qua"],
+      ["Tho", "Ty", "Ngot", "7–9h", "#f39c12", "Khoai, bi do, chuoi, sua chua"],
+      ["Kim", "Phoi", "Cay", "3–7h", "#95a5a6", "Gung, hanh, toi, cu cai"],
+      ["Thuy", "Than", "Man", "17–19h", "#3498db", "Rong bien, dau den, me"]
+    ];
+
+    // Render bang Ngu Hanh
+    document.getElementById("hanh").innerHTML = hanh.map(h => 
+      `<tr>
+        <td><strong style="color:${h[4]}">${h[0]}</strong></td>
+        <td>${h[1]}</td>
+        <td>${h[2]}</td>
+        <td>${h[3]}</td>
+        <td>${h[5]}</td>
+      </tr>`
+    ).join("");
+
+    // Du lieu Gio Sinh Hoc
+    const gio = [
+      ["5–7h", "dai trang", "Thoi gian tot nhat de di ve sinh"],
+      ["7–9h", "Da day", "An sang day du, bo duong"],
+      ["9–11h", "Ty", "Tieu hoa tot nhat - thoi diem co the an sua chua"],
+      ["11–13h", "Tim", "Nghi ngoi, tranh lam viec nang"],
+      ["15–17h", "Bang quang", "Thoi diem VANG de an sua chua"],
+      ["23–3h", "Gan", "Ngu sau de gan thai doc"]
+    ];
+
+    // Render Timeline Gio Sinh Hoc
+    document.getElementById("gio").innerHTML = gio.map(g => {
+      let icon = "⏰";
+      let highlight = "";
+      
+      if (g[1] === "Ty" || g[1] === "Bang quang") {
+        icon = "🟡";
+        highlight = "style='background:#fff8e1;'";
+      }
+      
+      return `<li ${highlight}>
+        <b>${g[0]} – ${g[1]} ${icon}</b>
+        <br>${g[2]}
+      </li>`;
+    }).join("");
+
+    // Du lieu goi y Ngu Hanh
+    const goiY = {
+      "Moc": "Hop voi Thuy (sinh) – tranh Kim (khac). Mau sac: xanh la, den. Huong: dong, Bac. Thuc pham: rau xanh, chanh, cam.",
+      "Hoa": "Hop voi Moc (sinh) – tranh Thuy (khac). Mau sac: do, cam, xanh la. Huong: Nam. Thuc pham: ot, ca chua, dau.",
+      "Tho": "Hop voi Hoa (sinh) – tranh Moc (khac). Mau sac: vang, nau, do. Huong: Trung tam. Thuc pham: khoai, bi, sua chua.",
+      "Kim": "Hop voi Tho (sinh) – tranh Hoa (khac). Mau sac: trang, bac, vang. Huong: Tay. Thuc pham: gung, toi, cu cai.",
+      "Thuy": "Hop voi Kim (sinh) – tranh Tho (khac). Mau sac: den, xanh bien, trang. Huong: Bac. Thuc pham: rong bien, dau den."
+    };
+
+    // Xu ly chon menh
+    const menhSelect = document.getElementById("menh");
+    const goiyElement = document.getElementById("goiy");
+    
+    // Goi y ban dau
+    goiyElement.textContent = goiY[menhSelect.value];
+    
+    // Cap nhat khi thay doi
+    menhSelect.addEventListener("change", function(e) {
+      goiyElement.textContent = goiY[e.target.value];
+      
+      // Hieu ung visual
+      goiyElement.parentElement.style.animation = "none";
+      setTimeout(() => {
+        goiyElement.parentElement.style.animation = "fadeIn 0.5s ease";
+      }, 10);
+    });
+
+    // Them hieu ung cho card khi load trang
+    document.addEventListener("DOMContentLoaded", function() {
+      const cards = document.querySelectorAll(".card, .eating-time, .yogurt-time, .basic-guide-item");
+      cards.forEach((card, index) => {
+        card.style.opacity = "0";
+        card.style.transform = "translateY(20px)";
+        
+        setTimeout(() => {
+          card.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+          card.style.opacity = "1";
+          card.style.transform = "translateY(0)";
+        }, index * 100);
+      });
+      
+      // Them hieu ung cho phan sua chua
+      const yogurtSection = document.querySelector(".special-food");
+      yogurtSection.style.animation = "fadeIn 1s ease";
+    });
+    
+    // Them hieu ung cho thoi diem tot nhat
+    setInterval(() => {
+      const bestTime = document.querySelector('.pulse');
+      if (bestTime) {
+        bestTime.classList.toggle('pulse');
+        setTimeout(() => bestTime.classList.toggle('pulse'), 100);
+      }
+    }, 4000);
+  </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>TCDN1 – Chuong 2 (Phan 7): Dong tien khong deu</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{font-family:Arial; background:#f4f6f8; margin:0}
+header{background:#0d47a1;color:white;padding:20px}
+section{background:white;margin:16px;padding:20px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
+h2{color:#0d47a1}
+h3{color:#1565c0}
+.note{background:#e3f2fd;padding:12px;border-left:5px solid #2196f3}
+.warn{background:#ffebee;padding:12px;border-left:5px solid #c62828}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{border:1px solid #ccc;padding:8px;text-align:center}
+th{background:#e3f2fd}
+button{background:#1976d2;color:white;border:none;padding:10px 14px;border-radius:6px;cursor:pointer;margin:4px 0}
+button:hover{background:#0d47a1}
+input{width:100%;padding:8px;margin-bottom:8px}
+footer{text-align:center;padding:16px;color:#555}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>📘 TCDN 1 – Chuong 2 (Phan 7)</h1>
+<p>Dong tien khong deu – IRR – NPV – FV | Quang Trung TV</p>
+<p>🔗 Link video: Quang Trung TV – Ung dung excel gia tri thoi gian cua tien (Phan 7)</p>
+</header>
+
+<!-- 2.1 THUAT NGU -->
+<section id="thuatngu">
+<h2>2.1 Thuat ngu tai chinh & cong thuc kho (hieu bang doi song)</h2>
+
+<h3>Dong tien khong deu</h3>
+<p>La cac khoan thu/chi <b>khong bang nhau</b> theo tung nam</p>
+
+<div class="note">
+Vi du doi song:  
+Nam dau kinh doanh kho → tra it  
+Nam sau ban tot → tra nhieu
+</div>
+
+<h3>IRR – Internal Rate of Return</h3>
+<p>La <b>lai suat thuc te</b> cua mot khoan vay/dau tu khi dong tien khong deu</p>
+<p><b>Excel:</b> <code>=IRR(values)</code></p>
+
+<div class="warn">
+⚠ IRR dung khi tien moi ky KHAC NHAU  
+❌ Khong dung RATE trong truong hop nay
+</div>
+
+<h3>NPV – Net Present Value</h3>
+<p>Dung de dua cac dong tien khac nam ve cung thoi diem (nam 0)</p>
+<p><b>Excel:</b> <code>=NPV(rate, values)</code></p>
+
+<h3>FV – Future Value</h3>
+<p>Tinh so tien con phai tra trong tuong lai khi lai suat thay doi</p>
+</section>
+
+<!-- 2.2 DUNG CHO AI -->
+<section id="doi-tuong">
+<h2>2.2 Dung trong cong viec hay ca nhan?</h2>
+
+<table>
+<tr>
+<th>doi tuong</th>
+<th>Dung ham</th>
+<th>Giai quyet viec gi</th>
+</tr>
+<tr>
+<td>Ca nhan</td>
+<td>IRR</td>
+<td>Biet vay co bi “cat co” khong</td>
+</tr>
+<tr>
+<td>Ho kinh doanh</td>
+<td>NPV</td>
+<td>Khong vo no khi thu nhap that thuong</td>
+</tr>
+<tr>
+<td>Doanh nghiep</td>
+<td>IRR + NPV</td>
+<td>Chon du an song sot</td>
+</tr>
+</table>
+
+<div class="note">
+✔ Thu nhap cang khong deu → cang can IRR & NPV
+</div>
+</section>
+
+<!-- 3.2 TRINH TU QUYET dINH -->
+<section id="trinh-tu">
+<h2>3.2 Lam gi truoc – lam gi sau? (theo video bai 19)</h2>
+
+<h3>Buoc 1: Ghi dung dau dong tien</h3>
+<ul>
+<li>Nhan tien → <b>duong (+)</b></li>
+<li>Tra tien → <b>am (-)</b></li>
+</ul>
+
+<h3>Buoc 2: Xac dinh bai toan</h3>
+<ul>
+<li>Tim lai suat → dung <b>IRR</b></li>
+<li>Quy ve hien tai → dung <b>NPV</b></li>
+</ul>
+
+<h3>Buoc 3: Khi lai suat thay doi</h3>
+<p>Khong tinh lai tu dau → chi:</p>
+<ol>
+<li>Chiet khau cac khoan da tra (NPV)</li>
+<li>Tim goc con no</li>
+<li>Dung FV de tinh khoan cuoi</li>
+</ol>
+
+<div class="warn">
+⚠ Lai suat tang → ap luc tra no tang rat manh
+</div>
+</section>
+
+<!-- BAI TOAN -->
+<section id="baitoan">
+<h2>📐 Bai toan mo phong bai 19</h2>
+
+<label>So tien vay ban dau (+):</label>
+<input id="v0" type="number" placeholder="50000000">
+
+<label>Cac khoan tra tung nam (am, cach nhau bang dau phay):</label>
+<input id="flows" placeholder="-10000000,-15000000,-17000000">
+
+<label>Lai suat moi (%/nam):</label>
+<input id="rate" placeholder="5">
+
+<button onclick="tinh()">Tinh nghia vu tra cuoi ky</button>
+
+<div id="kq"></div>
+
+<script>
+function tinh(){
+    let v0 = Number(v0.value);
+    let arr = flows.value.split(',').map(x=>Number(x));
+    let r = Number(rate.value)/100;
+
+    if(!v0 || arr.length==0 || !r){
+        kq.innerHTML="⚠ Nhap day du du lieu";
+        return;
+    }
+
+    let npv = 0;
+    for(let i=0;i<arr.length;i++){
+        npv += arr[i]/Math.pow(1+r,i+1);
+    }
+
+    let gocConNo = v0 + npv;
+    let fv = gocConNo * Math.pow(1+r, arr.length+1);
+
+    kq.innerHTML = `
+    <p><b>Gia tri NPV cac khoan da tra:</b> ${npv.toLocaleString()} d</p>
+    <p><b>Goc con no:</b> ${gocConNo.toLocaleString()} d</p>
+    <p><b>So tien phai tra cuoi ky:</b> ${fv.toLocaleString()} d</p>
+    `;
+}
+</script>
+</section>
+
+<!-- 4.2 TINH HUONG -->
+<section id="tinhhuong">
+<h2>4.2 Nhap tinh huong & xu ly nhanh</h2>
+
+<input placeholder="Vi du: vay von, tra gop, dau tu dong tien khong deu...">
+
+<button onclick="go('thuatngu')">❓ Khong hieu IRR / NPV</button><br>
+<button onclick="go('doi-tuong')">👤 Ca nhan hay doanh nghiep?</button><br>
+<button onclick="go('trinh-tu')">🧭 Khong biet lam buoc nao</button><br>
+<button onclick="go('baitoan')">💰 Muon biet tra bao nhieu</button>
+
+<script>
+function go(id){
+    document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+</script>
+</section>
+
+<footer>
+TCDN 1 – Dong tien khong deu la noi nhieu nguoi pha san nhat
+</footer>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

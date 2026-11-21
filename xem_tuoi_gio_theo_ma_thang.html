@@ -1,0 +1,1461 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinh Tuoi va Tra Mau Theo Mod 12</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 900px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            color: #ecf0f1;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .input-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .input-section {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background-color: #f8f9fa;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .people-section {
+            grid-column: span 2;
+        }
+        
+        @media (max-width: 768px) {
+            .people-section {
+                grid-column: span 1;
+            }
+        }
+        
+        .people-list {
+            max-height: 250px;
+            overflow-y: auto;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            margin-top: 5px;
+            background-color: #f8f9fa;
+            padding: 10px;
+        }
+        
+        .person-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e1e8ed;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .person-item:hover {
+            background-color: #e8f4fc;
+            transform: translateX(5px);
+        }
+        
+        .person-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .person-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .person-dob {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+        }
+        
+        .btn-calculate {
+            background: linear-gradient(135deg, #00b09b 0%, #96c93d 100%);
+            color: white;
+        }
+        
+        .btn-calculate:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 176, 155, 0.3);
+        }
+        
+        .btn-reset {
+            background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+            color: white;
+        }
+        
+        .btn-reset:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 65, 108, 0.3);
+        }
+        
+        .results {
+            margin-top: 40px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            border: 2px solid #e1e8ed;
+        }
+        
+        .result-title {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #3498db;
+            font-weight: 700;
+            text-align: center;
+        }
+        
+        .result-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .result-step {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .result-step:hover {
+            transform: translateY(-5px);
+        }
+        
+        .step-label {
+            font-weight: 600;
+            color: #7f8c8d;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .step-value {
+            color: #2c3e50;
+            font-size: 24px;
+            font-weight: 700;
+            min-height: 40px;
+        }
+        
+        .highlight {
+            color: #e74c3c;
+            font-size: 28px;
+        }
+        
+        .color-result {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .color-box {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            font-size: 24px;
+            border: 5px solid white;
+            transition: transform 0.5s;
+        }
+        
+        .color-box:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
+        
+        .color-info {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            text-align: left;
+        }
+        
+        .color-info h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .color-info p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .color-tables {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 3px solid #e1e8ed;
+        }
+        
+        .tables-title {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 700;
+        }
+        
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .tab-btn {
+            padding: 12px 25px;
+            background: #ecf0f1;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #2c3e50;
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            color: white;
+        }
+        
+        .tab-btn:hover:not(.active) {
+            background: #d5dbdb;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .color-table {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .color-table-title {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .color-table-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        
+        .color-table-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            transition: transform 0.3s;
+        }
+        
+        .color-table-item:hover {
+            transform: translateY(-5px);
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .color-sample {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            border: 3px solid white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+        
+        .color-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        
+        .color-hex {
+            color: #7f8c8d;
+            font-size: 14px;
+            font-family: monospace;
+            margin-bottom: 5px;
+        }
+        
+        .color-number {
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .color-description {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            line-height: 1.4;
+            margin-top: 5px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 25px;
+            color: #7f8c8d;
+            font-size: 14px;
+            background: #f8f9fa;
+            border-top: 1px solid #e1e8ed;
+        }
+        
+        @media (max-width: 600px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            .color-box {
+                width: 150px;
+                height: 150px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 TINH TUOI & TRA MAU THEO MOD 12</h1>
+            <p class="subtitle">Nhap ngay thang de tinh tuoi va kham pha mau sac tuong ung voi ban</p>
+        </div>
+        
+        <div class="content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="currentDate">📅 1. NGAY HIEN TAI:</label>
+                    <input type="date" id="currentDate" value="">
+                </div>
+                
+                <div class="form-group">
+                    <label for="birthDate">🎂 2. NGAY SINH:</label>
+                    <input type="date" id="birthDate">
+                </div>
+                
+                <div class="form-group people-section">
+                    <label for="peopleSelect">👥 3. DANH SACH NGUOI:</label>
+                    <select id="peopleSelect">
+                        <option value="">-- Chon mot nguoi tu danh sach --</option>
+                    </select>
+                    
+                    <div class="people-list" id="peopleList">
+                        <!-- Danh sach nguoi se duoc them bang JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button class="btn-calculate" id="calculateBtn">🔢 TINH TOAN</button>
+                <button class="btn-reset" id="resetBtn">🔄 dAT LAI</button>
+            </div>
+            
+            <div class="results">
+                <div class="result-title">📊 KET QUA TINH TOAN</div>
+                
+                <div class="result-steps">
+                    <div class="result-step">
+                        <div class="step-label">Tuoi hien tai</div>
+                        <div class="step-value" id="ageResult">--</div>
+                    </div>
+                    
+                    <div class="result-step">
+                        <div class="step-label">Ket qua MOD 12</div>
+                        <div class="step-value" id="modResult">--</div>
+                    </div>
+                    
+                    <div class="result-step">
+                        <div class="step-label">Ma thang</div>
+                        <div class="step-value" id="monthCodeResult">--</div>
+                    </div>
+                </div>
+                
+                <div class="color-result">
+                    <h3>🎨 MAU SAC TUONG UNG</h3>
+                    <div class="color-box" id="colorBox">
+                        <div id="colorBoxText">Chua co ket qua</div>
+                    </div>
+                    
+                    <div class="color-info" id="colorInfo">
+                        <h3 id="colorTitle">Thong tin mau</h3>
+                        <p id="colorDescription">Chon ngay sinh va nhan "Tinh toan" de xem mau sac tuong ung voi ban.</p>
+                        <p id="colorHex">Ma HEX: --</p>
+                        <p id="colorUsage">Ung dung: --</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="color-tables">
+                <div class="tables-title">📋 BANG MAU TRA CUU</div>
+                
+                <div class="tabs" id="tableTabs">
+                    <!-- Cac tab se duoc them bang JavaScript -->
+                </div>
+                
+                <div id="tableContents">
+                    <!-- Noi dung cac bang mau se duoc them bang JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2024 - Ung dung Tinh Tuoi & Tra Mau Theo Mod 12 | Du lieu tu danh sach 25 nguoi</p>
+        </div>
+    </div>
+
+    <script>
+        // ==================== DU LIEU ====================
+        
+        // Chuoi du lieu nguoi
+        const peopleDataString = "1NGUYENKHACNANG04/06/19442TOTHIHA29/08/19483NGUYENMINHNAM03/03/19714THANTHIKIMANH23/09/19815NGUYENTONGANAN28/09/20146NGUYENTOMINHCHAU25/07/20167NGUYENTOBICHNGOC05/02/20208NGUYENTHIMINHHANG07/01/19749NGOQUYCUONG23/05/197310NGOGIABACH12/10/200011NGOGIALINH05/04/200512NGUYENTHIMINHPHUONG06/11/197813HOANGANHDUNG21/09/197814HOANGHAIVINH03/06/201015HOANGTHIENBACHANH14/11/201516TO KIM HUE9/8/196017NGUYEN TUAN ANH23/10/198318NGUYEN THE ANH24/3/200119NGO THI MAI12/12/194820TO VIET HUNG17/6/199621TO THI HONG10/10/196422VU VAN HIEP24/4/197423NGUYEN THI CHI8/2/194624NGUYEN TAN BAC30/11/195725NGUYEN THI TAM8/8/1954";
+        
+        // Bang tra cuu MOD 12
+        const monthCodeTable = {
+            10: 1,
+            11: 2,
+            2: 4,
+            3: 4,
+            12: 6,
+            9: 6,
+            8: 3,
+            7: 0,
+            4: 0,
+            5: 2,
+            6: 5,
+            1: 1
+        };
+        
+        // Bang mau voi mo ta chi tiet
+        const colorTables = [
+            [
+                {
+                    number: 1, name: "dO", hex: "#FF0000",
+                    description: "Mau cua nang luong, dam me va hanh dong",
+                    usage: "Dung khi can su chu y, nhiet huyet, quyet doan"
+                },
+                {
+                    number: 2, name: "VANG", hex: "#FFFF00",
+                    description: "Mau cua tri tue, sang tao va lac quan",
+                    usage: "Dung khi can su thong minh, vui ve, sang tao"
+                },
+                {
+                    number: 3, name: "KIM LOAI", hex: "#C0C0C0",
+                    description: "Mau cua cong nghe, hien dai va tinh te",
+                    usage: "Dung trong thiet ke cong nghe, sang trong"
+                },
+                {
+                    number: 4, name: "XANH BIEN", hex: "#0000FF",
+                    description: "Mau cua su tin cay, tri tue va yen binh",
+                    usage: "Dung trong giao tiep, giao duc, y te"
+                },
+                {
+                    number: 5, name: "XANH LA", hex: "#008000",
+                    description: "Mau cua thien nhien, tang truong va suc khoe",
+                    usage: "Dung trong moi truong, suc khoe, tai chinh"
+                },
+                {
+                    number: 6, name: "dO", hex: "#FF0000",
+                    description: "Mau cua tinh yeu, suc manh va nguy hiem",
+                    usage: "Dung trong canh bao, the thao, giai tri"
+                },
+                {
+                    number: 7, name: "VANG", hex: "#FFFF00",
+                    description: "Mau cua hanh phuc, tre trung va canh bao",
+                    usage: "Dung trong giao duc tre em, giai tri"
+                },
+                {
+                    number: 8, name: "CAM", hex: "#FFA500",
+                    description: "Mau cua su am ap, nhiet tinh va vui ve",
+                    usage: "Dung trong am thuc, the thao, mua sam"
+                },
+                {
+                    number: 9, name: "XANH BIEN", hex: "#0000FF",
+                    description: "Mau cua su trung thanh, tri tue va dam me",
+                    usage: "Dung trong doanh nghiep, chinh tri, cong nghe"
+                },
+                {
+                    number: 10, name: "XANH LA", hex: "#008000",
+                    description: "Mau cua su can bang, hai hoa va phat trien",
+                    usage: "Dung trong tai chinh, moi truong, giao duc"
+                },
+                {
+                    number: 11, name: "dO", hex: "#FF0000",
+                    description: "Mau cua quyen luc, tinh yeu va nguy hiem",
+                    usage: "Dung trong canh bao, quang cao, the thao"
+                },
+                {
+                    number: 12, name: "VANG", hex: "#FFFF00",
+                    description: "Mau cua anh sang, niem vui va sang tao",
+                    usage: "Dung trong giao duc, giai tri, thiet ke"
+                },
+                {
+                    number: 13, name: "TRANG", hex: "#FFFFFF",
+                    description: "Mau cua su trong sang, tinh khiet va don gian",
+                    usage: "Dung trong y te, cong nghe, thiet ke toi gian"
+                },
+                {
+                    number: 14, name: "XANH BIEN", hex: "#0000FF",
+                    description: "Mau cua su on dinh, tin cay va chuyen nghiep",
+                    usage: "Dung trong doanh nghiep, giao duc, y te"
+                }
+            ],
+            [
+                {
+                    number: 1, name: "dEN", hex: "#000000",
+                    description: "Mau cua su bi an, quyen luc va thanh lich",
+                    usage: "Dung trong thoi trang cao cap, cong nghe"
+                },
+                {
+                    number: 2, name: "TRANG", hex: "#FFFFFF",
+                    description: "Mau cua su tinh khiet, trong sang va hien dai",
+                    usage: "Dung trong y te, cong nghe, thiet ke"
+                },
+                {
+                    number: 3, name: "DA TROI", hex: "#87CEEB",
+                    description: "Mau cua bau troi, tu do va thanh than",
+                    usage: "Dung trong du lich, giai tri, thiet ke tre"
+                },
+                {
+                    number: 4, name: "XANH LA", hex: "#008000",
+                    description: "Mau cua thien nhien, phat trien va an toan",
+                    usage: "Dung trong moi truong, tai chinh, suc khoe"
+                },
+                {
+                    number: 5, name: "XANH BIEN", hex: "#0000FF",
+                    description: "Mau cua tri tue, trung thanh va yen binh",
+                    usage: "Dung trong giao duc, doanh nghiep, cong nghe"
+                },
+                {
+                    number: 6, name: "TIM", hex: "#800080",
+                    description: "Mau cua sang tao, tam linh va sang trong",
+                    usage: "Dung trong nghe thuat, tam linh, thoi trang"
+                },
+                {
+                    number: 7, name: "dO", hex: "#FF0000",
+                    description: "Mau cua dam me, nang luong va tinh yeu",
+                    usage: "Dung trong quang cao, the thao, giai tri"
+                },
+                {
+                    number: 8, name: "CAM", hex: "#FFA500",
+                    description: "Mau cua su nhiet tinh, sang tao va vui ve",
+                    usage: "Dung trong am thuc, giai tri, the thao"
+                },
+                {
+                    number: 9, name: "VANG", hex: "#FFFF00",
+                    description: "Mau cua tri tue, lac quan va sang tao",
+                    usage: "Dung trong giao duc, thiet ke, giai tri"
+                },
+                {
+                    number: 10, name: "dEN", hex: "#000000",
+                    description: "Mau cua su thanh lich, bi an va quyen luc",
+                    usage: "Dung trong thoi trang, cong nghe, nghe thuat"
+                },
+                {
+                    number: 11, name: "TRANG", hex: "#FFFFFF",
+                    description: "Mau cua su tinh khiet, don gian va hien dai",
+                    usage: "Dung trong y te, cong nghe, thiet ke"
+                },
+                {
+                    number: 12, name: "XANH DA TROI", hex: "#87CEEB",
+                    description: "Mau cua su tu do, thanh than va sang tao",
+                    usage: "Dung trong du lich, giai tri, thiet ke"
+                },
+                {
+                    number: 13, name: "XANH LA", hex: "#008000",
+                    description: "Mau cua thien nhien, tang truong va an toan",
+                    usage: "Dung trong moi truong, tai chinh, suc khoe"
+                },
+                {
+                    number: 14, name: "XANH BIEN", hex: "#0000FF",
+                    description: "Mau cua su on dinh, tin cay va tri tue",
+                    usage: "Dung trong doanh nghiep, giao duc, cong nghe"
+                }
+            ],
+            [
+                {
+                    number: 1, name: "VANG", hex: "#FFFF00",
+                    description: "Mau cua anh sang, niem vui va tri tue",
+                    usage: "Dung trong giao duc, giai tri, thiet ke"
+                },
+                {
+                    number: 2, name: "dO", hex: "#FF0000",
+                    description: "Mau cua dam me, nang luong va quyet doan",
+                    usage: "Dung trong the thao, quang cao, giai tri"
+                },
+                {
+                    number: 3, name: "HONG", hex: "#FFC0CB",
+                    description: "Mau cua tinh yeu, diu dang va lang man",
+                    usage: "Dung trong thoi trang nu, my pham, qua tang"
+                },
+                {
+                    number: 4, name: "GHI", hex: "#808080",
+                    description: "Mau cua su trung lap, chuyen nghiep va hien dai",
+                    usage: "Dung trong cong nghe, van phong, thiet ke"
+                },
+                {
+                    number: 5, name: "TRANG", hex: "#FFFFFF",
+                    description: "Mau cua su tinh khiet, don gian va sach se",
+                    usage: "Dung trong y te, cong nghe, thiet ke toi gian"
+                },
+                {
+                    number: 6, name: "dEN", hex: "#000000",
+                    description: "Mau cua su thanh lich, bi an va quyen luc",
+                    usage: "Dung trong thoi trang, cong nghe, nghe thuat"
+                },
+                {
+                    number: 7, name: "XANH DA TROI", hex: "#87CEEB",
+                    description: "Mau cua su tu do, thanh than va sang tao",
+                    usage: "Dung trong du lich, giai tri, thiet ke tre"
+                },
+                {
+                    number: 8, name: "XANH LA", hex: "#008000",
+                    description: "Mau cua thien nhien, phat trien va an toan",
+                    usage: "Dung trong moi truong, tai chinh, suc khoe"
+                },
+                {
+                    number: 9, name: "VANG", hex: "#FFFF00",
+                    description: "Mau cua hanh phuc, sang tao va lac quan",
+                    usage: "Dung trong giao duc, giai tri, thiet ke"
+                },
+                {
+                    number: 10, name: "dO", hex: "#FF0000",
+                    description: "Mau cua nang luong, dam me va hanh dong",
+                    usage: "Dung trong the thao, quang cao, giai tri"
+                },
+                {
+                    number: 11, name: "HONG", hex: "#FFC0CB",
+                    description: "Mau cua tinh yeu, diu dang va lang man",
+                    usage: "Dung trong thoi trang, my pham, qua tang"
+                },
+                {
+                    number: 12, name: "GHI", hex: "#808080",
+                    description: "Mau cua su trung lap, hien dai va chuyen nghiep",
+                    usage: "Dung trong cong nghe, van phong, thiet ke"
+                },
+                {
+                    number: 13, name: "TRANG", hex: "#FFFFFF",
+                    description: "Mau cua su trong sang, tinh khiet va don gian",
+                    usage: "Dung trong y te, cong nghe, thiet ke"
+                },
+                {
+                    number: 14, name: "dEN", hex: "#000000",
+                    description: "Mau cua su bi an, quyen luc va thanh lich",
+                    usage: "Dung trong thoi trang, cong nghe, nghe thuat"
+                }
+            ],
+            [
+                {
+                    number: 1, name: "dO", hex: "#FF0000",
+                    description: "Mau cua dam me, nang luong va quyet doan",
+                    usage: "Dung khi can su chu y, nhiet huyet, hanh dong"
+                },
+                {
+                    number: 2, name: "VANG", hex: "#FFFF00",
+                    description: "Mau cua tri tue, sang tao va lac quan",
+                    usage: "Dung trong giao duc, thiet ke, giai tri"
+                },
+                {
+                    number: 3, name: "CAM", hex: "#FFA500",
+                    description: "Mau cua su am ap, nhiet tinh va vui ve",
+                    usage: "Dung trong am thuc, the thao, mua sam"
+                },
+                {
+                    number: 4, name: "XANH BIEN", hex: "#0000FF",
+                    description: "Mau cua su tin cay, tri tue va yen binh",
+                    usage: "Dung trong doanh nghiep, giao duc, cong nghe"
+                },
+                {
+                    number: 5, name: "XANH LA", hex: "#008000",
+                    description: "Mau cua thien nhien, tang truong va suc khoe",
+                    usage: "Dung trong moi truong, tai chinh, suc khoe"
+                },
+                {
+                    number: 6, name: "XANH LA MA", hex: "#90EE90",
+                    description: "Mau cua su tuoi moi, tre trung va hy vong",
+                    usage: "Dung trong suc khoe, thien nhien, giai tri"
+                },
+                {
+                    number: 7, name: "TIM", hex: "#800080",
+                    description: "Mau cua su sang tao, tam linh va sang trong",
+                    usage: "Dung trong nghe thuat, tam linh, thoi trang"
+                },
+                {
+                    number: 8, name: "dO", hex: "#FF0000",
+                    description: "Mau cua tinh yeu, suc manh va nguy hiem",
+                    usage: "Dung trong canh bao, the thao, giai tri"
+                },
+                {
+                    number: 9, name: "VANG", hex: "#FFFF00",
+                    description: "Mau cua anh sang, niem vui va sang tao",
+                    usage: "Dung trong giao duc, giai tri, thiet ke"
+                },
+                {
+                    number: 10, name: "DA CAM", hex: "#FFA500",
+                    description: "Mau cua su nhiet tinh, sang tao va vui ve",
+                    usage: "Dung trong am thuc, giai tri, the thao"
+                },
+                {
+                    number: 11, name: "XANH BIEN", hex: "#0000FF",
+                    description: "Mau cua su trung thanh, tri tue va dam me",
+                    usage: "Dung trong doanh nghiep, chinh tri, cong nghe"
+                },
+                {
+                    number: 12, name: "XANH LA", hex: "#008000",
+                    description: "Mau cua su can bang, hai hoa va phat trien",
+                    usage: "Dung trong tai chinh, moi truong, giao duc"
+                },
+                {
+                    number: 13, name: "XANH LA MA", hex: "#90EE90",
+                    description: "Mau cua su tuoi moi, tre trung va hy vong",
+                    usage: "Dung trong suc khoe, thien nhien, giai tri"
+                },
+                {
+                    number: 14, name: "TIM", hex: "#800080",
+                    description: "Mau cua su sang tao, tam linh va sang trong",
+                    usage: "Dung trong nghe thuat, tam linh, thoi trang"
+                }
+            ],
+            [
+                {
+                    number: 1, name: "dO", hex: "#FF0000",
+                    description: "Mau cua nang luong, dam me va hanh dong",
+                    usage: "Dung khi can su chu y, nhiet huyet, quyet doan"
+                },
+                {
+                    number: 2, name: "VANG", hex: "#FFFF00",
+                    description: "Mau cua tri tue, sang tao va lac quan",
+                    usage: "Dung trong giao duc, thiet ke, giai tri"
+                },
+                {
+                    number: 3, name: "XANH LA", hex: "#008000",
+                    description: "Mau cua thien nhien, tang truong va suc khoe",
+                    usage: "Dung trong moi truong, tai chinh, suc khoe"
+                },
+                {
+                    number: 4, name: "dO", hex: "#FF0000",
+                    description: "Mau cua dam me, nang luong va quyet doan",
+                    usage: "Dung trong the thao, quang cao, giai tri"
+                },
+                {
+                    number: 5, name: "VANG", hex: "#FFFF00",
+                    description: "Mau cua anh sang, niem vui va sang tao",
+                    usage: "Dung trong giao duc, giai tri, thiet ke"
+                },
+                {
+                    number: 6, name: "XANH LA", hex: "#008000",
+                    description: "Mau cua thien nhien, phat trien va an toan",
+                    usage: "Dung trong moi truong, tai chinh, suc khoe"
+                },
+                {
+                    number: 7, name: "dO", hex: "#FF0000",
+                    description: "Mau cua tinh yeu, suc manh va nguy hiem",
+                    usage: "Dung trong canh bao, the thao, giai tri"
+                },
+                {
+                    number: 8, name: "VANG", hex: "#FFFF00",
+                    description: "Mau cua hanh phuc, sang tao va lac quan",
+                    usage: "Dung trong giao duc, giai tri, thiet ke"
+                },
+                {
+                    number: 9, name: "XANH LA", hex: "#008000",
+                    description: "Mau cua su can bang, hai hoa va phat trien",
+                    usage: "Dung trong tai chinh, moi truong, giao duc"
+                },
+                {
+                    number: 10, name: "dO", hex: "#FF0000",
+                    description: "Mau cua nang luong, dam me va hanh dong",
+                    usage: "Dung khi can su chu y, nhiet huyet, quyet doan"
+                },
+                {
+                    number: 11, name: "VANG", hex: "#FFFF00",
+                    description: "Mau cua tri tue, sang tao va lac quan",
+                    usage: "Dung trong giao duc, thiet ke, giai tri"
+                },
+                {
+                    number: 12, name: "XANH LA", hex: "#008000",
+                    description: "Mau cua thien nhien, tang truong va suc khoe",
+                    usage: "Dung trong moi truong, tai chinh, suc khoe"
+                },
+                {
+                    number: 13, name: "dO", hex: "#FF0000",
+                    description: "Mau cua dam me, nang luong va quyet doan",
+                    usage: "Dung trong the thao, quang cao, giai tri"
+                },
+                {
+                    number: 14, name: "VANG", hex: "#FFFF00",
+                    description: "Mau cua anh sang, niem vui va sang tao",
+                    usage: "Dung trong giao duc, giai tri, thiet ke"
+                }
+            ],
+            [
+                {
+                    number: 1, name: "XANH LA", hex: "#008000",
+                    description: "Mau cua thien nhien, tang truong va suc khoe",
+                    usage: "Dung trong moi truong, tai chinh, suc khoe"
+                },
+                {
+                    number: 2, name: "dO", hex: "#FF0000",
+                    description: "Mau cua dam me, nang luong va quyet doan",
+                    usage: "Dung trong the thao, quang cao, giai tri"
+                },
+                {
+                    number: 3, name: "VANG", hex: "#FFFF00",
+                    description: "Mau cua tri tue, sang tao va lac quan",
+                    usage: "Dung trong giao duc, thiet ke, giai tri"
+                },
+                {
+                    number: 4, name: "dEN", hex: "#000000",
+                    description: "Mau cua su bi an, quyen luc va thanh lich",
+                    usage: "Dung trong thoi trang, cong nghe, nghe thuat"
+                },
+                {
+                    number: 5, name: "XANH LA", hex: "#008000",
+                    description: "Mau cua thien nhien, phat trien va an toan",
+                    usage: "Dung trong moi truong, tai chinh, suc khoe"
+                },
+                {
+                    number: 6, name: "dO", hex: "#FF0000",
+                    description: "Mau cua tinh yeu, suc manh va nguy hiem",
+                    usage: "Dung trong canh bao, the thao, giai tri"
+                },
+                {
+                    number: 7, name: "VANG", hex: "#FFFF00",
+                    description: "Mau cua hanh phuc, sang tao va lac quan",
+                    usage: "Dung trong giao duc, giai tri, thiet ke"
+                },
+                {
+                    number: 8, name: "dEN", hex: "#000000",
+                    description: "Mau cua su thanh lich, bi an va quyen luc",
+                    usage: "Dung trong thoi trang, cong nghe, nghe thuat"
+                },
+                {
+                    number: 9, name: "LAM", hex: "#0000FF",
+                    description: "Mau cua su tin cay, tri tue va yen binh",
+                    usage: "Dung trong doanh nghiep, giao duc, cong nghe"
+                },
+                {
+                    number: 10, name: "dO", hex: "#FF0000",
+                    description: "Mau cua nang luong, dam me va hanh dong",
+                    usage: "Dung khi can su chu y, nhiet huyet, quyet doan"
+                },
+                {
+                    number: 11, name: "VANG", hex: "#FFFF00",
+                    description: "Mau cua tri tue, sang tao va lac quan",
+                    usage: "Dung trong giao duc, thiet ke, giai tri"
+                },
+                {
+                    number: 12, name: "dEN", hex: "#000000",
+                    description: "Mau cua su bi an, quyen luc va thanh lich",
+                    usage: "Dung trong thoi trang, cong nghe, nghe thuat"
+                },
+                {
+                    number: 13, name: "XANH LA", hex: "#008000",
+                    description: "Mau cua su can bang, hai hoa va phat trien",
+                    usage: "Dung trong tai chinh, moi truong, giao duc"
+                },
+                {
+                    number: 14, name: "dO", hex: "#FF0000",
+                    description: "Mau cua dam me, nang luong va quyet doan",
+                    usage: "Dung trong the thao, quang cao, giai tri"
+                }
+            ]
+        ];
+        
+        // ==================== KHOI TAO ====================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // dat ngay hien tai mac dinh
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('currentDate').value = today;
+            
+            // Khoi tao danh sach nguoi
+            initPeopleList();
+            
+            // Khoi tao bang mau
+            initColorTables();
+            
+            // Gan su kien
+            document.getElementById('calculateBtn').addEventListener('click', calculateAll);
+            document.getElementById('resetBtn').addEventListener('click', resetForm);
+            document.getElementById('peopleSelect').addEventListener('change', selectPerson);
+        });
+        
+        // Phan tich chuoi du lieu nguoi
+        function parsePeopleData() {
+            const people = [];
+            let currentIndex = 0;
+            const data = peopleDataString;
+            
+            while (currentIndex < data.length) {
+                // Tim so ID
+                let id = '';
+                while (currentIndex < data.length && !isNaN(data[currentIndex]) && data[currentIndex] !== ' ') {
+                    id += data[currentIndex];
+                    currentIndex++;
+                }
+                
+                if (!id) break;
+                
+                // Tim ten (cho den khi gap so)
+                let name = '';
+                while (currentIndex < data.length) {
+                    const char = data[currentIndex];
+                    
+                    // Dung khi gap 2 so lien tiep (co the la ngay sinh)
+                    if (currentIndex + 1 < data.length && 
+                        !isNaN(data[currentIndex]) && !isNaN(data[currentIndex + 1]) &&
+                        data[currentIndex] !== ' ' && data[currentIndex + 1] !== ' ') {
+                        
+                        const nextTwoChars = data.substring(currentIndex, currentIndex + 2);
+                        if (!isNaN(nextTwoChars) && parseInt(nextTwoChars) <= 31) {
+                            break;
+                        }
+                    }
+                    
+                    name += char;
+                    currentIndex++;
+                }
+                
+                // Tim ngay thang nam sinh
+                let dob = '';
+                if (currentIndex + 9 < data.length) {
+                    dob = data.substring(currentIndex, currentIndex + 10);
+                    
+                    // Kiem tra xem co dung dinh dang dd/mm/yyyy khong
+                    if (dob.includes('/')) {
+                        currentIndex += 10;
+                    } else {
+                        // Neu khong dung, tim vi tri tiep theo co dau /
+                        const slashIndex = data.indexOf('/', currentIndex);
+                        if (slashIndex !== -1 && slashIndex + 9 < data.length) {
+                            dob = data.substring(slashIndex - 2, slashIndex + 8);
+                            currentIndex = slashIndex + 8;
+                        }
+                    }
+                }
+                
+                // Chuyen doi dinh dang ngay
+                let formattedDob = '';
+                if (dob && dob.includes('/')) {
+                    try {
+                        const parts = dob.split('/');
+                        if (parts.length === 3) {
+                            const day = parts[0].padStart(2, '0');
+                            const month = parts[1].padStart(2, '0');
+                            const year = parts[2];
+                            formattedDob = `${year}-${month}-${day}`;
+                            
+                            // Kiem tra xem ngay co hop le khong
+                            const testDate = new Date(formattedDob);
+                            if (isNaN(testDate.getTime())) {
+                                formattedDob = '';
+                            }
+                        }
+                    } catch (e) {
+                        formattedDob = '';
+                    }
+                }
+                
+                if (id && name.trim() && formattedDob) {
+                    people.push({
+                        id: parseInt(id),
+                        name: name.trim(),
+                        dob: formattedDob
+                    });
+                }
+            }
+            
+            // Neu khong phan tich duoc, su dung du lieu mau
+            if (people.length === 0) {
+                return [
+                    {id: 1, name: "NGUYEN KHAC NANG", dob: "1944-06-04"},
+                    {id: 2, name: "TO THI HA", dob: "1948-08-29"},
+                    {id: 3, name: "NGUYEN MINH NAM", dob: "1971-03-03"},
+                    {id: 4, name: "THAN THI KIM ANH", dob: "1981-09-23"},
+                    {id: 5, name: "NGUYEN TONG AN AN", dob: "2014-09-28"},
+                    {id: 6, name: "NGUYEN TO MINH CHAU", dob: "2016-07-25"},
+                    {id: 7, name: "NGUYEN TO BICH NGOC", dob: "2020-02-05"},
+                    {id: 8, name: "NGUYEN THI MINH HANG", dob: "1974-01-07"},
+                    {id: 9, name: "NGO QUY CUONG", dob: "1973-05-23"},
+                    {id: 10, name: "NGO GIA BACH", dob: "2000-10-12"},
+                    {id: 11, name: "NGO GIA LINH", dob: "2005-04-05"},
+                    {id: 12, name: "NGUYEN THI MINH PHUONG", dob: "1978-11-06"},
+                    {id: 13, name: "HOANG ANH DUNG", dob: "1978-09-21"},
+                    {id: 14, name: "HOANG HAI VINH", dob: "2010-06-03"},
+                    {id: 15, name: "HOANG THIEN BACH ANH", dob: "2015-11-14"},
+                    {id: 16, name: "TO KIM HUE", dob: "1960-08-09"},
+                    {id: 17, name: "NGUYEN TUAN ANH", dob: "1983-10-23"},
+                    {id: 18, name: "NGUYEN THE ANH", dob: "2001-03-24"},
+                    {id: 19, name: "NGO THI MAI", dob: "1948-12-12"},
+                    {id: 20, name: "TO VIET HUNG", dob: "1996-06-17"},
+                    {id: 21, name: "TO THI HONG", dob: "1964-10-10"},
+                    {id: 22, name: "VU VAN HIEP", dob: "1974-04-24"},
+                    {id: 23, name: "NGUYEN THI CHI", dob: "1946-02-08"},
+                    {id: 24, name: "NGUYEN TAN BAC", dob: "1957-11-30"},
+                    {id: 25, name: "NGUYEN THI TAM", dob: "1954-08-08"}
+                ];
+            }
+            
+            return people;
+        }
+        
+        // Khoi tao danh sach nguoi
+        function initPeopleList() {
+            const people = parsePeopleData();
+            const selectElement = document.getElementById('peopleSelect');
+            const listElement = document.getElementById('peopleList');
+            
+            // Xoa cac option mac dinh (giu lai option dau tien)
+            while (selectElement.options.length > 1) {
+                selectElement.remove(1);
+            }
+            
+            // Xoa danh sach cu
+            listElement.innerHTML = '';
+            
+            people.forEach(person => {
+                // Them vao dropdown
+                const option = document.createElement('option');
+                option.value = person.id;
+                option.textContent = `${person.id}. ${person.name} - ${formatDateDisplay(person.dob)}`;
+                selectElement.appendChild(option);
+                
+                // Them vao danh sach chi tiet
+                const personItem = document.createElement('div');
+                personItem.className = 'person-item';
+                personItem.dataset.id = person.id;
+                
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'person-name';
+                nameSpan.textContent = `${person.id}. ${person.name}`;
+                
+                const dobSpan = document.createElement('span');
+                dobSpan.className = 'person-dob';
+                dobSpan.textContent = formatDateDisplay(person.dob);
+                
+                personItem.appendChild(nameSpan);
+                personItem.appendChild(dobSpan);
+                
+                personItem.addEventListener('click', function() {
+                    selectPersonById(person.id);
+                });
+                
+                listElement.appendChild(personItem);
+            });
+        }
+        
+        // Khoi tao bang mau
+        function initColorTables() {
+            const tabsContainer = document.getElementById('tableTabs');
+            const contentsContainer = document.getElementById('tableContents');
+            
+            colorTables.forEach((table, tableIndex) => {
+                // Tao tab
+                const tabBtn = document.createElement('button');
+                tabBtn.className = 'tab-btn';
+                if (tableIndex === 0) tabBtn.classList.add('active');
+                tabBtn.textContent = `Bang ${tableIndex + 1}`;
+                tabBtn.dataset.tab = tableIndex;
+                
+                tabBtn.addEventListener('click', function() {
+                    // Xoa active class tu tat ca cac tab
+                    document.querySelectorAll('.tab-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    
+                    // Them active class cho tab duoc click
+                    this.classList.add('active');
+                    
+                    // Hien thi noi dung tuong ung
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    document.getElementById(`table-${tableIndex}`).classList.add('active');
+                });
+                
+                tabsContainer.appendChild(tabBtn);
+                
+                // Tao noi dung bang
+                const tabContent = document.createElement('div');
+                tabContent.className = 'tab-content';
+                tabContent.id = `table-${tableIndex}`;
+                if (tableIndex === 0) tabContent.classList.add('active');
+                
+                const tableTitle = document.createElement('div');
+                tableTitle.className = 'color-table-title';
+                tableTitle.textContent = `BANG MAU ${tableIndex + 1} - 14 MAU CO BAN`;
+                
+                const tableItems = document.createElement('div');
+                tableItems.className = 'color-table-items';
+                
+                table.forEach(color => {
+                    const item = document.createElement('div');
+                    item.className = 'color-table-item';
+                    
+                    const number = document.createElement('div');
+                    number.className = 'color-number';
+                    number.textContent = color.number;
+                    
+                    const sample = document.createElement('div');
+                    sample.className = 'color-sample';
+                    sample.style.backgroundColor = color.hex;
+                    
+                    const name = document.createElement('div');
+                    name.className = 'color-name';
+                    name.textContent = color.name;
+                    
+                    const hex = document.createElement('div');
+                    hex.className = 'color-hex';
+                    hex.textContent = color.hex;
+                    
+                    const description = document.createElement('div');
+                    description.className = 'color-description';
+                    description.textContent = color.description;
+                    
+                    const usage = document.createElement('div');
+                    usage.className = 'color-description';
+                    usage.textContent = `Dung: ${color.usage}`;
+                    
+                    item.appendChild(number);
+                    item.appendChild(sample);
+                    item.appendChild(name);
+                    item.appendChild(hex);
+                    item.appendChild(description);
+                    item.appendChild(usage);
+                    
+                    tableItems.appendChild(item);
+                });
+                
+                tabContent.appendChild(tableTitle);
+                tabContent.appendChild(tableItems);
+                contentsContainer.appendChild(tabContent);
+            });
+        }
+        
+        // ==================== HAM CHINH ====================
+        
+        // Tinh toan tat ca
+        function calculateAll() {
+            const currentDateStr = document.getElementById('currentDate').value;
+            const birthDateStr = document.getElementById('birthDate').value;
+            
+            if (!birthDateStr) {
+                alert("Vui long nhap ngay thang nam sinh");
+                return;
+            }
+            
+            // Tinh tuoi
+            const currentDate = new Date(currentDateStr);
+            const birthDate = new Date(birthDateStr);
+            
+            let years = currentDate.getFullYear() - birthDate.getFullYear();
+            const monthDiff = currentDate.getMonth() - birthDate.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())) {
+                years--;
+            }
+            
+            // Tinh MOD 12
+            const mod12 = years % 12;
+            if (mod12 === 0) mod12 = 12; // Neu mod 12 = 0 thi tinh la 12
+            
+            // Tra bang ma thang
+            const monthCode = monthCodeTable[mod12] !== undefined ? monthCodeTable[mod12] : 0;
+            
+            // Lay mau tuong ung
+            const colorInfo = getColorInfo(monthCode);
+            
+            // Hien thi ket qua
+            document.getElementById('ageResult').innerHTML = `<span class="highlight">${years} tuoi</span>`;
+            document.getElementById('modResult').innerHTML = `<span class="highlight">${years} mod 12 = ${mod12}</span>`;
+            document.getElementById('monthCodeResult').innerHTML = `<span class="highlight">${mod12} → ${monthCode}</span>`;
+            
+            // Hien thi mau
+            const colorBox = document.getElementById('colorBox');
+            const colorBoxText = document.getElementById('colorBoxText');
+            colorBox.style.backgroundColor = colorInfo.hex;
+            colorBoxText.textContent = colorInfo.name;
+            colorBox.style.color = getContrastColor(colorInfo.hex);
+            
+            // Hien thi thong tin mau
+            document.getElementById('colorTitle').textContent = `Mau ${colorInfo.name}`;
+            document.getElementById('colorDescription').textContent = colorInfo.description;
+            document.getElementById('colorHex').textContent = `Ma HEX: ${colorInfo.hex}`;
+            document.getElementById('colorUsage').textContent = `Ung dung: ${colorInfo.usage}`;
+        }
+        
+        // Lay thong tin mau
+        function getColorInfo(monthCode) {
+            // Xac dinh bang mau (0-5) va vi tri trong bang (1-14)
+            let tableIndex, colorIndex;
+            
+            if (monthCode >= 1 && monthCode <= 14) {
+                tableIndex = 0;
+                colorIndex = monthCode - 1;
+            } else if (monthCode >= 15 && monthCode <= 28) {
+                tableIndex = 1;
+                colorIndex = monthCode - 15;
+            } else if (monthCode >= 29 && monthCode <= 42) {
+                tableIndex = 2;
+                colorIndex = monthCode - 29;
+            } else if (monthCode >= 43 && monthCode <= 56) {
+                tableIndex = 3;
+                colorIndex = monthCode - 43;
+            } else if (monthCode >= 57 && monthCode <= 70) {
+                tableIndex = 4;
+                colorIndex = monthCode - 57;
+            } else if (monthCode >= 71 && monthCode <= 84) {
+                tableIndex = 5;
+                colorIndex = monthCode - 71;
+            } else {
+                // Mac dinh neu khong tim thay
+                tableIndex = 0;
+                colorIndex = 0;
+            }
+            
+            // dam bao chi so hop le
+            tableIndex = Math.max(0, Math.min(tableIndex, colorTables.length - 1));
+            colorIndex = Math.max(0, Math.min(colorIndex, colorTables[tableIndex].length - 1));
+            
+            return colorTables[tableIndex][colorIndex] || colorTables[0][0];
+        }
+        
+        // Tinh mau chu tuong phan
+        function getContrastColor(hexColor) {
+            try {
+                const r = parseInt(hexColor.substr(1, 2), 16);
+                const g = parseInt(hexColor.substr(3, 2), 16);
+                const b = parseInt(hexColor.substr(5, 2), 16);
+                
+                const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+                return brightness > 128 ? '#000000' : '#FFFFFF';
+            } catch (e) {
+                return '#000000';
+            }
+        }
+        
+        // Chon nguoi theo ID
+        function selectPersonById(id) {
+            const people = parsePeopleData();
+            const person = people.find(p => p.id === id);
+            if (person) {
+                document.getElementById('birthDate').value = person.dob;
+                document.getElementById('peopleSelect').value = id;
+            }
+        }
+        
+        // Chon nguoi tu dropdown
+        function selectPerson() {
+            const selectedId = parseInt(this.value);
+            if (selectedId) {
+                selectPersonById(selectedId);
+            }
+        }
+        
+        // dinh dang ngay hien thi
+        function formatDateDisplay(dateString) {
+            try {
+                const date = new Date(dateString);
+                return date.toLocaleDateString('vi-VN');
+            } catch (e) {
+                return dateString;
+            }
+        }
+        
+        // dat lai form
+        function resetForm() {
+            document.getElementById('birthDate').value = '';
+            document.getElementById('peopleSelect').value = '';
+            
+            // dat lai ket qua
+            document.getElementById('ageResult').textContent = '--';
+            document.getElementById('modResult').textContent = '--';
+            document.getElementById('monthCodeResult').textContent = '--';
+            
+            const colorBox = document.getElementById('colorBox');
+            const colorBoxText = document.getElementById('colorBoxText');
+            colorBox.style.backgroundColor = '#f8f9fa';
+            colorBoxText.textContent = 'Chua co ket qua';
+            colorBox.style.color = '#666';
+            
+            document.getElementById('colorTitle').textContent = 'Thong tin mau';
+            document.getElementById('colorDescription').textContent = 'Chon ngay sinh va nhan "Tinh toan" de xem mau sac tuong ung voi ban.';
+            document.getElementById('colorHex').textContent = 'Ma HEX: --';
+            document.getElementById('colorUsage').textContent = 'Ung dung: --';
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

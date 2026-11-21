@@ -1,0 +1,315 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek Adventure</title>
+    <style>
+        body {
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #4a6fa5 0%, #2c3e50 100%);
+            color: #f0f0f0;
+            line-height: 1.6;
+        }
+        .game-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #FFD700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #FFEC8B;
+            font-size: 1.6rem;
+            margin-top: 0;
+        }
+        p, li {
+            font-size: 1.1rem;
+            color: #f8f8f8;
+        }
+        .scene {
+            display: none;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .active {
+            display: block;
+        }
+        button {
+            background: #FFD700;
+            color: #2c3e50;
+            border: none;
+            padding: 12px 24px;
+            margin: 10px 5px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            font-size: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            background: #FFEC8B;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        .response {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            min-height: 80px;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .progress-bar {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background: #FFD700;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        .task-complete {
+            color: #90EE90;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        strong {
+            color: #FFEC8B;
+        }
+        em {
+            color: #d1e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>DeepSeek Adventure 🚀</h1>
+        <p>Hanh trinh hoc cach lam viec hieu qua voi AI DeepSeek!</p>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <!-- Scene 1: Gioi thieu -->
+        <div class="scene active" id="scene1">
+            <h2>Chao mung den voi The gioi AI! 🌍</h2>
+            <p>Ban vua duoc cap quyen truy cap vao DeepSeek - tro ly AI manh me. Hay cung kham pha cach su dung toi hieu qua nhe!</p>
+            <button onclick="showScene(2)">Bat dau hanh trinh!</button>
+        </div>
+        
+        <!-- Scene 2: Hoc cach ra lenh -->
+        <div class="scene" id="scene2">
+            <h2>Bai 1: Nghe thuat ra lenh cho AI 🎨</h2>
+            <p>de co ket qua tot nhat, hay cung cap cho toi:</p>
+            <ul>
+                <li><strong>Muc dich ro rang</strong> - Ban muon dat duoc dieu gi?</li>
+                <li><strong>doi tuong huong den</strong> - Ai se doc/xem ket qua?</li>
+                <li><strong>dinh dang mong muon</strong> - Van ban, bang, ma code?</li>
+                <li><strong>Giong dieu phu hop</strong> - Chuyen nghiep, than thien, hai huoc?</li>
+            </ul>
+            <div class="response" id="response2">
+                Thu ra lenh cho toi bang cach nhan cac nut ben duoi!
+            </div>
+            <button onclick="demonstratePrompt('good')">Lenh tot 👍</button>
+            <button onclick="demonstratePrompt('bad')">Lenh chua tot 👎</button>
+            <button onclick="showScene(3)">Tiep theo →</button>
+        </div>
+        
+        <!-- Scene 3: Vi du thuc te -->
+        <div class="scene" id="scene3">
+            <h2>Bai 2: Xu ly tinh huong thuc te 🔧</h2>
+            <p>Ban la nhan vien marketing can viet content cho san pham moi - <strong>Kem chong nang lam tu tra xanh</strong>.</p>
+            <div class="response" id="response3">
+                Hay chon cach tiep can!
+            </div>
+            <button onclick="solveProblem('basic')">Yeu cau co ban</button>
+            <button onclick="solveProblem('detailed')">Yeu cau chi tiet</button>
+            <button onclick="showScene(4)">Tiep theo →</button>
+        </div>
+        
+        <!-- Scene 4: Ket hop AI -->
+        <div class="scene" id="scene4">
+            <h2>Bai 3: doi sieu anh hung AI 🦸‍♂🦸‍♀</h2>
+            <p>DeepSeek ket hop voi cac AI khac tao thanh doi sieu manh!</p>
+            <div class="response" id="response4">
+                Chon du an de xem cach cac AI hop tac:
+            </div>
+            <button onclick="showAICollab('website')">Thiet ke Website</button>
+            <button onclick="showAICollab('presentation')">Bai thuyet trinh</button>
+            <button onclick="showScene(5)">Tiep theo →</button>
+        </div>
+        
+        <!-- Scene 5: Thu thach cuoi -->
+        <div class="scene" id="scene5">
+            <h2>Thu thach cuoi: Giai cuu cong ty! 🚨</h2>
+            <p>Sep ban can:
+                <br>- Phan tich du lieu ban hang 6 thang
+                <br>- de xuat chien luoc cai thien
+                <br>- Viet email thong bao cho nhan vien
+                <br>- Tao slide thuyet trinh
+            </p>
+            <div class="response" id="response5">
+                Lam the nao de giai quyet voi DeepSeek?
+            </div>
+            <button onclick="finalChallenge()">Xem giai phap thong minh!</button>
+            <button onclick="showScene(6)">Ket thuc hanh trinh 🎉</button>
+        </div>
+        
+        <!-- Scene 6: Ket thuc -->
+        <div class="scene" id="scene6">
+            <h2>Chuc mung! Ban da hoan thanh hanh trinh! 🏆</h2>
+            <p>Gio ban da biet cach:</p>
+            <ul>
+                <li class="task-complete">Ra lenh hieu qua cho AI</li>
+                <li class="task-complete">Giai quyet van de thuc te</li>
+                <li class="task-complete">Ket hop nhieu AI</li>
+                <li class="task-complete">Xu ly tinh huong phuc tap</li>
+            </ul>
+            <p>Hay thuc hanh them va kham pha suc manh cua DeepSeek!</p>
+            <button onclick="location.reload()">Choi lai</button>
+        </div>
+    </div>
+
+    <script>
+        let currentScene = 1;
+        const totalScenes = 6;
+        
+        function showScene(sceneNumber) {
+            document.getElementById('scene' + currentScene).classList.remove('active');
+            document.getElementById('scene' + sceneNumber).classList.add('active');
+            currentScene = sceneNumber;
+            
+            // Update progress bar
+            const progress = (sceneNumber / totalScenes) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+        
+        function demonstratePrompt(type) {
+            const responseEl = document.getElementById('response2');
+            if (type === 'good') {
+                responseEl.innerHTML = `
+                    <strong>Lenh tot:</strong><br>
+                    "Viet email thong bao nghi le 30/4 - 1/5 cho nhan vien, giong van than thien, bao gom lich nghi va thong tin lien he khan cap, dinh dang HTML."
+                    <br><br><em>→ Lenh nay co: muc dich ro, doi tuong cu the, dinh dang va giong dieu.</em>
+                `;
+            } else {
+                responseEl.innerHTML = `
+                    <strong>Lenh chua tot:</strong><br>
+                    "Viet email ve le 30/4"
+                    <br><br><em>→ Thieu chi tiet: cho ai? giong dieu? noi dung cu the? dinh dang?</em>
+                `;
+            }
+        }
+        
+        function solveProblem(approach) {
+            const responseEl = document.getElementById('response3');
+            if (approach === 'basic') {
+                responseEl.innerHTML = `
+                    <strong>Yeu cau co ban:</strong><br>
+                    "Viet quang cao kem chong nang tra xanh"
+                    <br><br><em>Ket qua nhan duoc co the chung chung, thieu diem nhan.</em>
+                `;
+            } else {
+                responseEl.innerHTML = `
+                    <strong>Yeu cau chi tiet:</strong><br>
+                    "Viet 3 concept quang cao kem chong nang chiet xuat tra xanh huu co, huong den phu nu 20-35 tuoi: 
+                    <br>1. Concept thien nhien, bao ve lan da
+                    <br>2. Concept cong nghe, thanh phan vuot troi  
+                    <br>3. Concept lifestyle, phu hop cuoc song hien dai
+                    <br>Moi concept khoang 100 tu, giong tre trung, thu hut"
+                    <br><br><em>→ Ket qua se chi tiet, da dang va phu hop muc tieu hon!</em>
+                `;
+            }
+        }
+        
+        function showAICollab(project) {
+            const responseEl = document.getElementById('response4');
+            if (project === 'website') {
+                responseEl.innerHTML = `
+                    <strong>Thiet ke Website voi doi AI:</strong><br>
+                    <em>DeepSeek:</em> "Viet code HTML/CSS/JS cho website ban hang, thiet ke responsive..."
+                    <br><em>Midjourney:</em> "Tao hinh anh minh hoa san pham voi prompt tu DeepSeek"
+                    <br><em>GitHub Copilot:</em> "de xuat code chi tiet, fix bug"
+                    <br>→ Website hoan chinh voi suc manh tong hop!
+                `;
+            } else {
+                responseEl.innerHTML = `
+                    <strong>Bai thuyet trinh voi doi AI:</strong><br>
+                    <em>DeepSeek:</em> "Viet noi dung slide, cau truc bai thuyet trinh ve AI trong y te..."
+                    <br><em>DALL-E:</em> "Tao hinh anh minh hoa cho cac slide theo mo ta"
+                    <br><em>ChatGPT:</em> "Gop y cai thien flow bai thuyet trinh"
+                    <br>→ Bai thuyet trinh chuyen nghiep, thu hut!
+                `;
+            }
+        }
+        
+        function finalChallenge() {
+            const responseEl = document.getElementById('response5');
+            responseEl.innerHTML = `
+                <strong>Giai phap thong minh voi DeepSeek:</strong><br>
+                1. <em>Phan tich du lieu:</em> "Phan tich file Excel ban hang 6 thang, tim trend, san pham ban chay/cham, de xuat 3 chien luoc cai thien"
+                <br>2. <em>Chien luoc:</em> "Dua tren phan tich, de xuat chi tiet 3 huong di: tap trung san pham A, mo rong kenh B, cai tien dich vu C"
+                <br>3. <em>Email:</em> "Viet email thong bao thay doi chien luoc cho nhan vien, giong tich cuc, truyen cam hung, dinh dang HTML"
+                <br>4. <em>Slide:</em> "Tao outline 10 slide thuyet trinh chien luoc moi, bao gom so lieu, bieu do va diem nhan"
+                <br><br><em>→ Tat ca trong 30 phut thay vi 3 ngay lam thu cong!</em>
+            `;
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

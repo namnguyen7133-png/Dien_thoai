@@ -1,0 +1,318 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Du doan Nha Cao Cua Rong</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            display: none;
+        }
+        
+        .house-icon {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .result-text {
+            text-align: center;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .disclaimer {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            font-size: 12px;
+            color: #856404;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏠 Du doan Nha Cao Cua Rong 🏰</h1>
+        
+        <div class="form-group">
+            <label for="birthDate">Ngay thang nam sinh:</label>
+            <input type="date" id="birthDate" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="birthTime">Gio sinh (neu biet):</label>
+            <input type="time" id="birthTime">
+        </div>
+        
+        <div class="form-group">
+            <label for="gender">Gioi tinh:</label>
+            <select id="gender">
+                <option value="male">Nam</option>
+                <option value="female">Nu</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="currentHouse">Hien tai ban dang o:</label>
+            <select id="currentHouse">
+                <option value="rent">Nha thue</option>
+                <option value="apartment">Can ho chung cu</option>
+                <option value="townhouse">Nha pho</option>
+                <option value="villa">Biet thu</option>
+                <option value="parents">O cung gia dinh</option>
+            </select>
+        </div>
+        
+        <button onclick="calculateHouseFortune()">Xem Du doan</button>
+        
+        <div id="result" class="result">
+            <div class="house-icon" id="houseIcon">🏠</div>
+            <div class="score" id="score">diem: 0/100</div>
+            <div class="result-text" id="resultText"></div>
+            <div class="result-text" id="detailedAnalysis"></div>
+        </div>
+        
+        <div class="disclaimer">
+            ⚠ Luu y: day chi la tro choi giai tri, khong thay the cho viec xem tu vi chuyen nghiep. Ket qua dua tren thuat toan ngau nhien va khong co co so khoa hoc.
+        </div>
+    </div>
+
+    <script>
+        function calculateHouseFortune() {
+            // Lay thong tin tu form
+            const birthDate = new Date(document.getElementById('birthDate').value);
+            const birthTime = document.getElementById('birthTime').value;
+            const gender = document.getElementById('gender').value;
+            const currentHouse = document.getElementById('currentHouse').value;
+            
+            // Kiem tra ngay sinh
+            if (!birthDate.getTime()) {
+                alert('Vui long nhap ngay thang nam sinh!');
+                return;
+            }
+            
+            // Tinh diem co ban dua tren cac yeu to
+            let score = 0;
+            
+            // 1. Tinh diem theo mua sinh
+            const month = birthDate.getMonth() + 1;
+            if (month >= 3 && month <= 5) { // Mua xuan
+                score += 25;
+            } else if (month >= 6 && month <= 8) { // Mua ha
+                score += 30;
+            } else if (month >= 9 && month <= 11) { // Mua thu
+                score += 35;
+            } else { // Mua dong
+                score += 20;
+            }
+            
+            // 2. Tinh diem theo ngay sinh
+            const day = birthDate.getDate();
+            if (day >= 1 && day <= 10) {
+                score += 15;
+            } else if (day >= 11 && day <= 20) {
+                score += 20;
+            } else {
+                score += 25;
+            }
+            
+            // 3. Tinh diem theo gio sinh (neu co)
+            if (birthTime) {
+                const hour = parseInt(birthTime.split(':')[0]);
+                if (hour >= 5 && hour < 11) { // Gio Thin, Ty, Ngo
+                    score += 20;
+                } else if (hour >= 11 && hour < 17) { // Gio Than, Dau
+                    score += 25;
+                } else {
+                    score += 15;
+                }
+            } else {
+                score += 15; // diem mac dinh neu khong biet gio
+            }
+            
+            // 4. diem theo loai nha hien tai (nguoc ty le - cang o nha nho cang co tiem nang lon)
+            const houseBonus = {
+                'rent': 30,
+                'apartment': 25,
+                'townhouse': 20,
+                'villa': 10,
+                'parents': 35
+            };
+            score += houseBonus[currentHouse];
+            
+            // dam bao diem khong vuot qua 100
+            score = Math.min(score, 100);
+            
+            // Hien thi ket qua
+            displayResult(score);
+        }
+        
+        function displayResult(score) {
+            const resultDiv = document.getElementById('result');
+            const scoreElement = document.getElementById('score');
+            const resultText = document.getElementById('resultText');
+            const detailedAnalysis = document.getElementById('detailedAnalysis');
+            const houseIcon = document.getElementById('houseIcon');
+            
+            // Xac dinh loai nha va thong diep
+            let houseType, message, detailedMsg, icon;
+            
+            if (score >= 80) {
+                houseType = "LAU dAI NGOC NGA";
+                message = "Chuc mung! Ban co tiem nang rat lon de so huu nhung bat dong san cao cap. Tuong lai co the so huu biet thu, lau dai sang trong.";
+                detailedMsg = "Phong thuy so cua ban rat hop voi nha cao tang, view dep. Nen dau tu vao cac du an bat dong san hang sang.";
+                icon = "🏰";
+            } else if (score >= 60) {
+                houseType = "BIET THU SANG TRONG";
+                message = "Ban co kha nang so huu nha o dang cap. Tuong lai gan co the so huu biet thu hoac can ho cao cap.";
+                detailedMsg = "Cung dien Trach cua ban kha tot, nen chu y den huong nha va vi tri khi mua bat dong san.";
+                icon = "🏘";
+            } else if (score >= 40) {
+                houseType = "CAN HO CAO CAP";
+                message = "Ban se so huu duoc nhung can nha khang trang, tien nghi. Co the la can ho chung cu cao cap hoac nha pho.";
+                detailedMsg = "Nen tich luy va dau tu dung thoi diem, ban se co duoc ngoi nha nhu y.";
+                icon = "🏢";
+            } else if (score >= 20) {
+                houseType = "NHA AM CUNG";
+                message = "Ban se co mot to am day du tien nghi, phu hop voi nhu cau gia dinh.";
+                detailedMsg = "Quan trong la su am cung va hanh phuc trong ngoi nha, khong nhat thiet phai qua lon.";
+                icon = "🏠";
+            } else {
+                houseType = "TO AM BINH DI";
+                message = "Hanh phuc khong nam o kich thuoc ngoi nha. Ban se tim thay niem vui trong khong gian cua rieng minh.";
+                detailedMsg = "doi khi nhung ngoi nha nho lai mang den nhieu hanh phuc lon.";
+                icon = "🛖";
+            }
+            
+            // Cap nhat giao dien
+            scoreElement.textContent = `diem: ${score}/100`;
+            resultText.innerHTML = `<strong>${houseType}</strong><br>${message}`;
+            detailedAnalysis.textContent = detailedMsg;
+            houseIcon.textContent = icon;
+            
+            // Hien thi ket qua
+            resultDiv.style.display = 'block';
+            
+            // Cuon den ket qua
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

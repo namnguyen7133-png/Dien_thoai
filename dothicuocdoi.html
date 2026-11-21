@@ -1,0 +1,1192 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinh Toan Can Chi va Van Menh</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        
+        h1, h2, h3 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        h1 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .input-section {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        
+        input, select, button {
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .tables-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        
+        th, td {
+            border: 1px solid #bdc3c7;
+            padding: 6px;
+            text-align: center;
+            min-width: 40px;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .result-section {
+            background-color: #d5f4e6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .result-card {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .chart-container {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .chart {
+            height: 300px;
+            position: relative;
+            border-bottom: 2px solid #333;
+            border-left: 2px solid #333;
+            margin: 30px 0 20px 40px;
+            background-color: #fff;
+        }
+        
+        .chart-point {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            transform: translate(-50%, 50%);
+            z-index: 10;
+            border: 2px solid #fff;
+            box-shadow: 0 0 3px rgba(0,0,0,0.5);
+        }
+        
+        .chart-line {
+            position: absolute;
+            height: 3px;
+            background-color: #3498db;
+            transform-origin: 0 0;
+            z-index: 5;
+        }
+        
+        .chart-label {
+            position: absolute;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .people-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            padding: 5px;
+            margin-top: 10px;
+        }
+        
+        .people-item {
+            padding: 8px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .people-item:hover {
+            background-color: #e3f2fd;
+        }
+        
+        .highlight {
+            background-color: #ffeb3b !important;
+            font-weight: bold;
+        }
+        
+        .number-1 {
+            background-color: #ffeb3b !important;
+            font-weight: bold;
+        }
+        
+        .age-column {
+            background-color: #e8f4f8 !important;
+        }
+        
+        @media (max-width: 768px) {
+            .tables-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .chart {
+                margin-left: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tinh Toan Can Chi va Van Menh</h1>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="birthdate">Ngay thang nam sinh:</label>
+                <input type="date" id="birthdate" value="1971-03-03">
+            </div>
+            
+            <div class="input-group">
+                <label for="fullname">Ho va ten:</label>
+                <input type="text" id="fullname" placeholder="Nhap ho ten day du" value="NGUYENMINHNAM">
+            </div>
+            
+            <div class="input-group">
+                <label>Danh sach nguoi nha:</label>
+                <select id="people-select">
+                    <option value="">Chon tu danh sach</option>
+                    <!-- Danh sach se duoc them bang JavaScript -->
+                </select>
+                <div class="people-list" id="people-list">
+                    <!-- Danh sach se duoc them bang JavaScript -->
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <button id="calculate-btn">Tinh Toan</button>
+            </div>
+        </div>
+        
+        <div class="result-section" id="result-section" style="display: none;">
+            <h3>Ket Qua Tinh Toan</h3>
+            <div class="result-grid">
+                <div class="result-card">
+                    <h4>Thong Tin Ca Nhan</h4>
+                    <p id="personal-info"></p>
+                </div>
+                <div class="result-card">
+                    <h4>Can Chi Nam Sinh</h4>
+                    <p id="canchi-result"></p>
+                </div>
+                <div class="result-card">
+                    <h4>So Tu Ten</h4>
+                    <p id="name-number"></p>
+                </div>
+            </div>
+            
+            <div class="result-grid">
+                <div class="result-card">
+                    <h4>Tien Van</h4>
+                    <p id="tien-van"></p>
+                </div>
+                <div class="result-card">
+                    <h4>Trung Van</h4>
+                    <p id="trung-van"></p>
+                </div>
+                <div class="result-card">
+                    <h4>Hau Van</h4>
+                    <p id="hau-van"></p>
+                </div>
+            </div>
+        </div>
+        
+        <h2>Bang Tra Cuu</h2>
+        
+        <div class="tables-container">
+            <div class="table-wrapper">
+                <h3>Bang 1: Can Chi</h3>
+                <table id="table1">
+                    <thead>
+                        <tr>
+                            <th>So</th>
+                            <th>Can Chi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Du lieu se duoc them bang JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="table-wrapper">
+                <h3>Bang 2: So Can Chi</h3>
+                <table id="table2">
+                    <thead>
+                        <tr>
+                            <th>Can Chi</th>
+                            <th>So</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Du lieu se duoc them bang JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="table-wrapper">
+                <h3>Bang 3: Tinh Toan Chi Tiet</h3>
+                <table id="table3">
+                    <!-- Du lieu se duoc them bang JavaScript -->
+                </table>
+            </div>
+        </div>
+        
+        <div class="table-wrapper">
+            <h3>Bang 4: Tong Hop Van Menh</h3>
+            <table id="table4">
+                <!-- Du lieu se duoc them bang JavaScript -->
+            </table>
+        </div>
+        
+        <div class="table-wrapper">
+            <h3>Bang 5: do Thi Van Menh</h3>
+            <div class="chart-container">
+                <div class="chart" id="chart"></div>
+            </div>
+            <table id="table5">
+                <!-- Du lieu se duoc them bang JavaScript -->
+            </table>
+        </div>
+        
+        <div class="tables-container">
+            <div class="table-wrapper">
+                <h3>Bang 6: Giai Nghia So</h3>
+                <table id="table6">
+                    <thead>
+                        <tr>
+                            <th>So</th>
+                            <th>Y Nghia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Du lieu se duoc them bang JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="table-wrapper">
+                <h3>Bang 7: Sinh</h3>
+                <table id="table7">
+                    <thead>
+                        <tr>
+                            <th>So</th>
+                            <th>Y Nghia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Du lieu se duoc them bang JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="table-wrapper">
+                <h3>Bang 8: Sinh - Lao - Benh - Tu</h3>
+                <table id="table8">
+                    <!-- Du lieu se duoc them bang JavaScript -->
+                </table>
+            </div>
+            
+            <div class="table-wrapper">
+                <h3>Bang 9: doi So</h3>
+                <table id="table9">
+                    <thead>
+                        <tr>
+                            <th>So</th>
+                            <th>doi So</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Du lieu se duoc them bang JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Du lieu mau
+        const peopleData = [
+            { name: "NGUYENKHACNANG", dob: "1944-06-04" },
+            { name: "TOTHIHA", dob: "1948-08-29" },
+            { name: "NGUYENMINHNAM", dob: "1971-03-03" },
+            { name: "THANTHIKIMANH", dob: "1981-09-23" },
+            { name: "NGUYENTONGANAN", dob: "2014-09-28" },
+            { name: "NGUYENTOMINHCHAU", dob: "2016-07-25" },
+            { name: "NGUYENTOBICHNGOC", dob: "2020-02-05" },
+            { name: "NGUYENTHIMINHHANG", dob: "1974-01-07" },
+            { name: "NGOQUYCUONG", dob: "1973-05-23" },
+            { name: "NGOGIABACH", dob: "2000-10-12" },
+            { name: "NGOGIALINH", dob: "2005-04-05" },
+            { name: "NGUYENTHIMINHPHUONG", dob: "1978-11-06" },
+            { name: "HOANGANHDUNG", dob: "1978-09-21" },
+            { name: "HOANGHAIVINH", dob: "2010-06-03" },
+            { name: "HOANGTHIENBACHANH", dob: "2015-11-14" },
+            { name: "NGUYEN THI CHI", dob: "1945-04-29" },
+            { name: "TO KIM HUE", dob: "1960-08-09" },
+            { name: "NGUYEN TUAN ANH", dob: "1993-10-23" },
+            { name: "NGUYEN THE ANH", dob: "2001-03-24" },
+            { name: "VU VAN HIEP", dob: "1974-04-24" },
+            { name: "NGO THI MAI", dob: "1948-12-12" },
+            { name: "TO VIET HUNG", dob: "1996-06-17" },
+            { name: "TO THI HONG", dob: "1964-10-10" },
+            { name: "NGUYEN TAN BAC", dob: "1957-02-18" },
+            { name: "NGUYEN THI TAM", dob: "1953-10-27" }
+        ];
+
+        // Bang du lieu
+        const table1Data = [
+            { number: 4, canchi: "TY" },
+            { number: 10, canchi: "NGO" },
+            { number: 5, canchi: "SUU" },
+            { number: 11, canchi: "MUI" },
+            { number: 6, canchi: "DAN" },
+            { number: 12, canchi: "THAN" },
+            { number: 7, canchi: "MAO" },
+            { number: 1, canchi: "DAU" },
+            { number: 8, canchi: "THIN" },
+            { number: 2, canchi: "TUAT" },
+            { number: 9, canchi: "TY" },
+            { number: 3, canchi: "HOI" }
+        ];
+
+        const table2Data = [
+            { canchi: "TY", number: 1 },
+            { canchi: "NGO", number: 1 },
+            { canchi: "SUU", number: 2 },
+            { canchi: "MUI", number: 2 },
+            { canchi: "DAN", number: 3 },
+            { canchi: "THAN", number: 3 },
+            { canchi: "MAO", number: 4 },
+            { canchi: "DAU", number: 4 },
+            { canchi: "THIN", number: 5 },
+            { canchi: "TUAT", number: 5 },
+            { canchi: "TY", number: 6 },
+            { canchi: "HOI", number: 6 }
+        ];
+
+        const table6Data = [
+            { number: 1, meaning: "May man XO SO" },
+            { number: 2, meaning: "Thang chuc" },
+            { number: 3, meaning: "Tai san" },
+            { number: 4, meaning: "Bat dong san" },
+            { number: 5, meaning: "Vui suong" },
+            { number: 6, meaning: "Chet, Hoa than" },
+            { number: 7, meaning: "Lam an, san xuat" },
+            { number: 8, meaning: "Mua ban nho" },
+            { number: 9, meaning: "Bang cap" },
+            { number: 10, meaning: "Xa nha" },
+            { number: 11, meaning: "Day dut" },
+            { number: 12, meaning: "dau bai" }
+        ];
+
+        // Bang 5: Cac y nghia cho Tien van, Trung van, Hau van
+        const table5MeaningData = [
+            { number: 1, meaning: "dai phat tai" },
+            { number: 2, meaning: "Quyen luc" },
+            { number: 3, meaning: "Giau co" },
+            { number: 4, meaning: "Cua cai" },
+            { number: 5, meaning: "Hanh phuc" },
+            { number: 6, meaning: "Tai nan" },
+            { number: 7, meaning: "Hop tac, LD" },
+            { number: 8, meaning: "Tieu thuong" },
+            { number: 9, meaning: "Hoc van" },
+            { number: 10, meaning: "Xuat ngoai" },
+            { number: 11, meaning: "Kho tam" },
+            { number: 12, meaning: "Benh tat" }
+        ];
+
+        const table7Data = [
+            { number: 1, meaning: "Sinh - Lanh dao, Quan ly - dung dau, To chuc" }
+        ];
+
+        const table8Data = [
+            { number: 1, sinh: "Sinh", pho: "Lanh dao, Quan ly", troly: "dung dau, To chuc" },
+            { number: 2, sinh: "Lao", pho: "Pho, Quan su", troly: "Tro ly" },
+            { number: 3, sinh: "Benh", pho: "Om dau", troly: "CNV" },
+            { number: 4, sinh: "Tu", pho: "Rat co tai, Chet bat dac ky tu, Khong dung dau", troly: "doi no, pha san - Ko gom von" }
+        ];
+
+        const table9Data = [
+            { number: 12, opposite: 1 },
+            { number: 11, opposite: 2 },
+            { number: 10, opposite: 3 },
+            { number: 9, opposite: 4 },
+            { number: 8, opposite: 5 },
+            { number: 7, opposite: 6 },
+            { number: 6, opposite: 7 },
+            { number: 5, opposite: 8 },
+            { number: 4, opposite: 9 },
+            { number: 3, opposite: 10 },
+            { number: 2, opposite: 11 },
+            { number: 1, opposite: 12 }
+        ];
+
+        // Khoi tao du lieu
+        document.addEventListener('DOMContentLoaded', function() {
+            // Khoi tao danh sach nguoi
+            initializePeopleList();
+            
+            // Khoi tao cac bang
+            initializeTable1();
+            initializeTable2();
+            initializeTable6();
+            initializeTable7();
+            initializeTable8();
+            initializeTable9();
+            
+            // Gan su kien
+            document.getElementById('calculate-btn').addEventListener('click', calculate);
+            document.getElementById('people-select').addEventListener('change', selectPerson);
+            
+            // Tinh toan ngay khi tai trang
+            setTimeout(calculate, 100);
+        });
+
+        function initializePeopleList() {
+            const select = document.getElementById('people-select');
+            const list = document.getElementById('people-list');
+            
+            peopleData.forEach(person => {
+                // Them vao select
+                const option = document.createElement('option');
+                option.value = person.dob;
+                option.textContent = `${person.name} (${formatDate(person.dob)})`;
+                select.appendChild(option);
+                
+                // Them vao danh sach cuon
+                const item = document.createElement('div');
+                item.className = 'people-item';
+                item.textContent = `${person.name} (${formatDate(person.dob)})`;
+                item.addEventListener('click', () => {
+                    document.getElementById('birthdate').value = person.dob;
+                    document.getElementById('fullname').value = person.name;
+                    select.value = person.dob;
+                    calculate();
+                });
+                list.appendChild(item);
+            });
+        }
+
+        function selectPerson() {
+            const selectedValue = document.getElementById('people-select').value;
+            if (selectedValue) {
+                const person = peopleData.find(p => p.dob === selectedValue);
+                if (person) {
+                    document.getElementById('birthdate').value = person.dob;
+                    document.getElementById('fullname').value = person.name;
+                    calculate();
+                }
+            }
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+        }
+
+        function initializeTable1() {
+            const tbody = document.querySelector('#table1 tbody');
+            table1Data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${item.number}</td><td>${item.canchi}</td>`;
+                tbody.appendChild(row);
+            });
+        }
+
+        function initializeTable2() {
+            const tbody = document.querySelector('#table2 tbody');
+            table2Data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${item.canchi}</td><td>${item.number}</td>`;
+                tbody.appendChild(row);
+            });
+        }
+
+        function initializeTable6() {
+            const tbody = document.querySelector('#table6 tbody');
+            table6Data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${item.number}</td><td>${item.meaning}</td>`;
+                tbody.appendChild(row);
+            });
+        }
+
+        function initializeTable7() {
+            const tbody = document.querySelector('#table7 tbody');
+            table7Data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${item.number}</td><td>${item.meaning}</td>`;
+                tbody.appendChild(row);
+            });
+        }
+
+        function initializeTable8() {
+            const table = document.getElementById('table8');
+            // Tao tieu de
+            const thead = document.createElement('thead');
+            thead.innerHTML = `
+                <tr>
+                    <th>So</th>
+                    <th>Sinh</th>
+                    <th>Pho</th>
+                    <th>Tro ly</th>
+                </tr>
+            `;
+            table.appendChild(thead);
+            
+            // Tao than bang
+            const tbody = document.createElement('tbody');
+            table8Data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.number}</td>
+                    <td>${item.sinh}</td>
+                    <td>${item.pho}</td>
+                    <td>${item.troly}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            table.appendChild(tbody);
+        }
+
+        function initializeTable9() {
+            const tbody = document.querySelector('#table9 tbody');
+            table9Data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${item.number}</td><td>${item.opposite}</td>`;
+                tbody.appendChild(row);
+            });
+        }
+
+        function calculate() {
+            const birthdate = document.getElementById('birthdate').value;
+            const fullname = document.getElementById('fullname').value.trim();
+            
+            if (!birthdate) {
+                alert('Vui long nhap ngay thang nam sinh');
+                return;
+            }
+            
+            // Hien thi ket qua
+            document.getElementById('result-section').style.display = 'block';
+            
+            // Lay thong tin tu ngay sinh
+            const date = new Date(birthdate);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            
+            // Tinh Can Chi nam
+            let yearMod = year % 12;
+            if (yearMod === 0) yearMod = 12;
+            
+            // Tim Can Chi tu bang 1
+            const canchiItem = table1Data.find(item => item.number === yearMod);
+            const canchi = canchiItem ? canchiItem.canchi : "Khong xac dinh";
+            
+            // Tim so tu bang 2
+            const numberItem = table2Data.find(item => item.canchi === canchi);
+            const canchiNumber = numberItem ? numberItem.number : 1;
+            
+            // Tinh toan bang 3
+            calculateTable3(year, month, day, canchiNumber);
+            
+            // Tinh toan bang 4
+            calculateTable4();
+            
+            // Tinh toan bang 5 - SUA: bat dau tu 12 tuoi, nam dau tien la nam sinh + 12
+            calculateTable5(year);
+            
+            // Hien thi thong tin ca nhan
+            document.getElementById('personal-info').textContent = 
+                `Ngay sinh: ${formatDate(birthdate)} (${day}/${month}/${year})`;
+            
+            document.getElementById('canchi-result').textContent = 
+                `Nam ${year} mod 12 = ${yearMod} → ${canchi} (So ${canchiNumber})`;
+            
+            // Tinh so tu ten
+            if (fullname) {
+                // dem so chu cai (khong tinh khoang trang)
+                const letterCount = fullname.replace(/\s+/g, '').length;
+                const nameMod = letterCount % 4 || 4;
+                
+                document.getElementById('name-number').textContent = 
+                    `Ten: ${fullname} - So chu: ${letterCount} - mod 4 = ${nameMod}`;
+                
+                // Hien thi thong tin tu bang 8
+                const table8Item = table8Data.find(item => item.number === nameMod);
+                if (table8Item) {
+                    document.getElementById('name-number').textContent += 
+                        ` → ${table8Item.sinh} - ${table8Item.pho}`;
+                }
+            } else {
+                document.getElementById('name-number').textContent = "Chua nhap ten";
+            }
+            
+            // Tinh toan va hien thi cac van
+            calculateVanMenh();
+            
+            // Ve bieu do
+            drawChart();
+        }
+
+        function calculateTable3(year, month, day, canchiNumber) {
+            const table3 = document.getElementById('table3');
+            table3.innerHTML = '';
+            
+            // Tao tieu de
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = '<th></th>';
+            for (let i = 1; i <= 12; i++) {
+                headerRow.innerHTML += `<th>${i}</th>`;
+            }
+            table3.appendChild(headerRow);
+            
+            // Dong 1: Nam can chi - CHI CO 6 COT dAU, 6 COT SAU BO TRONG
+            const row1 = document.createElement('tr');
+            row1.innerHTML = '<td>1. Nam can chi</td>';
+            let yearValues = [];
+            for (let i = 0; i < 12; i++) {
+                if (i < 6) {
+                    const value = canchiNumber + i;
+                    yearValues.push(value <= 12 ? value : value - 12);
+                } else {
+                    yearValues.push('');
+                }
+                row1.innerHTML += `<td>${yearValues[i]}</td>`;
+            }
+            table3.appendChild(row1);
+            
+            // Dong 2: Thang sinh
+            const row2 = document.createElement('tr');
+            row2.innerHTML = '<td>2. Thang sinh</td>';
+            let monthValues = [];
+            for (let i = 0; i < 12; i++) {
+                let value = month + i;
+                if (value > 12) value -= 12;
+                monthValues.push(value);
+                row2.innerHTML += `<td>${value}</td>`;
+            }
+            table3.appendChild(row2);
+            
+            // Dong 3: Ngay sinh
+            const row3 = document.createElement('tr');
+            row3.innerHTML = '<td>3. Ngay sinh</td>';
+            let dayValues = [];
+            for (let i = 0; i < 12; i++) {
+                let value = day % 12 + i;
+                if (value > 12) value -= 12;
+                if (value === 0) value = 12;
+                dayValues.push(value);
+                row3.innerHTML += `<td>${value}</td>`;
+            }
+            table3.appendChild(row3);
+            
+            // Dong 4: Cong
+            const row4 = document.createElement('tr');
+            row4.innerHTML = '<td>4. Cong</td>';
+            let sumValues = [];
+            for (let i = 0; i < 12; i++) {
+                // Neu yearValues[i] la rong thi coi nhu 0
+                const yearVal = yearValues[i] === '' ? 0 : yearValues[i];
+                const sum = yearVal + monthValues[i] + dayValues[i];
+                sumValues.push(sum);
+                row4.innerHTML += `<td>${sum}</td>`;
+            }
+            table3.appendChild(row4);
+            
+            // Dong 5: Chia so du
+            const row5 = document.createElement('tr');
+            row5.innerHTML = '<td>5. Chia so du</td>';
+            let modValues = [];
+            for (let i = 0; i < 12; i++) {
+                const mod = sumValues[i] % 12 || 12;
+                modValues.push(mod);
+                row5.innerHTML += `<td>${mod}</td>`;
+            }
+            table3.appendChild(row5);
+            
+            // Dong 6: Tong (doi so tu bang 9)
+            const row6 = document.createElement('tr');
+            row6.innerHTML = '<td>6. Tong</td>';
+            let totalValues = [];
+            for (let i = 0; i < 12; i++) {
+                const mod = modValues[i];
+                const oppositeItem = table9Data.find(item => item.number === mod);
+                const opposite = oppositeItem ? oppositeItem.opposite : mod;
+                totalValues.push(opposite);
+                row6.innerHTML += `<td>${opposite}</td>`;
+            }
+            table3.appendChild(row6);
+            
+            // Luu gia tri de su dung sau
+            window.table3Data = {
+                yearValues,
+                monthValues,
+                dayValues,
+                sumValues,
+                modValues,
+                totalValues
+            };
+        }
+
+        function calculateTable4() {
+            const table4 = document.getElementById('table4');
+            table4.innerHTML = '';
+            
+            if (!window.table3Data) return;
+            
+            const { modValues } = window.table3Data;
+            
+            // Tinh tong cho cac nhom
+            const sumGroup1 = modValues.slice(0, 4).reduce((a, b) => a + b, 0);
+            const sumGroup2 = modValues.slice(4, 8).reduce((a, b) => a + b, 0);
+            const sumGroup3 = modValues.slice(8, 12).reduce((a, b) => a + b, 0);
+            
+            // Tinh so du (lay mod 12, neu 0 thi = 12)
+            const modGroup1 = sumGroup1 % 12 || 12;
+            const modGroup2 = sumGroup2 % 12 || 12;
+            const modGroup3 = sumGroup3 % 12 || 12;
+            
+            // Tra bang 5 de lay y nghia
+            const meaningItem1 = table5MeaningData.find(item => item.number === modGroup1);
+            const meaningItem2 = table5MeaningData.find(item => item.number === modGroup2);
+            const meaningItem3 = table5MeaningData.find(item => item.number === modGroup3);
+            
+            // Tao bang 4
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = `
+                <th></th>
+                <th>TIEN VAN</th>
+                <th>TRUNG VAN</th>
+                <th>HAU VAN</th>
+            `;
+            table4.appendChild(headerRow);
+            
+            // Dong 1: Tong so
+            const row1 = document.createElement('tr');
+            row1.innerHTML = `
+                <td>Tong so</td>
+                <td>${sumGroup1}</td>
+                <td>${sumGroup2}</td>
+                <td>${sumGroup3}</td>
+            `;
+            table4.appendChild(row1);
+            
+            // Dong 2: So du
+            const row2 = document.createElement('tr');
+            row2.innerHTML = `
+                <td>So du</td>
+                <td>${modGroup1}</td>
+                <td>${modGroup2}</td>
+                <td>${modGroup3}</td>
+            `;
+            table4.appendChild(row2);
+            
+            // Dong 3: Y nghia (tra bang 5)
+            const row3 = document.createElement('tr');
+            row3.innerHTML = `
+                <td>Y nghia (Bang 5)</td>
+                <td>${meaningItem1 ? meaningItem1.meaning : ''}</td>
+                <td>${meaningItem2 ? meaningItem2.meaning : ''}</td>
+                <td>${meaningItem3 ? meaningItem3.meaning : ''}</td>
+            `;
+            table4.appendChild(row3);
+            
+            // Dong 4: So nha, so tang, so phong (theo vi du)
+            const row4 = document.createElement('tr');
+            row4.innerHTML = `
+                <td>So nha/So tang/So phong</td>
+                <td>${modGroup1}</td>
+                <td>${modGroup2}</td>
+                <td>${modGroup3}</td>
+            `;
+            table4.appendChild(row4);
+            
+            // Dong 5: Y nghia tu bang 5 (theo vi du)
+            const row5 = document.createElement('tr');
+            row5.innerHTML = `
+                <td></td>
+                <td>${meaningItem1 ? meaningItem1.meaning : ''}</td>
+                <td>${meaningItem2 ? meaningItem2.meaning : ''}</td>
+                <td>${meaningItem3 ? meaningItem3.meaning : ''}</td>
+            `;
+            table4.appendChild(row5);
+            
+            // Luu ket qua de hien thi
+            window.vanMenhData = {
+                tienVan: { sum: sumGroup1, mod: modGroup1, meaning: meaningItem1 ? meaningItem1.meaning : '' },
+                trungVan: { sum: sumGroup2, mod: modGroup2, meaning: meaningItem2 ? meaningItem2.meaning : '' },
+                hauVan: { sum: sumGroup3, mod: modGroup3, meaning: meaningItem3 ? meaningItem3.meaning : '' }
+            };
+        }
+
+        function calculateTable5(birthYear) {
+            const table5 = document.getElementById('table5');
+            table5.innerHTML = '';
+            
+            // Tao tieu de - SUA THEO YEU CAU: bat dau tu 12 tuoi
+            const headerRow1 = document.createElement('tr');
+            headerRow1.innerHTML = '<th>STT</th>';
+            // Tao 14 cot bat dau tu 12 tuoi: 12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90
+            const ageColumns = [12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90];
+            ageColumns.forEach(age => {
+                headerRow1.innerHTML += `<th class="age-column">${age}</th>`;
+            });
+            table5.appendChild(headerRow1);
+            
+            // Dong 2: Nam tuong ung - SUA THEO YEU CAU: bat dau tu 1983 (1971 + 12)
+            const headerRow2 = document.createElement('tr');
+            headerRow2.innerHTML = '<td>Nam</td>';
+            // Tinh nam tuong ung: bat dau tu birthYear + 12, sau do moi cot them 6 nam
+            ageColumns.forEach(age => {
+                const year = birthYear + age;
+                headerRow2.innerHTML += `<td>${year}</td>`;
+            });
+            table5.appendChild(headerRow2);
+            
+            // Tao cac dong cho 12 so (theo bang 5 mau)
+            const meanings = table5MeaningData;
+            
+            if (!window.table3Data) return;
+            
+            const { totalValues } = window.table3Data;
+            
+            // Luu vi tri cac so 1 de ve bieu do
+            window.chartPoints = [];
+            
+            // Tao 12 dong tuong ung voi 12 y nghia
+            for (let i = 0; i < 12; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${i+1}. ${meanings[i].meaning}</td>`;
+                
+                // Hien thi gia tri tai cac cot tuong ung
+                for (let j = 0; j < 14; j++) {
+                    let display = '';
+                    // Logic hien thi: neu totalValues co gia tri tai vi tri j va gia tri do = i+1
+                    if (j < totalValues.length && totalValues[j] === i+1) {
+                        display = i+1;
+                        
+                        // Luu vi tri cac diem co gia tri 1 (chi luu cho dong 1 - dai phat tai)
+                        if (i === 0) { // Dong 1: dai phat tai
+                            window.chartPoints.push({
+                                x: j,
+                                value: i+1,
+                                year: birthYear + ageColumns[j], // Tinh nam tuong ung
+                                age: ageColumns[j] // Tinh tuoi tuong ung
+                            });
+                        }
+                    }
+                    
+                    // Neu la so 1 thi to mau nen
+                    if (display === 1) {
+                        row.innerHTML += `<td class="number-1">${display}</td>`;
+                    } else {
+                        row.innerHTML += `<td>${display}</td>`;
+                    }
+                }
+                
+                table5.appendChild(row);
+            }
+            
+            // Dong cuoi: Nam tuong ung cho giai doan sau
+            const footerRow1 = document.createElement('tr');
+            footerRow1.innerHTML = '<td>Nam</td>';
+            const extendedAges = [96, 102, 108, 114, 120, 126, 132, 138, 144, 150, 156, 162, 168];
+            extendedAges.forEach(age => {
+                const year = birthYear + age;
+                footerRow1.innerHTML += `<td>${year}</td>`;
+            });
+            table5.appendChild(footerRow1);
+            
+            const footerRow2 = document.createElement('tr');
+            footerRow2.innerHTML = '<td>Tuoi</td>';
+            extendedAges.forEach(age => {
+                footerRow2.innerHTML += `<td>${age}</td>`;
+            });
+            table5.appendChild(footerRow2);
+        }
+
+        function calculateVanMenh() {
+            if (!window.vanMenhData) return;
+            
+            const { tienVan, trungVan, hauVan } = window.vanMenhData;
+            
+            document.getElementById('tien-van').innerHTML = `
+                Tong: ${tienVan.sum} → So du: ${tienVan.mod}<br>
+                <strong>${tienVan.meaning}</strong>
+            `;
+            
+            document.getElementById('trung-van').innerHTML = `
+                Tong: ${trungVan.sum} → So du: ${trungVan.mod}<br>
+                <strong>${trungVan.meaning}</strong>
+            `;
+            
+            document.getElementById('hau-van').innerHTML = `
+                Tong: ${hauVan.sum} → So du: ${hauVan.mod}<br>
+                <strong>${hauVan.meaning}</strong>
+            `;
+        }
+
+        function drawChart() {
+            const chart = document.getElementById('chart');
+            chart.innerHTML = '';
+            
+            if (!window.chartPoints || window.chartPoints.length === 0) {
+                chart.innerHTML = '<div style="text-align:center; padding:50px;">Khong co du lieu so 1 de ve bieu do</div>';
+                return;
+            }
+            
+            const points = window.chartPoints;
+            const chartWidth = chart.offsetWidth - 50;
+            const chartHeight = chart.offsetHeight - 20;
+            
+            // Tinh ty le cho truc Y (gia tri tu 1-12)
+            const yScale = chartHeight / 12;
+            
+            // Tinh ty le cho truc X (14 cot)
+            const xScale = chartWidth / 14;
+            
+            // Ve truc Y (gia tri)
+            for (let i = 1; i <= 12; i++) {
+                const y = chartHeight - (i * yScale);
+                const label = document.createElement('div');
+                label.className = 'chart-label';
+                label.textContent = i;
+                label.style.left = '-25px';
+                label.style.top = `${y}px`;
+                chart.appendChild(label);
+                
+                // duong ke ngang
+                const line = document.createElement('div');
+                line.style.position = 'absolute';
+                line.style.left = '0';
+                line.style.top = `${y}px`;
+                line.style.width = '100%';
+                line.style.height = '1px';
+                line.style.backgroundColor = '#ddd';
+                line.style.zIndex = '1';
+                chart.appendChild(line);
+            }
+            
+            // Ve truc X (tuoi/nam)
+            const ageColumns = [12, 18, 24, 30, 36, 42, 48, 54, 60, 66, 72, 78, 84, 90];
+            for (let i = 0; i < ageColumns.length; i++) {
+                const x = i * xScale;
+                const label = document.createElement('div');
+                label.className = 'chart-label';
+                label.textContent = ageColumns[i];
+                label.style.left = `${x}px`;
+                label.style.top = `${chartHeight + 10}px`;
+                label.style.transform = 'translateX(-50%)';
+                chart.appendChild(label);
+                
+                // duong ke doc
+                const line = document.createElement('div');
+                line.style.position = 'absolute';
+                line.style.left = `${x}px`;
+                line.style.top = '0';
+                line.style.width = '1px';
+                line.style.height = '100%';
+                line.style.backgroundColor = '#ddd';
+                line.style.zIndex = '1';
+                chart.appendChild(line);
+            }
+            
+            // Ve cac diem
+            const pointElements = [];
+            
+            points.forEach(point => {
+                const x = point.x * xScale;
+                const y = chartHeight - (point.value * yScale);
+                
+                const pointEl = document.createElement('div');
+                pointEl.className = 'chart-point';
+                pointEl.style.left = `${x}px`;
+                pointEl.style.top = `${y}px`;
+                pointEl.title = `Tuoi ${point.age} (nam ${point.year}): dai phat tai`;
+                
+                const label = document.createElement('div');
+                label.className = 'chart-label';
+                label.textContent = point.value;
+                label.style.left = `${x}px`;
+                label.style.top = `${y - 20}px`;
+                label.style.transform = 'translateX(-50%)';
+                label.style.backgroundColor = '#fff';
+                label.style.padding = '2px 5px';
+                label.style.borderRadius = '3px';
+                label.style.border = '1px solid #ccc';
+                
+                chart.appendChild(pointEl);
+                chart.appendChild(label);
+                
+                pointElements.push({ x, y, point });
+            });
+            
+            // Ve duong noi cac diem - CHI noi cac diem co so 1
+            for (let i = 0; i < pointElements.length - 1; i++) {
+                const p1 = pointElements[i];
+                const p2 = pointElements[i + 1];
+                
+                const line = document.createElement('div');
+                line.className = 'chart-line';
+                line.style.left = `${p1.x}px`;
+                line.style.top = `${p1.y}px`;
+                
+                const dx = p2.x - p1.x;
+                const dy = p2.y - p1.y;
+                const length = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                
+                line.style.width = `${length}px`;
+                line.style.transform = `rotate(${angle}deg)`;
+                
+                chart.appendChild(line);
+            }
+            
+            // Them tieu de cho bieu do
+            const title = document.createElement('div');
+            title.className = 'chart-label';
+            title.textContent = 'Bieu do dai phat tai (so 1)';
+            title.style.left = '50%';
+            title.style.top = '-30px';
+            title.style.transform = 'translateX(-50%)';
+            title.style.fontSize = '14px';
+            title.style.fontWeight = 'bold';
+            chart.appendChild(title);
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

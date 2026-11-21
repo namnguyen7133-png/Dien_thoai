@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Pomodoro Timer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #111;
+      color: #fff;
+    }
+    .container { text-align: center; }
+    #time { font-size: 64px; margin: 20px 0; }
+    #status { font-size: 20px; margin-bottom: 20px; }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 8px;
+    }
+    .stop { background: #dc3545; color: white; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Pomodoro Auto</h1>
+    <div id="status">Đang khởi động...</div>
+    <div id="time">25:00</div>
+    <button class="stop" onclick="stopAlarm()">Tắt chuông</button>
+  </div>
+
+  <script>
+    let workTime = 25 * 60;
+    let shortBreak = 5 * 60;
+    let longBreak = 25 * 60;
+
+    let timeLeft = workTime;
+    let sessionCount = 0;
+    let isWork = true;
+    let timer;
+
+    // Âm thanh (loop)
+    let alarm = new Audio("https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3");
+    alarm.loop = true;
+
+    function updateDisplay() {
+      let m = Math.floor(timeLeft / 60);
+      let s = timeLeft % 60;
+      document.getElementById("time").textContent =
+        `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    }
+
+    function updateStatus(text) {
+      document.getElementById("status").textContent = text;
+    }
+
+    function startTimer() {
+      timer = setInterval(() => {
+        timeLeft--;
+        updateDisplay();
+
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          triggerAlarm();
+        }
+      }, 1000);
+    }
+
+    function triggerAlarm() {
+      alarm.play();
+
+      if (isWork) {
+        sessionCount++;
+        if (sessionCount % 4 === 0) {
+          updateStatus("⏰ Nghỉ dài 25 phút - Bấm tắt chuông!");
+          timeLeft = longBreak;
+        } else {
+          updateStatus("⏰ Nghỉ 5 phút - Bấm tắt chuông!");
+          timeLeft = shortBreak;
+        }
+      } else {
+        updateStatus("⏰ Học 25 phút - Bấm tắt chuông!");
+        timeLeft = workTime;
+      }
+
+      isWork = !isWork;
+      updateDisplay();
+    }
+
+    function stopAlarm() {
+      alarm.pause();
+      alarm.currentTime = 0;
+      updateStatus(isWork ? "Đang học" : "Đang nghỉ");
+      startTimer();
+    }
+
+    // TỰ CHẠY KHI MỞ
+    updateDisplay();
+    updateStatus("Đang học 25 phút");
+    startTimer();
+  </script>
+</body>
+</html>

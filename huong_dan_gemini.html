@@ -1,0 +1,252 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Project Command Center - Giai Quyet Cong Viec Thuc Te</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background: linear-gradient(to right, #0a0a0a, #1c1c1c);
+            color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background: #000;
+            border: 4px solid #ff4d4d; /* do Canh Bao */
+            box-shadow: 0 0 40px rgba(255, 77, 77, 0.7);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 1000px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: #ff4d4d;
+            text-shadow: 0 0 15px rgba(255, 77, 77, 0.9);
+            margin-bottom: 10px;
+            font-size: 2em;
+            letter-spacing: 3px;
+        }
+
+        h2 {
+            color: #00ffaa;
+            margin-top: 5px;
+            margin-bottom: 25px;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .control-button {
+            background: #333;
+            color: #00ffaa; /* Xanh la AI */
+            border: 2px solid #00ffaa;
+            padding: 12px 10px;
+            border-radius: 5px;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 255, 170, 0.3);
+            text-transform: uppercase;
+        }
+
+        .control-button:hover {
+            background: #00ffaa;
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 170, 0.8);
+            transform: scale(1.05);
+        }
+
+        .display-screen {
+            background: #0d0d0d;
+            border: 3px solid #00ffaa;
+            box-shadow: 0 0 15px rgba(0, 255, 170, 0.6), inset 0 0 8px rgba(0, 255, 170, 0.4);
+            margin-top: 30px;
+            padding: 20px;
+            min-height: 200px;
+            text-align: left;
+            border-radius: 8px;
+            font-size: 1em;
+            color: #00ffaa;
+            overflow-y: auto;
+            max-height: 350px;
+            line-height: 1.6;
+        }
+
+        .display-screen p {
+            margin: 5px 0;
+        }
+
+        .stat-value {
+            color: #ffcc00; /* Vang */
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .stat-label {
+            color: #f0f0f0;
+        }
+
+        .highlight-title {
+            color: #ff4d4d;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-bottom: 1px dashed #ff4d4d;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 0.8em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI PROJECT COMMAND CENTER</h1>
+        <h2>Giai Ma Ti Le Hoan Thanh Cong Viec Thuc Te Cua Gemini</h2>
+        <p>Chon mot "Du An" de xem hieu suat, quy trinh lam viec va nhung loi ich cu the ban nhan duoc tu su ho tro cua toi.</p>
+
+        <div class="controls">
+            <button class="control-button" data-stat="code"><span>Ho Tro Lap Trinh</span></button>
+            <button class="control-button" data-stat="planning"><span>Len Ke Hoach Du An</span></button>
+            <button class="control-button" data-stat="research"><span>Nghien Cuu Chuyen Sau</span></button>
+            <button class="control-button" data-stat="writing"><span>Sang Tao Noi Dung Marketing</span></button>
+            <button class="control-button" data-stat="translate"><span>Bien Dich Tai Lieu</span></button>
+            <button class="control-button" data-stat="study"><span>Huong Dan Hoc Tap</span></button>
+            <button class="control-button" data-stat="problem"><span>Giai Quyet Van de Thuong Ngay</span></button>
+            <button class="control-button" data-stat="finance"><span>Phan Tich Du Lieu Co Ban</span></button>
+        </div>
+
+        <div class="display-screen" id="displayScreen">
+            <p><strong class="highlight-title">Man hinh Bao Cao Hieu Suat:</strong></p>
+            <p>Chon mot du an de kich hoat che do phan tich va xem cac chi so "thanh cong"!</p>
+        </div>
+
+        <div class="footer">
+            <p>Du lieu duoc thong ke dua tren mo hinh nang luc. Moi con so chi mang tinh chat tham khao va... gay cuoi.</p>
+        </div>
+    </div>
+
+    <script>
+        const statsData = {
+            code: {
+                title: "Du An: Ho Tro Lap Trinh & Go Loi",
+                success: "Ti le Code hoat dong: 85% (15% con lai la do 'su sang tao' cua nguoi dung).",
+                time_saved: "Tiet kiem duoc 4 gio go loi/tuan (tuong duong 10 tap phim hoat hinh).",
+                guidance: "Tap trung vao mo ta chi tiet dau vao va dau ra. **Cach giai quyet:** Phan tich cu phap, de xuat 3 giai phap thay the, va viet chu thich (comments) de ban khong bao gio lac loi trong code cua minh nua!"
+            },
+            planning: {
+                title: "Du An: Len Ke Hoach Du An & Su Kien",
+                success: "Ti le Len Ke Hoach Thanh Cong: 95% (5% con lai la do... thoi tiet).",
+                time_saved: "Tiet kiem duoc 6 gio dong nao/buoi (tuong duong thoi gian hoc them mot ngon ngu moi).",
+                guidance: "Cho toi biet **Ngan sach, Thoi gian, va Muc tieu**. **Cach giai quyet:** Toi phan chia muc tieu lon thanh cac nhiem vu nho, gan thoi gian uoc tinh, va tao ra mot ma tran uu tien (Urgent/Important) hoan hao!"
+            },
+            research: {
+                title: "Du An: Nghien Cuu Chuyen Sau & Hoc Thuat",
+                success: "Ti le Trich dan dang tin cay: 90% (10% la kien thuc 'ngoai le' toi tu bia them cho vui).",
+                time_saved: "Tiet kiem duoc 12 gio doc tai lieu/tuan (tuong duong mot giac ngu sau va dai).",
+                guidance: "Cung cap **nguon tham khao** hoac **tu khoa chinh xac**. **Cach giai quyet:** Toi tong hop 5-10 nguon uy tin, chat loc cac luan diem cot loi, va sap xep chung thanh mot bao cao co cau truc (hoac mot bai thuyet trinh Powerpoint thu vi)."
+            },
+            writing: {
+                title: "Du An: Sang Tao Noi Dung Marketing/Blog",
+                success: "Ti le Noi dung Loi cuon: 99% (1% la noi dung hoi 'sen' qua).",
+                time_saved: "Tiet kiem duoc 3 gio nhin cham cham vao man hinh trang/ngay.",
+                guidance: "Xac dinh **doi tuong muc tieu, Giong van, va do dai**. **Cach giai quyet:** Toi phan tich xu huong thi truong, su dung cac tu khoa 'ma thuat', va viet ra noi dung khong chi dung ngu phap ma con 'cham' den cam xuc cua doc gia."
+            },
+            translate: {
+                title: "Du An: Bien Dich Tai Lieu da Ngon Ngu",
+                success: "Ti le Dich thuat Chuan ngu canh: 98% (2% la toi them mot chut tieng long dia phuong).",
+                time_saved: "Tiet kiem duoc 8 gio lam viec voi tu dien/ngay.",
+                guidance: "Cung cap **ngon ngu nguon, ngon ngu dich, va ngu canh su dung**. **Cach giai quyet:** Toi khong chi dich tu ma con chuyen doi y nghia, van hoa, va giong dieu de dam bao van ban dich nghe 'thuan tai' nhu nguoi ban xu."
+            },
+            study: {
+                title: "Du An: Huong Dan Hoc Tap & Luyen Thi",
+                success: "Ti le Hoc vien Hieu bai: 90% (10% la do bai tap qua kho va toi cung phai 'bo tay').",
+                time_saved: "Tiet kiem duoc 5 gio tim kiem giao trinh/tuan.",
+                guidance: "Cung cap **mon hoc, cap do, va kien thuc ban dang vuong mac**. **Cach giai quyet:** Toi su dung phuong phap Socratic (hoi nguoc lai), tao ra cac vi du thuc te hai huoc, va tom tat cong thuc phuc tap thanh nhung cau than chu de nho."
+            },
+            problem: {
+                title: "Du An: Giai Quyet Van de Thuong Ngay (Lao dong ca nhan)",
+                success: "Ti le de xuat Kha thi: 93% (7% la y tuong lam giau khong tuong).",
+                time_saved: "Tiet kiem duoc 2 gio cang thang/ngay.",
+                guidance: "Noi ro **tinh huong va cac yeu to can tro**. **Cach giai quyet:** Toi dua ra cac giai phap da chieu (tai chinh, logic, tam ly), to chuc chung thanh danh sach uu tien, va luon ket thuc bang mot loi khuyen dong vien."
+            },
+            finance: {
+                title: "Du An: Phan Tich Du Lieu Co Ban & Tai Chinh",
+                success: "Ti le Du lieu Sap xep: 96% (4% la do toi khong the doc duoc chu viet tay cua ban).",
+                time_saved: "Tiet kiem duoc 7 gio nhap du lieu thu cong/tuan.",
+                guidance: "dua ra **du lieu tho va loai bao cao ban muon**. **Cach giai quyet:** Toi su dung cong thuc logic, bien du lieu lon xon thanh bang bieu ro rang, va highlight cac chi so quan trong (KPI) de ban de dang dua ra quyet dinh."
+            }
+        };
+
+        document.querySelectorAll('.control-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const statKey = this.dataset.stat;
+                const data = statsData[statKey];
+                const displayScreen = document.getElementById('displayScreen');
+
+                displayScreen.innerHTML = `
+                    <p><strong class="highlight-title">Du An: ${data.title}</strong></p>
+                    <p><span class="stat-label">Hieu suat:</span> <span class="stat-value">${data.success}</span></p>
+                    <p><span class="stat-label">Loi ich Tiet Kiem:</span> <span class="stat-value">${data.time_saved}</span></p>
+                    <p><strong><span class="stat-label">Huong Dan Cot Loi (Lenh Ban Nen Dung):</span></strong> Can cung cap <span class="stat-value">${data.guidance.split('**Cach giai quyet:**')[0].replace('Tap trung vao ', '')}</span></p>
+                    <p><strong><span class="stat-label">Bi Quyet AI (Cach Toi Giai Quyet):</span></strong> ${data.guidance.split('**Cach giai quyet:**')[1]}</p>
+                `;
+            });
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,326 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mau theo thoi gian - Nhieu bang mau</title>
+
+<style>
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #f2f4f8;
+  margin: 0;
+  padding: 12px;
+}
+h1 {
+  text-align: center;
+  color: #333;
+}
+h2 {
+  margin-top: 20px;
+  color: #444;
+  border-bottom: 2px solid #ddd;
+  padding-bottom: 8px;
+}
+.card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 10px rgba(0,0,0,.08);
+}
+.input-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+input, button {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  flex: 1;
+  min-width: 200px;
+}
+button {
+  background: #2d8cf0;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+button:hover {
+  background: #1c7ae6;
+}
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+.color-item {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 3px 6px rgba(0,0,0,.1);
+}
+.color-box {
+  padding: 16px;
+  height: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #fff;
+  font-weight: 600;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+.color-details {
+  padding: 12px;
+  background: #f8f9fa;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.info {
+  margin-top: 6px;
+  font-size: .9rem;
+  line-height: 1.6;
+}
+.title {
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+.time-info {
+  background: #e8f4ff;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🎨 MAU SAC THEO THOI GIAN - NHIEU BANG MAU</h1>
+
+<div class="card">
+  <div class="title">Chon thoi diem</div>
+  <div class="input-group">
+    <input type="datetime-local" id="dateInput">
+    <button onclick="useNow()">Dung thoi gian hien tai</button>
+  </div>
+</div>
+
+<div id="timeDisplay" class="time-info"></div>
+
+<div id="result"></div>
+
+<script>
+/* ===== dINH NGHIA CAC BANG MAU ===== */
+
+// 5 bang mau khac nhau, moi bang co 5 mau
+const colorTables = [
+  // Bang 1: Mau co ban
+  [
+    {n: "dO CAM", h: "#FF4500"},
+    {n: "VANG NGHE", h: "#FFD700"},
+    {n: "XANH LA MA", h: "#32CD32"},
+    {n: "XANH BIEN", h: "#1E90FF"},
+    {n: "TIM OAI HUONG", h: "#E6E6FA"}
+  ],
+  // Bang 2: Mau pastel
+  [
+    {n: "HONG PASTEL", h: "#FFB6C1"},
+    {n: "XANH PASTEL", h: "#AFEEEE"},
+    {n: "TIM PASTEL", h: "#D8BFD8"},
+    {n: "VANG PASTEL", h: "#FAFAD2"},
+    {n: "CAM PASTEL", h: "#FFDAB9"}
+  ],
+  // Bang 3: Mau earth tone
+  [
+    {n: "NAU dAT", h: "#8B4513"},
+    {n: "XANH REU", h: "#8F9779"},
+    {n: "dO GACH", h: "#B22222"},
+    {n: "VANG dAT", h: "#DAA520"},
+    {n: "XAM dA", h: "#808080"}
+  ],
+  // Bang 4: Mau neon
+  [
+    {n: "HONG NEON", h: "#FF1493"},
+    {n: "XANH NEON", h: "#00FF00"},
+    {n: "CAM NEON", h: "#FF6700"},
+    {n: "TIM NEON", h: "#BF00FF"},
+    {n: "VANG NEON", h: "#FFFF00"}
+  ],
+  // Bang 5: Mau trung tinh
+  [
+    {n: "TRANG NGA", h: "#F5F5DC"},
+    {n: "XAM NHAT", h: "#D3D3D3"},
+    {n: "NAU NHAT", h: "#D2B48C"},
+    {n: "XANH XAM", h: "#778899"},
+    {n: "dEN NHE", h: "#696969"}
+  ],
+  // Bang 6: Mau jewel tone
+  [
+    {n: "LUC BAO", h: "#50C878"},
+    {n: "XANH SAPPHIRE", h: "#0F52BA"},
+    {n: "dO RUBY", h: "#E0115F"},
+    {n: "TIM AMETHYST", h: "#9966CC"},
+    {n: "XANH NGOC", h: "#00CED1"}
+  ]
+];
+
+/* ===== TAM TRANG & CACH DUNG ===== */
+const emotion = {
+  "#FF4500": {mood: "Nang dong, sang tao", usage: "Thich hop cho thiet ke quang cao, thu hut su chu y"},
+  "#FFD700": {mood: "Lac quan, vui tuoi", usage: "Tang tinh than, tot cho khong gian hoc tap"},
+  "#32CD32": {mood: "Can bang, hai hoa", usage: "Tao cam giac thu gian, tot cho phong ngu"},
+  "#1E90FF": {mood: "Tap trung, binh tinh", usage: "Ho tro lam viec tri oc, thien dinh"},
+  "#E6E6FA": {mood: "Nhe nhang, tinh te", usage: "Khong gian nghe thuat, thu gian"},
+  "#FFB6C1": {mood: "Diu dang, am ap", usage: "Phong tre em, khong gian gia dinh"},
+  "#AFEEEE": {mood: "Thanh than, mat me", usage: "Phong tam, khong gian spa"},
+  "#D8BFD8": {mood: "Sang tao, mo mong", usage: "Phong lam viec sang tao"},
+  "#FAFAD2": {mood: "Am ap, than thien", usage: "Phong khach, khong gian tiep khach"},
+  "#FFDAB9": {mood: "Am cung, thoai mai", usage: "Phong bep, phong an"},
+  "#8B4513": {mood: "Vung chai, tin cay", usage: "Van phong, khong gian lam viec"},
+  "#8F9779": {mood: "Tu nhien, yen binh", usage: "Khong gian xanh, phong doc sach"},
+  "#B22222": {mood: "Manh me, quyet doan", usage: "Khong gian the thao, phong tap"},
+  "#DAA520": {mood: "Sang trong, am ap", usage: "Phong khach sang trong"},
+  "#808080": {mood: "Trung lap, can bang", usage: "Van phong, khong gian cong cong"},
+  "#FF1493": {mood: "Noi bat, tre trung", usage: "Quang cao, su kien dac biet"},
+  "#00FF00": {mood: "Tuoi moi, nang dong", usage: "Khong gian giai tri, sang tao"},
+  "#FF6700": {mood: "Nhiet huyet, phan khich", usage: "Khuyen mai, thu hut chu y"},
+  "#BF00FF": {mood: "Sang tao, doc dao", usage: "Nghe thuat, thiet ke thoi trang"},
+  "#FFFF00": {mood: "Vui ve, tinh tao", usage: "Khong gian hoc tap, canh bao"},
+  "#F5F5DC": {mood: "Tinh te, nha nhan", usage: "Phong ngu, khong gian thu gian"},
+  "#D3D3D3": {mood: "Hien dai, trung tinh", usage: "Van phong, khong gian cong nghe"},
+  "#D2B48C": {mood: "Am cung, than thien", usage: "Quan ca phe, khong gian am cung"},
+  "#778899": {mood: "Chuyen nghiep, nghiem tuc", usage: "Van phong, hoi nghi"},
+  "#696969": {mood: "Bi an, tinh te", usage: "Phong trien lam, khong gian nghe thuat"},
+  "#50C878": {mood: "Tuoi mat, phong phu", usage: "Khong gian xanh, phong khach"},
+  "#0F52BA": {mood: "Uy tin, chuyen nghiep", usage: "Van phong cong ty, ngan hang"},
+  "#E0115F": {mood: "dam me, quyen ru", usage: "Nha hang, khong gian lang man"},
+  "#9966CC": {mood: "Sang tao, tam linh", usage: "Phong thien, khong gian yoga"},
+  "#00CED1": {mood: "Thanh than, sang khoai", usage: "Phong tam, khong gian spa"}
+};
+
+// Ham chon mau tu bang mau dua tren so
+function pickColor(tableIndex, value) {
+  const table = colorTables[tableIndex % colorTables.length];
+  return table[value % table.length];
+}
+
+// Ham hien thi thoi gian
+function render() {
+  const v = dateInput.value;
+  if (!v) return;
+  
+  const d = new Date(v);
+  
+  // Hien thi thong tin thoi gian
+  const timeOptions = { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  };
+  const timeStr = d.toLocaleDateString('vi-VN', timeOptions) + ' ' + d.toLocaleTimeString('vi-VN');
+  
+  document.getElementById('timeDisplay').innerHTML = `
+    <div class="title">Thoi diem da chon: ${timeStr}</div>
+    <div class="info">
+      • Nam: ${d.getFullYear()} • Quy: ${Math.floor(d.getMonth()/3)+1} • Thang: ${d.getMonth()+1}<br>
+      • Ngay: ${d.getDate()} • Tuan: ${Math.ceil(d.getDate()/7)} • Gio: ${d.getHours()}
+    </div>
+  `;
+  
+  // Tinh toan mau cho moi don vi thoi gian
+  const yearColors = colorTables.map((table, idx) => pickColor(idx, d.getFullYear()));
+  const quarterColors = colorTables.map((table, idx) => pickColor(idx, Math.floor(d.getMonth()/3)+1));
+  const monthColors = colorTables.map((table, idx) => pickColor(idx, d.getMonth()+1));
+  const weekColors = colorTables.map((table, idx) => pickColor(idx, Math.ceil(d.getDate()/7)));
+  const dayColors = colorTables.map((table, idx) => pickColor(idx, d.getDate()));
+  const hourColors = colorTables.map((table, idx) => pickColor(idx, d.getHours() || 5));
+  
+  // Tao HTML de hien thi
+  result.innerHTML = "";
+  
+  const timeUnits = [
+    {title: "📅 NAM", colors: yearColors},
+    {title: "📊 QUY", colors: quarterColors},
+    {title: "📆 THANG", colors: monthColors},
+    {title: "🗓 TUAN", colors: weekColors},
+    {title: "📅 NGAY", colors: dayColors},
+    {title: "⏰ GIO", colors: hourColors}
+  ];
+  
+  timeUnits.forEach(unit => {
+    result.innerHTML += `
+    <div class="card">
+      <div class="title">${unit.title}</div>
+      <div class="color-grid">
+        ${unit.colors.map((color, idx) => {
+          const info = emotion[color.h] || {mood: "da dang, linh hoat", usage: "Phu hop nhieu muc dich"};
+          return `
+          <div class="color-item">
+            <div class="color-box" style="background:${color.h}">
+              <div>${color.n}</div>
+              <div style="font-size:0.8rem; font-weight:normal">${color.h}</div>
+            </div>
+            <div class="color-details">
+              <div><b>Bang ${idx+1}</b></div>
+              <div>• Tam trang: ${info.mood}</div>
+              <div>• Cach dung: ${info.usage}</div>
+            </div>
+          </div>
+          `;
+        }).join('')}
+      </div>
+    </div>`;
+  });
+}
+
+// Dung thoi gian hien tai
+function useNow() {
+  const n = new Date();
+  dateInput.value = new Date(n - n.getTimezoneOffset() * 60000)
+    .toISOString().slice(0, 16);
+  render();
+}
+
+// Them su kien khi thay doi thoi gian
+dateInput.addEventListener("change", render);
+
+// Khoi tao voi thoi gian hien tai
+useNow();
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

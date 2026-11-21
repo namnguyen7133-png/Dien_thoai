@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Bang 23 chu – Xuoi & Nguoc</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f2f4f8;
+    padding:20px;
+}
+.box{
+    max-width:700px;
+    margin:auto;
+    background:#fff;
+    padding:20px;
+    border-radius:12px;
+}
+h2{text-align:center}
+input,select,button,textarea{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+button{
+    background:#2d6cdf;
+    color:#fff;
+    border:none;
+    cursor:pointer;
+}
+button:hover{opacity:.9}
+textarea{
+    height:120px;
+    font-family:Consolas,monospace;
+}
+.result{
+    margin-top:10px;
+    background:#eef2ff;
+    padding:10px;
+    border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+<div class="box">
+<h2>🔤 BANG 23 CHU – XUOI / NGUOC</h2>
+
+<input id="textInput" placeholder="Nhap chu, vi du: Nguyen Van A">
+
+<select id="mode">
+    <option value="forward">Bang xuoi</option>
+    <option value="reverse">Bang nguoc</option>
+</select>
+
+<button onclick="convert()">Chuyen chu → so</button>
+
+<div class="result" id="output">Chua co ket qua</div>
+</div>
+
+<script>
+// ===== BANG 23 CHU – XUOI =====
+const mapForward = {
+a:1,a:1,a:1,a:1,a:1,a:1,a:1,a:1,
+b:2,c:3,d:4,d:5,
+e:6,e:6,e:6,e:6,
+g:7,h:8,
+i:9,i:9,i:9,
+k:1,l:2,m:3,
+n:1,
+o:2,o:2,o:2,o:2,o:2,
+p:3,q:4,r:5,s:6,t:7,
+u:8,u:8,u:8,u:8,
+v:9,
+x:1,
+y:2,y:2,y:2
+};
+
+// ===== BANG 23 CHU – NGUOC =====
+const mapReverse = {
+a:3,a:3,a:3,a:3,a:3,a:3,a:3,a:3,
+b:2,c:1,d:9,d:8,
+e:7,e:7,e:7,e:7,
+g:6,h:5,
+i:4,i:4,i:4,
+k:3,l:2,m:1,
+n:2,
+o:1,o:1,o:1,o:1,o:1,
+p:9,q:8,r:7,s:6,t:5,
+u:4,u:4,u:4,u:4,
+v:3,
+x:2,
+y:1,y:1,y:1
+};
+
+// ===== CHUYEN CHU =====
+function convert(){
+    const text = document.getElementById("textInput").value.toLowerCase();
+    const mode = document.getElementById("mode").value;
+    const map = mode === "forward" ? mapForward : mapReverse;
+
+    let nums = [];
+    for(let ch of text){
+        if(map[ch] !== undefined){
+            nums.push(map[ch]);
+        }
+    }
+
+    document.getElementById("output").innerText =
+        nums.length
+        ? "Chuoi so: " + nums.join('')
+        : "Khong tim thay chu hop le";
+}
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

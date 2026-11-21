@@ -1,0 +1,682 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Thong Ke 15 Phan Tu Van Mon An</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 25px;
+            border-bottom: 3px solid #3498db;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 2.8em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.3em;
+            margin-bottom: 25px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            min-width: 200px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 1.1em;
+        }
+        
+        .search-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: border-color 0.3s;
+        }
+        
+        .search-input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .search-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .search-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0,0,0,0.2);
+        }
+        
+        .filter-section {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1em;
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        .filter-select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        .results-section {
+            margin-top: 30px;
+        }
+        
+        .part-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .part-btn {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .part-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .part-btn.active {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 18px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            position: sticky;
+            top: 0;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        tr:hover {
+            background-color: #f5f9ff;
+        }
+        
+        .part-header {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            font-size: 1.3em;
+            text-align: center;
+        }
+        
+        .symptom-cell {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .part-cell {
+            text-align: center;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 50px;
+            font-style: italic;
+            color: #7f8c8d;
+            font-size: 1.3em;
+        }
+        
+        .symptoms-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .symptom-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #3498db;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .symptom-item:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+        
+        .symptom-name {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .symptom-part {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 2px solid #ecf0f1;
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        
+        @media (max-width: 768px) {
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            th, td {
+                padding: 12px 8px;
+                font-size: 14px;
+            }
+            
+            .part-nav {
+                gap: 5px;
+            }
+            
+            .part-btn {
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+            
+            .symptoms-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Game Thong Ke 15 Phan Tu Van Mon An</h1>
+            <div class="subtitle">Tra cuu nhanh trieu chung va phan tuong ung</div>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-number">15</div>
+                    <div class="stat-label">Phan Game</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">150</div>
+                    <div class="stat-label">Trieu Chung</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">145</div>
+                    <div class="stat-label">Mon An</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">10°C</div>
+                    <div class="stat-label">Nhiet do</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="search-input" class="search-input" placeholder="🔍 Nhap trieu chung can tim...">
+                <button id="search-btn" class="search-btn">Tim Kiem</button>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-group">
+                    <label class="filter-label">Loc theo phan:</label>
+                    <select id="part-filter" class="filter-select">
+                        <option value="all">Tat ca cac phan</option>
+                        <option value="1">Phan 1 (1-10)</option>
+                        <option value="2">Phan 2 (11-20)</option>
+                        <option value="3">Phan 3 (21-30)</option>
+                        <option value="4">Phan 4 (31-40)</option>
+                        <option value="5">Phan 5 (41-50)</option>
+                        <option value="6">Phan 6 (51-60)</option>
+                        <option value="7">Phan 7 (61-70)</option>
+                        <option value="8">Phan 8 (71-80)</option>
+                        <option value="9">Phan 9 (81-90)</option>
+                        <option value="10">Phan 10 (91-100)</option>
+                        <option value="11">Phan 11 (101-110)</option>
+                        <option value="12">Phan 12 (111-121)</option>
+                        <option value="13">Phan 13 (122-132)</option>
+                        <option value="14">Phan 14 (133-145)</option>
+                        <option value="15">Phan 15 (146-150)</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Loc theo co quan:</label>
+                    <select id="organ-filter" class="filter-select">
+                        <option value="all">Tat ca co quan</option>
+                        <option value="He tuan hoan">He tuan hoan</option>
+                        <option value="Da day">Da day</option>
+                        <option value="Nao">Nao</option>
+                        <option value="Gan">Gan</option>
+                        <option value="Tim">Tim</option>
+                        <option value="Da">Da</option>
+                        <option value="Mau">Mau</option>
+                        <option value="Xuong">Xuong</option>
+                        <option value="Co">Co</option>
+                        <option value="Cot song">Cot song</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="results-section">
+            <div class="part-nav" id="part-nav">
+                <!-- Cac nut phan se duoc tao bang JavaScript -->
+            </div>
+            
+            <h3>📋 Danh sach trieu chung (Click de xem chi tiet):</h3>
+            <div class="symptoms-list" id="symptoms-list">
+                <!-- Danh sach trieu chung se duoc tao bang JavaScript -->
+            </div>
+            
+            <div class="table-container">
+                <table id="results-table">
+                    <thead>
+                        <tr>
+                            <th width="5%">STT</th>
+                            <th width="25%">Trieu Chung</th>
+                            <th width="15%">Co Quan</th>
+                            <th width="15%">Phan</th>
+                            <th width="20%">Mon An The Han</th>
+                            <th width="20%">Mon An The Nhiet</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body">
+                        <!-- Ket qua se duoc hien thi o day -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>📚 Tong hop 15 phan game tu van mon an theo nhiet do va benh tat</p>
+            <p>🎯 Giup tra cuu nhanh trieu chung va tim phan game tuong ung</p>
+        </div>
+    </div>
+
+    <script>
+        // Du lieu tong hop 150 trieu chung tu 15 phan
+        const symptomsData = [
+            // Phan 1 (1-10)
+            { id: 1, symptom: "Cao huyet ap", organ: "He tuan hoan", part: 1, cold: "Chao yen mach thit bam gung", hot: "Sup bi do hat sen" },
+            { id: 2, symptom: "Tieu duong", organ: "Tuyen tuy", part: 1, cold: "Trung luoc + sup rau cu", hot: "Yen mach sua hanh nhan" },
+            { id: 3, symptom: "Nong sot", organ: "He mien dich", part: 1, cold: "Chao tia to thit ga", hot: "Sup ga nam" },
+            { id: 4, symptom: "Di ung dau", organ: "He tieu hoa", part: 1, cold: "Banh mi trung + sua hat", hot: "Chao ca hoi rau cu" },
+            { id: 5, symptom: "Gout, mo mau", organ: "Khop / Mach mau", part: 1, cold: "Chao gao lut nam", hot: "Sup bi do hat chia" },
+            { id: 6, symptom: "Tieu hoa kem", organ: "Da day", part: 1, cold: "Chao hat sen gung", hot: "Sup khoai lang" },
+            { id: 7, symptom: "Huyet ap thap", organ: "He tuan hoan", part: 1, cold: "Pho bo gung", hot: "Banh mi bo mat ong" },
+            { id: 8, symptom: "Mat ngu", organ: "Nao", part: 1, cold: "Chao long nhan hat sen", hot: "Sua nghe hat chia" },
+            { id: 9, symptom: "Mo mau", organ: "Mach mau", part: 1, cold: "Yen mach nau sua hat", hot: "Salad ca hoi sot chanh" },
+            { id: 10, symptom: "dau da day", organ: "Da day", part: 1, cold: "Chao hat sen gung", hot: "Sup bi do hat sen" },
+            
+            // Phan 2 (11-20)
+            { id: 11, symptom: "Khong dung nap lactose", organ: "Ruot non", part: 2, cold: "Banh mi trung + sua dau nanh", hot: "Chao ca rau cu" },
+            { id: 12, symptom: "Roi loan tieu hoa", organ: "Ruot gia", part: 2, cold: "Chao tia to thit ga", hot: "Sup ga nam" },
+            { id: 13, symptom: "Di ung thit", organ: "Da", part: 2, cold: "Chao ca hoi rau cu", hot: "dau hu sot ca chua" },
+            { id: 14, symptom: "Beo phi", organ: "Mo mo", part: 2, cold: "Yen mach nau sua hat", hot: "Salad rau cu luoc" },
+            { id: 15, symptom: "Cao huyet ap + thai", organ: "Tim / Mach mau", part: 2, cold: "Chao yen mach thit bam", hot: "Sinh to bo + hat chia" },
+            { id: 16, symptom: "Di ung hai san", organ: "Da", part: 2, cold: "Banh mi trung + sua hat", hot: "Chao thit ga rau cu" },
+            { id: 17, symptom: "Tre em + cao huyet ap", organ: "Tim", part: 2, cold: "Chao yen mach sua hat", hot: "Banh pancake chuoi" },
+            { id: 18, symptom: "Ty vi hu han", organ: "Ty vi", part: 2, cold: "Chao gung thit bam", hot: "Sup ga ham tao do" },
+            { id: 19, symptom: "Phu nu kinh nguyet nhieu", organ: "Tu cung", part: 2, cold: "Chao dau do hat sen", hot: "Sinh to cu den + gung" },
+            { id: 20, symptom: "Mo mau cao", organ: "Mach mau", part: 2, cold: "Yen mach nau sua hat", hot: "Salad ca hoi sot chanh" },
+            
+            // Phan 3 (21-30)
+            { id: 21, symptom: "Di ung dau nanh", organ: "Ruot", part: 3, cold: "Chao thit ga hat sen", hot: "Yen mach sua hanh nhan" },
+            { id: 22, symptom: "Nong trong", organ: "Gan", part: 3, cold: "Chao hat sen long nhan", hot: "Sinh to bo hat chia" },
+            { id: 23, symptom: "Di ung ca", organ: "Da", part: 3, cold: "Chao thit ga hat sen", hot: "dau hu sot ca chua" },
+            { id: 24, symptom: "Tieu hoa kem", organ: "Da day", part: 3, cold: "Chao hat sen gung", hot: "Sup khoai lang" },
+            { id: 25, symptom: "Nguoi huyet ap thap", organ: "He tuan hoan", part: 3, cold: "Pho bo gung", hot: "Banh mi bo mat ong" },
+            { id: 26, symptom: "Nguoi kho tieu", organ: "Da day", part: 3, cold: "Chao tia to thit ga", hot: "Sup bi do hat chia" },
+            { id: 27, symptom: "Di ung thit ga", organ: "Da", part: 3, cold: "Chao ca hoi rau cu", hot: "dau hu sot nam" },
+            { id: 28, symptom: "Nguoi mo mau", organ: "Mach mau", part: 3, cold: "Yen mach nau sua hat", hot: "Salad ca hoi sot chanh" },
+            { id: 29, symptom: "Khong dung nap lactose", organ: "Ruot", part: 3, cold: "Chao yen mach sua hanh nhan", hot: "Sup bi do hat chia" },
+            { id: 30, symptom: "Cao huyet ap + than", organ: "Than / Tim", part: 3, cold: "Chao gao lut hat sen", hot: "Sup khoai lang" },
+            
+            // Phan 4 (31-40)
+            { id: 31, symptom: "Di ung hai san + da day", organ: "Da day", part: 4, cold: "Chao thit ga hat sen", hot: "Sup bi do" },
+            { id: 32, symptom: "Mat ngu", organ: "Nao", part: 4, cold: "Chao long nhan hat sen", hot: "Sua nghe hat chia" },
+            { id: 33, symptom: "Di ung thit bo", organ: "Da", part: 4, cold: "Chao ca hoi rau cu", hot: "dau hu sot nam" },
+            { id: 34, symptom: "Cao huyet ap", organ: "Mach mau", part: 4, cold: "Chao yen mach thit ga", hot: "Sup rau cu" },
+            { id: 35, symptom: "Di ung cua", organ: "Da", part: 4, cold: "Chao thit ga hat sen", hot: "Sup nam" },
+            { id: 36, symptom: "Cholesterol cao", organ: "Mau", part: 4, cold: "Chao yen mach hat chia", hot: "Salad ca hoi" },
+            { id: 37, symptom: "Di ung hat", organ: "Da", part: 4, cold: "Chao thit ga rau cu", hot: "Sup bi do thit bam" },
+            { id: 38, symptom: "Huyet ap cao", organ: "He tuan hoan", part: 4, cold: "Chao yen mach", hot: "Sinh to bo hat chia" },
+            { id: 39, symptom: "Thieu dam", organ: "Co bap", part: 4, cold: "Chao thit bo ham", hot: "Trung op la rau cu" },
+            { id: 40, symptom: "Tieu dem", organ: "Than / Bang quang", part: 4, cold: "Chao hat sen", hot: "Sup ga hat sen" },
+            
+            // Phan 5 (41-50)
+            { id: 41, symptom: "Di ung dau", organ: "Ruot", part: 5, cold: "Chao thit ga", hot: "Banh mi trung" },
+            { id: 42, symptom: "Tri noi", organ: "Truc trang", part: 5, cold: "Chao rau sam", hot: "Sup khoai lang" },
+            { id: 43, symptom: "Tri ngoai", organ: "Hau mon", part: 5, cold: "Chao rau mong toi", hot: "Sup bi do" },
+            { id: 44, symptom: "Tri hon hop", organ: "Truc trang", part: 5, cold: "Chao khoai lang", hot: "Sup rau cu" },
+            { id: 45, symptom: "Benh tim", organ: "Tim", part: 5, cold: "Chao yen mach hat sen", hot: "Sup ca hoi rau cu" },
+            { id: 46, symptom: "dat stent", organ: "dong mach vanh", part: 5, cold: "Chao ca chep hat sen", hot: "Sup ga nam huong" },
+            { id: 47, symptom: "Say tau xe", organ: "Tien dinh", part: 5, cold: "Chao gung thit bam", hot: "Sup gung nam" },
+            { id: 48, symptom: "Nguoi gia gay yeu", organ: "Co bap", part: 5, cold: "Chao thit bo ham", hot: "Sup bo cau hat sen" },
+            { id: 49, symptom: "Tre gay yeu", organ: "Co bap", part: 5, cold: "Chao thit bo pho mai", hot: "Sup tom nam" },
+            { id: 50, symptom: "danh trong nguc", organ: "Tim", part: 5, cold: "Chao tim ga hat sen", hot: "Sup hau nam" }
+        ];
+
+        // Bien toan cuc
+        let currentPart = 0; // 0 = tat ca
+        let currentOrgan = "all";
+        let currentSearch = "";
+
+        // Cac phan tu DOM
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+        const partFilter = document.getElementById('part-filter');
+        const organFilter = document.getElementById('organ-filter');
+        const partNav = document.getElementById('part-nav');
+        const symptomsList = document.getElementById('symptoms-list');
+        const resultsBody = document.getElementById('results-body');
+
+        // Khoi tao cac nut phan
+        function initPartButtons() {
+            partNav.innerHTML = '';
+            
+            // Them nut "Tat ca"
+            const allBtn = document.createElement('button');
+            allBtn.className = 'part-btn' + (currentPart === 0 ? ' active' : '');
+            allBtn.textContent = 'Tat ca';
+            allBtn.addEventListener('click', () => {
+                currentPart = 0;
+                updateDisplay();
+            });
+            partNav.appendChild(allBtn);
+            
+            // Them nut cho 15 phan
+            for (let i = 1; i <= 15; i++) {
+                const partBtn = document.createElement('button');
+                partBtn.className = 'part-btn' + (currentPart === i ? ' active' : '');
+                partBtn.textContent = `Phan ${i}`;
+                partBtn.addEventListener('click', () => {
+                    currentPart = i;
+                    updateDisplay();
+                });
+                partNav.appendChild(partBtn);
+            }
+        }
+
+        // Hien thi danh sach trieu chung
+        function displaySymptomsList() {
+            const filteredData = filterData();
+            symptomsList.innerHTML = '';
+            
+            if (filteredData.length === 0) {
+                symptomsList.innerHTML = '<div class="no-results">Khong tim thay trieu chung phu hop</div>';
+                return;
+            }
+            
+            filteredData.forEach(item => {
+                const symptomItem = document.createElement('div');
+                symptomItem.className = 'symptom-item';
+                symptomItem.innerHTML = `
+                    <div class="symptom-name">${item.symptom}</div>
+                    <div class="symptom-part">Phan ${item.part} • ${item.organ}</div>
+                `;
+                symptomItem.addEventListener('click', () => {
+                    // Hien thi chi tiet trieu chung trong bang
+                    displayResults([item]);
+                });
+                symptomsList.appendChild(symptomItem);
+            });
+        }
+
+        // Loc du lieu
+        function filterData() {
+            return symptomsData.filter(item => {
+                const matchesPart = currentPart === 0 || item.part === currentPart;
+                const matchesOrgan = currentOrgan === "all" || item.organ === currentOrgan;
+                const matchesSearch = currentSearch === "" || 
+                    item.symptom.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                    item.organ.toLowerCase().includes(currentSearch.toLowerCase());
+                
+                return matchesPart && matchesOrgan && matchesSearch;
+            });
+        }
+
+        // Hien thi ket qua trong bang
+        function displayResults(data) {
+            resultsBody.innerHTML = '';
+            
+            if (data.length === 0) {
+                resultsBody.innerHTML = '<tr><td colspan="6" class="no-results">Khong tim thay ket qua phu hop</td></tr>';
+                return;
+            }
+            
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.id}</td>
+                    <td class="symptom-cell">${item.symptom}</td>
+                    <td>${item.organ}</td>
+                    <td class="part-cell">Phan ${item.part}</td>
+                    <td>${item.cold}</td>
+                    <td>${item.hot}</td>
+                `;
+                resultsBody.appendChild(row);
+            });
+        }
+
+        // Cap nhat hien thi
+        function updateDisplay() {
+            // Cap nhat trang thai nut phan
+            document.querySelectorAll('.part-btn').forEach((btn, index) => {
+                if (index === 0) {
+                    btn.className = 'part-btn' + (currentPart === 0 ? ' active' : '');
+                } else {
+                    btn.className = 'part-btn' + (currentPart === index ? ' active' : '');
+                }
+            });
+            
+            // Cap nhat dropdown
+            partFilter.value = currentPart === 0 ? 'all' : currentPart.toString();
+            
+            // Hien thi danh sach trieu chung
+            displaySymptomsList();
+            
+            // Hien thi tat ca ket qua trong bang
+            const filteredData = filterData();
+            displayResults(filteredData);
+        }
+
+        // Su kien
+        searchBtn.addEventListener('click', () => {
+            currentSearch = searchInput.value;
+            updateDisplay();
+        });
+
+        searchInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                currentSearch = searchInput.value;
+                updateDisplay();
+            }
+        });
+
+        partFilter.addEventListener('change', () => {
+            currentPart = partFilter.value === 'all' ? 0 : parseInt(partFilter.value);
+            updateDisplay();
+        });
+
+        organFilter.addEventListener('change', () => {
+            currentOrgan = organFilter.value;
+            updateDisplay();
+        });
+
+        // Khoi tao
+        function init() {
+            initPartButtons();
+            updateDisplay();
+        }
+
+        // Tu dong khoi chay khi trang duoc tai
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

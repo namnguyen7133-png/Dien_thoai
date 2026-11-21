@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>M1100 - Đếm ngược Tiết Khí & Hoàng Đạo</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #2c3e50; color: white; display: flex; justify-content: center; padding-top: 30px; }
+        .container { background: #34495e; padding: 30px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); width: 480px; }
+        h2 { text-align: center; color: #f1c40f; border-bottom: 1px solid #7f8c8d; padding-bottom: 10px; margin-bottom: 25px; }
+        .item { margin: 15px 0; padding: 15px; background: #2c3e50; border-left: 5px solid #e67e22; border-radius: 5px; position: relative; }
+        .label { font-size: 0.9em; color: #bdc3c7; margin-bottom: 5px; }
+        .value { font-size: 1.25em; font-weight: bold; color: #ffffff; }
+        .countdown { color: #2ecc71; font-weight: bold; font-size: 1.1em; }
+        .duration-tag { position: absolute; right: 15px; top: 15px; font-size: 0.75em; background: #16a085; padding: 2px 8px; border-radius: 10px; color: white; }
+        .footer { text-align: center; font-size: 0.8em; color: #95a5a6; margin-top: 25px; line-height: 1.5; }
+        hr { border: 0; border-top: 1px solid #5d6d7e; margin: 20px 0; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>HỆ THỐNG M1100</h2>
+    
+    <div class="item">
+        <span class="duration-tag">Độ dài: ~15.2 ngày</span>
+        <div class="label">Tiết khí tiếp theo:</div>
+        <div class="value" id="next-tiet">--</div>
+        <div class="label">Còn lại: <span class="countdown" id="tiet-days">--</span> ngày</div>
+    </div>
+
+    <div class="item">
+        <span class="duration-tag">Độ dài: ~30.4 ngày</span>
+        <div class="label">Cung Hoàng đạo tiếp theo:</div>
+        <div class="value" id="next-zodiac">--</div>
+        <div class="label">Còn lại: <span class="countdown" id="zodiac-days">--</span> ngày</div>
+    </div>
+
+    <hr>
+    <div class="footer">
+        Cập nhật tự động dựa trên Dương lịch 2026<br>
+        Dữ liệu: 24 Tiết khí ($15^\circ$) & 12 Cung ($30^\circ$)
+    </div>
+</div>
+
+<script>
+    // Danh sách 24 Tiết khí dựa trên mốc Dương lịch chuẩn
+    const tietKhiList = [
+        { name: "Tiểu Hàn", m: 1, d: 5 }, { name: "Đại Hàn", m: 1, d: 20 },
+        { name: "Lập Xuân", m: 2, d: 4 }, { name: "Vũ Thủy", m: 2, d: 19 },
+        { name: "Kinh Trập", m: 3, d: 5 }, { name: "Xuân Phân", m: 3, d: 20 },
+        { name: "Thanh Minh", m: 4, d: 4 }, { name: "Cốc Vũ", m: 4, d: 20 },
+        { name: "Lập Hạ", m: 5, d: 5 }, { name: "Tiểu Mãn", m: 5, d: 21 },
+        { name: "Mang Chủng", m: 6, d: 5 }, { name: "Hạ Chí", m: 6, d: 21 },
+        { name: "Tiểu Thử", m: 7, d: 7 }, { name: "Đại Thử", m: 7, d: 23 },
+        { name: "Lập Thu", m: 8, d: 7 }, { name: "Xử Thử", m: 8, d: 23 },
+        { name: "Bạch Lộ", m: 9, d: 7 }, { name: "Thu Phân", m: 9, d: 23 },
+        { name: "Hàn Lộ", m: 10, d: 8 }, { name: "Sương Giáng", m: 10, d: 23 },
+        { name: "Lập Đông", m: 11, d: 7 }, { name: "Tiểu Tuyết", m: 11, d: 22 },
+        { name: "Đại Tuyết", m: 12, d: 7 }, { name: "Đông Chí", m: 12, d: 21 }
+    ];
+
+    // Danh sách 12 Cung Hoàng đạo
+    const zodiacList = [
+        { name: "Bảo Bình", m: 1, d: 20 }, { name: "Song Ngư", m: 2, d: 19 },
+        { name: "Bạch Dương", m: 3, d: 21 }, { name: "Kim Ngưu", m: 4, d: 20 },
+        { name: "Song Tử", m: 5, d: 21 }, { name: "Cự Giải", m: 6, d: 22 },
+        { name: "Sư Tử", m: 7, d: 23 }, { name: "Xử Nữ", m: 8, d: 23 },
+        { name: "Thiên Bình", m: 9, d: 23 }, { name: "Thiên Yết", m: 10, d: 24 },
+        { name: "Nhân Mã", m: 11, d: 22 }, { name: "Ma Kết", m: 12, d: 22 }
+    ];
+
+    function getDaysRemaining(targetM, targetD) {
+        const now = new Date();
+        let targetDate = new Date(now.getFullYear(), targetM - 1, targetD);
+        
+        // Nếu ngày mục tiêu đã qua trong năm nay, tính cho năm sau
+        if (targetDate < now) {
+            targetDate.setFullYear(now.getFullYear() + 1);
+        }
+        
+        const diffTime = targetDate - now;
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }
+
+    function updateDashboard() {
+        const now = new Date();
+        const curM = now.getMonth() + 1;
+        const curD = now.getDate();
+
+        // Tìm Tiết khí tiếp theo[cite: 5]
+        let nextT = tietKhiList.find(t => (t.m > curM) || (t.m === curM && t.d > curD));
+        if (!nextT) nextT = tietKhiList[0];
+        
+        // Tìm Cung tiếp theo[cite: 5]
+        let nextZ = zodiacList.find(z => (z.m > curM) || (z.m === curM && z.d > curD));
+        if (!nextZ) nextZ = zodiacList[0];
+
+        // Cập nhật giao diện
+        document.getElementById('next-tiet').innerText = nextT.name + " (" + nextT.d + "/" + nextT.m + ")";
+        document.getElementById('tiet-days').innerText = getDaysRemaining(nextT.m, nextT.d);
+
+        document.getElementById('next-zodiac').innerText = nextZ.name + " (" + nextZ.d + "/" + nextZ.m + ")";
+        document.getElementById('zodiac-days').innerText = getDaysRemaining(nextZ.m, nextZ.d);
+    }
+
+    // Khởi chạy
+    updateDashboard();
+</script>
+
+</body>
+</html>

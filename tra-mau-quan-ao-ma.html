@@ -1,0 +1,757 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinh Tuoi & Mau Sac May Man</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+            color: white;
+            text-align: center;
+            padding: 25px 20px;
+            border-bottom: 5px solid #ffcc00;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+            font-size: 1.1rem;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #6a11cb;
+            box-shadow: 0 0 0 3px rgba(106, 17, 203, 0.1);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+            color: white;
+        }
+        
+        .reset-btn {
+            background: #f0f0f0;
+            color: #555;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-section {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .result-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border-left: 8px solid #6a11cb;
+            margin-bottom: 25px;
+        }
+        
+        .result-title {
+            color: #6a11cb;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .color-result {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .color-item {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+        
+        .color-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .clothing-result {
+            background: #f9f9f9;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+        
+        .clothing-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 8px;
+            border-left: 5px solid #2575fc;
+        }
+        
+        .color-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 15px;
+            border: 2px solid white;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .info-text {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-top: 10px;
+            padding: 10px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 15px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .color-item {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> Tinh Tuoi & Mau Sac May Man</h1>
+            <p class="subtitle">Nhap thong tin de tinh tuoi va tim mau sac phu hop voi ban</p>
+        </header>
+        
+        <div class="content">
+            <div class="input-group">
+                <label for="currentDate"><i class="far fa-calendar-alt"></i> Ngay hien tai</label>
+                <input type="date" id="currentDate" value="">
+            </div>
+            
+            <div class="input-group">
+                <label for="birthDate"><i class="fas fa-birthday-cake"></i> Ngay sinh</label>
+                <input type="date" id="birthDate">
+            </div>
+            
+            <div class="input-group">
+                <label for="name"><i class="far fa-user"></i> Ho va ten</label>
+                <input type="text" id="name" placeholder="Nhap ho va ten cua ban">
+            </div>
+            
+            <div class="input-group">
+                <label for="personList"><i class="fas fa-list"></i> Danh sach nguoi (chon de tu dong dien)</label>
+                <select id="personList">
+                    <option value="">-- Chon nguoi tu danh sach --</option>
+                    <option value="NGUYENKHACNANG,04/06/1944">1. NGUYENKHACNANG - 04/06/1944</option>
+                    <option value="TOTHIHA,29/08/1948">2. TOTHIHA - 29/08/1948</option>
+                    <option value="NGUYENMINHNAM,03/03/1971">3. NGUYENMINHNAM - 03/03/1971</option>
+                    <option value="THANTHIKIMANH,23/09/1981">4. THANTHIKIMANH - 23/09/1981</option>
+                    <option value="NGUYENTONGANAN,28/09/2014">5. NGУYENTONGANAN - 28/09/2014</option>
+                    <option value="NGUYENTOMINHCHAU,25/07/2016">6. NGUYENTOMINHCHAU - 25/07/2016</option>
+                    <option value="NGUYENTOBICHNGOC,05/02/2020">7. NGUYENTOBICHNGOC - 05/02/2020</option>
+                    <option value="NGUYENTHIMINHHANG,07/01/1974">8. NGUYENTHIMINHHANG - 07/01/1974</option>
+                    <option value="NGOQUYCUONG,23/05/1973">9. NGOQUYCUONG - 23/05/1973</option>
+                    <option value="NGOGIABACH,12/10/2000">10. NGOGIABACH - 12/10/2000</option>
+                    <option value="NGOGIALINH,05/04/2005">11. NGOGIALINH - 05/04/2005</option>
+                    <option value="NGUYENTHIMINHPHUONG,06/11/1978">12. NGUYENTHIMINHPHUONG - 06/11/1978</option>
+                    <option value="HOANGANHDUNG,21/09/1978">13. HOANGANHDUNG - 21/09/1978</option>
+                    <option value="HOANGHAIVINH,03/06/2010">14. HOANGHAIVINH - 03/06/2010</option>
+                    <option value="HOANGTHIENBACHANH,14/11/2015">15. HOANGTHIENBACHANH - 14/11/2015</option>
+                    <option value="TO KIM HUE,09/08/1960">16. TO KIM HUE - 9/8/1960</option>
+                    <option value="NGUYEN TUAN ANH,23/10/1983">17. NGUYEN TUAN ANH - 23/10/1983</option>
+                    <option value="NGUYEN THE ANH,24/03/2001">18. NGUYEN THE ANH - 24/3/2001</option>
+                    <option value="NGO THI MAI,12/12/1948">19. NGO THI MAI - 12/12/1948</option>
+                    <option value="TO VIET HUNG,17/06/1996">20. TO VIET HUNG - 17/6/1996</option>
+                    <option value="TO THI HONG,10/10/1964">21. TO THI HONG - 10/10/1964</option>
+                    <option value="VU VAN HIEP,24/04/1974">22. VU VAN HIEP - 24/4/1974</option>
+                    <option value="NGUYEN THI CHI,08/02/1946">23. NGUYEN THI CHI - 8/2/1946</option>
+                    <option value="NGUYEN TAN BAC,30/11/1957">24. NGUYEN TAN BAC - 30/11/1957</option>
+                    <option value="NGUYEN THI TAM,08/08/1954">25. NGUYEN THI TAM - 8/8/1954</option>
+                </select>
+            </div>
+            
+            <div class="button-group">
+                <button class="calculate-btn" id="calculateBtn">
+                    <i class="fas fa-magic"></i> Tinh Toan & Tra Mau
+                </button>
+                <button class="reset-btn" id="resetBtn">
+                    <i class="fas fa-redo"></i> Nhap Lai
+                </button>
+            </div>
+            
+            <div class="result-section" id="resultSection">
+                <div class="result-card">
+                    <h2 class="result-title"><i class="fas fa-user-circle"></i> Thong tin ca nhan</h2>
+                    <p><strong>Ho ten:</strong> <span id="resultName"></span></p>
+                    <p><strong>Ngay sinh:</strong> <span id="resultBirthDate"></span></p>
+                    <p><strong>Tuoi:</strong> <span id="resultAge"></span> tuoi</p>
+                    <p><strong>Hai so cuoi nam sinh:</strong> <span id="resultLastTwoDigits"></span></p>
+                    <p><strong>Ma thang tuong ung:</strong> <span id="resultMonthCode"></span></p>
+                </div>
+                
+                <div class="result-card">
+                    <h2 class="result-title"><i class="fas fa-palette"></i> Mau sac may man cua ban</h2>
+                    <div class="color-result" id="colorResult">
+                        <!-- Mau sac se duoc them vao day bang JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="result-card">
+                    <h2 class="result-title"><i class="fas fa-tshirt"></i> Goi y trang phuc phu hop</h2>
+                    <div class="clothing-result" id="clothingResult">
+                        <!-- Goi y trang phuc se duoc them vao day bang JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Ung dung tinh tuoi va tra mau sac may man | Thiet ke cho man hinh dien thoai</p>
+    </div>
+
+    <script>
+        // Thiet lap ngay hien tai mac dinh
+        document.getElementById('currentDate').valueAsDate = new Date();
+        
+        // Bang ma thang
+        const monthCodes = {
+            12: 6, 11: 4, 10: 1, 9: 6, 8: 3, 7: 0,
+            6: 5, 5: 2, 4: 0, 3: 4, 2: 4, 1: 1
+        };
+        
+        // Bang mau
+        const colorTable = [
+            {code: 1, number: 1, color: "dO", hex: "#FF0000"},
+            {code: 2, number: 2, color: "VANG", hex: "#FFD700"},
+            {code: 3, number: 3, color: "KIM LOAI", hex: "#C0C0C0"},
+            {code: 4, number: 4, color: "XANH BIEN", hex: "#1E90FF"},
+            {code: 5, number: 5, color: "XANH LA", hex: "#32CD32"},
+            {code: 1, number: 6, color: "dO", hex: "#FF0000"},
+            {code: 2, number: 7, color: "VANG", hex: "#FFD700"},
+            {code: 3, number: 8, color: "DA CAM", hex: "#FF8C00"},
+            {code: 4, number: 9, color: "XANH BIEN", hex: "#1E90FF"},
+            {code: 5, number: 10, color: "XANH LA", hex: "#32CD32"},
+            {code: 6, number: 11, color: "CHAM", hex: "#000000"},
+            {code: 7, number: 12, color: "TIM", hex: "#8A2BE2"},
+            {code: 1, number: 13, color: "VANG", hex: "#FFD700"},
+            {code: 2, number: 14, color: "dO", hex: "#FF0000"},
+            {code: 3, number: 15, color: "HONG", hex: "#FFC0CB"},
+            {code: 4, number: 16, color: "GHI", hex: "#808080"},
+            {code: 5, number: 17, color: "TRANG", hex: "#FFFFFF"},
+            {code: 6, number: 18, color: "dEN", hex: "#000000"},
+            {code: 7, number: 19, color: "DA TROI", hex: "#87CEEB"},
+            {code: 8, number: 20, color: "XANH LA", hex: "#32CD32"},
+            {code: 1, number: 21, color: "dEN", hex: "#000000"},
+            {code: 2, number: 22, color: "TRANG", hex: "#FFFFFF"},
+            {code: 3, number: 23, color: "DA TROI", hex: "#87CEEB"},
+            {code: 4, number: 24, color: "XANH LA", hex: "#32CD32"},
+            {code: 5, number: 25, color: "XANH BIEN", hex: "#1E90FF"},
+            {code: 6, number: 26, color: "TIM", hex: "#8A2BE2"},
+            {code: 7, number: 27, color: "dO", hex: "#FF0000"},
+            {code: 8, number: 28, color: "DA CAM", hex: "#FF8C00"},
+            {code: 9, number: 29, color: "VANG", hex: "#FFD700"},
+            {code: 30, number: 30, color: "dO", hex: "#FF0000"},
+            {code: 31, number: 31, color: "VANG", hex: "#FFD700"},
+            {code: 0, number: 0, color: "HONG", hex: "#FFC0CB"}
+        ];
+        
+        // Bang quan ao
+        const clothingTable = [
+            {color: "DA TROI", item: "AO SO MI DA TROI"},
+            {color: "VANG", item: "AO SO MI VANG dT 30 33"},
+            {color: "DA CAM", item: "AO SO MI DA CAM dT 30 33"},
+            {color: "TRANG", item: "AO SO MI TRANG 30 33"},
+            {color: "dO", item: "DAY CHU Y"},
+            {color: "GHI", item: "AO SO MI KE dEN TO"},
+            {color: "dO", item: "AO SO MI KE TRANG dO 30 33"},
+            {color: "DA TROI", item: "AO SO MI KE XANH DA TROI"},
+            {color: "dO", item: "CA VAT dO KE"},
+            {color: "XANH LA", item: "CA VAT XANH LA 06 27"},
+            {color: "GHI", item: "CA VAT GHI 06 27"},
+            {color: "HONG", item: "CA VAT HONG"},
+            {color: "TIM", item: "CA VAT TIM 06 27"},
+            {color: "VANG", item: "CA VAT VANG"},
+            {color: "DA CAM", item: "CA VAT DA CAM"},
+            {color: "XANH LA", item: "QUAN DAI BO dOI 1"},
+            {color: "TRANG", item: ""},
+            {color: "dEN", item: "QUAN DAI dEN"},
+            {color: "VANG", item: "QUAN DAI VANG NHAT"},
+            {color: "GHI", item: "QUAN DAI TRANG COMPLE"},
+            {color: "NGOC", item: "QUAN DAI XANH NGOC"},
+            {color: "XANH BIEN", item: "QUAN BO"},
+            {color: "DA CAM", item: "AO HO"},
+            {color: "TIM", item: "AO NGUA"},
+            {color: "TRANG", item: "AO CAPTAN"},
+            {color: "VANG", item: "AO CHO"},
+            {color: "XANH LA", item: "AO PHONG XANH LA KE CHAM TRANG U2"},
+            {color: "TRANG", item: "AO PHONG TRANG SPORT"},
+            {color: "XANH BIEN", item: "AO PHONG XANH BIEN TRANG NIKE"},
+            {color: "GHI", item: "AO PHONG TRANG NGUA BONG"},
+            {color: "dEN", item: "AO PHONG VANG SO 7"},
+            {color: "XANH BIEN", item: "AO PHONG TRANG SPORT"},
+            {color: "TRANG", item: "AO SAT NACH TRANG"},
+            {color: "dEN", item: "AO SAT NACH dEN CU 33 37"},
+            {color: "HONG", item: "AO SAT NACH HONG 33 37"},
+            {color: "XANH BIEN", item: "AO SAT NACH XANH BIEN MOI 33 37"},
+            {color: "GHI", item: "AO SAT NACH GHI MOI"},
+            {color: "dO", item: "AO KHOAC VAI dO dEN"},
+            {color: "XANH BIEN", item: "AO KHOAC XANH BIEN BAO VE"},
+            {color: "dEN", item: "AO KHOAC dEN THE THAO"},
+            {color: "GHI", item: "AO KHOAC GHI dEN KHOA HONG"},
+            {color: "XANH BIEN", item: "AO KHOAC THE THAO SEAGAME"},
+            {color: "DA TROI", item: "AO KHOAC THE THAO SEAGAME"},
+            {color: "XANH BIEN", item: "AO KHOAC TRANG XANH BIEN"},
+            {color: "TRANG", item: "AO KHOAC TRANG XANH BIEN"},
+            {color: "dEN", item: "AO KHOAC dEN dO"},
+            {color: "TRANG", item: "AO GILE VAI TRANG 20"},
+            {color: "VANG", item: "AO GILE VANG 24"},
+            {color: "GHI", item: "AO GILE GHI 26"},
+            {color: "XANH LA", item: "AO GILE BUDONG XANH LA"},
+            {color: "TRANG", item: "AO GILE LEN TRANG"},
+            {color: "dEN", item: "AO BU DONG dEN"},
+            {color: "TRANG", item: "AO BU DONG TRANG"},
+            {color: "XANH LA", item: "AO BU DONG XANH LA"},
+            {color: "XANH BIEN", item: "AO BU DONG XANH BIEN"},
+            {color: "VANG", item: "AO MANG TO VANG"},
+            {color: "TIM", item: "AO BU DONG TIM"},
+            {color: "GHI", item: "AO BU DONG GHI"},
+            {color: "GHI", item: "AO LEN GHI"},
+            {color: "dEN", item: "AO LEN dEN"},
+            {color: "TRANG", item: "AO LEN dEN TRANG"},
+            {color: "XANH LA", item: "AO LEN XANH LA"},
+            {color: "XANH LA", item: "AO LEN TRANG XANH LA dEN 1"},
+            {color: "dEN", item: "AO LEN TRANG XANH LA dEN 2"},
+            {color: "TRANG", item: "AO LEN TRANG XANH LA dEN 3"},
+            {color: "VANG", item: "AO SOI KE NGANG VANG GHI"},
+            {color: "dEN", item: "AO SOI O TRAM dEN VANG"},
+            {color: "TRANG", item: "AO SOI LONG VANG GHI"},
+            {color: "GHI", item: "AO SOI LONG GHI TRANG"},
+            {color: "VANG", item: "AO SOI O TRAM dEN VANG"},
+            {color: "XANH LA", item: "AO SOI LONG VANG GHI"},
+            {color: "TIM", item: "AO SOI LONG GHI TRANG"},
+            {color: "VANG", item: "COI TRAN"},
+            {color: "dEN", item: "COI TRAN"},
+            {color: "HONG", item: "COI TRAN"},
+            {color: "XANH LA", item: "AO GIU NHIET XANH LA"},
+            {color: "VANG", item: ""},
+            {color: "dEN", item: "COMPLE TOI"},
+            {color: "HONG", item: "COMPLE BE"},
+            {color: "XANH BIEN", item: "COMPLE XANH BIEN"},
+            {color: "GHI", item: "COMPLE GUONG"},
+            {color: "TRANG", item: "COMPLE TRANG"},
+            {color: "COMPLE", item: ""},
+            {color: "NGOC", item: "0"},
+            {color: "XANH LA", item: "AO VET KE CA RO"},
+            {color: "VANG", item: "QUAN SHORT VANG 27 33"},
+            {color: "XANH LA", item: "QUAN SHORT XANH LA 27 33"},
+            {color: "XANH BIEN", item: "QUAN SHORT BO 27 33"},
+            {color: "DA TROI", item: "QUAN SHORT BO NHAT"},
+            {color: "TRANG", item: "QUAN SHORT TRANG 27 33"},
+            {color: "dEN", item: "QUAN SHORT dEN 27 33"},
+            {color: "dEN", item: "QUAN THE THAO dEN dO"},
+            {color: "dEN", item: "GIAY MOI"},
+            {color: "NAU", item: "GIAY MOI HE"},
+            {color: "dEN", item: ""},
+            {color: "dEN", item: "GIAY CONG SO dEN 21 33"},
+            {color: "VANG", item: ""},
+            {color: "dEN", item: ""},
+            {color: "XANH LA", item: "MU LUOI TRAI XANH LA TRANG 25 33"},
+            {color: "XANH LA", item: "MU LUOI TRAI dO 25 38"},
+            {color: "XANH BIEN", item: "MU LUOI TRAI XANH BIEN 25 33"},
+            {color: "GHI", item: "MU LUOI TRAI XAM 25 33"},
+            {color: "dO", item: ""},
+            {color: "dO", item: ""},
+            {color: "dEN", item: ""},
+            {color: "TRANG", item: ""},
+            {color: "XANH BIEN", item: ""},
+            {color: "DA TROI", item: "AO KHOAC THE THAO SEAGAME"},
+            {color: "GHI", item: "QUAN NGU GHI 1"},
+            {color: "GHI", item: "QUAN NGU GHI 2"},
+            {color: "dO", item: "2 QUAN DAI"},
+            {color: "dEN", item: "dI XE MAY – 2 dO"},
+            {color: "TRANG", item: "dI TAT NGU"},
+            {color: "DA TROI", item: "dEO KHAU TRANG"},
+            {color: "GHI", item: "BO TDTT GHI"},
+            {color: "DA TROI", item: "dEO KHAU TRANG"},
+            {color: "XANH BIEN", item: "BO THE THAO"},
+            {color: "dEN", item: "dI TAT NGU"},
+            {color: "XANH BIEN", item: "QUAN DAI BAO VE"},
+            {color: "GHI", item: "QUAN THUN GHI"},
+            {color: "dEN", item: "QUAN THE THAO BONG dO dEN"}
+        ];
+        
+        // Giai thich mau sac
+        const colorExplanations = {
+            "dO": "Mau do tuong trung cho nang luong, dam me va quyen luc. Trong phong thuy, mau do mang lai may man, thinh vuong.",
+            "VANG": "Mau vang dai dien cho tri tue, su sang tao va lac quan. Mau nay giup tang cuong su tu tin va tap trung.",
+            "KIM LOAI": "Mau kim loai tuong trung cho su tinh te, sang trong va hien dai. The hien su manh me va ben vung.",
+            "XANH BIEN": "Mau xanh bien mang lai cam giac binh yen, tin tuong va trung thanh. Giup giam cang thang, tang su sang suot.",
+            "XANH LA": "Mau xanh la tuong trung cho su phat trien, suc song va hai hoa. Mang lai cam giac tuoi moi va can bang.",
+            "DA CAM": "Mau da cam the hien su nhiet tinh, vui ve va sang tao. Kich thich giao tiep va tuong tac xa hoi.",
+            "CHAM": "Mau cham (den trang) dai dien cho su can bang, ro rang va quyet doan. The hien su manh me va quyet tam.",
+            "TIM": "Mau tim tuong trung cho su sang tao, tam linh va sang trong. Kich thich tri tuong tuong va truc giac.",
+            "HONG": "Mau hong dai dien cho tinh yeu, su diu dang va lang man. Mang lai cam giac binh yen va am ap.",
+            "GHI": "Mau ghi the hien su on dinh, chin chan va dang tin cay. Tao cam giac an toan va vung chac.",
+            "TRANG": "Mau trang tuong trung cho su tinh khiet, don gian va hoan hao. Mang lai cam giac thanh than va moi me.",
+            "dEN": "Mau den dai dien cho su bi an, quyen luc va thanh lich. The hien su manh me va quyet doan.",
+            "DA TROI": "Mau da troi mang lai cam giac nhe nhang, tu do va thoai mai. Giup giam cang thang va tao khong gian mo."
+        };
+        
+        // Xu ly khi chon nguoi tu danh sach
+        document.getElementById('personList').addEventListener('change', function() {
+            if (this.value) {
+                const [name, birthDate] = this.value.split(',');
+                document.getElementById('name').value = name;
+                
+                // Chuyen doi dinh dang ngay tu dd/mm/yyyy sang yyyy-mm-dd
+                const [day, month, year] = birthDate.split('/');
+                const formattedDate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+                document.getElementById('birthDate').value = formattedDate;
+            }
+        });
+        
+        // Xu ly khi nhan nut tinh toan
+        document.getElementById('calculateBtn').addEventListener('click', function() {
+            calculateAndDisplay();
+        });
+        
+        // Xu ly khi nhan nut nhap lai
+        document.getElementById('resetBtn').addEventListener('click', function() {
+            resetForm();
+        });
+        
+        // Ham tinh toan va hien thi ket qua
+        function calculateAndDisplay() {
+            const currentDate = new Date(document.getElementById('currentDate').value);
+            const birthDate = new Date(document.getElementById('birthDate').value);
+            const name = document.getElementById('name').value;
+            
+            // Kiem tra du lieu nhap
+            if (!birthDate || !name) {
+                alert("Vui long nhap day du ngay sinh va ten!");
+                return;
+            }
+            
+            // Tinh tuoi
+            let age = currentDate.getFullYear() - birthDate.getFullYear();
+            const monthDiff = currentDate.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && currentDate.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            // Lay hai so cuoi nam sinh
+            const lastTwoDigits = birthDate.getFullYear() % 100;
+            
+            // Lay ma thang
+            const month = birthDate.getMonth() + 1; // Thang bat dau tu 0
+            const monthCode = monthCodes[month] !== undefined ? monthCodes[month] : 0;
+            
+            // Hien thi thong tin co ban
+            document.getElementById('resultName').textContent = name;
+            document.getElementById('resultBirthDate').textContent = formatDate(birthDate);
+            document.getElementById('resultAge').textContent = age;
+            document.getElementById('resultLastTwoDigits').textContent = lastTwoDigits.toString().padStart(2, '0');
+            document.getElementById('resultMonthCode').textContent = monthCode;
+            
+            // Tinh toan mau sac
+            const colors = calculateColors(lastTwoDigits, monthCode);
+            
+            // Hien thi mau sac
+            displayColors(colors);
+            
+            // Hien thi goi y trang phuc
+            displayClothing(colors);
+            
+            // Hien thi ket qua
+            document.getElementById('resultSection').style.display = 'block';
+            
+            // Cuon den phan ket qua
+            document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Ham tinh toan mau sac
+        function calculateColors(lastTwoDigits, monthCode) {
+            const colors = [];
+            const digit1 = Math.floor(lastTwoDigits / 10);
+            const digit2 = lastTwoDigits % 10;
+            
+            // Tim mau cho tung so
+            const codesToFind = [digit1, digit2];
+            if (monthCode !== 0) codesToFind.push(monthCode);
+            
+            // dam bao khong trung lap mau
+            const addedColors = new Set();
+            
+            codesToFind.forEach(code => {
+                // Neu code la 0, tim tat ca cac mau co so 0
+                if (code === 0) {
+                    colorTable.forEach(item => {
+                        if (item.number === 0 && !addedColors.has(item.color)) {
+                            colors.push(item);
+                            addedColors.add(item.color);
+                        }
+                    });
+                } else {
+                    // Tim tat ca cac mau co code trung
+                    colorTable.forEach(item => {
+                        if (item.code === code && !addedColors.has(item.color)) {
+                            colors.push(item);
+                            addedColors.add(item.color);
+                        }
+                    });
+                }
+            });
+            
+            return colors;
+        }
+        
+        // Ham hien thi mau sac
+        function displayColors(colors) {
+            const colorResult = document.getElementById('colorResult');
+            colorResult.innerHTML = '';
+            
+            if (colors.length === 0) {
+                colorResult.innerHTML = '<p>Khong tim thay mau sac phu hop.</p>';
+                return;
+            }
+            
+            colors.forEach(colorItem => {
+                const colorDiv = document.createElement('div');
+                colorDiv.className = 'color-item';
+                colorDiv.style.backgroundColor = colorItem.hex;
+                colorDiv.style.border = colorItem.color === 'TRANG' || colorItem.color === 'KIM LOAI' ? '2px solid #ddd' : 'none';
+                colorDiv.style.color = colorItem.color === 'TRANG' || colorItem.color === 'VANG' || colorItem.color === 'KIM LOAI' ? '#333' : 'white';
+                
+                colorDiv.innerHTML = `
+                    <div style="font-size: 1.2rem; margin-bottom: 5px;">${colorItem.color}</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">${colorItem.hex}</div>
+                    <div style="font-size: 0.8rem; margin-top: 8px; background: rgba(255,255,255,0.2); padding: 5px; border-radius: 5px;">
+                        ${colorExplanations[colorItem.color] || 'Mau sac mang lai nang luong tich cuc'}
+                    </div>
+                `;
+                
+                colorResult.appendChild(colorDiv);
+            });
+        }
+        
+        // Ham hien thi goi y trang phuc
+        function displayClothing(colors) {
+            const clothingResult = document.getElementById('clothingResult');
+            clothingResult.innerHTML = '';
+            
+            if (colors.length === 0) return;
+            
+            // Lay tat ca cac mau
+            const colorNames = colors.map(c => c.color);
+            
+            // Tim trang phuc phu hop
+            const matchedClothing = clothingTable.filter(item => {
+                return colorNames.includes(item.color) && item.item.trim() !== '';
+            });
+            
+            // Gioi han so luong hien thi
+            const displayCount = Math.min(matchedClothing.length, 10);
+            
+            if (displayCount === 0) {
+                clothingResult.innerHTML = '<p>Khong tim thay goi y trang phuc phu hop.</p>';
+                return;
+            }
+            
+            for (let i = 0; i < displayCount; i++) {
+                const item = matchedClothing[i];
+                const colorItem = colors.find(c => c.color === item.color);
+                
+                const clothingDiv = document.createElement('div');
+                clothingDiv.className = 'clothing-item';
+                
+                clothingDiv.innerHTML = `
+                    <div class="color-dot" style="background-color: ${colorItem?.hex || '#CCC'}"></div>
+                    <div>
+                        <div style="font-weight: 600; color: #444;">${item.item}</div>
+                        <div style="font-size: 0.9rem; color: #666;">Mau phu hop: ${item.color}</div>
+                    </div>
+                `;
+                
+                clothingResult.appendChild(clothingDiv);
+            }
+            
+            if (matchedClothing.length > displayCount) {
+                const moreDiv = document.createElement('div');
+                moreDiv.style.textAlign = 'center';
+                moreDiv.style.marginTop = '10px';
+                moreDiv.style.color = '#666';
+                moreDiv.textContent = `... va ${matchedClothing.length - displayCount} goi y khac`;
+                clothingResult.appendChild(moreDiv);
+            }
+        }
+        
+        // Ham dinh dang ngay
+        function formatDate(date) {
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+        
+        // Ham dat lai form
+        function resetForm() {
+            document.getElementById('currentDate').valueAsDate = new Date();
+            document.getElementById('birthDate').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('personList').value = '';
+            document.getElementById('resultSection').style.display = 'none';
+        }
+        
+        // Them su kien Enter de tinh toan
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                calculateAndDisplay();
+            }
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

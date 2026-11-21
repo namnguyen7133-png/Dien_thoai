@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tinh Gia Ban Le Tap Hoa</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    padding: 20px;
+}
+.container {
+    max-width: 520px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+h2 {
+    text-align: center;
+    color: #2c3e50;
+}
+label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+}
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+.result {
+    margin-top: 15px;
+    background: #ecf0f1;
+    padding: 10px;
+    border-radius: 5px;
+}
+.note {
+    font-size: 13px;
+    color: #555;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🧮 TINH GIA BAN TAP HOA</h2>
+
+    <label>Gia von (d)</label>
+    <input type="number" id="cost" placeholder="Vi du: 3000">
+
+    <label>Chi phi co dinh / san pham (d)</label>
+    <input type="number" id="fixed" placeholder="Vi du: 1000">
+
+    <label>Loi nhuan mong muon (%)</label>
+    <input type="number" id="profit" placeholder="Vi du: 20">
+
+    <label>Thue (%)</label>
+    <input type="number" id="tax" placeholder="Vi du: 1.5">
+
+    <button onclick="calculate()">TINH GIA BAN</button>
+
+    <div class="result" id="output"></div>
+
+    <p class="note">
+        ✔ Hang thiet yeu: lai 5–10%<br>
+        ✔ Hang dac biet: lai 15–30%
+    </p>
+</div>
+
+<script>
+function calculate() {
+    let cost = parseFloat(document.getElementById("cost").value);
+    let fixed = parseFloat(document.getElementById("fixed").value);
+    let profit = parseFloat(document.getElementById("profit").value) / 100;
+    let tax = parseFloat(document.getElementById("tax").value) / 100;
+
+    if (isNaN(cost) || isNaN(fixed) || isNaN(profit) || isNaN(tax)) {
+        alert("Vui long nhap day du du lieu!");
+        return;
+    }
+
+    let base = cost + fixed;
+    let sellPrice = base / (1 - profit - tax);
+    let rounded = Math.ceil(sellPrice / 500) * 500;
+
+    let realProfit = sellPrice * profit;
+    let realTax = sellPrice * tax;
+    let netProfit = sellPrice - cost - fixed - realTax;
+
+    document.getElementById("output").innerHTML = `
+        <b>🔹 Gia ban de xuat:</b> ${sellPrice.toFixed(0)} d<br>
+        <b>🔹 Gia lam tron:</b> ${rounded} d<br><br>
+
+        <b>📊 Kiem tra lai:</b><br>
+        Thue: ${realTax.toFixed(0)} d<br>
+        Lai rong thuc te: ${netProfit.toFixed(0)} d
+    `;
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

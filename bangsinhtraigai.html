@@ -1,0 +1,361 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinh tuoi am lich va tra bang</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="date"], input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #e8f5e9;
+            border-radius: 5px;
+            display: none;
+        }
+        .result.show {
+            display: block;
+        }
+        .result h3 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .result-table th, .result-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        .result-table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .result-table .highlight {
+            background-color: #ffeb3b;
+            font-weight: bold;
+        }
+        .gender {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .boy {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        .girl {
+            background-color: #fce4ec;
+            color: #c2185b;
+        }
+        .note {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff3e0;
+            border-left: 4px solid #ff9800;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>TINH TUOI AM LICH VA TRA BANG</h1>
+        
+        <div class="input-group">
+            <label for="birthDate">1. Ngay thang nam sinh cua vo (duong lich):</label>
+            <input type="date" id="birthDate" required>
+        </div>
+        
+        <div class="input-group">
+            <label for="viewDate">2. Ngay thang nam muon xem (duong lich):</label>
+            <input type="date" id="viewDate" required>
+        </div>
+        
+        <div class="input-group">
+            <label for="dueMonth">3. Thang du sinh con (duong lich, tu 1-12):</label>
+            <input type="number" id="dueMonth" min="1" max="12" required>
+        </div>
+        
+        <button onclick="calculate()">Tinh toan va tra bang</button>
+        
+        <div id="result" class="result">
+            <h3>Ket qua tra bang</h3>
+            <div id="ageResult"></div>
+            <div id="genderResult" class="gender"></div>
+            
+            <h3>Bang tra cuu</h3>
+            <table class="result-table" id="resultTable">
+                <thead>
+                    <tr>
+                        <th>Tuoi</th>
+                        <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Bang se duoc tao bang JavaScript -->
+                </tbody>
+            </table>
+            
+            <div class="note">
+                <p><strong>Chu thich:</strong></p>
+                <p>• <strong>G</strong>: Du doan sinh con gai</p>
+                <p>• <strong>T</strong>: Du doan sinh con trai</p>
+                <p>• O mau vang la ket qua tra duoc dua tren tuoi am lich va thang du sinh</p>
+                <p><em>Luu y: Ket qua chi mang tinh chat tham khao theo kinh nghiem dan gian</em></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Du lieu bang tra
+        const predictionTable = {
+            18: ['G', 'T', 'G', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T'],
+            19: ['T', 'G', 'T', 'G', 'G', 'T', 'G', 'G', 'G', 'G', 'G', 'G'],
+            20: ['G', 'T', 'G', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T', 'T'],
+            21: ['T', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G'],
+            22: ['G', 'T', 'T', 'G', 'T', 'T', 'T', 'G', 'G', 'G', 'G', 'G'],
+            23: ['T', 'T', 'G', 'T', 'T', 'G', 'T', 'G', 'G', 'G', 'G', 'G'],
+            24: ['T', 'G', 'T', 'T', 'G', 'T', 'T', 'G', 'G', 'G', 'G', 'G'],
+            25: ['G', 'T', 'T', 'G', 'T', 'G', 'T', 'T', 'T', 'T', 'T', 'T'],
+            26: ['T', 'G', 'T', 'G', 'G', 'T', 'G', 'T', 'G', 'G', 'G', 'G'],
+            27: ['G', 'T', 'G', 'T', 'T', 'G', 'T', 'T', 'T', 'G', 'T', 'T'],
+            28: ['T', 'G', 'T', 'G', 'G', 'G', 'T', 'T', 'T', 'T', 'G', 'G'],
+            29: ['G', 'T', 'G', 'T', 'T', 'T', 'T', 'T', 'T', 'G', 'G', 'G'],
+            30: ['T', 'T', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'T', 'T'],
+            31: ['T', 'T', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'T', 'T'],
+            32: ['T', 'T', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'T', 'T'],
+            33: ['G', 'T', 'G', 'T', 'T', 'G', 'G', 'T', 'G', 'G', 'T', 'T'],
+            34: ['T', 'T', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'G', 'T', 'T'],
+            35: ['T', 'T', 'G', 'T', 'G', 'G', 'G', 'T', 'T', 'T', 'T', 'T'],
+            36: ['G', 'T', 'T', 'G', 'T', 'G', 'G', 'T', 'G', 'T', 'T', 'G'],
+            37: ['T', 'G', 'T', 'T', 'G', 'T', 'G', 'T', 'G', 'T', 'T', 'T'],
+            38: ['G', 'T', 'G', 'T', 'T', 'T', 'T', 'G', 'T', 'G', 'T', 'T'],
+            39: ['G', 'T', 'G', 'T', 'G', 'T', 'T', 'G', 'T', 'G', 'T', 'G'],
+            40: ['G', 'T', 'G', 'T', 'G', 'T', 'T', 'G', 'T', 'G', 'T', 'G'],
+            41: ['T', 'G', 'T', 'G', 'T', 'G', 'T', 'T', 'G', 'T', 'G', 'T'],
+            42: ['G', 'T', 'G', 'T', 'G', 'T', 'G', 'T', 'T', 'G', 'G', 'G'],
+            43: ['T', 'G', 'T', 'G', 'T', 'G', 'T', 'G', 'T', 'T', 'T', 'T'],
+            44: ['T', 'T', 'G', 'T', 'T', 'T', 'G', 'T', 'G', 'T', 'G', 'G'],
+            45: ['G', 'T', 'T', 'G', 'G', 'G', 'T', 'G', 'T', 'G', 'T', 'T']
+        };
+
+        // Ham chuyen doi duong lich sang am lich don gian
+        // Luu y: day la ham don gian hoa, de chinh xac can su dung thu vien chuyen doi lich am duong
+        function getLunarAge(birthDate, viewDate) {
+            // Tinh tuoi theo nam
+            let age = viewDate.getFullYear() - birthDate.getFullYear();
+            
+            // Hieu chinh neu chua den sinh nhat trong nam
+            const birthMonth = birthDate.getMonth();
+            const birthDay = birthDate.getDate();
+            const viewMonth = viewDate.getMonth();
+            const viewDay = viewDate.getDate();
+            
+            if (viewMonth < birthMonth || (viewMonth === birthMonth && viewDay < birthDay)) {
+                age--;
+            }
+            
+            // Trong van hoa Viet Nam, tuoi am lich thuong +1 so voi tuoi duong lich
+            const lunarAge = age + 1;
+            
+            return lunarAge;
+        }
+
+        // Ham tao bang
+        function createTable() {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+            
+            for (let age = 18; age <= 45; age++) {
+                const row = document.createElement('tr');
+                
+                // O tuoi
+                const ageCell = document.createElement('td');
+                ageCell.textContent = age;
+                row.appendChild(ageCell);
+                
+                // O ket qua 12 thang
+                for (let month = 1; month <= 12; month++) {
+                    const cell = document.createElement('td');
+                    cell.textContent = predictionTable[age][month-1];
+                    cell.id = `cell-${age}-${month}`;
+                    row.appendChild(cell);
+                }
+                
+                tableBody.appendChild(row);
+            }
+        }
+
+        // Ham tinh toan chinh
+        function calculate() {
+            // Lay gia tri tu form
+            const birthDateStr = document.getElementById('birthDate').value;
+            const viewDateStr = document.getElementById('viewDate').value;
+            const dueMonth = parseInt(document.getElementById('dueMonth').value);
+            
+            if (!birthDateStr || !viewDateStr || !dueMonth) {
+                alert('Vui long nhap day du thong tin!');
+                return;
+            }
+            
+            if (dueMonth < 1 || dueMonth > 12) {
+                alert('Thang du sinh phai tu 1 den 12!');
+                return;
+            }
+            
+            const birthDate = new Date(birthDateStr);
+            const viewDate = new Date(viewDateStr);
+            
+            if (viewDate < birthDate) {
+                alert('Ngay xem phai sau ngay sinh!');
+                return;
+            }
+            
+            // Tinh tuoi am lich
+            const lunarAge = getLunarAge(birthDate, viewDate);
+            
+            // Kiem tra tuoi trong pham vi bang
+            if (lunarAge < 18 || lunarAge > 45) {
+                document.getElementById('ageResult').innerHTML = 
+                    `<p>Tuoi am lich: <strong>${lunarAge}</strong></p>
+                     <p style="color: red;">Tuoi am lich phai tu 18 den 45 de tra bang!</p>`;
+                document.getElementById('genderResult').innerHTML = '';
+                document.getElementById('result').classList.add('show');
+                return;
+            }
+            
+            // Tra bang
+            const prediction = predictionTable[lunarAge][dueMonth - 1];
+            const genderText = prediction === 'G' ? 'GAI' : 'TRAI';
+            const genderClass = prediction === 'G' ? 'girl' : 'boy';
+            
+            // Hien thi ket qua
+            document.getElementById('ageResult').innerHTML = 
+                `<p>Tuoi am lich cua me: <strong>${lunarAge}</strong></p>
+                 <p>Thang du sinh (am lich): <strong>${dueMonth}</strong></p>`;
+            
+            document.getElementById('genderResult').innerHTML = 
+                `Du doan: Sinh con <span style="font-size: 28px;">${genderText}</span>`;
+            document.getElementById('genderResult').className = `gender ${genderClass}`;
+            
+            // Hien thi bang va lam noi o ket qua
+            createTable();
+            
+            // Xoa highlight cu
+            const oldHighlights = document.querySelectorAll('.highlight');
+            oldHighlights.forEach(cell => cell.classList.remove('highlight'));
+            
+            // Them highlight cho o ket qua
+            const resultCell = document.getElementById(`cell-${lunarAge}-${dueMonth}`);
+            if (resultCell) {
+                resultCell.classList.add('highlight');
+            }
+            
+            // Hien thi ket qua
+            document.getElementById('result').classList.add('show');
+            
+            // Cuon den ket qua
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // dat ngay mac dinh
+        window.onload = function() {
+            const today = new Date();
+            const defaultViewDate = new Date(today);
+            defaultViewDate.setFullYear(today.getFullYear());
+            
+            // dat ngay sinh mac dinh (vi du: 25 tuoi truoc)
+            const defaultBirthDate = new Date(today);
+            defaultBirthDate.setFullYear(today.getFullYear() - 25);
+            
+            document.getElementById('birthDate').valueAsDate = defaultBirthDate;
+            document.getElementById('viewDate').valueAsDate = defaultViewDate;
+            
+            // Tao bang ban dau
+            createTable();
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

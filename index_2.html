@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tra cứu Dữ liệu Sách</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f4; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 5px; }
+        .search-box { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { flex: 1; padding: 10px; }
+        button { padding: 10px 20px; cursor: pointer; background: #007bff; color: white; border: none; }
+        .item { border-bottom: 1px solid #eee; padding: 10px 0; font-size: 14px; word-break: break-all; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>HỆ THỐNG TRA CỨU NHANH</h3>
+        <div class="search-box">
+            <input type="text" id="q" placeholder="Nhập từ khóa...">
+            <button onclick="doSearch()">Tìm kiếm</button>
+        </div>
+        <div id="res"></div>
+    </div>
+    <script>
+        async function doSearch() {
+            const val = document.getElementById('q').value;
+            const res = document.getElementById('res');
+            if(!val) return;
+            res.innerHTML = "Đang xử lý...";
+            try {
+                const response = await fetch('http://127.0.0.1:5001/ask', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({question: val})
+                });
+                const data = await response.json();
+                res.innerHTML = data.answers.map(a => `<div class="item">${a}</div>`).join('');
+                if(data.answers.length === 0) res.innerHTML = "Không tìm thấy.";
+            } catch {
+                res.innerHTML = "Lỗi kết nối server!";
+            }
+        }
+    </script>
+</body>
+</html>

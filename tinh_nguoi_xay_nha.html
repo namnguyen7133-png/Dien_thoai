@@ -1,0 +1,640 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toan Co: dem Nguoi Lam Nha</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            background-image: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            margin-top: 0;
+            font-size: 2.2rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            font-style: italic;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+        
+        .video-link {
+            display: inline-block;
+            background-color: #ff6b6b;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .video-link:hover {
+            background-color: #ff5252;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            border-bottom: 3px solid #e74c3c;
+            padding-bottom: 10px;
+            margin-top: 35px;
+            display: flex;
+            align-items: center;
+        }
+        
+        h2:before {
+            content: "→";
+            margin-right: 10px;
+            color: #e74c3c;
+            font-size: 1.5rem;
+        }
+        
+        .poem-problem {
+            background-color: #fff8e1;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 25px 0;
+            border-left: 5px solid #ffb300;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .poem-problem strong {
+            color: #d84315;
+        }
+        
+        .calculator {
+            background-color: #f1f8ff;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 30px 0;
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.1);
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        
+        button {
+            padding: 16px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex-grow: 1;
+            min-width: 180px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .calculate-btn {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .calculate-btn:hover {
+            background-color: #27ae60;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .reset-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .example-btn {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .example-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .solution-container {
+            display: none;
+            margin-top: 30px;
+            animation: fadeIn 0.8s;
+        }
+        
+        .solution-container.show {
+            display: block;
+        }
+        
+        .solution-tabs {
+            display: flex;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 15px 25px;
+            background-color: #f8f9fa;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            margin-right: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #7f8c8d;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .tab:hover:not(.active) {
+            background-color: #e9ecef;
+        }
+        
+        .solution-content {
+            background-color: white;
+            border-radius: 0 8px 8px 8px;
+            padding: 25px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .method {
+            display: none;
+        }
+        
+        .method.active {
+            display: block;
+        }
+        
+        .method h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            border-left: 4px solid #3498db;
+            padding-left: 15px;
+        }
+        
+        .calculation-steps {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-line;
+            line-height: 1.8;
+            border-left: 4px solid #2ecc71;
+        }
+        
+        .result-box {
+            background-color: #e8f5e9;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            border: 2px solid #4caf50;
+            display: none;
+        }
+        
+        .result-box.show {
+            display: block;
+            animation: pulse 1s;
+        }
+        
+        .result-box h3 {
+            color: #2e7d32;
+            margin-top: 0;
+        }
+        
+        .result-item {
+            display: inline-block;
+            margin: 15px 25px;
+            padding: 15px 25px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            min-width: 180px;
+        }
+        
+        .result-item .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e74c3c;
+            display: block;
+        }
+        
+        .result-item .label {
+            font-size: 1.1rem;
+            color: #555;
+            margin-top: 5px;
+        }
+        
+        .explanation {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .method-card {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 5px solid #9c27b0;
+        }
+        
+        .method-card h4 {
+            margin-top: 0;
+            color: #7b1fa2;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 25px;
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 0 0 15px 15px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .result-item {
+                display: block;
+                margin: 15px 0;
+                width: 100%;
+            }
+            
+            .solution-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+                padding: 12px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Toan Co: "dem Nguoi Lam Nha"</h1>
+            <div class="subtitle">Bai toan co duoc dien dat bang tho voi 3 cach giai khac nhau</div>
+            <a href="https://youtu.be/isEoUmG7aaU" target="_blank" class="video-link">Xem Video Goc Tren YouTube</a>
+        </header>
+        
+        <div class="content">
+            <div class="poem-problem">
+                <strong>de bai toan co:</strong><br>
+                "Ba nguoi an chung mot bat com<br>
+                Bon nguoi an chung mot dia ca<br>
+                Tram bat, nghin nguoi that da<br>
+                Tinh di tinh lai van la ba tram le mot"<br><br>
+                
+                <strong>Tom tat:</strong><br>
+                • 3 nguoi an chung 1 bat com<br>
+                • 4 nguoi an chung 1 dia ca muoi<br>
+                • Tong so bat dia don ra la 301 cai<br>
+                • <strong>Hoi:</strong> Co bao nhieu nguoi lam nha, bao nhieu bat com va bao nhieu dia ca muoi?
+            </div>
+            
+            <h2>May Tinh Giai Toan</h2>
+            <p>Nhap tong so bat dia de giai bai toan (hoac dung gia tri mac dinh 301):</p>
+            
+            <div class="calculator">
+                <div class="input-group">
+                    <label for="totalDishes">Tong so bat dia (bat com + dia ca):</label>
+                    <input type="number" id="totalDishes" placeholder="Nhap so bat dia (vi du: 301)" value="301" min="1">
+                </div>
+                
+                <div class="buttons">
+                    <button class="calculate-btn" onclick="solveProblem()">Giai Bai Toan</button>
+                    <button class="example-btn" onclick="useDefault()">Dung Vi Du 301</button>
+                    <button class="reset-btn" onclick="resetCalculator()">dat Lai</button>
+                </div>
+                
+                <div class="solution-container" id="solutionContainer">
+                    <div class="solution-tabs">
+                        <button class="tab active" onclick="showMethod(1)">Phuong Phap 1</button>
+                        <button class="tab" onclick="showMethod(2)">Phuong Phap 2</button>
+                        <button class="tab" onclick="showMethod(3)">Phuong Phap 3</button>
+                    </div>
+                    
+                    <div class="solution-content">
+                        <div class="method active" id="method1">
+                            <h3>Cach 1: Giai bang phuong trinh dai so</h3>
+                            <p>day la cach giai toan hoc chinh thong, dung phuong trinh de tim nghiem.</p>
+                            <div class="calculation-steps" id="steps1">
+                                <!-- Noi dung se duoc dien bang JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="method" id="method2">
+                            <h3>Cach 2: Giai dan gian bang quy tac tam suat</h3>
+                            <p>Phuong phap dan gian dung ti le va quy tac tam suat de tinh toan.</p>
+                            <div class="calculation-steps" id="steps2">
+                                <!-- Noi dung se duoc dien bang JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="method" id="method3">
+                            <h3>Cach 3: Giai dan gian bang chia nhom</h3>
+                            <p>Phuong phap chia thanh cac nhom co ti le co dinh de tinh toan.</p>
+                            <div class="calculation-steps" id="steps3">
+                                <!-- Noi dung se duoc dien bang JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-box" id="resultBox">
+                    <h3>Ket Qua Bai Toan</h3>
+                    <div class="result-item">
+                        <span class="value" id="peopleResult">0</span>
+                        <span class="label">So Nguoi</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="value" id="riceBowlsResult">0</span>
+                        <span class="label">Bat Com</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="value" id="picklePlatesResult">0</span>
+                        <span class="label">dia Ca Muoi</span>
+                    </div>
+                    <p style="margin-top: 20px; font-style: italic; color: #666;">Tong so bat dia: <span id="totalResult">0</span> (kiem tra: <span id="checkResult">0</span>)</p>
+                </div>
+            </div>
+            
+            <h2>Chi Tiet 3 Cach Giai</h2>
+            
+            <div class="method-card">
+                <h4>1. Cach giai bang lap phuong trinh (01:46)</h4>
+                <p>Goi so nguoi la x, so bat com la b, so dia ca la c.</p>
+                <p>Ta co: b = x/3, c = x/4 va b + c = 301</p>
+                <p>Phuong trinh: x/3 + x/4 = 301</p>
+                <p>Quy dong mau so chung la 12: (4x + 3x)/12 = 301</p>
+                <p>Giai ra: 7x = 301 × 12 = 3612 → x = 3612 ÷ 7 = 516</p>
+            </div>
+            
+            <div class="method-card">
+                <h4>2. Cach giai dan gian 1 - Quy tac tam suat (05:45)</h4>
+                <p>Tim boi so chung nho nhat cua 3 va 4 la 12.</p>
+                <p>Xet 1 nhom 12 nguoi: dung 4 bat com (12÷3) va 3 dia ca (12÷4).</p>
+                <p>Tong bat dia cho 12 nguoi: 4 + 3 = 7</p>
+                <p>Ap dung quy tac tam suat: 12 nguoi → 7 bat dia, vay ? nguoi → 301 bat dia</p>
+                <p>So nguoi = (12 × 301) ÷ 7 = 3612 ÷ 7 = 516</p>
+            </div>
+            
+            <div class="method-card">
+                <h4>3. Cach giai dan gian 2 - Chia theo nhom (06:52)</h4>
+                <p>Cung xet nhom 12 nguoi dung 7 bat dia.</p>
+                <p>So nhom = 301 ÷ 7 = 43 nhom</p>
+                <p>So nguoi = 43 × 12 = 516 nguoi</p>
+                <p>So bat com = 43 × 4 = 172 bat</p>
+                <p>So dia ca = 43 × 3 = 129 dia</p>
+            </div>
+            
+            <div class="explanation">
+                <h3>Tai Sao Co 3 Cach Giai?</h3>
+                <p>Bai toan co nay minh hoa cho su linh hoat trong tu duy toan hoc:</p>
+                <ul>
+                    <li><strong>Cach 1</strong> la phuong phap dai so chinh thong, dung cho giai toan hoc thuat.</li>
+                    <li><strong>Cach 2 va 3</strong> la phuong phap dan gian, dung ti le va nhom de tinh nham nhanh ma khong can phuong trinh phuc tap.</li>
+                    <li>Ca 3 cach deu cho cung mot ket qua, chung to toan hoc co nhieu con duong de di den dap an dung.</li>
+                </ul>
+                <p>Video giup nguoi xem lam quen voi cach tu duy toan hoc linh hoat, tu hoc thuat den thuc te dan gian.</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Bai toan co "dem nguoi lam nha" - 3 phuong phap giai khac nhau</p>
+            <p>Thuc hien dua tren video "3 cach giai bai toan co dem nguoi lam nha"</p>
+            <p style="margin-top: 15px; font-size: 0.9rem;">© 2023 - Toan hoc dan gian Viet Nam</p>
+        </footer>
+    </div>
+
+    <script>
+        // Hien thi phuong phap duoc chon
+        function showMethod(methodNumber) {
+            // An tat ca cac phuong phap
+            document.querySelectorAll('.method').forEach(method => {
+                method.classList.remove('active');
+            });
+            
+            // Hien thi phuong phap duoc chon
+            document.getElementById(`method${methodNumber}`).classList.add('active');
+            
+            // Cap nhat tab active
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.tab')[methodNumber - 1].classList.add('active');
+        }
+        
+        // Giai bai toan
+        function solveProblem() {
+            const totalDishes = parseInt(document.getElementById('totalDishes').value);
+            
+            if (!totalDishes || totalDishes < 1) {
+                alert('Vui long nhap so bat dia hop le (so nguyen duong)!');
+                return;
+            }
+            
+            // Tinh toan ket qua
+            const people = (totalDishes * 12) / 7;
+            const riceBowls = people / 3;
+            const picklePlates = people / 4;
+            
+            // Kiem tra xem ket qua co phai so nguyen khong
+            if (people % 1 !== 0 || riceBowls % 1 !== 0 || picklePlates % 1 !== 0) {
+                alert(`Voi tong so bat dia la ${totalDishes}, bai toan khong co nghiem nguyen.\nHay thu voi so bat dia chia het cho 7.`);
+                return;
+            }
+            
+            // Cap nhat ket qua
+            document.getElementById('peopleResult').textContent = people;
+            document.getElementById('riceBowlsResult').textContent = riceBowls;
+            document.getElementById('picklePlatesResult').textContent = picklePlates;
+            document.getElementById('totalResult').textContent = totalDishes;
+            document.getElementById('checkResult').textContent = `${riceBowls} + ${picklePlates} = ${riceBowls + picklePlates}`;
+            
+            // Hien thi ket qua va giai phap
+            document.getElementById('solutionContainer').classList.add('show');
+            document.getElementById('resultBox').classList.add('show');
+            
+            // Tao noi dung chi tiet cho tung phuong phap
+            generateMethodDetails(totalDishes, people, riceBowls, picklePlates);
+            
+            // Cuon den phan ket qua
+            document.getElementById('solutionContainer').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Tao chi tiet cho cac phuong phap giai
+        function generateMethodDetails(totalDishes, people, riceBowls, picklePlates) {
+            const groups = totalDishes / 7;
+            
+            // Phuong phap 1: Phuong trinh
+            const steps1 = `Goi so nguoi la x\nSo bat com la x/3\nSo dia ca la x/4\n\nPhuong trinh:\nx/3 + x/4 = ${totalDishes}\n\nQuy dong mau so 12:\n(4x + 3x)/12 = ${totalDishes}\n7x/12 = ${totalDishes}\n\nNhan ca hai ve voi 12:\n7x = ${totalDishes} × 12 = ${totalDishes * 12}\n\nChia ca hai ve cho 7:\nx = ${totalDishes * 12} ÷ 7 = ${people}\n\nTinh so bat va dia:\nSo bat com = ${people} ÷ 3 = ${riceBowls}\nSo dia ca = ${people} ÷ 4 = ${picklePlates}`;
+            
+            document.getElementById('steps1').textContent = steps1;
+            
+            // Phuong phap 2: Tam suat
+            const steps2 = `Tim boi chung nho nhat cua 3 va 4 la 12\n\nMot nhom 12 nguoi can:\n- Bat com: 12 ÷ 3 = 4 bat\n- dia ca: 12 ÷ 4 = 3 dia\n- Tong: 4 + 3 = 7 bat dia\n\nAp dung quy tac tam suat:\n12 nguoi → 7 bat dia\n? nguoi → ${totalDishes} bat dia\n\nSo nguoi = (12 × ${totalDishes}) ÷ 7\nSo nguoi = ${12 * totalDishes} ÷ 7 = ${people}\n\nSo bat com = ${people} ÷ 3 = ${riceBowls}\nSo dia ca = ${people} ÷ 4 = ${picklePlates}`;
+            
+            document.getElementById('steps2').textContent = steps2;
+            
+            // Phuong phap 3: Chia nhom
+            const steps3 = `Mot nhom 12 nguoi can 7 bat dia\n\nSo nhom = Tong bat dia ÷ 7\nSo nhom = ${totalDishes} ÷ 7 = ${groups} nhom\n\nSo nguoi = So nhom × 12\nSo nguoi = ${groups} × 12 = ${people}\n\nSo bat com = So nhom × 4\nSo bat com = ${groups} × 4 = ${riceBowls}\n\nSo dia ca = So nhom × 3\nSo dia ca = ${groups} × 3 = ${picklePlates}`;
+            
+            document.getElementById('steps3').textContent = steps3;
+        }
+        
+        // Dung vi du mac dinh
+        function useDefault() {
+            document.getElementById('totalDishes').value = 301;
+            solveProblem();
+        }
+        
+        // dat lai may tinh
+        function resetCalculator() {
+            document.getElementById('totalDishes').value = '';
+            document.getElementById('solutionContainer').classList.remove('show');
+            document.getElementById('resultBox').classList.remove('show');
+        }
+        
+        // Tu dong giai vi du mac dinh khi trang tai xong
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("Trang giai toan co 'dem nguoi lam nha' da san sang!");
+            // Tu dong giai vi du mac dinh sau 1 giay
+            setTimeout(useDefault, 500);
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

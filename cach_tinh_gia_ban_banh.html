@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tinh Gia Ban Banh My / Banh Theo Ky</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f7f7f7;
+    padding: 20px;
+}
+.box {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+h2 {
+    text-align: center;
+    color: #d35400;
+}
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 10px;
+    background: #e67e22;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+.result {
+    margin-top: 15px;
+    background: #f0f3f4;
+    padding: 10px;
+    border-radius: 5px;
+}
+.note {
+    font-size: 13px;
+    color: #555;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+<h2>🍞 TINH GIA BAN BANH (GRAM / KG)</h2>
+
+<label>1⃣ Khoi luong thanh pham / me (gram)</label>
+<input type="number" id="outputGram" placeholder="Vi du: 200">
+
+<label>2⃣ Tong tien nguyen lieu + bao bi / me (d)</label>
+<input type="number" id="costBatch" placeholder="Vi du: 15000">
+
+<label>3⃣ Khach mua bao nhieu gram?</label>
+<input type="number" id="sellGram" placeholder="Vi du: 1000">
+
+<label>4⃣ Nhan gia ban (x2 hoac x3)</label>
+<input type="number" id="markup" placeholder="Vi du: 2 hoac 3">
+
+<button onclick="calculate()">TINH GIA</button>
+
+<div class="result" id="result"></div>
+
+<p class="note">
+✔ Gia von = nguyen lieu + bao bi<br>
+✔ Chua gom dien, nuoc, cong, mat bang<br>
+✔ Quy mo nho thuong ban gia von × 2 hoac × 3
+</p>
+
+</div>
+
+<script>
+function calculate() {
+    let outputGram = parseFloat(document.getElementById("outputGram").value);
+    let costBatch = parseFloat(document.getElementById("costBatch").value);
+    let sellGram = parseFloat(document.getElementById("sellGram").value);
+    let markup = parseFloat(document.getElementById("markup").value);
+
+    if (isNaN(outputGram) || isNaN(costBatch) || isNaN(sellGram) || isNaN(markup)) {
+        alert("Vui long nhap day du du lieu!");
+        return;
+    }
+
+    let costPerGram = costBatch / outputGram;
+    let costSell = costPerGram * sellGram;
+    let sellPrice = costSell * markup;
+
+    document.getElementById("result").innerHTML = `
+        <b>📌 Gia von / gram:</b> ${costPerGram.toFixed(0)} d<br>
+        <b>📌 Gia von ${sellGram}g:</b> ${costSell.toFixed(0)} d<br><br>
+
+        <b>💰 Gia ban de xuat:</b> ${sellPrice.toFixed(0)} d<br>
+        <b>📦 Gia ban / kg:</b> ${(sellPrice * 1000 / sellGram).toFixed(0)} d
+    `;
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Tai Chinh Nam 2026</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; max-width: 800px; margin-top: 10px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .section { margin-top: 30px; }
+    </style>
+</head>
+<body>
+
+    <h1>He Thong Quan Tri Tai Chinh 3 The He</h1>
+
+    <!-- Bảng hệ thống -->
+    <table id="systemTable">
+        <thead>
+            <tr>
+                <th>Cap do</th>
+                <th>Muc tieu</th>
+                <th>Hanh dong hang ngay</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Xa/Phuong</td><td>Quan ly 3 cua hang</td><td>Ghi so, bao tri, toi uu dien nuoc</td></tr>
+            <tr><td>Trung Uong</td><td>Affiliate Marketing</td><td>Review dung cu, tao link, bao cao thue</td></tr>
+            <tr><td>The Gioi</td><td>Tu duy Dau tu</td><td>Choi Cashflow, hieu quy luat dong tien</td></tr>
+        </tbody>
+    </table>
+
+    <!-- Khu vực dữ liệu từ Google Sheets sẽ đổ vào đây -->
+    <div class="section">
+        <h2>Du lieu thuc te: Sua Noi Com Dien</h2>
+        <table id="dataSheetTable" border="1">
+            <thead>
+                <tr>
+                    <th>Ten khach</th>
+                    <th>Tong tien</th>
+                    <th>Trang thai</th>
+                </tr>
+            </thead>
+            <tbody id="sheetBody">
+                <!-- Dữ liệu từ Google Sheets sẽ được chèn vào đây bởi script -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Khu vực Kim Tứ Đồ -->
+    <div class="section">
+        <h2>Game Cashflow: Kim Tu Do - Giai tri & Hoc tap</h2>
+        <p>1. <b>E (Employee):</b> Lam thue (Sua vat) -> Chuyen thanh (B) Chu doanh nghiep</p>
+        <p>2. <b>S (Self-Employed):</b> Tu lam (Shopee Affiliate)</p>
+        <p>3. <b>B (Business):</b> Quan ly 3 cua hang + Data SQL</p>
+        <p>4. <b>I (Investor):</b> Dung loi nhuan tu B & S de dau tu</p>
+    </div>
+
+    <script>
+        // URL đã được sửa lỗi thiếu dấu ngoặc kép đóng
+        const url = "https://script.google.com/macros/s/AKfycbysCE-G7IuKIruV37uAiApwLoXHCByjlXfkwFd6AeNBRSfORXnKgyufYLCHnk2XLgup/exec";
+
+        async function loadSheetData() {
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                const tbody = document.getElementById("sheetBody");
+                
+                data.forEach(item => {
+                    let row = `<tr>
+                        <td>${item.tenKhach}</td>
+                        <td>${item.tongTien}</td>
+                        <td>${item.trangThai}</td>
+                    </tr>`;
+                    tbody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error("Loi khi lay du lieu:", error);
+            }
+        }
+
+        // Gọi hàm khi trang web tải xong
+        window.onload = loadSheetData;
+    </script>
+</body>
+</html>

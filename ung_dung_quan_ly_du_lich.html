@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Du tinh chi tieu du lich</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    padding: 20px;
+}
+h1 {
+    text-align: center;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin-top: 20px;
+}
+th, td {
+    border: 1px solid #ccc;
+    padding: 6px;
+    font-size: 13px;
+    text-align: right;
+}
+th {
+    background: #2c3e50;
+    color: white;
+}
+td:first-child, th:first-child {
+    text-align: center;
+}
+td:nth-child(2), th:nth-child(2) {
+    text-align: left;
+}
+input {
+    width: 100%;
+    box-sizing: border-box;
+}
+tfoot td {
+    font-weight: bold;
+    background: #eef;
+}
+.summary {
+    margin-top: 20px;
+    padding: 15px;
+    background: white;
+    border: 1px solid #ccc;
+}
+</style>
+</head>
+
+<body>
+
+<h1>DU TINH CHI TIEU DU LICH</h1>
+
+<div class="summary">
+    <b>Ty gia:</b> 1 NGOAI TE = 
+    <input id="rate" type="number" placeholder="Nhap ty gia"> VNd<br><br>
+
+    <b>Ngan sach tong (VNd):</b> 
+    <input id="totalBudget" type="number" placeholder="Nhap ngan sach">
+</div>
+
+<table id="budgetTable">
+<thead>
+<tr>
+    <th>Ngay</th>
+    <th>Mo ta</th>
+    <th>Chi tieu (NGOAI TE)</th>
+    <th>Du tru/ngay (NGOAI TE)</th>
+    <th>Con lai (NGOAI TE)</th>
+    <th>Chi tieu (VNd)</th>
+    <th>Du tru/ngay (VNd)</th>
+    <th>Con lai (VNd)</th>
+</tr>
+</thead>
+
+<tbody>
+<!-- 10 dong trong de nhap -->
+<script>
+for (let i = 0; i < 10; i++) {
+document.write(`
+<tr>
+<td><input placeholder="Ngay"></td>
+<td><input placeholder="Mo ta"></td>
+<td><input type="number" class="spentNGOAI TE"></td>
+<td><input type="number" class="budgetNGOAI TE"></td>
+<td class="remainNGOAI TE"></td>
+<td class="spentVND"></td>
+<td class="budgetVND"></td>
+<td class="remainVND"></td>
+</tr>
+`);
+}
+</script>
+</tbody>
+
+<tfoot>
+<tr>
+<td colspan="2">TONG</td>
+<td id="totalNGOAI TE"></td>
+<td></td>
+<td></td>
+<td id="totalVND"></td>
+<td></td>
+<td id="remainTotal"></td>
+</tr>
+</tfoot>
+</table>
+
+<script>
+function calculate() {
+    const rate = +document.getElementById("rate").value || 0;
+    const totalBudget = +document.getElementById("totalBudget").value || 0;
+
+    let sumNGOAI TE = 0;
+    let sumVND = 0;
+
+    document.querySelectorAll("#budgetTable tbody tr").forEach(row=>{
+        const spentNGOAI TE = +row.querySelector(".spentNGOAI TE").value || 0;
+        const budgetNGOAI TE = +row.querySelector(".budgetNGOAI TE").value || 0;
+
+        const spentVND = spentNGOAI TE * rate;
+        const budgetVND = budgetNGOAI TE * rate;
+
+        row.querySelector(".spentVND").innerText = spentVND ? spentVND.toLocaleString() : "";
+        row.querySelector(".budgetVND").innerText = budgetVND ? budgetVND.toLocaleString() : "";
+        row.querySelector(".remainNGOAI TE").innerText = 
+            (budgetNGOAI TE || spentNGOAI TE) ? (budgetNGOAI TE - spentNGOAI TE).toLocaleString() : "";
+        row.querySelector(".remainVND").innerText = 
+            (budgetVND || spentVND) ? (budgetVND - spentVND).toLocaleString() : "";
+
+        sumNGOAI TE += spentNGOAI TE;
+        sumVND += spentVND;
+    });
+
+    document.getElementById("totalNGOAI TE").innerText = sumNGOAI TE ? sumNGOAI TE.toLocaleString() : "";
+    document.getElementById("totalVND").innerText = sumVND ? sumVND.toLocaleString() : "";
+    document.getElementById("remainTotal").innerText =
+        (totalBudget || sumVND) ? (totalBudget - sumVND).toLocaleString() : "";
+}
+
+document.addEventListener("input", calculate);
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

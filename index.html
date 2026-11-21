@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>He Thong dieu Hanh Tong Hop</title>
+    <style>
+        :root { --p: #2563eb; --s: #10b981; --a: #f59e0b; --bg: #f1f5f9; --t: #1e293b; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--t); padding: 15px; margin: 0; }
+        .container { max-width: 600px; margin: auto; }
+        h2 { text-align: center; color: var(--p); border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; }
+        .section-title { font-size: 0.85rem; font-weight: bold; color: #64748b; text-transform: uppercase; margin: 20px 0 10px 5px; }
+        .menu-grid { display: grid; gap: 8px; }
+        a { 
+            display: flex; align-items: center; background: white; padding: 12px; 
+            text-decoration: none; color: var(--t); border-radius: 8px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-weight: 500; transition: 0.2s;
+        }
+        a:hover { transform: scale(1.02); background: #f8fafc; color: var(--p); }
+        .icon { margin-right: 12px; font-size: 1.1rem; width: 20px; }
+        .health { border-left: 4px solid var(--s); }
+        .food { border-left: 4px solid var(--a); }
+        .tool { border-left: 4px solid var(--p); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🚀 Trung Tam dieu Hanh</h2>
+
+        <div class="section-title">🏥 Suc khoe & An uong</div>
+        <div class="menu-grid">
+            <a href="038-che-o-an-it-benh-tat.html" class="health"><span class="icon">🥗</span> Che do an it benh tat</a>
+            <a href="037-thuc-pham-ky-nhau.html" class="health"><span class="icon">🚫</span> Thuc pham ky nhau</a>
+            <a href="039-cap-thuc-pham-ky-nhau.html" class="health"><span class="icon">⚠</span> Cac cap thuc pham ky</a>
+            <a href="057-gio-la-cq-noitang.html" class="health"><span class="icon">🕒</span> Gio lam viec noi tang</a>
+            <a href="288-an-uong-am-lich.html" class="health"><span class="icon">🌙</span> An uong Am lich</a>
+            <a href="287-an-uong-can-chi.html" class="health"><span class="icon">📅</span> An uong Can Chi</a>
+            <a href="%C4%82n_u%E1%BB%91ng_6_h%C3%A0nh%20.html" class="health"><span class="icon">🍱</span> An uong 6 Hanh</a>
+        </div>
+
+        <div class="section-title">🚗 Thuc an cho doi tuong dac thu</div>
+        <div class="menu-grid">
+            <a href="029-thuc-on-cho-oi-truong.html" class="food"><span class="icon">👥</span> Thuc an doi tuong</a>
+            <a href="031-thuc-on-xe-may.html" class="food"><span class="icon">🛵</span> Thuc an di xe may</a>
+            <a href="033-thuc-on-cho-lai-xe-o-to.html" class="food"><span class="icon">🚗</span> Thuc an lai o to</a>
+            <a href="032-thuc-on-lai-tau-cano.html" class="food"><span class="icon">🚤</span> Thuc an lai tau cano</a>
+            <a href="034-thuc-on-xem-chieu.html" class="food"><span class="icon">🎬</span> Thuc an xem chieu</a>
+        </div>
+
+        <div class="section-title">🛠 Cong cu & Tai chinh</div>
+        <div class="menu-grid">
+            <a href="051-quan-ly-chi-tieu-gia-inh.html" class="tool"><span class="icon">💰</span> Quan ly chi tieu</a>
+            <a href="142-dothicuocdoi.html" class="tool"><span class="icon">📈</span> do thi cuoc doi</a>
+            <a href="062-tinh-ngay-ac-biet.html" class="tool"><span class="icon">✨</span> Tinh ngay dac biet</a>
+            <a href="013-xem-than-so-hoc.html" class="tool"><span class="icon">🔮</span> Xem Than so hoc</a>
+            <a href="147-tinh-can-chi-theo-bang.html" class="tool"><span class="icon">☯</span> Tinh Can Chi bang</a>
+            <a href="140-tim-chu-mo-ra-so.html" class="tool"><span class="icon">🔢</span> Tim chu mo ra so</a>
+            <a href="321-tu-trang-phuc-tuan.html" class="tool"><span class="icon">👔</span> Tu trang phuc tuan</a>
+        </div>
+    </div>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

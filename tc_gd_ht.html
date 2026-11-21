@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Ban do Tu Do Tai Chinh Gia dinh</title>
+<style>
+body{font-family:Arial;background:#f4f6f8;padding:20px}
+section{background:#fff;padding:20px;margin-bottom:20px;border-radius:10px}
+h2{color:#0b4f6c}
+input{padding:8px;width:100%;margin:5px 0}
+button{padding:10px;background:#0b4f6c;color:#fff;border:none;border-radius:5px}
+.result{font-weight:bold;margin-top:10px}
+</style>
+</head>
+
+<body>
+
+<h1>🏠 BAN dO TU DO TAI CHINH GIA dINH</h1>
+
+<section>
+<h2>1⃣ Nhap du lieu</h2>
+<label>So nguoi tao thu nhap:</label>
+<input id="nguoi" type="number" placeholder="Vi du: 2">
+
+<label>Thu nhap TB moi nguoi / thang (trieu):</label>
+<input id="thu" type="number" placeholder="Vi du: 45">
+
+<label>Chi phi sinh hoat / thang (trieu):</label>
+<input id="chi" type="number" placeholder="Vi du: 50">
+
+<label>Von dau tu noi that (ty):</label>
+<input id="von" type="number" placeholder="Vi du: 10">
+
+<button onclick="tinh()">TINH</button>
+
+<div id="kq" class="result"></div>
+</section>
+
+<script>
+function tinh(){
+  let n = +nguoi.value;
+  let thu = +thu.value;
+  let chi = +chi.value;
+  let von = +von.value * 1000;
+
+  let tongThu = n * thu;
+  let dongTien = tongThu - chi;
+
+  let pp = von / (dongTien*12);
+
+  let ketQua = `
+  🔹 Tong thu: ${tongThu} trieu/thang<br>
+  🔹 Dong tien rong: ${dongTien} trieu/thang<br>
+  🔹 Payback Period ≈ ${pp.toFixed(1)} nam<br>
+  ${dongTien>0 ? "✅ KHA THI" : "❌ KHONG dU DONG TIEN"}
+  `;
+
+  kq.innerHTML = ketQua;
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

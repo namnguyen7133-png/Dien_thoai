@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Hanh Trinh Cashflow cua Nam</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; background: #f4f4f9; }
+        .box { background: white; padding: 15px; margin-bottom: 20px; border-radius: 8px; border-left: 5px solid #2ecc71; }
+        input { margin-bottom: 10px; width: 100%; padding: 8px; }
+    </style>
+</head>
+<body>
+    <h1>Lo trinh Cashflow: Tu Con so 0 den Tu do</h1>
+
+    <!-- Giai doan 1: Tich luy -->
+    <div class="box">
+        <h3>1. Giai doan Tich luy (Kiem soat chi tieu)</h3>
+        <input type="number" id="income" placeholder="Thu nhap hang thang (VNd)">
+        <input type="number" id="expense" placeholder="Chi phi co dinh (VNd)">
+        <button onclick="calcSaving()">Tinh kha nang tich luy</button>
+        <p id="savingResult"></p>
+    </div>
+
+    <!-- Giai doan 2: Kinh doanh (Affiliate/Ban le) -->
+    <div class="box">
+        <h3>2. Giai doan Kinh doanh (don bay thoi gian)</h3>
+        <input type="number" id="effort" placeholder="So gio lam viec moi ngay">
+        <input type="number" id="profit" placeholder="Loi nhuan moi don hang">
+        <button onclick="calcBusiness()">Tinh tiem nang thu nhap</button>
+        <p id="businessResult"></p>
+    </div>
+
+    <!-- Giai doan 3: Kim tu do (Dong tien) -->
+    <div class="box">
+        <h3>3. Giai doan Dong tien (Kim Tu do)</h3>
+        <p>Muc tieu: Thu nhap thu dong > Chi phi song</p>
+        <input type="number" id="passive" placeholder="Thu nhap thu dong (Cho thue, co tuc)">
+        <button onclick="calcCashflow()">Kiem tra trang thai</button>
+        <p id="statusResult"></p>
+    </div>
+
+    <script>
+        function calcSaving() {
+            let s = document.getElementById('income').value - document.getElementById('expense').value;
+            document.getElementById('savingResult').innerText = "So tien tich luy duoc: " + s.toLocaleString() + " VNd. day la von khoi nghiep cua ban.";
+        }
+        function calcBusiness() {
+            let p = document.getElementById('effort').value * 2 * document.getElementById('profit').value;
+            document.getElementById('businessResult').innerText = "Tiem nang thu nhap them: " + p.toLocaleString() + " VNd/ngay.";
+        }
+        function calcCashflow() {
+            let p = document.getElementById('passive').value;
+            let e = document.getElementById('expense').value;
+            let msg = (p >= e) ? "Chuc mung! Ban da dat tu do tai chinh." : "Can tang thu nhap thu dong de dat tu do tai chinh.";
+            document.getElementById('statusResult').innerText = msg;
+        }
+    </script>
+</body>
+</html>

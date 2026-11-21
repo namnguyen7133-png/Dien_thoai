@@ -1,0 +1,838 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>He Thong Tra Cuu Than So</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        
+        h2 {
+            color: #2980b9;
+            border-left: 5px solid #3498db;
+            padding-left: 15px;
+            margin-top: 30px;
+        }
+        
+        .input-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            display: block;
+            margin: 30px auto;
+            width: 200px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .result-section {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #3498db;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 15px;
+            text-align: center;
+        }
+        
+        td {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .highlight {
+            background-color: #e8f4fc;
+            font-weight: bold;
+        }
+        
+        .dot {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            line-height: 20px;
+            text-align: center;
+        }
+        
+        .result-box {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        .result-label {
+            font-size: 18px;
+            font-weight: bold;
+            color: #3498db;
+            margin-top: 15px;
+        }
+        
+        .result-value {
+            font-size: 20px;
+            color: #e74c3c;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        .section-title {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 25px 0 15px 0;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .table-inputs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .table-input-group {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+        }
+        
+        @media (max-width: 768px) {
+            .input-section, .table-inputs {
+                grid-template-columns: 1fr;
+            }
+            
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HE THONG TRA CUU THAN SO</h1>
+        
+        <div class="input-section">
+            <div>
+                <div class="input-group">
+                    <label for="currentDate">O 1: Ngay thang nam hien tai</label>
+                    <input type="date" id="currentDate">
+                </div>
+                
+                <div class="input-group">
+                    <label for="birthDate">O 2: Ngay thang nam sinh</label>
+                    <input type="date" id="birthDate">
+                </div>
+                
+                <div class="input-group">
+                    <label for="personSelect">O 3: Danh sach cuon (chon de nhap ngay sinh vao o 2)</label>
+                    <select id="personSelect">
+                        <option value="">Chon nguoi tu danh sach</option>
+                        <option value="04/06/1944">1 - NGUYENKHACNANG - 04/06/1944</option>
+                        <option value="29/08/1948">2 - TOTHIHA - 29/08/1948</option>
+                        <option value="03/03/1971">3 - NGUYENMINHNAM - 03/03/1971</option>
+                        <option value="23/09/1981">4 - THANTHIKIMANH - 23/09/1981</option>
+                        <option value="28/09/2014">5 - NGUYENTONGANAN - 28/09/2014</option>
+                        <option value="25/07/2016">6 - NGUYENTOMINHCHAU - 25/07/2016</option>
+                        <option value="05/02/2020">7 - NGUYENTOBICHNGOC - 05/02/2020</option>
+                        <option value="07/01/1974">8 - NGUYENTHIMINHHANG - 07/01/1974</option>
+                        <option value="23/05/1973">9 - NGOQUYCUONG - 23/05/1973</option>
+                        <option value="12/10/2000">10 - NGOGIABACH - 12/10/2000</option>
+                        <option value="05/04/2005">11 - NGOGIALINH - 05/04/2005</option>
+                        <option value="06/11/1978">12 - NGUYENTHIMINHPHUONG - 06/11/1978</option>
+                        <option value="21/09/1978">13 - HOANGANHDUNG - 21/09/1978</option>
+                        <option value="03/06/2010">14 - HOANGHAIVINH - 03/06/2010</option>
+                        <option value="14/11/2015">15 - HOANGTHIENBACHANH - 14/11/2015</option>
+                        <option value="09/08/1960">16 - TO KIM HUE - 9/8/1960</option>
+                        <option value="23/10/1983">17 - NGUYEN TUAN ANH - 23/10/1983</option>
+                        <option value="24/03/2001">18 - NGUYEN THE ANH - 24/3/2001</option>
+                        <option value="12/12/1948">19 - NGO THI MAI - 12/12/1948</option>
+                        <option value="17/06/1996">20 - TO VIET HUNG - 17/6/1996</option>
+                        <option value="10/10/1964">21 - TO THI HONG - 10/10/1964</option>
+                        <option value="24/04/1974">22 - VU VAN HIEP - 24/4/1974</option>
+                        <option value="08/02/1946">23 - NGUYEN THI CHI - 8/2/1946</option>
+                        <option value="30/11/1957">24 - NGUYEN TAN BAC - 30/11/1957</option>
+                        <option value="08/08/1954">25 - NGUYEN THI TAM - 8/8/1954</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <div class="result-label">Ket qua tinh toan:</div>
+                <div id="lunarMonthResult" class="result-value">Chua tinh</div>
+                
+                <div class="result-label">Thang sinh am lich:</div>
+                <div id="table1Result" class="result-value">Chua tinh</div>
+                
+                <div class="result-label">Tra bang 2 duoc so:</div>
+                <div id="table2Result" class="result-value">Chua tinh</div>
+                
+                <div class="result-box">
+                    <div>Tien van: <span id="tienVanResult">-</span></div>
+                    <div>Trung van: <span id="trungVanResult">-</span></div>
+                    <div>Hau van: <span id="hauVanResult">-</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Phan nhap lieu cho bang 3 -->
+        <div class="section-title">NHAP LIEU CHO BANG 3</div>
+        <div class="table-inputs">
+            <div class="table-input-group">
+                <label for="monthCol3">Thang sinh (Cot 3):</label>
+                <input type="number" id="monthCol3" min="1" max="12" placeholder="Nhap so tu 1-12" value="4">
+                <small>Thang am lich = 2, Chi = Mao, Tra bang 2 = 4</small>
+            </div>
+            
+            <div class="table-input-group">
+                <label for="dayCol3">Ngay sinh (Cot 3):</label>
+                <input type="number" id="dayCol3" min="1" max="12" placeholder="Nhap so tu 1-12">
+                <small>Gia tri cho cot 3 dong Ngay sinh</small>
+            </div>
+            
+            <div class="table-input-group">
+                <label for="weekCol3">Tuan sinh (Cot 3):</label>
+                <input type="number" id="weekCol3" min="1" max="12" placeholder="Nhap so tu 1-12">
+                <small>Gia tri cho cot 3 dong Tuan sinh</small>
+            </div>
+        </div>
+        
+        <button id="calculateBtn">TINH TOAN KET QUA</button>
+        
+        <div class="section-title">BANG 1: CHI</div>
+        <div class="table-container">
+            <table id="table1">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Chi</th>
+                        <th>STT</th>
+                        <th>Chi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>11</td><td>TY</td><td>5</td><td>NGO</td></tr>
+                    <tr><td>12</td><td>SUU</td><td>6</td><td>MUI</td></tr>
+                    <tr><td>1</td><td>DAN</td><td>7</td><td>THAN</td></tr>
+                    <tr><td>2</td><td>MAO</td><td>8</td><td>DAU</td></tr>
+                    <tr><td>3</td><td>THIN</td><td>9</td><td>TUAT</td></tr>
+                    <tr><td>4</td><td>TY</td><td>10</td><td>HOI</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section-title">BANG 2: CHI - SO</div>
+        <div class="table-container">
+            <table id="table2">
+                <thead>
+                    <tr>
+                        <th>Chi</th>
+                        <th>So</th>
+                        <th>Chi</th>
+                        <th>So</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>TY</td><td>1</td><td>NGO</td><td>1</td></tr>
+                    <tr><td>SUU</td><td>2</td><td>MUI</td><td>2</td></tr>
+                    <tr><td>DAN</td><td>3</td><td>THAN</td><td>3</td></tr>
+                    <tr><td>MAO</td><td>4</td><td>DAU</td><td>4</td></tr>
+                    <tr><td>THIN</td><td>5</td><td>TUAT</td><td>5</td></tr>
+                    <tr><td>TY</td><td>6</td><td>HOI</td><td>6</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section-title">BANG 3: TINH TOAN</div>
+        <div class="table-container">
+            <table id="table3">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Loai</th>
+                        <th>Cot 3</th>
+                        <th>Cot 4</th>
+                        <th>Cot 5</th>
+                        <th>Cot 6</th>
+                        <th>Cot 7</th>
+                        <th>Cot 8</th>
+                        <th>Cot 9</th>
+                        <th>Cot 10</th>
+                        <th>Cot 11</th>
+                        <th>Cot 12</th>
+                        <th>Cot 13</th>
+                        <th>Cot 14</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Du lieu bang 3 se duoc dien bang JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section-title">BANG 4: VAN MENH</div>
+        <div class="table-container">
+            <table id="table4">
+                <thead>
+                    <tr>
+                        <th>Tien van</th>
+                        <th>Trung van</th>
+                        <th>Hau van</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="tienVanCell">-</td>
+                        <td id="trungVanCell">-</td>
+                        <td id="hauVanCell">-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section-title">BANG 5: TRA CUU VAN MENH</div>
+        <div class="table-container">
+            <table id="table5">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>So du</th>
+                        <th>Y nghia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>12</td><td>1</td><td>dai phat tai</td></tr>
+                    <tr><td>11</td><td>2</td><td>Quyen luc</td></tr>
+                    <tr><td>10</td><td>3</td><td>Giau co</td></tr>
+                    <tr><td>9</td><td>4</td><td>Cua cai</td></tr>
+                    <tr><td>8</td><td>5</td><td>Hanh phuc</td></tr>
+                    <tr><td>7</td><td>6</td><td>Tai nan</td></tr>
+                    <tr><td>6</td><td>7</td><td>Hop tac, LD</td></tr>
+                    <tr><td>5</td><td>8</td><td>Tieu thuong</td></tr>
+                    <tr><td>4</td><td>9</td><td>Hoc van</td></tr>
+                    <tr><td>3</td><td>10</td><td>Xuat ngoai</td></tr>
+                    <tr><td>2</td><td>11</td><td>Kho tam</td></tr>
+                    <tr><td>1</td><td>12</td><td>Benh tat</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section-title">BANG 6: dANH DAU dIEM</div>
+        <div class="table-container">
+            <table id="table6">
+                <thead>
+                    <!-- Tieu de bang 6 se duoc tao bang JavaScript -->
+                </thead>
+                <tbody>
+                    <!-- Du lieu bang 6 se duoc dien bang JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="footer">
+            <p>He thong tra cuu than so - Tinh toan dua tren ngay thang nam sinh</p>
+            <p>© 2023 - Ung dung HTML/JavaScript</p>
+        </div>
+    </div>
+
+    <script>
+        // Khai bao bien toan cuc
+        let lunarMonth = 2; // Thang am lich = 2
+        let table1ResultValue = "MAO"; // Chi = Mao
+        let table2ResultValue = 4; // Tra bang 2 = 4
+        
+        // Bang du lieu
+        const table1Data = {
+            11: "TY", 5: "NGO",
+            12: "SUU", 6: "MUI",
+            1: "DAN", 7: "THAN",
+            2: "MAO", 8: "DAU",
+            3: "THIN", 9: "TUAT",
+            4: "TY", 10: "HOI"
+        };
+        
+        const table2Data = {
+            "TY": 1, "NGO": 1,
+            "SUU": 2, "MUI": 2,
+            "DAN": 3, "THAN": 3,
+            "MAO": 4, "DAU": 4,
+            "THIN": 5, "TUAT": 5,
+            "TY": 6, "HOI": 6
+        };
+        
+        const table5Data = {
+            1: "dai phat tai",
+            2: "Quyen luc",
+            3: "Giau co",
+            4: "Cua cai",
+            5: "Hanh phuc",
+            6: "Tai nan",
+            7: "Hop tac, LD",
+            8: "Tieu thuong",
+            9: "Hoc van",
+            10: "Xuat ngoai",
+            11: "Kho tam",
+            12: "Benh tat"
+        };
+        
+        // Ham khoi tao
+        function init() {
+            // dat ngay hien tai mac dinh
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0];
+            document.getElementById('currentDate').value = todayStr;
+            
+            // Hien thi thong tin co dinh
+            document.getElementById('lunarMonthResult').textContent = lunarMonth;
+            document.getElementById('table1Result').textContent = table1ResultValue;
+            document.getElementById('table2Result').textContent = table2ResultValue;
+            
+            // dang ky su kien
+            document.getElementById('personSelect').addEventListener('change', function() {
+                if (this.value) {
+                    // Chuyen doi dinh dang ngay tu dd/mm/yyyy sang yyyy-mm-dd
+                    const parts = this.value.split('/');
+                    const formattedDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+                    document.getElementById('birthDate').value = formattedDate;
+                }
+            });
+            
+            document.getElementById('calculateBtn').addEventListener('click', calculateAll);
+            
+            // Khoi tao bang 3 va bang 6
+            initTable3();
+            initTable6();
+        }
+        
+        // Ham tinh toan so tiep theo voi mod 12 (neu = 0 thi lay 12)
+        function calculateNextValue(currentValue) {
+            const nextValue = (currentValue % 12) + 1;
+            return nextValue === 12 ? 12 : nextValue;
+        }
+        
+        // Ham tinh toan bang 3 theo yeu cau moi
+        function calculateTable3() {
+            const table3 = document.getElementById('table3');
+            const tbody = table3.querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            // Lay gia tri tu cac o nhap
+            const monthCol3 = parseInt(document.getElementById('monthCol3').value) || 4;
+            const dayCol3 = parseInt(document.getElementById('dayCol3').value) || 1;
+            const weekCol3 = parseInt(document.getElementById('weekCol3').value) || 1;
+            
+            // Dong 1: Thang sinh
+            const row1 = document.createElement('tr');
+            row1.innerHTML = `<td>1</td><td>Thang sinh</td>`;
+            
+            // Cot 3: gia tri nhap vao
+            row1.innerHTML += `<td class="highlight">${monthCol3}</td>`;
+            
+            // Cot 4-8: tinh theo cong thuc (cot truoc + 1) mod 12 (neu = 0 lay 12)
+            let currentValue = monthCol3;
+            for (let col = 4; col <= 14; col++) {
+                if (col <= 8) {
+                    currentValue = calculateNextValue(currentValue);
+                    row1.innerHTML += `<td>${currentValue}</td>`;
+                } else {
+                    row1.innerHTML += `<td></td>`;
+                }
+            }
+            tbody.appendChild(row1);
+            
+            // Dong 2: Ngay sinh
+            const row2 = document.createElement('tr');
+            row2.innerHTML = `<td>2</td><td>Ngay sinh</td>`;
+            
+            // Cot 3: gia tri nhap vao
+            row2.innerHTML += `<td class="highlight">${dayCol3}</td>`;
+            
+            // Cot 4-14: tinh theo cong thuc (cot truoc + 1) mod 12 (neu = 0 lay 12)
+            currentValue = dayCol3;
+            for (let col = 4; col <= 14; col++) {
+                currentValue = calculateNextValue(currentValue);
+                row2.innerHTML += `<td>${currentValue}</td>`;
+            }
+            tbody.appendChild(row2);
+            
+            // Dong 3: Tuan sinh
+            const row3 = document.createElement('tr');
+            row3.innerHTML = `<td>3</td><td>Tuan sinh</td>`;
+            
+            // Cot 3: gia tri nhap vao
+            row3.innerHTML += `<td class="highlight">${weekCol3}</td>`;
+            
+            // Cot 4-14: tinh theo cong thuc (cot truoc + 1) mod 12 (neu = 0 lay 12)
+            currentValue = weekCol3;
+            for (let col = 4; col <= 14; col++) {
+                currentValue = calculateNextValue(currentValue);
+                row3.innerHTML += `<td>${currentValue}</td>`;
+            }
+            tbody.appendChild(row3);
+            
+            // Dong 4: Tong
+            const row4 = document.createElement('tr');
+            row4.innerHTML = `<td>4</td><td>Tong</td>`;
+            
+            // Tinh tong tung cot
+            for (let col = 3; col <= 14; col++) {
+                const monthValue = parseInt(row1.querySelector(`td:nth-child(${col})`).textContent) || 0;
+                const dayValue = parseInt(row2.querySelector(`td:nth-child(${col})`).textContent) || 0;
+                const weekValue = parseInt(row3.querySelector(`td:nth-child(${col})`).textContent) || 0;
+                
+                const sum = monthValue + dayValue + weekValue;
+                row4.innerHTML += `<td>${sum}</td>`;
+            }
+            tbody.appendChild(row4);
+            
+            // Dong 5: So du
+            const row5 = document.createElement('tr');
+            row5.innerHTML = `<td>5</td><td>So du (chia 12)</td>`;
+            
+            // Tinh so du khi chia 12 (neu = 0 lay 12)
+            for (let col = 3; col <= 14; col++) {
+                const sumValue = parseInt(row4.querySelector(`td:nth-child(${col})`).textContent) || 0;
+                const remainder = sumValue % 12;
+                row5.innerHTML += `<td>${remainder === 0 ? 12 : remainder}</td>`;
+            }
+            tbody.appendChild(row5);
+            
+            // Dong 6: So phai tim
+            const row6 = document.createElement('tr');
+            row6.innerHTML = `<td>6</td><td>So phai tim (13 - so du)</td>`;
+            
+            // Tinh so phai tim: 13 - so du
+            for (let col = 3; col <= 14; col++) {
+                const remainder = parseInt(row5.querySelector(`td:nth-child(${col})`).textContent) || 0;
+                const targetNumber = 13 - remainder;
+                row6.innerHTML += `<td class="highlight">${targetNumber}</td>`;
+            }
+            tbody.appendChild(row6);
+            
+            // Tra ve mang so phai tim
+            return Array.from(row6.querySelectorAll('td')).slice(2).map(td => parseInt(td.textContent) || 0);
+        }
+        
+        // Ham tinh van menh (bang 4)
+        function calculateDestiny(numbersToFind) {
+            // Tinh tong cho tung van
+            const tienVanSum = numbersToFind.slice(0, 4).reduce((a, b) => a + b, 0);
+            const trungVanSum = numbersToFind.slice(4, 8).reduce((a, b) => a + b, 0);
+            const hauVanSum = numbersToFind.slice(8, 12).reduce((a, b) => a + b, 0);
+            
+            // Tinh so du khi chia 12
+            const tienVanRemainder = tienVanSum % 12 || 12;
+            const trungVanRemainder = trungVanSum % 12 || 12;
+            const hauVanRemainder = hauVanSum % 12 || 12;
+            
+            // Tra cuu y nghia tu bang 5
+            const tienVanMeaning = table5Data[tienVanRemainder] || "Khong xac dinh";
+            const trungVanMeaning = table5Data[trungVanRemainder] || "Khong xac dinh";
+            const hauVanMeaning = table5Data[hauVanRemainder] || "Khong xac dinh";
+            
+            // Cap nhat ket qua
+            document.getElementById('tienVanResult').textContent = tienVanMeaning;
+            document.getElementById('trungVanResult').textContent = trungVanMeaning;
+            document.getElementById('hauVanResult').textContent = hauVanMeaning;
+            
+            document.getElementById('tienVanCell').textContent = tienVanMeaning;
+            document.getElementById('trungVanCell').textContent = trungVanMeaning;
+            document.getElementById('hauVanCell').textContent = hauVanMeaning;
+            
+            return {
+                tienVan: {sum: tienVanSum, remainder: tienVanRemainder, meaning: tienVanMeaning},
+                trungVan: {sum: trungVanSum, remainder: trungVanRemainder, meaning: trungVanMeaning},
+                hauVan: {sum: hauVanSum, remainder: hauVanRemainder, meaning: hauVanMeaning}
+            };
+        }
+        
+        // Ham tao bang 6 voi cot 1 chua so 1-12 va cot 2 chua y nghia tu bang 5
+        function createTable6(numbersToFind) {
+            const table6 = document.getElementById('table6');
+            const thead = table6.querySelector('thead');
+            const tbody = table6.querySelector('tbody');
+            
+            // Xoa noi dung cu
+            thead.innerHTML = '';
+            tbody.innerHTML = '';
+            
+            // Tao tieu de cho bang 6
+            let headerRow = document.createElement('tr');
+            headerRow.innerHTML = '<th>STT</th><th>Y nghia cua bang 5</th>';
+            
+            // Tao 12 cot voi tieu de la Cot 3, Cot 4, ... Cot 14
+            for (let i = 3; i <= 14; i++) {
+                headerRow.innerHTML += `<th>Cot ${i}</th>`;
+            }
+            thead.appendChild(headerRow);
+            
+            // Dong 1-12: Cac so tu 1 den 12 (cot 1 cua bang 6) va y nghia tu bang 5
+            for (let rowNum = 1; rowNum <= 12; rowNum++) {
+                const row = document.createElement('tr');
+                // Cot 1: So thu tu
+                row.innerHTML = `<td>${rowNum}</td>`;
+                // Cot 2: Y nghia tu bang 5
+                row.innerHTML += `<td>${table5Data[rowNum] || "Khong xac dinh"}</td>`;
+                
+                // Duyet qua tung cot tu 3 den 14
+                for (let col = 3; col <= 14; col++) {
+                    // Lay so phai tim tu bang 3 cho cot nay
+                    const targetNumber = numbersToFind[col - 3]; // col-3 vi mang bat dau tu 0
+                    
+                    // Kiem tra neu so o cot 1 (rowNum) bang so phai tim
+                    if (rowNum === targetNumber) {
+                        row.innerHTML += `<td><span class="dot">•</span></td>`;
+                    } else {
+                        row.innerHTML += `<td></td>`;
+                    }
+                }
+                tbody.appendChild(row);
+            }
+            
+            // Dong 13: STT 13 - Thang sinh
+            const row13 = document.createElement('tr');
+            row13.innerHTML = `<td>13</td><td>Thang sinh</td>`;
+            
+            for (let col = 3; col <= 14; col++) {
+                const colValue = col - 2; // Chuyen cot thanh gia tri 1-12
+                const value = lunarMonth - 1 + colValue;
+                const remainder = value % 12 || 12;
+                // Chi lay so chan
+                const evenRemainder = remainder % 2 === 0 ? remainder : (remainder + 1) % 12 || 12;
+                row13.innerHTML += `<td>${evenRemainder}</td>`;
+            }
+            tbody.appendChild(row13);
+            
+            // Dong 14: STT 14 - Nam hien tai - nam sinh + 1
+            const row14 = document.createElement('tr');
+            row14.innerHTML = `<td>14</td><td>Nam hien tai - nam sinh + 1</td>`;
+            
+            const birthYear = new Date(document.getElementById('birthDate').value).getFullYear();
+            const currentYear = new Date(document.getElementById('currentDate').value).getFullYear();
+            const yearDiff = currentYear - birthYear + 1;
+            
+            for (let col = 3; col <= 14; col++) {
+                const colValue = col - 2;
+                const value = yearDiff + colValue;
+                row14.innerHTML += `<td>${value}</td>`;
+            }
+            tbody.appendChild(row14);
+            
+            // Dong 15: STT 15 - Tong dong 13 + dong 14 - 1
+            const row15 = document.createElement('tr');
+            row15.innerHTML = `<td>15</td><td>Tong (dong 13 + dong 14 - 1)</td>`;
+            
+            for (let col = 3; col <= 14; col++) {
+                const value13 = parseInt(row13.querySelector(`td:nth-child(${col})`).textContent) || 0;
+                const value14 = parseInt(row14.querySelector(`td:nth-child(${col})`).textContent) || 0;
+                const sum = value13 + value14 - 1;
+                row15.innerHTML += `<td>${sum}</td>`;
+            }
+            tbody.appendChild(row15);
+        }
+        
+        // Ham khoi tao bang 3
+        function initTable3() {
+            const table3 = document.getElementById('table3');
+            const tbody = table3.querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            // Tao 6 dong trong
+            for (let i = 1; i <= 6; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${i}</td><td>dang cho tinh toan...</td>`;
+                
+                for (let col = 3; col <= 14; col++) {
+                    row.innerHTML += `<td></td>`;
+                }
+                tbody.appendChild(row);
+            }
+        }
+        
+        // Ham khoi tao bang 6
+        function initTable6() {
+            const table6 = document.getElementById('table6');
+            const thead = table6.querySelector('thead');
+            const tbody = table6.querySelector('tbody');
+            
+            // Tao tieu de voi cot "Y nghia cua bang 5"
+            let headerRow = document.createElement('tr');
+            headerRow.innerHTML = '<th>STT</th><th>Y nghia cua bang 5</th><th>Cot 1</th><th>Cot 2</th><th>Cot 3</th>';
+            thead.appendChild(headerRow);
+            
+            // Tao mot dong trong
+            const row = document.createElement('tr');
+            row.innerHTML = '<td colspan="5">dang cho tinh toan...</td>';
+            tbody.appendChild(row);
+        }
+        
+        // Ham tinh toan tat ca
+        function calculateAll() {
+            // Lay gia tri tu cac o nhap lieu
+            const currentDate = document.getElementById('currentDate').value;
+            const birthDate = document.getElementById('birthDate').value;
+            
+            // Kiem tra du lieu dau vao
+            if (!birthDate) {
+                alert("Vui long nhap ngay thang nam sinh!");
+                return;
+            }
+            
+            // 1. Hien thi thong tin co dinh
+            document.getElementById('lunarMonthResult').textContent = lunarMonth;
+            document.getElementById('table1Result').textContent = table1ResultValue;
+            document.getElementById('table2Result').textContent = table2ResultValue;
+            
+            // 2. Tinh toan bang 3 theo cong thuc moi
+            const numbersToFind = calculateTable3();
+            
+            // 3. Tinh van menh (bang 4)
+            calculateDestiny(numbersToFind);
+            
+            // 4. Tao bang 6 theo yeu cau moi
+            createTable6(numbersToFind);
+        }
+        
+        // Khoi chay ung dung khi trang da tai xong
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

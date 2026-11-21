@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Hệ Thống Thực Phẩm Toàn Diện</title>
+    <style>
+        body { text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; color: #333; }
+        .setup-area { background: #fff; padding: 25px; border-radius: 15px; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); display: flex; justify-content: center; gap: 30px; align-items: flex-start; }
+        .input-group { display: flex; flex-direction: column; width: 350px; text-align: left; }
+        
+        label { margin-bottom: 8px; font-weight: bold; color: #0056b3; }
+        select { padding: 10px; border-radius: 8px; border: 2px solid #ddd; margin-bottom: 10px; font-size: 14px; cursor: pointer; transition: 0.3s; }
+        select:focus { border-color: #28a745; outline: none; }
+        textarea { height: 70px; padding: 10px; border-radius: 8px; border: 1px solid #eee; resize: none; background: #fafafa; font-size: 13px; color: #555; }
+        
+        .sync-icon { font-size: 28px; color: #28a745; margin-top: 40px; }
+        .action-buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 40px; }
+        .update-btn { padding: 15px 25px; background: #28a745; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        .clear-btn { padding: 10px; background: #dc3545; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 13px; }
+        button:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        .container { display: flex; justify-content: center; gap: 20px; }
+        .bank { width: 260px; min-height: 400px; background: #8d6e63; border: 6px solid #5d4037; border-radius: 20px; padding: 15px; color: white; box-shadow: inset 0 0 10px #000; }
+        #river { width: 450px; height: 400px; background: #0077be; position: relative; border-radius: 15px; border-bottom: 10px solid #005b96; overflow: hidden; }
+        #boat { width: 180px; height: 70px; background: #ff9800; position: absolute; bottom: 30px; transition: 0.7s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 0 0 60px 60px; cursor: pointer; border: 4px solid #e68a00; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: bold; z-index: 10; }
+
+        .item { padding: 10px; margin: 8px auto; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: bold; width: 85%; border: 1px solid rgba(255,255,255,0.3); text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+        .tusi { background: #e91e63; } /* Dương (+) */
+        .quy { background: #3f51b5; }  /* Âm (-) */
+    </style>
+</head>
+<body>
+
+    <h1 style="margin-bottom: 5px;">Hệ Thống Thực Phẩm Âm Dương Toàn Diện</h1>
+    <p style="margin-bottom: 25px; color: #666;">Chọn 1 món bất kỳ, món đối ứng sẽ tự động xuất hiện để đảm bảo cân bằng.</p>
+    
+    <div class="setup-area">
+        <!-- NHÓM DƯƠNG -->
+        <div class="input-group">
+            <label>🌞 DANH SÁCH DƯƠNG (+)</label>
+            <select id="select-pos" onchange="syncSelection('pos', this.value)">
+                <option value="">-- Chọn món Dương từ tất cả danh sách --</option>
+            </select>
+            <textarea id="pos-input" readonly placeholder="Món Dương bạn đã chọn..."></textarea>
+        </div>
+
+        <div class="sync-icon">⇆</div>
+
+        <!-- NHÓM ÂM -->
+        <div class="input-group">
+            <label>🌑 DANH SÁCH ÂM (-)</label>
+            <select id="select-neg" onchange="syncSelection('neg', this.value)">
+                <option value="">-- Chọn món Âm từ tất cả danh sách --</option>
+            </select>
+            <textarea id="neg-input" readonly placeholder="Món Âm bạn đã chọn..."></textarea>
+        </div>
+
+        <div class="action-buttons">
+            <button class="update-btn" onclick="updateGameData()">NẠP VÀO GAME</button>
+            <button class="clear-btn" onclick="clearAll()">XÓA TẤT CẢ</button>
+        </div>
+    </div>
+
+    <div id="msg" style="margin-bottom: 15px; font-weight: bold; color: #28a745;"></div>
+
+    <div class="container">
+        <div class="bank"><h3>Bờ Trái</h3><div id="items-left"></div></div>
+        <div id="river">
+            <div id="boat" onclick="moveBoat()" style="right: 15px;">
+                <div id="boat-content">Trống</div>
+                <div style="font-size: 9px;">BẤM ĐỂ CHẠY</div>
+            </div>
+        </div>
+        <div class="bank"><h3>Bờ Phải</h3><div id="items-right"></div></div>
+    </div>
+
+    <script>
+        // Dữ liệu trích xuất đầy đủ từ file dan_vao_game_duong.txt và dan_vao_game_am.txt
+        const allPos = ["Hạt kê (+)", "Hạt bo-bo (+)", "Hạt hắc mạch (+)", "Củ mài (+)", "Hoài sơn (+)", "Cà rốt (++++)", "Hành tây (+)", "Bí đỏ (+)", "Rau má (+)", "Rau ngổ (+)", "Củ cải trắng (+)", "Bí đao (+)", "Bồ công anh (+)", "Gạo lứt (+)", "Đỗ đỏ (+)", "Trứng gà (+)", "Cá thu (+)", "Muối biển (+)", "Gừng (+)", "Nghệ (+)", "Hạt sen (+)", "Táo ta (++)", "Nhãn (+)", "Măng cụt (+)", "Hạt dẻ (+)"];
+        const allNeg = ["Đậu ngự (-)", "Đậu lăng ti (-)", "Đậu nành (-)", "Đậu xanh (-)", "Bắp (-)", "Kiều mạch (-)", "Thơm (-)", "Dứa (-)", "Cà chua (-)", "Dưa chuột (-)", "Mướp ngọt (-)", "Nấm (-)", "Rau dền (-)", "Chuối (-)", "Cam (-)", "Lê (-)", "Sầu riêng (---)", "Cà phê (---)", "Đá lạnh (---)", "Đường trắng (---)", "Sữa bò (--)", "Bơ (--)", "Phô mai (-)", "Rượu bia (---)", "Mỡ heo (-)"];
+
+        let selectedItems = []; // Lưu trữ các cặp đã chọn
+        let foodData = [];
+        let state = { right: [], left: [], boat: [], boatPos: 'right' };
+
+        window.onload = function() {
+            const pSel = document.getElementById('select-pos');
+            const nSel = document.getElementById('select-neg');
+            
+            // Nạp toàn bộ danh sách vào dropdown
+            allPos.forEach((item, index) => {
+                pSel.options[pSel.options.length] = new Option(item, index);
+            });
+            allNeg.forEach((item, index) => {
+                nSel.options[nSel.options.length] = new Option(item, index);
+            });
+
+            // Mặc định nạp 3 món đầu
+            [0, 1, 2].forEach(i => syncSelection('pos', i));
+            updateGameData();
+        };
+
+        // Hàm xử lý chọn bên này hiện bên kia
+        function syncSelection(source, index) {
+            if (index === "") return;
+            index = parseInt(index);
+
+            // Tìm món đối ứng dựa trên vị trí (index)
+            // Nếu danh sách lệch nhau, lấy món cuối cùng của danh sách ngắn hơn
+            const posItem = allPos[index] || allPos[allPos.length - 1];
+            const negItem = allNeg[index] || allNeg[allNeg.length - 1];
+
+            // Kiểm tra xem cặp này đã chọn chưa
+            if (selectedItems.find(p => p.pos === posItem)) return;
+
+            // Thêm vào danh sách đã chọn
+            selectedItems.push({ pos: posItem, neg: negItem });
+
+            // Giới hạn chọn 3-5 món để game không quá rối, ở đây tôi để 5 món
+            if (selectedItems.length > 5) selectedItems.shift();
+
+            refreshInputs();
+        }
+
+        function refreshInputs() {
+            document.getElementById('pos-input').value = selectedItems.map(p => p.pos).join(", ");
+            document.getElementById('neg-input').value = selectedItems.map(p => p.neg).join(", ");
+        }
+
+        function clearAll() {
+            selectedItems = [];
+            refreshInputs();
+            document.getElementById('msg').innerText = "Đã xóa hết. Mời bạn chọn món mới!";
+        }
+
+        function updateGameData() {
+            if (selectedItems.length === 0) return alert("Vui lòng chọn thực phẩm!");
+            
+            foodData = [];
+            let id = 1;
+            selectedItems.forEach(p => {
+                foodData.push({ id: id++, name: p.pos, type: "T" });
+                foodData.push({ id: id++, name: p.neg, type: "Q" });
+            });
+
+            reset();
+            document.getElementById('msg').innerText = "Đã nạp thành công " + (selectedItems.length * 2) + " món vào game!";
+        }
+
+        // Logic vận hành Game
+        function render() {
+            const rDiv = document.getElementById('items-right');
+            const lDiv = document.getElementById('items-left');
+            const bDiv = document.getElementById('boat-content');
+            const boat = document.getElementById('boat');
+
+            rDiv.innerHTML = ""; lDiv.innerHTML = ""; bDiv.innerHTML = "";
+            state.right.forEach(i => rDiv.appendChild(createEl(i, 'right')));
+            state.left.forEach(i => lDiv.appendChild(createEl(i, 'left')));
+            state.boat.forEach(i => bDiv.appendChild(createEl(i, 'boat')));
+
+            if(state.boat.length === 0) bDiv.innerText = "Trống";
+            boat.style.right = (state.boatPos === 'right') ? '15px' : 'calc(100% - 195px)';
+        }
+
+        function createEl(item, loc) {
+            const d = document.createElement('div');
+            d.className = `item ${item.type === 'T' ? 'tusi' : 'quy'}`;
+            d.innerText = item.name;
+            d.onclick = (e) => {
+                e.stopPropagation();
+                if (loc === 'boat') {
+                    state.boat = state.boat.filter(i => i.id !== item.id);
+                    state[state.boatPos].push(item);
+                } else if (loc === state.boatPos && state.boat.length < 2) {
+                    state[loc] = state[loc].filter(i => i.id !== item.id);
+                    state.boat.push(item);
+                }
+                render();
+            };
+            return d;
+        }
+
+        function moveBoat() {
+            if (state.boat.length === 0) return;
+            state.boatPos = state.boatPos === 'right' ? 'left' : 'right';
+            render();
+            checkLogic();
+        }
+
+        function checkLogic() {
+            const validate = (arr) => {
+                const ts = arr.filter(i => i.type === 'T').length;
+                const qs = arr.filter(i => i.type === 'Q').length;
+                return (ts === 0 || ts >= qs);
+            };
+            const lSide = (state.boatPos === 'left') ? [...state.left, ...state.boat] : state.left;
+            const rSide = (state.boatPos === 'right') ? [...state.right, ...state.boat] : state.right;
+
+            if (!validate(lSide) || !validate(rSide)) {
+                setTimeout(() => { alert("THUA! Món Âm lấn át món Dương tại bờ."); reset(); }, 300);
+            } else if (state.left.length + (state.boatPos === 'left' ? state.boat.length : 0) === foodData.length) {
+                setTimeout(() => { alert("THẮNG! Bạn đã luân chuyển thực phẩm an toàn."); reset(); }, 300);
+            }
+        }
+
+        function reset() {
+            state = { right: [...foodData], left: [], boat: [], boatPos: 'right' };
+            render();
+        }
+    </script>
+</body>
+</html>

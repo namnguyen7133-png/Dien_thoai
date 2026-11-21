@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>May tinh chi phi xay nha (m²) - An Bao Khang Group</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f1f1f1;
+        padding: 20px;
+        color: #222;
+    }
+    h1 {
+        text-align: center;
+        color: #0066cc;
+    }
+    .box {
+        background: #fff;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px #ccc;
+    }
+    input, select {
+        width: 100%;
+        padding: 10px;
+        margin-top: 6px;
+        margin-bottom: 12px;
+        border-radius: 6px;
+        border: 1px solid #aaa;
+    }
+    button {
+        background: #0066cc;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+    }
+    button:hover {
+        opacity: 0.9;
+    }
+    .result {
+        background: #e3f2fd;
+        padding: 15px;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 18px;
+        color: #004999;
+    }
+</style>
+</head>
+<body>
+
+<h1>May tinh tong chi phi xay nha theo m²</h1>
+
+<div class="box">
+    <h2>1. Nhap kich thuoc can nha</h2>
+    <label>Chieu ngang (m):</label>
+    <input id="ngang" type="number" placeholder="Vi du: 5">
+
+    <label>Chieu dai (m):</label>
+    <input id="dai" type="number" placeholder="Vi du: 12">
+
+    <label>Chon cau truc mong:</label>
+    <select id="mong">
+        <option value="0.4">Mong don – 40%</option>
+        <option value="0.5">Mong bang – 50%</option>
+        <option value="0.6">Mong be – 60%</option>
+    </select>
+
+    <label>So tang (khong tinh mai):</label>
+    <input id="tang" type="number" placeholder="Vi du: 2">
+
+    <label>Loai mai:</label>
+    <select id="mai">
+        <option value="0.4">Mai BTCT – 40%</option>
+        <option value="0.7">Mai ngoi – 70%</option>
+        <option value="1">Mai Thai – 100%</option>
+    </select>
+</div>
+
+<div class="box">
+    <h2>2. Chon don gia xay dung</h2>
+
+    <label>Loai hinh xay dung:</label>
+    <select id="loaixay">
+        <option value="4750000">Xay tron goi – Goi trung binh (4.750.000 d/m²)</option>
+        <option value="5500000">Xay tron goi – Goi kha (5.500.000 d/m²)</option>
+        <option value="6500000">Xay tron goi – Goi cao cap (6.500.000 d/m²)</option>
+        <option value="3500000">Phan tho – Goi trung binh (3.500.000 d/m²)</option>
+        <option value="4000000">Phan tho – Goi kha (4.000.000 d/m²)</option>
+    </select>
+
+    <button onclick="tinhChiPhi()">TINH CHI PHI</button>
+</div>
+
+<div class="box">
+    <h2>Ket qua</h2>
+    <div id="ketqua" class="result">Chua co ket qua.</div>
+</div>
+
+<script>
+function tinhChiPhi() {
+    let ngang = parseFloat(document.getElementById("ngang").value);
+    let dai = parseFloat(document.getElementById("dai").value);
+    let mong = parseFloat(document.getElementById("mong").value);
+    let tang = parseInt(document.getElementById("tang").value);
+    let mai = parseFloat(document.getElementById("mai").value);
+    let dongia = parseFloat(document.getElementById("loaixay").value);
+
+    if (!ngang || !dai || !tang) {
+        alert("Vui long nhap day du thong tin!");
+        return;
+    }
+
+    let dientich1T = ngang * dai;
+    let dtMong = dientich1T * mong;
+    let dtTang = dientich1T * tang;
+    let dtMai = dientich1T * mai;
+
+    let tongDTSan = dtMong + dtTang + dtMai;
+    let tongChiPhi = tongDTSan * dongia;
+
+    document.getElementById("ketqua").innerHTML =
+        "• Dien tich 1 san: " + dientich1T.toFixed(2) + " m²<br>" +
+        "• Mong: " + dtMong.toFixed(2) + " m²<br>" +
+        "• Tang (" + tang + " tang): " + dtTang.toFixed(2) + " m²<br>" +
+        "• Mai: " + dtMai.toFixed(2) + " m²<br><br>" +
+        "<b>Tong dien tich xay dung: " + tongDTSan.toFixed(2) + " m²</b><br>" +
+        "<b>Tong chi phi: " + tongChiPhi.toLocaleString("vi-VN") + " d</b>";
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

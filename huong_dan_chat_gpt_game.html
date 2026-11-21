@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Trai Nghiem GPT</title>
+<style>
+body { font-family: Arial; background: #f0f2f5; margin: 0; padding: 20px;}
+h1 { text-align: center; }
+.task { background: white; margin: 10px 0; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
+button { padding: 6px 12px; margin-top: 6px; cursor: pointer; border-radius: 6px; border: none;}
+.done { background: #4caf50; color: white; }
+.notdone { background: #ccc; color: black; }
+#progress { margin: 20px 0; font-weight: bold;}
+</style>
+</head>
+<body>
+<h1>Trai nghiem nhung viec GPT co the giup ban</h1>
+<div id="progress"></div>
+<div id="list"></div>
+
+<script>
+// Cac viec ban co the nho GPT giup
+const tasks = [
+  "Viet email chuyen nghiep",
+  "Tom tat van ban dai thanh ngan gon",
+  "Dich tieng Anh sang tieng Viet hoac nguoc lai",
+  "Viet code HTML/CSS/JS don gian",
+  "Giai thich cac khai niem kho hieu bang vi du doi song",
+  "Len y tuong noi dung cho blog, video, bai viet",
+  "Huong dan lap ke hoach hoc tap hoac lam viec",
+  "Phan tich du lieu, viet bieu do, thong ke co ban",
+  "Tao danh sach kiem tra (checklist) cong viec",
+  "Tu van cach trinh bay CV hoac thu xin viec",
+  "Viet kich ban tro choi hoac mini game",
+  "Goi y cong thuc nau an hoac thuc don",
+  "Huong dan ky nang mem nhu giao tiep, thuyet trinh",
+  "Ho tro tim thong tin nhanh tren internet",
+  "Chinh sua van ban, cau tu, ngu phap",
+  "Tao cac mau bang bieu, template",
+  "Tu van y tuong marketing hoac affiliate",
+  "Viet loi giai thich hai huoc cho cac tinh huong",
+  "Lap ke hoach du an theo tuan hoac thang",
+  "Huong dan cac thu thuat tren Excel, Word, Google Docs"
+];
+
+let state = JSON.parse(localStorage.getItem("tasksState") || "{}");
+
+function save() {
+  localStorage.setItem("tasksState", JSON.stringify(state));
+}
+
+function render() {
+  let html = "";
+  let doneCount = 0;
+  tasks.forEach((t, idx) => {
+    const done = state[idx];
+    if(done) doneCount++;
+    html += `<div class="task">
+      <strong>${idx+1}. ${t}</strong><br>
+      <em>${done ? "da hoan thanh – GPT da giup ban xong!" : "Chua lam – nhan nut de thu GPT giup"}</em><br>
+      <button class="${done ? "done" : "notdone"}" onclick="toggle(${idx})">
+        ${done ? "Hoan tac" : "danh dau hoan thanh"}
+      </button>
+    </div>`;
+  });
+  document.getElementById("list").innerHTML = html;
+  document.getElementById("progress").innerText = `Tien do: ${doneCount} / ${tasks.length} nhiem vu`;
+}
+
+function toggle(idx) {
+  state[idx] = !state[idx];
+  save();
+  render();
+}
+
+// render lan dau
+render();
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

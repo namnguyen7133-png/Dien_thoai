@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tính Toán ROI & Tự Do Tài Chính</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .section { margin-bottom: 25px; padding: 15px; border: 1px solid #eee; border-radius: 8px; }
+        label { display: block; margin: 10px 0 5px; font-weight: bold; }
+        input { width: 95%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 10px; }
+        button { width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #2980b9; }
+        .result { margin-top: 15px; padding: 15px; border-radius: 5px; font-weight: bold; display: none; }
+        .good { background: #e8f5e9; color: #2e7d32; }
+        .warning { background: #fff3e0; color: #ef6c00; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>CÔNG CỤ TỰ DO TÀI CHÍNH</h2>
+
+    <div class="section">
+        <h3>1. Đánh giá ROI Nhà Đất (Tháng)</h3>
+        <label>Vốn đầu tư ban đầu (VNĐ):</label>
+        <input type="number" id="capital" placeholder="Ví dụ: 500000000">
+        <label>Dòng tiền thu về hàng tháng (VNĐ):</label>
+        <input type="number" id="cashflow" placeholder="Ví dụ: 25000000">
+        <button onclick="calcROI()">Tính ROI & Lời khuyên</button>
+        <div id="roiResult" class="result"></div>
+    </div>
+
+    <div class="section">
+        <h3>2. Mục tiêu Tự do tài chính</h3>
+        <label>Tổng chi phí sinh hoạt/tháng (VNĐ):</label>
+        <input type="number" id="expense" placeholder="Ví dụ: 20000000">
+        <label>ROI kỳ vọng hàng tháng (%):</label>
+        <input type="number" id="expectedRoi" value="5">
+        <button onclick="calcFreedom()">Tính số tiền cần tích lũy</button>
+        <div id="freedomResult" class="result"></div>
+    </div>
+</div>
+
+<script>
+    function calcROI() {
+        const cap = document.getElementById('capital').value;
+        const cf = document.getElementById('cashflow').value;
+        const res = document.getElementById('roiResult');
+        
+        if (cap > 0) {
+            const roi = (cf / cap) * 100;
+            let advice = "";
+            res.className = "result " + (roi >= 4 ? "good" : "warning");
+            
+            if (roi >= 5) advice = "=> CƠ HỘI TUYỆT VỜI! Hãy ưu tiên đầu tư.";
+            else if (roi >= 4) advice = "=> CƠ HỘI TỐT. Phù hợp để gia tăng dòng tiền.";
+            else advice = "=> TRUNG BÌNH. Cần đàm phán thêm giá hoặc tăng dòng tiền.";
+            
+            res.innerHTML = "ROI của bạn: " + roi.toFixed(2) + "%/tháng <br>" + advice;
+            res.style.display = "block";
+        }
+    }
+
+    function calcFreedom() {
+        const exp = document.getElementById('expense').value;
+        const eRoi = document.getElementById('expectedRoi').value;
+        const res = document.getElementById('freedomResult');
+        
+        if (eRoi > 0) {
+            const totalNeed = (exp / eRoi) * 100;
+            res.className = "result good";
+            res.innerHTML = "Để tự do tài chính, bạn cần tích lũy: <br><span style='font-size: 20px;'>" + 
+                            totalNeed.toLocaleString() + " VNĐ</span><br>" +
+                            "(Với số tiền này, bạn chỉ cần tìm tài sản lãi " + eRoi + "%/tháng)";
+            res.style.display = "block";
+        }
+    }
+</script>
+
+</body>
+</html>

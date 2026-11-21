@@ -1,0 +1,560 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Tim Buoc Nhay Can Chi</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.5;
+            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(to right, #8B4513, #A0522D);
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            word-break: break-word;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 20px 15px;
+        }
+
+        .info-box {
+            background-color: #e6f7ff;
+            border-left: 4px solid #1890ff;
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .input-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: white;
+        }
+
+        select:focus, input:focus {
+            border-color: #8B4513;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.2);
+        }
+
+        button {
+            background: linear-gradient(to right, #8B4513, #A0522D);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s;
+            margin: 10px 0;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+        }
+
+        .result-box {
+            background-color: #f9f9f9;
+            padding: 18px 15px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+            margin-top: 20px;
+        }
+
+        .result-box h2 {
+            color: #8B4513;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            text-align: center;
+        }
+
+        .step-item {
+            background-color: white;
+            border-left: 4px solid #8B4513;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .step-info {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .step-value {
+            color: #8B4513;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .direction-badge {
+            background-color: #e7f3ff;
+            color: #007bff;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .not-found {
+            color: #d32f2f;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .reference-info {
+            background-color: #f0fff0;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #28a745;
+            font-size: 0.95rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            margin-top: 20px;
+            color: #666;
+            border-top: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            .step-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Tim Buoc Nhay Can Chi</h1>
+            <p class="subtitle">Tu dong tinh buoc nhay va vi tri tu can chi goc den can chi dich</p>
+        </header>
+
+        <div class="content">
+            <div class="info-box">
+                <p><strong>Chuan ngay:</strong> 1/1/1900 - Giap Tuat, Thang dinh Suu, Nam Ky Hoi</p>
+                <p>Nhap can chi goc va nam, cung can chi dich va nam. He thong se tu tim cac buoc nhay (step) va vi tri tuong ung.</p>
+            </div>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="base-zodiac">Can chi goc:</label>
+                    <select id="base-zodiac">
+                        <!-- 60 can chi -->
+                        <option value="0">Giap Tuat</option>
+                        <option value="1">At Hoi</option>
+                        <option value="2">Binh Ty</option>
+                        <option value="3">dinh Suu</option>
+                        <option value="4">Mau Dan</option>
+                        <option value="5">Ky Mao</option>
+                        <option value="6">Canh Thin</option>
+                        <option value="7">Tan Ty</option>
+                        <option value="8">Nham Ngo</option>
+                        <option value="9">Quy Mui</option>
+                        <option value="10">Giap Than</option>
+                        <option value="11">At Dau</option>
+                        <option value="12">Binh Tuat</option>
+                        <option value="13">dinh Hoi</option>
+                        <option value="14">Mau Ty</option>
+                        <option value="15">Ky Suu</option>
+                        <option value="16">Canh Dan</option>
+                        <option value="17">Tan Mao</option>
+                        <option value="18">Nham Thin</option>
+                        <option value="19">Quy Ty</option>
+                        <option value="20">Giap Ngo</option>
+                        <option value="21">At Mui</option>
+                        <option value="22">Binh Than</option>
+                        <option value="23">dinh Dau</option>
+                        <option value="24">Mau Tuat</option>
+                        <option value="25">Ky Hoi</option>
+                        <option value="26">Canh Ty</option>
+                        <option value="27">Tan Suu</option>
+                        <option value="28">Nham Dan</option>
+                        <option value="29">Quy Mao</option>
+                        <option value="30">Giap Thin</option>
+                        <option value="31">At Ty</option>
+                        <option value="32">Binh Ngo</option>
+                        <option value="33">dinh Mui</option>
+                        <option value="34">Mau Than</option>
+                        <option value="35">Ky Dau</option>
+                        <option value="36">Canh Tuat</option>
+                        <option value="37">Tan Hoi</option>
+                        <option value="38">Nham Ty</option>
+                        <option value="39">Quy Suu</option>
+                        <option value="40">Giap Dan</option>
+                        <option value="41">At Mao</option>
+                        <option value="42">Binh Thin</option>
+                        <option value="43">dinh Ty</option>
+                        <option value="44">Mau Ngo</option>
+                        <option value="45">Ky Mui</option>
+                        <option value="46">Canh Than</option>
+                        <option value="47">Tan Dau</option>
+                        <option value="48">Nham Tuat</option>
+                        <option value="49">Quy Hoi</option>
+                        <option value="50">Giap Ty</option>
+                        <option value="51">At Suu</option>
+                        <option value="52">Binh Dan</option>
+                        <option value="53">dinh Mao</option>
+                        <option value="54">Mau Thin</option>
+                        <option value="55">Ky Ty</option>
+                        <option value="56">Canh Ngo</option>
+                        <option value="57">Tan Mui</option>
+                        <option value="58">Nham Than</option>
+                        <option value="59">Quy Dau</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="base-year">Nam duong lich goc:</label>
+                    <input type="number" id="base-year" min="1900" max="2100" value="2023">
+                </div>
+
+                <div class="input-group">
+                    <label for="target-zodiac">Can chi dich can tim:</label>
+                    <select id="target-zodiac">
+                        <!-- 60 can chi -->
+                        <option value="0">Giap Tuat</option>
+                        <option value="1">At Hoi</option>
+                        <option value="2">Binh Ty</option>
+                        <option value="3">dinh Suu</option>
+                        <option value="4">Mau Dan</option>
+                        <option value="5">Ky Mao</option>
+                        <option value="6">Canh Thin</option>
+                        <option value="7">Tan Ty</option>
+                        <option value="8">Nham Ngo</option>
+                        <option value="9">Quy Mui</option>
+                        <option value="10">Giap Than</option>
+                        <option value="11">At Dau</option>
+                        <option value="12">Binh Tuat</option>
+                        <option value="13">dinh Hoi</option>
+                        <option value="14">Mau Ty</option>
+                        <option value="15">Ky Suu</option>
+                        <option value="16">Canh Dan</option>
+                        <option value="17">Tan Mao</option>
+                        <option value="18">Nham Thin</option>
+                        <option value="19">Quy Ty</option>
+                        <option value="20">Giap Ngo</option>
+                        <option value="21">At Mui</option>
+                        <option value="22">Binh Than</option>
+                        <option value="23">dinh Dau</option>
+                        <option value="24">Mau Tuat</option>
+                        <option value="25">Ky Hoi</option>
+                        <option value="26">Canh Ty</option>
+                        <option value="27">Tan Suu</option>
+                        <option value="28">Nham Dan</option>
+                        <option value="29">Quy Mao</option>
+                        <option value="30">Giap Thin</option>
+                        <option value="31">At Ty</option>
+                        <option value="32">Binh Ngo</option>
+                        <option value="33">dinh Mui</option>
+                        <option value="34">Mau Than</option>
+                        <option value="35">Ky Dau</option>
+                        <option value="36">Canh Tuat</option>
+                        <option value="37">Tan Hoi</option>
+                        <option value="38">Nham Ty</option>
+                        <option value="39">Quy Suu</option>
+                        <option value="40">Giap Dan</option>
+                        <option value="41">At Mao</option>
+                        <option value="42">Binh Thin</option>
+                        <option value="43">dinh Ty</option>
+                        <option value="44">Mau Ngo</option>
+                        <option value="45">Ky Mui</option>
+                        <option value="46">Canh Than</option>
+                        <option value="47">Tan Dau</option>
+                        <option value="48">Nham Tuat</option>
+                        <option value="49">Quy Hoi</option>
+                        <option value="50">Giap Ty</option>
+                        <option value="51">At Suu</option>
+                        <option value="52">Binh Dan</option>
+                        <option value="53">dinh Mao</option>
+                        <option value="54">Mau Thin</option>
+                        <option value="55">Ky Ty</option>
+                        <option value="56">Canh Ngo</option>
+                        <option value="57">Tan Mui</option>
+                        <option value="58">Nham Than</option>
+                        <option value="59">Quy Dau</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="target-year">Nam duong lich dich:</label>
+                    <input type="number" id="target-year" min="1900" max="2100" value="2030">
+                </div>
+            </div>
+
+            <button id="calculate-btn">Tim buoc nhay va vi tri</button>
+
+            <div class="reference-info" id="base-info">
+                <!-- Thong tin can chi goc se hien thi o day -->
+            </div>
+
+            <div class="result-box" id="result-box">
+                <h2>Ket qua tim kiem</h2>
+                <div id="result-list">
+                    <!-- Ket qua se hien thi o day -->
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Tim Buoc Nhay Can Chi - Chu ky 60 nam | Dua tren ngay chuan 1/1/1900 (Giap Tuat)</p>
+        </footer>
+    </div>
+
+    <script>
+        const zodiacList = [
+            "Giap Tuat", "At Hoi", "Binh Ty", "dinh Suu", "Mau Dan", "Ky Mao",
+            "Canh Thin", "Tan Ty", "Nham Ngo", "Quy Mui", "Giap Than", "At Dau",
+            "Binh Tuat", "dinh Hoi", "Mau Ty", "Ky Suu", "Canh Dan", "Tan Mao",
+            "Nham Thin", "Quy Ty", "Giap Ngo", "At Mui", "Binh Than", "dinh Dau",
+            "Mau Tuat", "Ky Hoi", "Canh Ty", "Tan Suu", "Nham Dan", "Quy Mao",
+            "Giap Thin", "At Ty", "Binh Ngo", "dinh Mui", "Mau Than", "Ky Dau",
+            "Canh Tuat", "Tan Hoi", "Nham Ty", "Quy Suu", "Giap Dan", "At Mao",
+            "Binh Thin", "dinh Ty", "Mau Ngo", "Ky Mui", "Canh Than", "Tan Dau",
+            "Nham Tuat", "Quy Hoi", "Giap Ty", "At Suu", "Binh Dan", "dinh Mao",
+            "Mau Thin", "Ky Ty", "Canh Ngo", "Tan Mui", "Nham Than", "Quy Dau"
+        ];
+
+        function updateBaseInfo() {
+            const baseIndex = parseInt(document.getElementById('base-zodiac').value);
+            const baseYear = parseInt(document.getElementById('base-year').value);
+            const baseZodiac = zodiacList[baseIndex];
+            document.getElementById('base-info').innerHTML = `
+                <p><strong>Can chi goc:</strong> ${baseZodiac} (vi tri ${baseIndex + 1}) - Nam ${baseYear}</p>
+            `;
+        }
+
+        function findSteps() {
+            const baseIndex = parseInt(document.getElementById('base-zodiac').value);
+            const baseYear = parseInt(document.getElementById('base-year').value);
+            const targetIndex = parseInt(document.getElementById('target-zodiac').value);
+            const targetYear = parseInt(document.getElementById('target-year').value);
+
+            const baseZodiac = zodiacList[baseIndex];
+            const targetZodiac = zodiacList[targetIndex];
+
+            const yearDiff = targetYear - baseYear;
+            const absYearDiff = Math.abs(yearDiff);
+
+            const results = [];
+
+            // Ham kiem tra dieu kien can chi
+            function checkModulo(step, direction, k) {
+                if (direction === 'forward') {
+                    return (baseIndex + k * step) % 60 === targetIndex;
+                } else { // backward
+                    // dam bao chi so duong
+                    return ((baseIndex - k * step) % 60 + 60) % 60 === targetIndex;
+                }
+            }
+
+            // Xet chieu tien (targetYear > baseYear)
+            if (yearDiff > 0) {
+                for (let k = 1; k <= 60; k++) { // Gioi han k <= 60 vi chi co 60 can chi trong chu ky
+                    if (yearDiff % k === 0) {
+                        const step = yearDiff / k;
+                        if (step > 0 && step <= 500) { // Gioi han step khong qua lon, co the dieu chinh
+                            if (checkModulo(step, 'forward', k)) {
+                                results.push({
+                                    step: step,
+                                    direction: 'tien',
+                                    position: k,
+                                    year: targetYear
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            // Xet chieu lui (targetYear < baseYear)
+            else if (yearDiff < 0) {
+                for (let k = 1; k <= 60; k++) {
+                    if (absYearDiff % k === 0) {
+                        const step = absYearDiff / k;
+                        if (step > 0 && step <= 500) {
+                            if (checkModulo(step, 'backward', k)) {
+                                results.push({
+                                    step: step,
+                                    direction: 'lui',
+                                    position: k,
+                                    year: targetYear
+                                });
+                            }
+                        }
+                    }
+                }
+            } else { // yearDiff == 0
+                // Neu cung nam, chi co the la cung can chi, step tuy y? Nhung vi tri k=0?
+                // Truong hop dac biet: base va target trung nhau
+                if (baseIndex === targetIndex) {
+                    results.push({
+                        step: 'bat ky (cung nam)',
+                        direction: 'cung',
+                        position: 0,
+                        year: targetYear
+                    });
+                } else {
+                    // Khong the vi cung nam nhung khac can chi
+                }
+            }
+
+            // Hien thi ket qua
+            const resultDiv = document.getElementById('result-list');
+            resultDiv.innerHTML = '';
+
+            if (results.length === 0) {
+                resultDiv.innerHTML = '<div class="not-found">Khong tim thay buoc nhay nao phu hop.</div>';
+            } else {
+                results.forEach(item => {
+                    const stepItem = document.createElement('div');
+                    stepItem.className = 'step-item';
+                    let directionText = '';
+                    if (item.direction === 'tien') {
+                        directionText = '<span class="direction-badge">Tien</span>';
+                    } else if (item.direction === 'lui') {
+                        directionText = '<span class="direction-badge">Lui</span>';
+                    } else {
+                        directionText = '<span class="direction-badge">Cung nam</span>';
+                    }
+
+                    let stepText = '';
+                    if (item.step === 'bat ky (cung nam)') {
+                        stepText = 'Buoc nhay: bat ky';
+                    } else {
+                        stepText = `Buoc nhay: <span class="step-value">${item.step}</span>`;
+                    }
+
+                    stepItem.innerHTML = `
+                        <div>
+                            <div class="step-info">${targetZodiac} - nam ${item.year}</div>
+                            <div>${stepText}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div>Vi tri thu <strong>${item.position}</strong></div>
+                            ${directionText}
+                        </div>
+                    `;
+                    resultDiv.appendChild(stepItem);
+                });
+            }
+
+            // Cap nhat thong tin co ban
+            document.getElementById('base-info').innerHTML = `
+                <p><strong>Can chi goc:</strong> ${baseZodiac} (vi tri ${baseIndex + 1}) - Nam ${baseYear}</p>
+                <p><strong>Can chi dich:</strong> ${targetZodiac} (vi tri ${targetIndex + 1}) - Nam ${targetYear}</p>
+            `;
+        }
+
+        document.getElementById('calculate-btn').addEventListener('click', findSteps);
+
+        // Cap nhat thong tin khi thay doi can chi goc hoac nam goc
+        document.getElementById('base-zodiac').addEventListener('change', updateBaseInfo);
+        document.getElementById('base-year').addEventListener('input', updateBaseInfo);
+
+        // Khoi tao thong tin ban dau
+        window.addEventListener('DOMContentLoaded', function() {
+            updateBaseInfo();
+            findSteps(); // Tu dong tim voi gia tri mac dinh
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

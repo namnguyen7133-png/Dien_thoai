@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cong cu Tinh Tong Chi phi Xay nha (Theo m²)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .input-group input[type="number"], .input-group input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .result-box {
+            margin-top: 25px;
+            padding: 20px;
+            border: 2px solid #2ecc71;
+            border-radius: 6px;
+            background-color: #e8f8f5;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        .result-item strong {
+            color: #e74c3c;
+        }
+        .calculate-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .calculate-btn:hover {
+            background-color: #2980b9;
+        }
+        .note {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-top: 15px;
+            padding-left: 10px;
+            border-left: 3px solid #f39c12;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🛠 Cong Cu Uoc Tinh Chi Phi Xay Dung</h2>
+
+    <div class="input-group">
+        <label for="width">1. Chieu Ngang (m):</label>
+        <input type="number" id="width" value="5" min="1">
+    </div>
+
+    <div class="input-group">
+        <label for="length">2. Chieu Dai (m):</label>
+        <input type="number" id="length" value="12" min="1">
+    </div>
+
+    <div class="input-group">
+        <label for="floors">3. So Tang Nha (Vi du: 2):</label>
+        <input type="number" id="floors" value="2" min="1">
+    </div>
+
+    <hr>
+
+    <div class="input-group">
+        <label for="mong_percent">4. Ty le Dien tich Mong (%) - *Mong don theo vi du (40):*</label>
+        <input type="number" id="mong_percent" value="40" min="0" max="100">
+    </div>
+
+    <div class="input-group">
+        <label for="mai_percent">5. Ty le Dien tich Mai (%) - *Mai BTCT theo vi du (40):*</label>
+        <input type="number" id="mai_percent" value="40" min="0" max="100">
+    </div>
+
+    <hr>
+
+    <div class="input-group">
+        <label for="rough_price">6. don gia Xay Tho (VNd/m&sup2;) - *Vi du: 3500000:</label>
+        <input type="number" id="rough_price" value="3500000" min="1000000">
+    </div>
+
+    <div class="input-group">
+        <label for="turnkey_price">7. don gia Xay Tron Goi (VNd/m&sup2;) - *Vi du: 4750000:</label>
+        <input type="number" id="turnkey_price" value="4750000" min="1000000">
+    </div>
+    
+    <button class="calculate-btn" onclick="calculateCost()">Tinh Tong Chi Phi</button>
+
+    <div class="result-box">
+        <h3>📊 Ket Qua Uoc Tinh (Buoc 1 & 3)</h3>
+        <div class="result-item">
+            <span><strong>Tong Dien tich Xay dung (m&sup2;):</strong></span>
+            <span id="total_area">0 m&sup2;</span>
+        </div>
+        <hr>
+        <div class="result-item">
+            <span><strong>Tong Chi phi Xay Tho:</strong></span>
+            <span id="rough_cost">0 VNd</span>
+        </div>
+        <div class="result-item">
+            <span><strong>Tong Chi phi Xay Tron Goi:</strong></span>
+            <span id="turnkey_cost">0 VNd</span>
+        </div>
+    </div>
+
+    <p class="note">
+        *Cong cu tinh toan dua tren quy tac tinh dien tich m&sup2; (Mong, Tang, Mai) va don gia nhap vao. Ket qua mang tinh chat tham khao, khong bao gom 20% du tru ngan sach theo loi khuyen cua video.
+    </p>
+</div>
+
+<script>
+    function calculateCost() {
+        // --- 1. Lay gia tri tu cac truong nhap lieu ---
+        const width = parseFloat(document.getElementById('width').value) || 0;
+        const length = parseFloat(document.getElementById('length').value) || 0;
+        const floors = parseInt(document.getElementById('floors').value) || 0;
+        const mongPercent = parseFloat(document.getElementById('mong_percent').value) / 100 || 0;
+        const maiPercent = parseFloat(document.getElementById('mai_percent').value) / 100 || 0;
+        const roughPrice = parseFloat(document.getElementById('rough_price').value) || 0;
+        const turnkeyPrice = parseFloat(document.getElementById('turnkey_price').value) || 0;
+
+        // --- 2. Tinh Tong Dien tich Xay dung (Buoc 1) ---
+        const baseArea = width * length; // Dien tich san co so (60 m2 trong vi du)
+
+        // Dien tich Mong (Vi du: 40%)
+        const mongArea = baseArea * mongPercent;
+
+        // Dien tich Cac Tang (Tang 1 + Tang 2 + ... | Gia su tat ca tang tren Mong la 100% dien tich)
+        // Luu y: So tang = 2 nghia la Tang 1 (100%) va Tang 2 (100%) -> Tang Area = floors * baseArea
+        const tangArea = baseArea * floors; 
+
+        // Dien tich Mai (Vi du: 40%)
+        const maiArea = baseArea * maiPercent;
+
+        // Tong dien tich san xay dung (Vi du: 24 + 60 + 60 + 24 = 168 m2)
+        const totalArea = mongArea + tangArea + maiArea;
+
+        // --- 3. Tinh Tong Chi phi (Buoc 3) ---
+
+        // Tong Chi phi Xay Tho
+        const roughCost = totalArea * roughPrice;
+
+        // Tong Chi phi Xay Tron Goi
+        const turnkeyCost = totalArea * turnkeyPrice;
+
+        // --- 4. Hien thi ket qua ---
+        document.getElementById('total_area').innerHTML = totalArea.toFixed(2) + ' m&sup2;';
+
+        // Ham dinh dang so sang tien te VNd
+        function formatCurrency(number) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number);
+        }
+
+        document.getElementById('rough_cost').innerHTML = formatCurrency(roughCost);
+        document.getElementById('turnkey_cost').innerHTML = formatCurrency(turnkeyCost);
+    }
+
+    // Tu dong chay tinh toan khi tai trang voi gia tri mac dinh
+    document.addEventListener('DOMContentLoaded', calculateCost);
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

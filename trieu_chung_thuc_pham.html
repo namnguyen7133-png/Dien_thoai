@@ -1,0 +1,444 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
+    <title>Ngu Hanh - Trieu chung & Thuc pham</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+        }
+        body {
+            background: #f2f6f5;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 4px 16px rgba(0,30,30,0.1);
+            padding: 24px 20px;
+        }
+        h1 {
+            font-size: 2.2rem;
+            color: #1f4e45;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            border-left: 8px solid #56b3a0;
+            padding-left: 20px;
+        }
+        .sub {
+            font-size: 1.2rem;
+            color: #3f6f63;
+            margin: 0 0 25px 25px;
+            font-style: italic;
+        }
+        /* Thanh tim kiem don gian */
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: #f0f4f3;
+            border-radius: 50px;
+            padding: 6px 6px 6px 25px;
+            margin-bottom: 30px;
+            border: 1px solid #bfd9d2;
+        }
+        .search-box span {
+            font-size: 1.6rem;
+            margin-right: 10px;
+            color: #2f7b6c;
+        }
+        #searchInput {
+            width: 100%;
+            padding: 16px 0;
+            font-size: 1.2rem;
+            border: none;
+            background: transparent;
+            outline: none;
+            color: #154e45;
+        }
+        #searchInput::placeholder {
+            color: #87b9ae;
+            font-style: italic;
+        }
+        button {
+            background: #2b7b68;
+            border: none;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            margin-left: 8px;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #1e5f4f;
+        }
+        /* The hanh (xep doc) */
+        .card {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(30, 70, 60, 0.08);
+            border-left: 12px solid;
+            transition: 0.2s;
+            border-left-color: #ccc;
+        }
+        .card.moc { border-left-color: #2ecc71; background: #f2fcf6; }
+        .card.hoa { border-left-color: #e74c3c; background: #fef5f3; }
+        .card.tho { border-left-color: #f1c40f; background: #fefae8; }
+        .card.kim { border-left-color: #a0b9c5; background: #f6f9fc; }
+        .card.thuy { border-left-color: #3498db; background: #e8f3fc; }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+        .card-header h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #1d3f38;
+        }
+        .card-header .badge {
+            background: rgba(0,0,0,0.03);
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #215f51;
+            border: 1px solid #b7ddd2;
+        }
+        .symptom, .organ, .food {
+            margin-bottom: 16px;
+        }
+        .label {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: #286b5b;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .label i { font-size: 1.4rem; }
+        .text {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: #1c4b40;
+            background: rgba(255,255,255,0.6);
+            padding: 12px 16px;
+            border-radius: 24px;
+            border: 1px solid #d0eadf;
+        }
+        .food-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .food-list li {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            border: 1px solid #cbede2;
+            color: #1f5446;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .food-list li::before {
+            content: "•";
+            color: #42a98b;
+            font-size: 1.8rem;
+            line-height: 0.8;
+        }
+        .note {
+            background: #fff3d9;
+            border-left: 8px solid #eab948;
+            padding: 22px;
+            border-radius: 24px;
+            margin-top: 30px;
+            font-size: 1.1rem;
+            color: #365b4c;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: #527b6e;
+        }
+        /* An the khi tim kiem */
+        .hidden {
+            display: none;
+        }
+        .highlight {
+            background: #fff9db !important;
+            border-left-color: #f1c40f !important;
+        }
+        @media (max-width: 500px) {
+            .container { padding: 16px; }
+            h1 { font-size: 1.8rem; }
+            .card-header h2 { font-size: 1.7rem; }
+            .text { font-size: 1rem; }
+            .food-list li { font-size: 1rem; padding: 8px 14px; }
+            .search-box { flex-wrap: wrap; background: transparent; padding: 0; }
+            #searchInput { background: #f0f4f3; border-radius: 50px; padding: 14px 20px; margin-bottom: 8px; }
+            button { width: 100%; margin-left: 0; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🌿 Ngu hanh vuong – Trieu chung & thuc pham</h1>
+    <div class="sub">Tra nhanh theo trieu chung, bo phan, mon an</div>
+
+    <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="searchInput" placeholder="Nhap tu khoa..." autocomplete="off">
+        <button onclick="resetSearch()">Xoa loc</button>
+    </div>
+
+    <!-- Cac the hanh xep doc -->
+    <div id="cardContainer">
+        <!-- Moc -->
+        <div class="card moc" data-element="moc" data-symptoms="cau gat dau dau chong mat u tai ha suon mat do huyet ap" data-organs="gan mat gan mong than kinh" data-foods="rau can bi dao rau ma dau phu rau muong">
+            <div class="card-header">
+                <h2>🌳 Moc vuong</h2>
+                <span class="badge">Gan – Mat</span>
+            </div>
+            <div class="symptom">
+                <div class="label"><i>⚡</i> Trieu chung:</div>
+                <div class="text">De cau gat, dau dau, chong mat, dau nua dau, u tai, dau tuc ha suon, mat do, huyet ap dao dong.</div>
+            </div>
+            <div class="organ">
+                <div class="label"><i>🧬</i> Bo phan lien quan:</div>
+                <div class="text">Gan, mat, mat, gan, mong tay, than kinh.</div>
+            </div>
+            <div class="food">
+                <div class="label"><i>🥗</i> Thuc pham can bang:</div>
+                <ul class="food-list">
+                    <li>Rau can (canh, xao toi)</li>
+                    <li>Bi dao (nau tom, nau nam)</li>
+                    <li>Rau ma (sinh to, an song)</li>
+                    <li>dau phu (canh chua, sot ca)</li>
+                    <li>Rau muong luoc</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Hoa -->
+        <div class="card hoa" data-element="hoa" data-symptoms="mat ngu tran troc tim hoi hop mieng kho luoi do nhiet mieng nuoc tieu vang tao bon mat do" data-organs="tim mach mau luoi da mat" data-foods="bi dao rau den dau xanh cu sen rau day">
+            <div class="card-header">
+                <h2>🔥 Hoa vuong</h2>
+                <span class="badge">Tim – Mach</span>
+            </div>
+            <div class="symptom">
+                <div class="label"><i>⚡</i> Trieu chung:</div>
+                <div class="text">Mat ngu, tran troc, tim hoi hop, mieng kho luoi do, nhiet mieng, nuoc tieu vang, tao bon, mat do.</div>
+            </div>
+            <div class="organ">
+                <div class="label"><i>🧬</i> Bo phan lien quan:</div>
+                <div class="text">Tim, mach mau, luoi, da mat.</div>
+            </div>
+            <div class="food">
+                <div class="label"><i>🥗</i> Thuc pham can bang:</div>
+                <ul class="food-list">
+                    <li>Bi dao (nau canh, ep nuoc)</li>
+                    <li>Rau den (luoc, nau cua)</li>
+                    <li>dau xanh (che, nuoc uong)</li>
+                    <li>Cu sen (canh, mut sen)</li>
+                    <li>Rau day (canh cua)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Tho -->
+        <div class="card tho" data-element="tho" data-symptoms="day bung kho tieu o hoi an khong ngon nguoi nang ne beo beu mieng nhat ngot" data-organs="ty da day co bap mieng" data-foods="gao lut bi do khoai lang gung rau thom">
+            <div class="card-header">
+                <h2>🌍 Tho vuong</h2>
+                <span class="badge">Ty – Vi</span>
+            </div>
+            <div class="symptom">
+                <div class="label"><i>⚡</i> Trieu chung:</div>
+                <div class="text">day bung, kho tieu, o hoi, an khong ngon hoac an nhieu van met, nguoi nang ne, beo beu, mieng nhat/ngot.</div>
+            </div>
+            <div class="organ">
+                <div class="label"><i>🧬</i> Bo phan lien quan:</div>
+                <div class="text">Ty (la lach, tuy), da day, co bap, mieng.</div>
+            </div>
+            <div class="food">
+                <div class="label"><i>🥗</i> Thuc pham can bang:</div>
+                <ul class="food-list">
+                    <li>Gao lut (com, nuoc rang)</li>
+                    <li>Bi do (canh, chao, sup)</li>
+                    <li>Khoai lang luoc</li>
+                    <li>Gung tuoi (tra, nau canh)</li>
+                    <li>Rau thom (kinh gioi, tia to)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Kim -->
+        <div class="card kim" data-element="kim" data-symptoms="da kho nut ne mui kho chay mau cam ho khan dom vang viem hong tao bon ho hap" data-organs="phoi dai trang da mui" data-foods="le cu cai moc nhi rong bien tao tau">
+            <div class="card-header">
+                <h2>⚔ Kim vuong</h2>
+                <span class="badge">Phe – dai trang</span>
+            </div>
+            <div class="symptom">
+                <div class="label"><i>⚡</i> Trieu chung:</div>
+                <div class="text">Da kho, nut ne, mui kho, chay mau cam, ho khan/dom vang, viem hong, tao bon, de benh ho hap.</div>
+            </div>
+            <div class="organ">
+                <div class="label"><i>🧬</i> Bo phan lien quan:</div>
+                <div class="text">Phoi, dai trang, da, mui.</div>
+            </div>
+            <div class="food">
+                <div class="label"><i>🥗</i> Thuc pham can bang:</div>
+                <ul class="food-list">
+                    <li>Le hap duong phen</li>
+                    <li>Cu cai trang (nau canh, hap mat ong)</li>
+                    <li>Moc nhi den (goi, xao)</li>
+                    <li>Rau cau (rong bien) nau canh</li>
+                    <li>Tao tau (chao, tra)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Thuy -->
+        <div class="card thuy" data-element="thuy" data-symptoms="phu thung dau lung moi goi so lanh tieu nhieu nuoc tieu trong ue oai" data-organs="than bang quang xuong tai toc" data-foods="rau ram hanh dau den rau ngo cai cuc">
+            <div class="card-header">
+                <h2>💧 Thuy vuong</h2>
+                <span class="badge">Than – Bang quang</span>
+            </div>
+            <div class="symptom">
+                <div class="label"><i>⚡</i> Trieu chung:</div>
+                <div class="text">Phu thung (mat, chan tay), dau lung moi goi, so lanh, tieu nhieu lan nuoc tieu trong, nguoi ue oai.</div>
+            </div>
+            <div class="organ">
+                <div class="label"><i>🧬</i> Bo phan lien quan:</div>
+                <div class="text">Than, bang quang, xuong, tai, toc.</div>
+            </div>
+            <div class="food">
+                <div class="label"><i>🥗</i> Thuc pham can bang:</div>
+                <ul class="food-list">
+                    <li>Rau ram (an kem trung vit lon)</li>
+                    <li>Hanh la, hanh tim (nem nem)</li>
+                    <li>dau den (nau chao, nuoc rang)</li>
+                    <li>Rau ngo (canh chua)</li>
+                    <li>Cai cuc (tan o nau thit bam)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>⚕ Luu y:</strong> “Vuong” chi trang thai mat can bang. Thong tin mang tinh tham khao. Can tham kham bac si neu co trieu chung nghiem trong.
+    </div>
+    <div class="footer">
+        ✦ Mon an dan da, de kiem tai cho Viet ✦
+    </div>
+</div>
+
+<script>
+    function filterCards() {
+        let keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+        let cards = document.querySelectorAll('.card');
+        let hasVisible = false;
+
+        cards.forEach(card => {
+            // Thu thap tat ca text trong card
+            let text = card.innerText.toLowerCase();
+            if (keyword === '' || text.includes(keyword)) {
+                card.classList.remove('hidden');
+                // highlight nhe neu co tu khoa
+                if (keyword !== '' && text.includes(keyword)) {
+                    card.classList.add('highlight');
+                } else {
+                    card.classList.remove('highlight');
+                }
+                hasVisible = true;
+            } else {
+                card.classList.add('hidden');
+                card.classList.remove('highlight');
+            }
+        });
+
+        // Neu khong co ket qua, co the hien thong bao (tuy chon)
+        let container = document.getElementById('cardContainer');
+        let noResult = document.getElementById('no-result');
+        if (!hasVisible && keyword !== '') {
+            if (!noResult) {
+                noResult = document.createElement('div');
+                noResult.id = 'no-result';
+                noResult.style.padding = '30px';
+                noResult.style.textAlign = 'center';
+                noResult.style.background = '#f0f7f2';
+                noResult.style.borderRadius = '28px';
+                noResult.style.fontSize = '1.3rem';
+                noResult.style.color = '#3c6b5f';
+                noResult.innerText = '😕 Khong tim thay hanh nao khop voi tu khoa.';
+                container.appendChild(noResult);
+            }
+        } else {
+            if (noResult) noResult.remove();
+        }
+    }
+
+    function resetSearch() {
+        document.getElementById('searchInput').value = '';
+        filterCards();
+    }
+
+    document.getElementById('searchInput').addEventListener('keyup', filterCards);
+    // Xoa highlight khi xoa tim kiem (resetSearch da xu ly)
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

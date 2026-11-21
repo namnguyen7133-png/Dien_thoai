@@ -1,0 +1,496 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xem Nha Cua - Du doan Theo Tuoi va Thang Sinh</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        
+        .disclaimer {
+            background-color: #fff9e6;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .input-section {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+        
+        select, button {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: white;
+        }
+        
+        button {
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-section {
+            padding: 20px;
+            display: none;
+        }
+        
+        .result-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+        
+        .gia-type {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #182848;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .prediction-item {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .prediction-item:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #4b6cb7;
+            font-size: 1.2rem;
+        }
+        
+        .gender-specific {
+            background-color: #f0f5ff;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 5px;
+        }
+        
+        .table-section {
+            padding: 20px;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        th {
+            background-color: #4b6cb7;
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                border-radius: 10px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .input-section, .result-section, .table-section {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>XEM NHA CUA</h1>
+            <p class="subtitle">Du doan ve nha cua, tai van va suc khoe dua tren tuoi va thang sinh</p>
+        </header>
+        
+        <div class="disclaimer">
+            <strong>Luu y:</strong> day chi la tai lieu tham khao va khong phai la thay ba. Ket qua mang tinh chat giai tri va tham khao.
+        </div>
+        
+        <div class="input-section">
+            <div class="form-group">
+                <label for="zodiac">Chon tuoi (12 con giap):</label>
+                <select id="zodiac">
+                    <option value="">-- Chon con giap --</option>
+                    <option value="TI">Ty</option>
+                    <option value="SUU">Suu</option>
+                    <option value="DAN">Dan</option>
+                    <option value="MAO">Mao</option>
+                    <option value="THIN">Thin</option>
+                    <option value="TY">Ty</option>
+                    <option value="NGO">Ngo</option>
+                    <option value="MUI">Mui</option>
+                    <option value="THAN">Than</option>
+                    <option value="DAU">Dau</option>
+                    <option value="TUAT">Tuat</option>
+                    <option value="HOI">Hoi</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="month">Chon thang sinh (duong lich):</label>
+                <select id="month">
+                    <option value="">-- Chon thang --</option>
+                    <option value="1">Thang 1</option>
+                    <option value="2">Thang 2</option>
+                    <option value="3">Thang 3</option>
+                    <option value="4">Thang 4</option>
+                    <option value="5">Thang 5</option>
+                    <option value="6">Thang 6</option>
+                    <option value="7">Thang 7</option>
+                    <option value="8">Thang 8</option>
+                    <option value="9">Thang 9</option>
+                    <option value="10">Thang 10</option>
+                    <option value="11">Thang 11</option>
+                    <option value="12">Thang 12</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="gender">Chon gioi tinh:</label>
+                <select id="gender">
+                    <option value="">-- Chon gioi tinh --</option>
+                    <option value="male">Nam</option>
+                    <option value="female">Nu</option>
+                </select>
+            </div>
+            
+            <button id="predict-btn">Xem ket qua</button>
+        </div>
+        
+        <div class="result-section" id="result-section">
+            <div class="result-card">
+                <div class="gia-type" id="gia-type">KET QUA</div>
+                <div id="prediction-content">
+                    <!-- Noi dung du doan se duoc them vao day bang JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="table-section">
+            <h2>Bang Tra Cuu</h2>
+            <p>Duoi day la bang tra cuu day du de ban co the doi chieu:</p>
+            <div id="table-container">
+                <!-- Bang se duoc tao bang JavaScript -->
+            </div>
+        </div>
+        
+        <footer>
+            <p>Tro choi dua tren noi dung tu video: "Xem nha cua"</p>
+            <p>Link video: <a href="http://www.youtube.com/watch?v=Yi2_Olp51ss" target="_blank">YouTube</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // Du lieu bang tra cuu
+        const lookupTable = {
+            "TI": [7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6],
+            "SUU": [4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3],
+            "DAN": [10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            "MAO": [7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6],
+            "THIN": [4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3],
+            "TY": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+            "NGO": [10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            "MUI": [7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6],
+            "THAN": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+            "DAU": [4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3],
+            "TUAT": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+            "HOI": [10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+        };
+
+        // Ten cac loai "Gia" theo thu tu cot
+        const giaTypes = [
+            "KHONG GIA", "VONG GIA", "BAI GIA", "HUONG GIA", 
+            "HIEP GIA", "HUONG GIA", "HIEP GIA", "KIEN GIA", 
+            "KIEN GIA", "GIAI GIA", "PHA GIA", "KHONG GIA"
+        ];
+
+        // Mo ta chi tiet cho tung loai "Gia"
+        const giaDescriptions = {
+            "KHONG GIA": {
+                "male": "Hay bi hao ton tien bac, tai san.",
+                "female": "De mac cac benh ve duong mau huyet.",
+                "house": "Co the o duoc lau dai trong ngoi nha do."
+            },
+            "VONG GIA": {
+                "male": "Hay bi hao ton tien bac, tai san.",
+                "female": "De mac cac benh ve duong mau huyet.",
+                "house": "Co the o duoc lau dai trong ngoi nha do."
+            },
+            "BAI GIA": {
+                "house": "Khong nen o nha cua cha me.",
+                "career": "Phai doi doi di noi khac de lap nghiep moi thanh cong; neu o lai nha cha me se gap cuc kho."
+            },
+            "HUONG GIA": {
+                "house": "Rat tot khi o chung nha voi cha me.",
+                "career": "De mo mang viec lam an, tao lap su nghiep, duoc thinh vuong va phat dat.",
+                "recommendation": "Nen o chung gia dinh cha me de duoc su cuu mang, dum boc."
+            },
+            "HIEP GIA": {
+                "house": "La dau hieu cua nguoi co nha cao cua rong, nguy nga do so. day la truong hop rat hiem gap.",
+                "career": "Tu 50 tuoi tro len gia nghiep hung vuong, tien cua rat nhieu."
+            },
+            "KIEN GIA": {
+                "house": "Chi tot khi o nha moi xay hoac nha moi mua. Neu o nha cu, nha cua cha me, hoac mua lai nha cu cua nguoi khac thi se bi dau om trien mien.",
+                "health": "Suc lao dong suy giam, keo theo kinh te gia dinh sa sut."
+            },
+            "GIAI GIA": {
+                "house": "Khong the o nha cha me. Neu co tinh o lai, thuong bi tai nan, hao tai ton tien, hao tai ton cua.",
+                "career": "Phai di den xu khac lap nghiep moi tot, viec lam an se de dang hon o cho cu."
+            },
+            "PHA GIA": {
+                "house": "Khong nen o nha cua cha me.",
+                "career": "Phai doi doi di noi khac de lap nghiep moi thanh cong; neu o lai nha cha me se gap cuc kho."
+            }
+        };
+
+        // Tao bang tra cuu
+        function createLookupTable() {
+            const tableContainer = document.getElementById('table-container');
+            let tableHTML = '<table><tr><th>NAM SINH</th>';
+            
+            // Them tieu de cot
+            giaTypes.forEach(type => {
+                tableHTML += `<th>${type}</th>`;
+            });
+            tableHTML += '</tr>';
+            
+            // Them du lieu tung dong
+            Object.keys(lookupTable).forEach(zodiac => {
+                tableHTML += `<tr><td>${getZodiacName(zodiac)}</td>`;
+                lookupTable[zodiac].forEach(month => {
+                    tableHTML += `<td>${month}</td>`;
+                });
+                tableHTML += '</tr>';
+            });
+            
+            tableHTML += '</table>';
+            tableContainer.innerHTML = tableHTML;
+        }
+
+        // Chuyen doi ma con giap thanh ten tieng Viet
+        function getZodiacName(code) {
+            const zodiacNames = {
+                "TI": "TY", "SUU": "SUU", "DAN": "DAN", "MAO": "MAO",
+                "THIN": "THIN", "TY": "TY", "NGO": "NGO", "MUI": "MUI",
+                "THAN": "THAN", "DAU": "DAU", "TUAT": "TUAT", "HOI": "HOI"
+            };
+            return zodiacNames[code] || code;
+        }
+
+        // Tim loai "Gia" dua tren tuoi va thang sinh
+        function findGiaType(zodiac, month) {
+            const months = lookupTable[zodiac];
+            for (let i = 0; i < months.length; i++) {
+                if (months[i] === parseInt(month)) {
+                    return giaTypes[i];
+                }
+            }
+            return null;
+        }
+
+        // Hien thi ket qua du doan
+        function showPrediction(zodiac, month, gender, giaType) {
+            const resultSection = document.getElementById('result-section');
+            const giaTypeElement = document.getElementById('gia-type');
+            const predictionContent = document.getElementById('prediction-content');
+            
+            // Hien thi phan ket qua
+            resultSection.style.display = 'block';
+            giaTypeElement.textContent = giaType;
+            
+            // Lay mo ta cho loai "Gia" tuong ung
+            const description = giaDescriptions[giaType];
+            let contentHTML = '';
+            
+            // Them thong tin ve gioi tinh
+            if (description[gender]) {
+                contentHTML += `<div class="prediction-item gender-specific">
+                    <strong>${gender === 'male' ? 'Nam' : 'Nu'}:</strong> ${description[gender]}
+                </div>`;
+            }
+            
+            // Them thong tin ve nha cua
+            if (description.house) {
+                contentHTML += `<div class="prediction-item">
+                    <strong>Nha o:</strong> ${description.house}
+                </div>`;
+            }
+            
+            // Them thong tin ve su nghiep
+            if (description.career) {
+                contentHTML += `<div class="prediction-item">
+                    <strong>Lap nghiep:</strong> ${description.career}
+                </div>`;
+            }
+            
+            // Them thong tin ve suc khoe
+            if (description.health) {
+                contentHTML += `<div class="prediction-item">
+                    <strong>Suc khoe:</strong> ${description.health}
+                </div>`;
+            }
+            
+            // Them khuyen nghi
+            if (description.recommendation) {
+                contentHTML += `<div class="prediction-item">
+                    <strong>Khuyen nghi:</strong> ${description.recommendation}
+                </div>`;
+            }
+            
+            predictionContent.innerHTML = contentHTML;
+            
+            // Cuon den phan ket qua
+            resultSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Xu ly su kien khi nhan nut "Xem ket qua"
+        document.getElementById('predict-btn').addEventListener('click', function() {
+            const zodiac = document.getElementById('zodiac').value;
+            const month = document.getElementById('month').value;
+            const gender = document.getElementById('gender').value;
+            
+            // Kiem tra xem nguoi dung da nhap du thong tin chua
+            if (!zodiac || !month || !gender) {
+                alert('Vui long chon day du thong tin: tuoi, thang sinh va gioi tinh.');
+                return;
+            }
+            
+            // Tim loai "Gia" tuong ung
+            const giaType = findGiaType(zodiac, month);
+            
+            if (giaType) {
+                showPrediction(zodiac, month, gender, giaType);
+            } else {
+                alert('Khong tim thay ket qua phu hop. Vui long kiem tra lai thong tin.');
+            }
+        });
+
+        // Khoi tao bang tra cuu khi trang duoc tai
+        window.onload = function() {
+            createLookupTable();
+        };
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

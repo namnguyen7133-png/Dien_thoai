@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Game Mo Phong Cuoc Song & Tai Chinh</title>
+<style>
+body{font-family:Arial;background:#f4f6f8;padding:20px}
+.stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.box{background:#fff;padding:10px;border-radius:8px;box-shadow:0 2px 5px rgba(0,0,0,.1)}
+button{padding:10px 15px;margin:10px 5px;border:0;border-radius:6px;background:#2563eb;color:#fff;cursor:pointer}
+button:hover{opacity:.9}
+h2,h3{margin-top:20px}
+</style>
+</head>
+<body>
+
+<h2>🎮 Game Mo Phong Cuoc Song – Thu Nhap – Gia dinh</h2>
+
+<div class="stat">
+<div class="box">📆 Nam: <span id="year">0</span></div>
+<div class="box">💰 Thu nhap/nam: <span id="income">0</span></div>
+<div class="box">🏦 Tai san: <span id="asset">0</span></div>
+<div class="box">⭐ Cap song: <span id="level">1</span></div>
+<div class="box">❤ Tu thien: <span id="charity">0</span></div>
+<div class="box">🧭 Kim tu do: <span id="quad">E</span></div>
+</div>
+
+<button onclick="nextYear()">⏭ Sang nam tiep theo</button>
+
+<h3>🎓 Hoc tap & dao tao</h3>
+<div class="stat">
+<div class="box">⏱ Thoi gian hoc (nam): <input id="studyYears" type="number" value="0" min="0" style="width:80px"></div>
+<div class="box">🏫 Truong/dao tao: <select id="school"><option>Khong</option><option>Nghe</option><option>Cao dang</option><option>dai hoc</option><option>MBA</option><option>Quoc te</option></select></div>
+<div class="box">📚 Nganh: <select id="major"><option>Pho thong</option><option>IT</option><option>Kinh doanh</option><option>Tai chinh</option><option>Ky thuat</option><option>Y te</option></select></div>
+</div>
+<button onclick="invest()">📈 dau tu</button>
+<button onclick="donate()">🤝 Lam tu thien</button>
+
+<h3>👨‍👩‍👧‍👦 Gia dinh & giao duc</h3>
+<div class="stat">
+<div class="box">👨 Cha: <span id="father"></span></div>
+<div class="box">👩 Me: <span id="mother"></span></div>
+<div class="box">🧑 Con trai: <span id="son"></span></div>
+<div class="box">👧 Con gai: <span id="daughter"></span></div>
+<div class="box">💍 Dau/Re: <span id="inlaw"></span></div>
+</div>
+
+<h3>🌐 Xu huong hien dai</h3>
+<div class="stat">
+<div class="box">🤖 AI: <span id="aiSkill"></span></div>
+<div class="box">💻 Nghe so: <span id="digitalJob"></span></div>
+<div class="box">🧠 Tinh than: <span id="mental"></span></div>
+<div class="box">🌱 Ben vung: <span id="green"></span></div>
+<div class="box">🌍 Toan cau: <span id="global"></span></div>
+</div>
+
+<script>
+let year=0,income=5000,asset=10000,level=1,charity=0,quad='E';
+let aiSkill=1,digitalJob=false,mental=60,green=5,global=0;
+
+function nextYear(){
+ year++;
+ let sy=parseInt(document.getElementById('studyYears').value||0);
+ if(sy>0){
+  document.getElementById('studyYears').value=sy-1;
+  income+=500*level;
+ }else{
+  income+=2000*level;
+ }
+ asset+=income*0.4;
+ if(asset>20000) level=2;
+ if(asset>80000) level=3;
+ if(asset>300000) level=4;
+ if(asset>1000000) level=5;
+ if(year%2===0 && aiSkill<5) aiSkill++;
+ if(level>=3) digitalJob=true;
+ mental=Math.min(100,mental+(sy>0?-1:(level>=3?3:-2)));
+ green+=level>=4?5:2;
+ global=level>=4?1:0;
+ update();
+}
+
+function invest(){asset+=asset*0.1;quad='I';update();}
+function donate(){if(asset>1000){asset-=1000;charity+=1000;quad='B';}update();}
+
+function update(){
+ document.getElementById('year').innerText=year;
+ document.getElementById('income').innerText=income.toLocaleString();
+ document.getElementById('asset').innerText=asset.toLocaleString();
+ document.getElementById('level').innerText=level;
+ document.getElementById('charity').innerText=charity.toLocaleString();
+ document.getElementById('quad').innerText=quad;
+ const edu={
+ 1:['Lao dong','Noi tro','Hoc nghe','Hoc nghe','Cap 1'],
+ 2:['Tho lanh nghe','Dich vu','Cd/dH','Cd/dH','Cap 2'],
+ 3:['Kinh doanh','Quan ly','dH','dH','Cap 3'],
+ 4:['CEO','Tai chinh','MBA','MBA','Cap 4'],
+ 5:['Nha dau tu','Quan tri TS','QT quoc te','QT quoc te','Cap 5']};
+ document.getElementById('father').innerText=edu[level][0];
+ document.getElementById('mother').innerText=edu[level][1];
+ document.getElementById('son').innerText=edu[level][2];
+ document.getElementById('daughter').innerText=edu[level][3];
+ document.getElementById('inlaw').innerText=edu[level][4];
+ document.getElementById('aiSkill').innerText=['Co ban','Kha','Tot','Nang cao','Chuyen gia'][aiSkill-1];
+ document.getElementById('digitalJob').innerText=digitalJob?'Co':'Chua';
+ document.getElementById('mental').innerText=mental>70?'Tot':mental>50?'On dinh':'Cang thang';
+ document.getElementById('green').innerText=green+'%';
+ document.getElementById('global').innerText=global?'Quoc te':'Noi dia';
+}
+update();
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

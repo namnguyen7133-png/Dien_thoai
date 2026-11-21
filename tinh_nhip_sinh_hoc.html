@@ -1,0 +1,507 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phan tich ngay y khoa</title>
+
+<style>
+body{
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding:15px;
+  max-width:100%;
+  overflow-x:auto;
+  background-color:#f5f7fa;
+  color:#333;
+}
+input,select,button{
+  padding:12px 15px;
+  margin:8px 0;
+  width:100%;
+  font-size:16px;
+  border:2px solid #ddd;
+  border-radius:8px;
+  box-sizing:border-box;
+  transition:all 0.3s;
+}
+input:focus, select:focus{
+  border-color:#4a6fa5;
+  outline:none;
+  box-shadow:0 0 0 3px rgba(74, 111, 165, 0.2);
+}
+button{
+  font-weight:bold;
+  cursor:pointer;
+  transition:all 0.3s;
+}
+button:nth-child(1){background:#4a6fa5;color:white;}
+button:nth-child(2){background:#2e7d32;color:white;}
+button:nth-child(3){background:#c62828;color:white;}
+button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+h2{
+  color:#2c3e50;
+  text-align:center;
+  padding:15px;
+  background:linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color:white;
+  border-radius:10px;
+  margin-bottom:25px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
+
+table{
+  border-collapse:collapse;
+  width:100%;
+  margin-top:20px;
+  font-size:14px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.08);
+  border-radius:10px;
+  overflow:hidden;
+}
+th,td{
+  border:1px solid #e0e0e0;
+  padding:10px 8px;
+  text-align:center;
+  word-break:break-word;
+  line-height:1.4;
+}
+th{
+  background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color:white;
+  font-weight:600;
+  font-size:13px;
+  padding:12px 5px;
+}
+tr:nth-child(even){
+  background-color:#f8f9fa;
+}
+tr:hover{
+  background-color:#e8f4fd;
+  transition:background-color 0.2s;
+}
+
+.big-alert{
+  font-size:1.6em;
+  color:#c62828;
+  font-weight:bold;
+  border:3px solid #c62828;
+  padding:20px;
+  margin:20px 0;
+  border-radius:12px;
+  word-wrap:break-word;
+  background:linear-gradient(135deg, #fff5f5 0%, #ffeaea 100%);
+  box-shadow:0 5px 15px rgba(198, 40, 40, 0.1);
+  line-height:1.6;
+}
+.warn{
+  color:#c62828;
+  font-weight:bold;
+  background-color:#fff5f5;
+  padding:3px 6px;
+  border-radius:4px;
+}
+.highlight{
+  background:linear-gradient(135deg, #fffacd 0%, #fff5a0 100%);
+  font-weight:bold;
+}
+.column-note{
+  font-size:13px;
+  color:#555;
+  margin:15px 0;
+  padding:15px;
+  background:linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius:10px;
+  border-left:5px solid #4a6fa5;
+  box-shadow:0 3px 10px rgba(0,0,0,0.05);
+}
+.container{
+  max-width:1400px;
+  margin:0 auto;
+  background:white;
+  padding:25px;
+  border-radius:15px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+.header-controls{
+  background:#f8f9fa;
+  padding:20px;
+  border-radius:10px;
+  margin-bottom:20px;
+  border:2px solid #e9ecef;
+}
+.alert-header{
+  background:linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+  color:white;
+  padding:15px;
+  border-radius:10px;
+  margin:20px 0;
+  font-size:1.4em;
+  text-align:center;
+  box-shadow:0 4px 15px rgba(255, 65, 108, 0.2);
+}
+.date-display{
+  background:#e3f2fd;
+  padding:10px 15px;
+  border-radius:8px;
+  margin:10px 0;
+  font-weight:bold;
+  color:#1565c0;
+  border-left:5px solid #2196f3;
+}
+.no-alerts{
+  background:linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  color:white;
+  border:3px solid #2e7d32;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h2>PHAN TICH NGAY Y KHOA THEO BANG 2</h2>
+  
+  <div class="header-controls">
+    <div class="date-display">📅 Ngay hien tai: <span id="current-date"></span></div>
+    
+    <label style="font-weight:bold; color:#2c3e50;">Ngay hien tai</label>
+    <input type="date" id="today">
+    
+    <label style="font-weight:bold; color:#2c3e50;">Chon ten</label>
+    <select id="name"></select>
+    
+    <label style="font-weight:bold; color:#2c3e50;">Ngay sinh</label>
+    <input type="date" id="birth" readonly>
+    
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:15px;">
+      <button onclick="calcOne()">🔵 TINH 1 NGUOI</button>
+      <button onclick="calcAll()">🟢 TINH TAT CA</button>
+      <button onclick="resetAll()">🔴 XOA DU LIEU</button>
+    </div>
+  </div>
+
+  <div id="alerts"></div>
+  <div id="out"></div>
+</div>
+
+<script>
+// ================= BANG 1 =================
+const people=[
+["NGUYENKHACNANG","1944-06-04"],["TOTHIHA","1948-08-29"],
+["NGUYENMINHNAM","1971-03-03"],["THANTHIKIMANH","1981-09-23"],
+["NGUYENTONGANAN","2014-09-28"],["NGUYENTOMINHCHAU","2016-07-25"],
+["NGUYENTOBICHNGOC","2020-02-05"],["NGUYENTHIMINHHANG","1974-01-07"],
+["NGOQUYCUONG","1973-05-23"],["NGOGIABACH","2000-10-12"],
+["NGOGIALINH","2005-04-05"],["NGUYENTHIMINHPHUONG","1978-11-06"],
+["HOANGANHDUNG","1978-09-21"],["HOANGHAIVINH","2010-06-03"],
+["HOANGTHIENBACHANH","2015-11-14"],["TOKIMHUE","1960-08-09"],
+["NGUYENTUANANH","1983-10-23"],["NGUYENTHEANH","2001-03-24"],
+["NGOTHIMAI","1948-12-12"],["TOVIETHUNG","1996-06-17"],
+["TOTHIHONG","1964-10-10"],["VUVANHIEP","1974-04-24"],
+["NGUYENTHICHI","1946-02-08"],["NGUYENTANBAC","1957-11-30"],
+["NGUYENTHITAM","1954-08-08"]
+];
+
+// ================= BANG 2 =================
+const divisors=[
+23,28,33,38,43,53,
+108,285,298,318,
+644,759,874,924,989,
+1064,1204,1219,1254,
+1419,1484,1634,1690,
+1749,1911,2014,2279,
+4850,21252,24472,27692,
+34132,35112,39732,
+48972,53922,66462,86602
+];
+
+// ================= THONG BAO COT 10 =================
+const col10Msg = {
+  23: "Can nghi ngoi,<br>khong leo treo, lam nang<br>6 gio tiep theo",
+  28: "Hay nghe nhac, xem phim<br>tam ly, di dao ngoai troi<br>12 gio tiep theo",
+  33: "Khong hoc hanh<br>nghien cuu sau<br>18 gio tiep theo",
+  43: "Khong binh luan,<br>chi xem trinh dien<br>thoi trang 24 gio",
+  53: "Khong den noi am i,<br>giu tinh lang<br>28 gio tiep theo"
+};
+
+// ================= THONG BAO KHI SO DU NHO HON 7 =================
+const duLessThan7Msg = {
+  0: "NGUY HIEM<br>So du = 0",
+  1: "Rat nguy hiem<br>So du = 1",
+  2: "Nguy hiem cao<br>So du = 2",
+  3: "Nguy hiem<br>So du = 3",
+  4: "Canh bao<br>So du = 4",
+  5: "Canh bao nhe<br>So du = 5",
+  6: "Canh bao nhe<br>So du = 6"
+};
+
+// ================= HAM CHUYEN dOI dINH DANG NGAY VIET =================
+function formatDateViet(dateStr) {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+// ================= KHOI TAO =================
+window.onload=()=>{
+  let s=document.getElementById("name");
+  s.innerHTML="<option value=''>-- Chon nguoi --</option>";
+  people.forEach(p=>{
+    let o=document.createElement("option");
+    o.value=p[1]; 
+    o.text=p[0];
+    s.appendChild(o);
+  });
+  s.onchange=()=>{
+    document.getElementById("birth").value = s.value;
+  };
+  const today = new Date();
+  document.getElementById("today").value = today.toISOString().split("T")[0];
+  document.getElementById("current-date").textContent = formatDateViet(today.toISOString());
+  
+  // Cap nhat ngay hien tai khi thay doi
+  document.getElementById("today").addEventListener('change', function() {
+    document.getElementById("current-date").textContent = formatDateViet(this.value);
+  });
+};
+
+// ================= CORE =================
+function runCalc(personName,birth){
+  let todayD = new Date(document.getElementById("today").value);
+  let birthD = new Date(birth);
+  let diff = Math.floor((todayD - birthD) / 86400000);
+  let alerts = [];
+  
+  // Lay ngay hien tai dinh dang Viet
+  let todayStr = formatDateViet(todayD.toISOString());
+
+  let columnNotes = `<div class="column-note">
+  <strong style="color:#2c3e50; font-size:14px;">📊 GIAI THICH CAC COT:</strong><br><br>
+  <strong>1. STT</strong> | <strong>2. So chia</strong> | <strong>3. Thuong</strong> | <strong>4. So du</strong> | 
+  <strong>5. So du lan</strong> | <strong>6. Hieu</strong> | <strong>7. Ngay ket thuc</strong><br>
+  <strong>8. Canh bao (du&lt;7)</strong> | <strong>9. Canh bao dac biet</strong> | <strong>10. Thong bao dac biet</strong><br>
+  <strong>11. Ngay bat dau chu ky</strong> | <strong>12. Ngay ket thuc chu ky</strong> | 
+  <strong>13. So chenh lech</strong> | <strong>14. Ngay sinh</strong>
+  </div>`;
+
+  let html = `<h3 style="color:#2c3e50; border-bottom:3px solid #4a6fa5; padding-bottom:10px;">
+  👨‍⚕ ${personName}</h3>${columnNotes}
+  <table>
+<tr>
+<th>1<br><small>STT</small></th>
+<th>2<br><small>So chia</small></th>
+<th>3<br><small>Thuong</small></th>
+<th>4<br><small>So du</small></th>
+<th>5<br><small>So du<br>lan</small></th>
+<th>6<br><small>Hieu</small></th>
+<th>7<br><small>Ngay<br>ket thuc</small></th>
+<th>8<br><small>Canh<br>bao</small></th>
+<th>9<br><small>Canh bao<br>dac biet</small></th>
+<th>10<br><small>Thong bao<br>dac biet</small></th>
+<th>11<br><small>Ngay<br>bat dau</small></th>
+<th>12<br><small>Ngay<br>ket thuc</small></th>
+<th>13<br><small>Chenh<br>lech</small></th>
+<th>14<br><small>Ngay<br>sinh</small></th>
+</tr>`;
+
+  divisors.forEach((d,i)=>{
+    // LOGIC: NEU SO CHIA LON HON SO CHENH LECH => NHAN SO CHENH LECH VOI 24
+    let baseValue = diff; // Gia tri mac dinh
+    let isHourCalculation = false;
+    
+    if(d > diff){
+      baseValue = diff * 24; // NHAN SO CHENH LECH VOI 24
+      isHourCalculation = true;
+    }
+    
+    // Cot 3: Thuong chan cua so chenh lech chia so chia (Lan)
+    let thuong = Math.floor(baseValue/d);
+    
+    // Cot 4: So du so chenh lech chia so chia
+    let du = baseValue % d;
+    
+    // Cot 5: Thuong cua cot 3 chia so chia (so du lan)
+    let lan2 = Math.floor(thuong/d);
+    
+    // Cot 6: So chia tru so du 
+    let hieu = d - du;
+    
+    // Cot 7: So du cong ngay hien tai (chia 24 neu tinh theo gio)
+    let ngayKetThuc = new Date(todayD);
+    let duNgay = du;
+    if(isHourCalculation) {
+      duNgay = du / 24; // Chia 24 de chuyen tu gio sang ngay
+    }
+    ngayKetThuc.setDate(ngayKetThuc.getDate() + duNgay);
+    let ngayKTStr = formatDateViet(ngayKetThuc.toISOString());
+    
+    // Cot 11: Ngay bat dau = (thuong cot 3 × so chia cot 2) + ngay sinh
+    let ngayBatDau = new Date(birthD);
+    let soNgayCongThem = thuong * d;
+    ngayBatDau.setDate(ngayBatDau.getDate() + soNgayCongThem);
+    let ngayBDStr = formatDateViet(ngayBatDau.toISOString());
+    
+    // Cot 12: Ngay ket thuc = ((thuong cot 3 + 1) × so chia cot 2) + ngay sinh
+    let ngayKetThuc2 = new Date(birthD);
+    let soNgayKetThuc2 = (thuong + 1) * d;
+    ngayKetThuc2.setDate(ngayKetThuc2.getDate() + soNgayKetThuc2);
+    let ngayKT2Str = formatDateViet(ngayKetThuc2.toISOString());
+    
+    // Cot 13: So chenh lech - SUA LAI: neu tinh theo gio thi phai chia 24
+    let chenhLech = diff;
+    let displayChenhLech = diff;
+    if(isHourCalculation) {
+      displayChenhLech = `${diff}<br><small>(gio: ${diff*24})</small>`;
+    }
+    
+    // Cot 14: Ngay thang nam sinh
+    let ngaySinhStr = formatDateViet(birth);
+    
+    // Cot 8: Thong bao so du nho hon 7 cua cot 4
+    let warnC8 = du < 7 ? "⚠<br>DU<7" : "";
+    
+    // Cot 9: Thong bao so du bang 0, nho hon 7 cua cot 5
+    let warnC9 = "";
+    if(lan2 === 0) {
+      if(d < 100 && du === 0) {
+        warnC9 = "SO 0";
+      } else if(d >= 100 && thuong.toString().includes("0")){
+        if(d >= 10000) warnC9 = "NGHI<br>5 NGAY";
+        else if(d >= 1000) warnC9 = "NGHI<br>4 NGAY";
+        else warnC9 = "NGHI<br>3 NGAY";
+      }
+    }
+    
+    // COT 10: THONG BAO TU KHI COT 4 NHO HON 7 dEN KHI BANG 0
+    let warnC10 = "";
+    if(du < 7) {
+      // Neu co thong bao dac biet cho so chia nay
+      if(col10Msg[d]) {
+        warnC10 = col10Msg[d];
+      } 
+      // Neu khong, hien thi thong bao theo so du
+      else if(duLessThan7Msg[du]) {
+        warnC10 = duLessThan7Msg[du];
+      }
+    }
+    
+    // Them canh bao vao danh sach
+    if(warnC8 || warnC9 || warnC10){
+      let alertMsg = `🚨 <strong style="color:#2c3e50;">${personName}</strong> - Ngay ${todayStr}<br>`;
+      alertMsg += `<strong>So chia ${d}:</strong> `;
+      if(warnC8) alertMsg += `<span class="warn">So du ${du} &lt; 7</span> `;
+      if(warnC9) alertMsg += `<span class="warn">${warnC9.replace(/<br>/g, ' ')}</span> `;
+      if(warnC10) alertMsg += `<span class="warn">${warnC10.replace(/<br>/g, ' ')}</span>`;
+      if(isHourCalculation) alertMsg += ` <em>(tinh theo gio)</em>`;
+      alerts.push(alertMsg);
+    }
+
+    html += `<tr${isHourCalculation ? " class='highlight'" : ""}>
+<td>${i+1}</td>
+<td>${d}</td>
+<td>${thuong}</td>
+<td>${du}</td>
+<td>${lan2}</td>
+<td>${hieu}</td>
+<td>${ngayKTStr}</td>
+<td class="warn">${warnC8}</td>
+<td class="warn">${warnC9}</td>
+<td class="warn">${warnC10}</td>
+<td>${ngayBDStr}</td>
+<td>${ngayKT2Str}</td>
+<td>${displayChenhLech}</td>
+<td>${ngaySinhStr}</td>
+</tr>`;
+  });
+
+  html += "</table>";
+  return {html, alerts};
+}
+
+// ================= NUT =================
+function calcOne(){
+  let nameSelect = document.getElementById("name");
+  let birthInput = document.getElementById("birth");
+  
+  if(!birthInput.value){
+    alert("Vui long chon nguoi truoc khi tinh toan");
+    return;
+  }
+  
+  // Lay ten nguoi da chon
+  let selectedName = nameSelect.options[nameSelect.selectedIndex].text;
+  let r = runCalc(selectedName, birthInput.value);
+  document.getElementById("out").innerHTML = r.html;
+  showAlerts(r.alerts);
+}
+
+function calcAll(){
+  let allHTML = "<div class='alert-header'>📋 KET QUA TINH TOAN CHO TAT CA MOI NGUOI</div>";
+  let allAlerts = [];
+  
+  people.forEach((p, index) => {
+    let r = runCalc(p[0], p[1]);
+    allHTML += r.html;
+    if(index < people.length - 1) {
+      allHTML += "<div style='height:30px;'></div>";
+    }
+    allAlerts = allAlerts.concat(r.alerts);
+  });
+  
+  document.getElementById("out").innerHTML = allHTML;
+  showAlerts(allAlerts);
+}
+
+function showAlerts(arr){
+  let alertsDiv = document.getElementById("alerts");
+  if(arr.length > 0) {
+    // Sap xep canh bao theo muc do nguy hiem
+    arr.sort((a, b) => {
+      const getDuValue = (str) => {
+        if(str.includes("So du = 0")) return 0;
+        if(str.includes("So du = 1")) return 1;
+        if(str.includes("So du = 2")) return 2;
+        if(str.includes("So du = 3")) return 3;
+        if(str.includes("So du = 4")) return 4;
+        if(str.includes("So du = 5")) return 5;
+        if(str.includes("So du = 6")) return 6;
+        return 7;
+      };
+      return getDuValue(a) - getDuValue(b);
+    });
+    
+    let alertHTML = `<div class="alert-header">⚠ TONG HOP ${arr.length} CANH BAO</div>`;
+    
+    arr.forEach(alert => {
+      alertHTML += `<div class="big-alert">${alert}</div>`;
+    });
+    
+    alertsDiv.innerHTML = alertHTML;
+  } else {
+    alertsDiv.innerHTML = `<div class="big-alert no-alerts">
+      ✅ KHONG CO CANH BAO NAO<br>
+      Ngay ${formatDateViet(document.getElementById("today").value)}
+    </div>`;
+  }
+}
+
+function resetAll(){
+  if(confirm("Ban co chac chan muon xoa tat ca du lieu?")) {
+    document.getElementById("out").innerHTML = "";
+    document.getElementById("alerts").innerHTML = "";
+    document.getElementById("name").value = "";
+    document.getElementById("birth").value = "";
+    const today = new Date();
+    document.getElementById("today").value = today.toISOString().split("T")[0];
+    document.getElementById("current-date").textContent = formatDateViet(today.toISOString());
+  }
+}
+</script>
+
+</body>
+</html>

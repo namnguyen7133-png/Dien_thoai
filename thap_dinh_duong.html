@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tính Tiền Đi Chợ Thực Tế</title>
+    <style>
+        :root { --primary: #2c3e50; --success: #27ae60; --danger: #e74c3c; --bg: #f8f9fa; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); padding: 20px; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: var(--primary); text-transform: uppercase; border-bottom: 4px solid var(--success); padding-bottom: 10px; }
+        
+        .setup-row { display: flex; justify-content: center; gap: 30px; background: #e8f5e9; padding: 20px; border-radius: 12px; margin-bottom: 25px; }
+        .setup-row input { width: 70px; padding: 8px; border: 2px solid var(--success); border-radius: 6px; text-align: center; font-weight: bold; }
+
+        .market-card { background: #fff; border: 2px solid #ddd; border-radius: 15px; overflow: hidden; margin-bottom: 30px; }
+        .market-header { background: var(--primary); color: white; padding: 15px; font-weight: bold; font-size: 1.2em; display: flex; justify-content: space-between; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f1f1f1; padding: 12px; text-align: left; font-size: 0.9em; }
+        td { padding: 15px; border-bottom: 1px solid #eee; }
+        
+        .price-input { width: 100px; padding: 5px; border: 1px solid #ccc; border-radius: 4px; text-align: right; }
+        .total-row { background: #2c3e50; color: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .grand-total { font-size: 2.5em; color: #2ecc71; font-weight: bold; }
+        
+        .round-note { font-size: 0.8em; color: #7f8c8d; font-style: italic; }
+        .highlight { color: var(--danger); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>💰 Dự Toán Chi Phí Đi Chợ Thực Tế</h2>
+
+    <div class="setup-row">
+        <div><b>Người lớn:</b> <input type="number" id="nl" value="5" oninput="calculate()"></div>
+        <div><b>Trẻ em:</b> <input type="number" id="te" value="1" oninput="calculate()"></div>
+    </div>
+
+    <div class="market-card">
+        <div class="market-header">
+            <span>DANH SÁCH CẦN MUA HÔM NAY</span>
+            <span id="date_now"></span>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Thực phẩm</th>
+                    <th>Định lượng chuẩn</th>
+                    <th>Số lượng mua (Làm tròn)</th>
+                    <th>Giá dự kiến</th>
+                    <th>Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody id="market_body">
+                </tbody>
+        </table>
+    </div>
+
+    <div class="total-row">
+        <div>
+            <div style="opacity: 0.8;">TỔNG TIỀN ĐI CHỢ TẠM TÍNH</div>
+            <div class="grand-total" id="grand_total">0đ</div>
+        </div>
+        <div style="text-align: right;">
+            <div>1 Tuần: <b id="total_week" style="color:#2ecc71">0đ</b></div>
+            <div>1 Tháng: <b id="total_month" style="color:#2ecc71">0đ</b></div>
+        </div>
+    </div>
+
+    <div style="margin-top:20px; background:#fff3cd; padding:15px; border-radius:10px; font-size:0.9em;">
+        <b>💡 Cách tính tiền thực tế:</b><br>
+        • <b>Làm tròn:</b> Tôi đã lập trình để máy tự làm tròn thịt đến 0.5 lạng, rau đến 0.5 kg và sữa đến đơn vị chẵn 3 hộp/người để bạn dễ trả tiền.<br>
+        • <b>Tiết kiệm:</b> Nếu mua theo tháng hoặc tuần, giá sẽ rẻ hơn mua lẻ từng ngày. Bạn có thể tự sửa ô "Giá dự kiến" để khớp với giá chợ khu vực bạn ở.
+    </div>
+</div>
+
+<script>
+function calculate() {
+    const nl = parseInt(document.getElementById('nl').value) || 0;
+    const te = parseInt(document.getElementById('te').value) || 0;
+    const tong_nguoi = nl + te;
+
+    // 1. Định nghĩa các mặt hàng (Định lượng/người/ngày)
+    const items = [
+        { name: "Thịt/Cá (Lạng)", unit: "lạng", nl_q: 1.8, te_q: 1.1, price: 35000, round: 0.5 },
+        { name: "Rau xanh (Kg)", unit: "kg", nl_q: 0.3, te_q: 0.24, price: 25000, round: 0.5 },
+        { name: "Sữa chua/đv (Hộp)", unit: "hộp", nl_q: 3.5, te_q: 4, price: 8000, round: 1, force_3: true },
+        { name: "Trái cây (Kg)", unit: "kg", nl_q: 0.2, te_q: 0.16, price: 40000, round: 0.5 }
+    ];
+
+    let html = "";
+    let grandTotal = 0;
+
+    items.forEach((item, index) => {
+        // Tính định lượng thô
+        let raw_q = (nl * item.nl_q) + (te * item.te_q);
+        
+        // Tính số lượng mua (Làm tròn thực tế)
+        let buy_q = 0;
+        if (item.force_3) {
+            buy_q = tong_nguoi * 3; // Ép mỗi người 3 hộp như bạn muốn
+        } else {
+            buy_q = Math.ceil(raw_q / item.round) * item.round;
+        }
+
+        let cost = buy_q * item.price;
+        grandTotal += cost;
+
+        html += `
+            <tr>
+                <td><b>${item.name}</b></td>
+                <td>${raw_q.toFixed(2)} ${item.unit}</td>
+                <td><b class="highlight">${buy_q}</b> ${item.unit}</td>
+                <td><input type="number" class="price-input" value="${item.price}" id="p_${index}" oninput="updatePrice(${index}, ${buy_q})"></td>
+                <td id="m_${index}" style="font-weight:bold">${Math.round(cost).toLocaleString()}đ</td>
+            </tr>
+        `;
+    });
+
+    document.getElementById('market_body').innerHTML = html;
+    updateGrandTotal(grandTotal);
+}
+
+function updatePrice(index, buy_q) {
+    const newPrice = parseInt(document.getElementById('p_'+index).value) || 0;
+    const newCost = newPrice * buy_q;
+    document.getElementById('m_'+index).innerText = Math.round(newCost).toLocaleString() + "đ";
+    
+    // Tính lại tổng
+    let total = 0;
+    const rows = document.getElementById('market_body').rows;
+    for(let i=0; i<rows.length; i++) {
+        let costStr = rows[i].cells[4].innerText.replace(/đ|,/g, '');
+        total += parseInt(costStr);
+    }
+    updateGrandTotal(total);
+}
+
+function updateGrandTotal(total) {
+    document.getElementById('grand_total').innerText = Math.round(total).toLocaleString() + "đ";
+    document.getElementById('total_week').innerText = Math.round(total * 7).toLocaleString() + "đ";
+    document.getElementById('total_month').innerText = Math.round(total * 30).toLocaleString() + "đ";
+}
+
+document.getElementById('date_now').innerText = new Date().toLocaleDateString('vi-VN');
+calculate();
+</script>
+
+</body>
+</html>

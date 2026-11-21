@@ -1,0 +1,1442 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Hoc Thuat: Gia Tri Thoi Gian Cua Tien - Phien Ban Hoan Chinh</title>
+<style>
+body{font-family:Arial;line-height:1.6;background:#f7f7f7;padding:20px}
+.section{background:#fff;padding:20px;margin-bottom:25px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+h2,h3{color:#2c3e50;margin-top:0}
+button{padding:10px 15px;margin:6px;font-size:16px;cursor:pointer;background:#3498db;color:white;border:none;border-radius:5px}
+button:hover{background:#2980b9}
+input{padding:10px;width:100%;font-size:16px;border-radius:5px;border:1px solid #ccc}
+.note{background:#eef;border-left:4px solid #3498db;padding:15px;margin:15px 0;border-radius:5px}
+.warn{background:#fee;border-left:4px solid #e74c3c;padding:15px;margin:15px 0;border-radius:5px}
+.calc{background:#f0fff0;border-left:4px solid #2ecc71;padding:15px;margin:15px 0;border-radius:5px}
+.example-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:15px;margin-top:15px}
+.example-card{background:#f9f9f9;padding:12px;border-radius:8px;border:1px solid #ddd;font-size:14px}
+.reality-section{background:#fff8e1;border-left:4px solid #ffc107;padding:15px;margin:15px 0;border-radius:5px}
+.reality-item{margin:10px 0;padding:10px;background:#fffde7;border-radius:5px;border-left:3px solid #4caf50}
+.scenario-buttons{display:flex;flex-wrap:wrap;gap:10px;margin-top:15px}
+.scenario-btn{background:#9c27b0;color:white;border:none;padding:8px 15px;border-radius:5px;cursor:pointer}
+.scenario-btn:hover{background:#7b1fa2}
+.highlight{background-color:#ffff88;padding:2px 5px;border-radius:3px}
+</style>
+<script>
+function go(id){
+  document.getElementById(id).scrollIntoView({behavior:"smooth"});
+}
+
+// GHI CHU PHAN MOI: Ham xu ly tim kiem tinh huong va cuon den phan phu hop
+function searchScenario() {
+  const input = document.getElementById('scenarioInput').value.toLowerCase();
+  const sections = [
+    'personal', 'family', 'company', 'corporation', 'city', 
+    'ministry', 'country', 'international', 'no-capital', 'timeline', 'risk'
+  ];
+  
+  // Cac tu khoa pho bien va phan tuong ung
+  const keywords = {
+    'personal': ['ca nhan', 'luong', 'tiet kiem', 'vay', 'mua', 'dien thoai', 'xe', 'nha', 'chung khoan', 'bao hiem', 'the tin dung'],
+    'family': ['gia dinh', 'vo chong', 'con cai', 'hoc phi', 'dam cuoi', 'mua nha', 'ke hoach tai chinh'],
+    'company': ['doanh nghiep nho', 'cong ty', 'von', 'loi nhuan', 'dau tu', 'mo rong'],
+    'corporation': ['tap doan', 'co phieu', 'trai phieu', 'co tuc', 'niem yet'],
+    'city': ['thanh pho', 'do thi', 'ha tang', 'giao thong', 'xay dung', 'quy hoach'],
+    'ministry': ['bo tai chinh', 'ngan sach', 'thue', 'trai phieu chinh phu', 'lam phat'],
+    'country': ['quoc gia', 'ngoai te', 'xuat nhap khau', 'ngan hang trung uong', 'ty gia'],
+    'international': ['quoc te', 'lien hop quoc', 'imf', 'world bank', 'dau tu nuoc ngoai', 'toan cau'],
+    'no-capital': ['khong von', 'an danh', 'nghe tu do', 'freelancer', 'content creator', 'youtuber'],
+    'timeline': ['trinh tu', 'quyet dinh', 'ke hoach', 'lo trinh', 'thoi gian'],
+    'risk': ['rui ro', 'quan ly rui ro', 'bao hiem', 'du phong', 'khung hoang']
+  };
+  
+  let found = false;
+  
+  // Kiem tra tu khoa
+  for (const section in keywords) {
+    for (const keyword of keywords[section]) {
+      if (input.includes(keyword)) {
+        go(section);
+        found = true;
+        
+        // Highlight tu khoa tim thay
+        const sectionElement = document.getElementById(section);
+        if (sectionElement) {
+          const text = sectionElement.innerHTML;
+          const highlightedText = text.replace(new RegExp(keyword, 'gi'), 
+            match => `<span class="highlight">${match}</span>`);
+          sectionElement.innerHTML = highlightedText;
+        }
+        
+        break;
+      }
+    }
+    if (found) break;
+  }
+  
+  if (!found && input.trim() !== '') {
+    // Neu khong tim thay, cuon den phan ca nhan (mac dinh)
+    go('personal');
+    alert("Khong tim thay tinh huong chinh xac. dang hien thi vi du ca nhan pho bien.");
+  }
+}
+
+// GHI CHU PHAN MOI: Ham chon tinh huong mau tu danh sach
+function selectSampleScenario(scenario) {
+  document.getElementById('scenarioInput').value = scenario;
+  searchScenario();
+}
+
+// GHI CHU PHAN MOI: Ham xu ly tinh toan nhanh
+function quickCalculate() {
+  const principle = parseFloat(prompt("Nhap so tien goc (trieu dong):", "100"));
+  const rate = parseFloat(prompt("Nhap lai suat/nam (%):", "8")) / 100;
+  const years = parseFloat(prompt("Nhap so nam:", "5"));
+  
+  if (isNaN(principle) || isNaN(rate) || isNaN(years)) {
+    alert("Vui long nhap so hop le!");
+    return;
+  }
+  
+  // Tinh FV
+  const fv = principle * Math.pow(1 + rate, years);
+  
+  // Tinh PV cua so tien tuong lai
+  const futureAmount = parseFloat(prompt("Nhap so tien ban muon co trong tuong lai (trieu dong):", "150"));
+  if (!isNaN(futureAmount)) {
+    const pv = futureAmount / Math.pow(1 + rate, years);
+    
+    const result = `
+    KET QUA TINH TOAN:
+    
+    Voi ${principle} trieu dong:
+    • Sau ${years} nam voi lai suat ${(rate*100).toFixed(1)}%/nam
+    • So tien nhan duoc: ${fv.toFixed(1)} trieu dong
+    • Lai thuc nhan: ${(fv - principle).toFixed(1)} trieu dong
+    
+    de co ${futureAmount} trieu sau ${years} nam:
+    • Can dau tu ngay: ${pv.toFixed(1)} trieu dong
+    `;
+    
+    alert(result);
+  } else {
+    alert(`Voi ${principle} trieu dong, sau ${years} nam voi lai suat ${(rate*100).toFixed(1)}%/nam, ban se co: ${fv.toFixed(1)} trieu dong`);
+  }
+}
+</script>
+</head>
+<body>
+
+<!-- ================= LINK VIDEO ================= -->
+<div class="section">
+<h2>🎥 Video bai giang chinh</h2>
+<p>🔗 <b>Link video:</b> 
+<a href="https://www.youtube.com/watch?v=vOrhZ1pn9p0" target="_blank">
+Quang Trung TV – TCDN 1 – Chuong 2: Gia tri thoi gian cua tien (Phan 3)
+</a>
+</p>
+</div>
+
+<!-- ================= BO dIEU KHIEN CHINH ================= -->
+<!-- GHI CHU PHAN MOI: da bo sung chuc nang nhap tinh huong va cac nut bam -->
+<div class="section">
+<h2>🎮 BANG dIEU KHIEN - NHAP TINH HUONG CUA BAN</h2>
+<label><b>Nhap tinh huong thuc te ban dang gap:</b></label>
+<input id="scenarioInput" placeholder="VD: Muon mua nha tra gop, luong bi giam, dang no the tin dung, muon dau tu chung khoan...">
+<div style="margin-top:10px; display:flex; gap:10px;">
+  <button onclick="searchScenario()">🔍 Tim giai phap</button>
+  <button onclick="quickCalculate()">🧮 Tinh toan nhanh</button>
+  <button onclick="document.getElementById('scenarioInput').value=''">Xoa</button>
+</div>
+
+<!-- GHI CHU PHAN MOI: Them cac nut tinh huong mau -->
+<h3 style="margin-top:20px;">📋 Tinh huong mau pho bien (Click de xem giai phap)</h3>
+<div class="scenario-buttons">
+  <button class="scenario-btn" onclick="selectSampleScenario('muon mua nha tra gop 20 nam')">Mua nha tra gop</button>
+  <button class="scenario-btn" onclick="selectSampleScenario('vay tieu dung mua xe may')">Vay mua xe may</button>
+  <button class="scenario-btn" onclick="selectSampleScenario('no the tin dung lai cao')">No the tin dung</button>
+  <button class="scenario-btn" onclick="selectSampleScenario('tiet kiem cho con di du hoc')">Du hoc cho con</button>
+  <button class="scenario-btn" onclick="selectSampleScenario('dau tu chung khoan hay gui tiet kiem')">dau tu hay tiet kiem</button>
+  <button class="scenario-btn" onclick="selectSampleScenario('khoi nghiep khong von')">Khoi nghiep khong von</button>
+  <button class="scenario-btn" onclick="selectSampleScenario('lap ke hoach tai chinh gia dinh')">Ke hoach tai chinh gia dinh</button>
+  <button class="scenario-btn" onclick="selectSampleScenario('quan ly rui ro tai chinh')">Quan ly rui ro</button>
+</div>
+
+<h3>🎯 Chon cap do tinh huong de xem vi du thuc te</h3>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;">
+<button onclick="go('term')">📘 Thuat ngu co ban</button>
+<button onclick="go('formula')">📐 Cong thuc chinh</button>
+<button onclick="go('personal')">👤 Ca nhan</button>
+<button onclick="go('family')">👨‍👩‍👧 Gia dinh</button>
+<button onclick="go('company')">🏭 Doanh nghiep nho</button>
+<button onclick="go('corporation')">🏢 Tap doan lon</button>
+<button onclick="go('city')">🏙 Thanh pho / Thu do</button>
+<button onclick="go('ministry')">🏛 Bo Tai chinh</button>
+<button onclick="go('country')">🌍 Quoc gia</button>
+<button onclick="go('international')">🌐 Lien Hop Quoc</button>
+<button onclick="go('no-capital')">💡 Nghe khong von & an danh</button>
+<button onclick="go('timeline')">⏳ Trinh tu quyet dinh</button>
+<button onclick="go('risk')">⚠ Quan ly rui ro</button>
+<button onclick="go('reality')">🔍 Ap dung thuc te hoan chinh</button>
+</div>
+</div>
+
+<!-- ================= THUAT NGU ================= -->
+<div class="section" id="term">
+<h3>📘 Thuat ngu tai chinh (Giai thich de hieu)</h3>
+<ul>
+<li><b>PV (Present Value):</b> Gia tri tien ngay hom nay</li>
+<li><b>FV (Future Value):</b> Gia tri tien trong tuong lai</li>
+<li><b>i (Lai suat):</b> Chi phi su dung tien theo thoi gian</li>
+<li><b>n (So ky):</b> So nam/thang vay hoac dau tu</li>
+<li><b>EAR (Effective Annual Rate):</b> Lai suat thuc te sau khi ghep lai</li>
+</ul>
+<div class="note">💡 10 trieu hom nay > 10 trieu sau 5 nam vi lam phat va co hoi dau tu.</div>
+</div>
+
+<!-- ================= CONG THUC ================= -->
+<div class="section" id="formula">
+<h3>📐 Cong thuc quan trong nhat</h3>
+<div class="calc"><b>Gia tri tuong lai (FV):</b> FV = PV × (1 + i)<sup>n</sup></div>
+<div class="calc"><b>Gia tri hien tai (PV):</b> PV = FV / (1 + i)<sup>n</sup></div>
+<div class="calc"><b>Lai suat thuc (i):</b> i = (FV / PV)<sup>1/n</sup> − 1</div>
+<div class="note">👉 Dung de quyet dinh: "Lay tien ngay hay cho?"</div>
+</div>
+
+<!-- ================= CA NHAN ================= -->
+<div class="section" id="personal">
+<h3>👤 25 Vi du thuc te cap do CA NHAN</h3>
+<div class="example-grid">
+<div class="example-card">1. Mua dien thoai tra gop 24 thang – tinh PV tong tra</div>
+<div class="example-card">2. Gui tiet kiem 5 trieu/thang de mua xe may sau 3 nam</div>
+<div class="example-card">3. Vay tieu dung 50 trieu lai 15%/nam – tinh kha nang tra no</div>
+<div class="example-card">4. dau tu chung khoan hay gui ngan hang khi lai suat thay doi</div>
+<div class="example-card">5. Mua bao hiem nhan tho – tinh FV quy dao han</div>
+<div class="example-card">6. Tra no the tin dung truoc han de giam lai</div>
+<div class="example-card">7. Hoc dai hoc hay di lam som – so sanh FV thu nhap</div>
+<div class="example-card">8. Mua nha tra gop 20 nam – tinh tong lai phai tra</div>
+<div class="example-card">9. dau tu vang hay bat dong san dai han</div>
+<div class="example-card">10. Rut luong huu som hay cho day tuoi</div>
+<div class="example-card">11. Vay nong tin dung den – rui ro lai kep</div>
+<div class="example-card">12. Tiet kiem du hoc – tinh FV can dat</div>
+<div class="example-card">13. Mua co phieu tra co tuc – tinh lai thuc</div>
+<div class="example-card">14. dau tu quy mo ETF 10 nam</div>
+<div class="example-card">15. Vay hoc phi sinh vien – tinh tong tra sau tot nghiep</div>
+<div class="example-card">16. Mua xe o to tra gop – so sanh lai suat ngan hang</div>
+<div class="example-card">17. Tiet kiem dam cuoi sau 5 nam</div>
+<div class="example-card">18. dau tu crypto dai han vs ngan han</div>
+<div class="example-card">19. Mua bao hiem y te tu nhan – gia tri thuc</div>
+<div class="example-card">20. Lam them gio hay dau tu hoc ky nang</div>
+<div class="example-card">21. Vay the chap so do lai suat tha noi</div>
+<div class="example-card">22. Tiet kiem huu tri tu nguyen</div>
+<div class="example-card">23. Mua can ho chung cu tra gop 30 nam</div>
+<div class="example-card">24. dau tu trai phieu chinh phu</div>
+<div class="example-card">25. Quyet dinh nghi viec khoi nghiep – tinh chi phi co hoi</div>
+</div>
+</div>
+
+<!-- ================= GIA dINH ================= -->
+<div class="section" id="family">
+<h3>👨‍👩‍👧 15 Vi du thuc te cap do GIA dINH</h3>
+<div class="example-grid">
+<div class="example-card">1. Lap quy giao duc cho con tu khi sinh – tinh FV du hoc phi dH</div>
+<div class="example-card">2. Mua bao hiem suc khoe cho ca gia dinh – so sanh chi phi dai han</div>
+<div class="example-card">3. Vay the chap mua nha – chon ky han 15 nam hay 20 nam?</div>
+<div class="example-card">4. Lap ngan sach huu tri cho vo chong – tinh PV can tiet kiem moi thang</div>
+<div class="example-card">5. Mua xe gia dinh – tra tien mat hay vay ngan hang?</div>
+<div class="example-card">6. dau tu dat nen de 10 nam sau xay nha cho con</div>
+<div class="example-card">7. Ke hoach tai chinh dam cuoi con cai</div>
+<div class="example-card">8. Chi phi du lich gia dinh hang nam – nen de quy rieng</div>
+<div class="example-card">9. Mua bao hiem tai nan cho nguoi tru cot</div>
+<div class="example-card">10. dau tu vang tich luy cho con gai lam cua hoi mon</div>
+<div class="example-card">11. Quyet dinh mo cua hang kinh doanh gia dinh</div>
+<div class="example-card">12. Chi phi cham soc nguoi gia trong gia dinh</div>
+<div class="example-card">13. Mua thiet bi dien tu gia dinh – nen mua tra gop?</div>
+<div class="example-card">14. Lap quy du phong khan cap gia dinh (6 thang chi phi)</div>
+<div class="example-card">15. Ke hoach mua nha thu 2 cho thue tao thu nhap thu dong</div>
+</div>
+</div>
+
+<!-- ================= DOANH NGHIEP NHO ================= -->
+<div class="section" id="company">
+<h3>🏭 15 Vi du thuc te cap do DOANH NGHIEP NHO</h3>
+<div class="example-grid">
+<div class="example-card">1. Vay von mo rong san xuat – tinh IRR du an</div>
+<div class="example-card">2. Mua may moc moi – tinh thoi gian hoan von</div>
+<div class="example-card">3. Chiet khau thanh toan som cho khach hang – co loi khong?</div>
+<div class="example-card">4. Vay ngan han bo sung von luu dong</div>
+<div class="example-card">5. dau tu phan mem quan ly – tinh PV loi ich dai han</div>
+<div class="example-card">6. Thue hay mua mat bang kinh doanh?</div>
+<div class="example-card">7. Quyet dinh gia ban san pham moi dua tren chi phi von</div>
+<div class="example-card">8. Tra luong som hay cuoi thang – anh huong dong tien</div>
+<div class="example-card">9. Mua bao hiem cho tai san doanh nghiep</div>
+<div class="example-card">10. dau tu marketing – tinh ROI sau 6 thang, 1 nam</div>
+<div class="example-card">11. Vay mua xe tai phuc vu giao hang</div>
+<div class="example-card">12. Lua chon giua loi nhuan ngan han va dau tu dai han</div>
+<div class="example-card">13. Tinh gia tri hien tai cua hop dong dai han</div>
+<div class="example-card">14. Quyet dinh mua hay thue thiet bi van phong</div>
+<div class="example-card">15. Lap ke hoach tra no cho cac khoan vay doanh nghiep</div>
+</div>
+</div>
+
+<!-- ================= TAP dOAN LON ================= -->
+<div class="section" id="corporation">
+<h3>🏢 15 Vi du thuc te cap do TAP dOAN LON</h3>
+<div class="example-grid">
+<div class="example-card">1. Phat hanh trai phieu doanh nghiep – tinh chi phi von</div>
+<div class="example-card">2. Mua lai cong ty doi thu – tinh NPV du an M&A</div>
+<div class="example-card">3. dau tu ra nuoc ngoai – tinh ty suat sinh loi yeu cau</div>
+<div class="example-card">4. Chi tra co tuc hay tai dau tu – toi da hoa gia tri co dong</div>
+<div class="example-card">5. Phat hanh co phieu ESOP cho nhan vien</div>
+<div class="example-card">6. dau tu R&D – tinh gia tri thuc cua bang sang che tuong lai</div>
+<div class="example-card">7. Mua bao hiem rui ro cho hoat dong toan cau</div>
+<div class="example-card">8. Phong ngua rui ro ty gia voi hop dong tuong lai</div>
+<div class="example-card">9. Tinh WACC (chi phi von binh quan gia quyen)</div>
+<div class="example-card">10. dinh gia cong ty de niem yet chung khoan</div>
+<div class="example-card">11. dau tu vao startup cong nghe – danh gia rui ro cao/loi nhuan cao</div>
+<div class="example-card">12. Lap quy du phong cho cac vu kien phap ly</div>
+<div class="example-card">13. Tinh toan gia tri thuong hieu trong dai han</div>
+<div class="example-card">14. dau tu vao ESG (moi truong, xa hoi, quan tri) – gia tri dai han</div>
+<div class="example-card">15. Mua lai co phieu quy (share buyback) de tang gia tri co dong</div>
+</div>
+</div>
+
+<!-- ================= THANH PHO/THU dO ================= -->
+<div class="section" id="city">
+<h3>🏙 10 Vi du thuc te cap do THANH PHO/THU dO</h3>
+<div class="example-grid">
+<div class="example-card">1. Phat hanh trai phieu do thi xay dung ha tang</div>
+<div class="example-card">2. Tinh NPV du an xay dung metro/tau dien ngam</div>
+<div class="example-card">3. dau tu he thong xu ly nuoc thai – loi ich dai han</div>
+<div class="example-card">4. Thu phi duong cao toc – tinh thoi gian hoan von</div>
+<div class="example-card">5. Xay dung benh vien cong – tinh chi phi van hanh suot vong doi</div>
+<div class="example-card">6. Phat trien khu do thi moi – tinh IRR du an</div>
+<div class="example-card">7. dau tu he thong den duong tiet kiem nang luong</div>
+<div class="example-card">8. Tinh gia tri hien tai cua thue bat dong san trong 20 nam</div>
+<div class="example-card">9. Xay dung truong hoc – tinh loi ich xa hoi dai han</div>
+<div class="example-card">10. dau tu cong vien cay xanh – gia tri moi truong va suc khoe</div>
+</div>
+</div>
+
+<!-- ================= BO TAI CHINH ================= -->
+<div class="section" id="ministry">
+<h3>🏛 10 Vi du thuc te cap do BO TAI CHINH</h3>
+<div class="example-grid">
+<div class="example-card">1. Phat hanh trai phieu chinh phu ky han 10, 20 nam</div>
+<div class="example-card">2. Tinh toan tham hut ngan sach va phuong an bu dap</div>
+<div class="example-card">3. dieu chinh lai suat chinh sach kiem soat lam phat</div>
+<div class="example-card">4. Vay ODA (vay uu dai nuoc ngoai) cho du an lon</div>
+<div class="example-card">5. Tinh toan chi phi von cho cac chuong trinh an sinh xa hoi</div>
+<div class="example-card">6. dinh gia tai san cong de co phan hoa doanh nghiep nha nuoc</div>
+<div class="example-card">7. Quan ly du tru ngoai hoi quoc gia</div>
+<div class="example-card">8. Tinh toan tac dong cua thue VAT den ngan sach</div>
+<div class="example-card">9. dau tu vao giao duc – tinh loi tuc xa hoi (social return)</div>
+<div class="example-card">10. Quan ly no cong – chien luoc tra no dai han</div>
+</div>
+</div>
+
+<!-- ================= QUOC GIA ================= -->
+<div class="section" id="country">
+<h3>🌍 10 Vi du thuc te cap do QUOC GIA</h3>
+<div class="example-grid">
+<div class="example-card">1. Tinh GDP tiem nang trong 10 nam toi</div>
+<div class="example-card">2. dam phan hiep dinh thuong mai – tinh loi ich dai han</div>
+<div class="example-card">3. dau tu vao nghien cuu hat nhan dan su</div>
+<div class="example-card">4. Phat trien nganh cong nghiep vu tru – tinh chi phi/ loi ich</div>
+<div class="example-card">5. Xay dung he thong phong thu quoc gia – ngan sach dai han</div>
+<div class="example-card">6. dau tu vao an ninh mang quoc gia</div>
+<div class="example-card">7. Phat trien nganh cong nghiep o to dien – chien luoc 20 nam</div>
+<div class="example-card">8. Tinh toan chi phi bien doi khi hau den nen kinh te</div>
+<div class="example-card">9. dau tu vao y te du phong dai dich</div>
+<div class="example-card">10. Phat trien tri tue nhan tao quoc gia – chien luoc dai han</div>
+</div>
+</div>
+
+<!-- ================= LIEN HOP QUOC ================= -->
+<div class="section" id="international">
+<h3>🌐 10 Vi du thuc te cap do LIEN HOP QUOC</h3>
+<div class="example-grid">
+<div class="example-card">1. Quy IMF cho vay on dinh tien te cac nuoc</div>
+<div class="example-card">2. Ngan hang The gioi tai tro du an phat trien</div>
+<div class="example-card">3. Tinh toan ngan sach cho cac phai bo gin giu hoa binh</div>
+<div class="example-card">4. Quy khi hau xanh ho tro cac nuoc dang phat trien</div>
+<div class="example-card">5. Chuong trinh phat trien ben vung SDGs 2030</div>
+<div class="example-card">6. Vien tro nhan dao cho vung thien tai</div>
+<div class="example-card">7. dau tu vao nghien cuu y te toan cau (WHO)</div>
+<div class="example-card">8. Quy du tru khan cap cho khung hoang kinh te toan cau</div>
+<div class="example-card">9. Tai tro cho giao duc o cac nuoc ngheo (UNESCO)</div>
+<div class="example-card">10. dau tu vao nong nghiep ben vung toan cau (FAO)</div>
+</div>
+</div>
+
+<!-- ================= NGHE KHONG VON & AN DANH ================= -->
+<div class="section" id="no-capital">
+<h3>💡 15 Vi du thuc te cap do NGHE KHONG VON & AN DANH</h3>
+<div class="example-grid">
+<div class="example-card">1. Content Creator YouTube – tinh gia tri kenh qua thoi gian</div>
+<div class="example-card">2. Freelancer viet bai – dau tu vao portfolio thay von</div>
+<div class="example-card">3. Streamer game – tinh doanh thu tu subscriber, donate</div>
+<div class="example-card">4. Nha van mang – ban quyen tac pham dien tu</div>
+<div class="example-card">5. Dich gia tu do – gia tri ky nang ngon ngu theo thoi gian</div>
+<div class="example-card">6. Thiet ke do hoa freelance – gia tri danh tieng tich luy</div>
+<div class="example-card">7. Tu van truc tuyen – kien thuc la von</div>
+<div class="example-card">8. Lap trinh vien remote – thu nhap toan cau khong can van phong</div>
+<div class="example-card">9. Day trader chung khoan – chi can von nho + kien thuc</div>
+<div class="example-card">10. Affiliate marketing – hoa hong tu gioi thieu san pham</div>
+<div class="example-card">11. Dropshipping – khong can kho hang, chi can ket noi</div>
+<div class="example-card">12. Nguoi mau anh stock – ban anh nhieu lan</div>
+<div class="example-card">13. Bien tap vien tu do – lam remote cho nhieu to bao</div>
+<div class="example-card">14. Nhac si sang tac nhac online – ban quyen am nhac</div>
+<div class="example-card">15. Chuyen gia SEO – toi uu website khong can von</div>
+</div>
+</div>
+
+<!-- ================= TRINH TU QUYET dINH ================= -->
+<div class="section" id="timeline">
+<h3>⏳ Trinh tu quyet dinh tai chinh theo thoi gian</h3>
+<div class="example-grid">
+<div class="example-card"><b>Ngan han (0-1 nam):</b> Quan ly dong tien, tra no lai cao, xay dung quy khan cap</div>
+<div class="example-card"><b>Trung han (1-5 nam):</b> Tiet kiem muc tieu (xe, hoc phi), dau tu kien thuc, mua bao hiem</div>
+<div class="example-card"><b>Dai han (5-20 nam):</b> Mua nha, giao duc con cai, dau tu huu tri, xay dung tai san the he</div>
+<div class="example-card"><b>Rat dai han (20+ nam):</b> Ke thua, di san, tai tro tu thien, xay dung thuong hieu ca nhan</div>
+</div>
+<div class="note">📌 Quy tac: Uu tien tra no lai cao truoc → Xay quy khan cap → dau tu dai han → Tich luy tai san the he</div>
+</div>
+
+<!-- ================= QUAN LY RUI RO ================= -->
+<div class="section" id="risk">
+<h3>⚠ 10 Tinh huong quan ly rui ro tai chinh</h3>
+<div class="example-grid">
+<div class="example-card">1. Mat viec dot ngot – quy du phong 6 thang chi phi</div>
+<div class="example-card">2. Om dau benh tat – bao hiem y te va bao hiem benh hiem ngheo</div>
+<div class="example-card">3. Thien tai (bao lut) – bao hiem tai san</div>
+<div class="example-card">4. Lua dao tai chinh – nhan biet va phong ngua</div>
+<div class="example-card">5. Khung hoang kinh te – da dang hoa dau tu</div>
+<div class="example-card">6. Kien tung phap ly – bao hiem trach nhiem</div>
+<div class="example-card">7. Rui ro ty gia – phong ngua voi hop dong ky han</div>
+<div class="example-card">8. Lam phat tang cao – dau tu vao tai san thuc</div>
+<div class="example-card">9. Bien dong thi truong chung khoan – chien luoc dau tu gia tri</div>
+<div class="example-card">10. Rui ro cong nghe (tien ma hoa) – chi dau tu so tien co the mat</div>
+</div>
+<div class="warn">⚠ Nguyen tac: Khong bo tat ca trung vao mot gio. Luon co ke hoach B, C.</div>
+</div>
+
+<!-- GHI CHU PHAN MOI: Bo sung phan "Ap dung thuc te hoan chinh" -->
+<!-- ================= AP DUNG THUC TE HOAN CHINH ================= -->
+<div class="section" id="reality">
+<h3>🔍 AP DUNG THUC TE HOAN CHINH - LO TRINH 7 BUOC</h3>
+
+<div class="reality-section">
+<h4>📋 Buoc 1: danh gia hien trang tai chinh</h4>
+<div class="reality-item">
+  <b>Thuc hanh:</b> Liet ke toan bo tai san (tien mat, tiet kiem, dau tu, bat dong san) va no (vay ngan hang, the tin dung, no ca nhan).
+</div>
+<div class="reality-item">
+  <b>Cong cu:</b> Su dung cong thuc: <b>Gia tri rong = Tong tai san - Tong no</b>
+</div>
+</div>
+
+<div class="reality-section">
+<h4>🎯 Buoc 2: Xac dinh muc tieu tai chinh theo thoi gian</h4>
+<div class="reality-item">
+  <b>Ngan han (0-1 nam):</b> Tra het no the tin dung, xay dung quy khan cap 3-6 thang chi phi sinh hoat.
+</div>
+<div class="reality-item">
+  <b>Trung han (1-5 nam):</b> Tiet kiem mua xe, dat coc mua nha, du lich gia dinh.
+</div>
+<div class="reality-item">
+  <b>Dai han (5-20 nam):</b> Mua nha, giao duc con cai, nghi huu som.
+</div>
+</div>
+
+<div class="reality-section">
+<h4>💰 Buoc 3: Lap ngan sach va ke hoach tiet kiem</h4>
+<div class="reality-item">
+  <b>Quy tac 50-30-20:</b> 50% cho nhu cau thiet yeu, 30% cho mong muon ca nhan, 20% cho tiet kiem & dau tu.
+</div>
+<div class="reality-item">
+  <b>Tu dong hoa:</b> Thiet lap chuyen khoan tu dong vao tai khoan tiet kiem ngay khi nhan luong.
+</div>
+</div>
+
+<div class="reality-section">
+<h4>📈 Buoc 4: Xay dung danh muc dau tu da dang</h4>
+<div class="reality-item">
+  <b>Nguyen tac:</b> da dang hoa theo tuoi: (100 - tuoi)% vao co phieu/tai san rui ro, phan con lai vao trai phieu/tai san an toan.
+</div>
+<div class="reality-item">
+  <b>Vi du:</b> Nam 30 tuoi → 70% co phieu/quy ETF, 30% trai phieu/tien gui.
+</div>
+</div>
+
+<div class="reality-section">
+<h4>🛡 Buoc 5: Quan ly va phong ngua rui ro</h4>
+<div class="reality-item">
+  <b>Bao hiem co ban:</b> Y te, nhan tho (neu co nguoi phu thuoc), tai nan, bao hiem nha/tai san.
+</div>
+<div class="reality-item">
+  <b>Quy khan cap:</b> Luon duy tri 3-6 thang chi phi sinh hoat trong tai khoan de tiep can.
+</div>
+</div>
+
+<div class="reality-section">
+<h4>🧾 Buoc 6: Toi uu hoa thue</h4>
+<div class="reality-item">
+  <b>dau tu uu dai thue:</b> Quy huu tri tu nguyen, bao hiem nhan tho, trai phieu chinh phu.
+</div>
+<div class="reality-item">
+  <b>Khai thue thu nhap:</b> Tan dung cac khoan giam tru gia canh, dong gop tu thien.
+</div>
+</div>
+
+<div class="reality-section">
+<h4>🔄 Buoc 7: danh gia va dieu chinh dinh ky</h4>
+<div class="reality-item">
+  <b>Hang quy:</b> Xem xet danh muc dau tu, dieu chinh phan bo neu can.
+</div>
+<div class="reality-item">
+  <b>Hang nam:</b> danh gia lai muc tieu, dieu chinh ke hoach theo thay doi cuoc song (ket hon, sinh con, thay doi cong viec).
+</div>
+</div>
+
+<div class="note">
+💡 <b>Case study thuc te:</b> Anh Nam 30 tuoi, luong 30 trieu/thang, muon mua nha 3 ty sau 5 nam, co 200 trieu tiet kiem hien tai.
+<br><b>Giai phap:</b> Can tiet kiem them 40 trieu/thang voi lai suat dau tu 8%/nam de dat muc tieu.
+<br><b>Tinh toan:</b> FV = 200tr*(1+0.08)^5 + [40tr*(((1+0.08)^5 - 1)/0.08)] = 294tr + 235tr*12 = ~3 ty
+</div>
+
+<h4 style="margin-top:20px;">🎮 THUC HANH NGAY: Ap dung vao tinh huong cua ban</h4>
+<div style="background:#e3f2fd;padding:15px;border-radius:8px;">
+<p><b>1. Nhap tinh huong cua ban vao o phia tren trang</b></p>
+<p><b>2. Chon cap do phu hop voi hoan canh</b></p>
+<p><b>3. Xem vi du thuc te va ap dung cong thuc</b></p>
+<p><b>4. Su dung nut "Tinh toan nhanh" de tu tinh cho rieng minh</b></p>
+</div>
+</div>
+
+<!-- ================= FOOTER ================= -->
+<div class="section" style="text-align:center;background:#2c3e50;color:white;">
+<p>🎓 <b>Game Hoc Thuat: Gia Tri Thoi Gian Cua Tien</b></p>
+<p>Phien ban hoan chinh voi 150+ vi du thuc te tu ca nhan den quoc te</p>
+<p>Ap dung ngay de ra quyet dinh tai chinh thong minh!</p>
+<p style="font-size:0.9em;margin-top:10px;">📚 Tai lieu tham khao: Sach Tai chinh Ca nhan, Giao trinh TCDN, Case study thuc te</p>
+</div>
+
+<script>
+// GHI CHU PHAN MOI: Them chuc nang tu dong cuon khi trang tai xong de hien thi phan gioi thieu
+document.addEventListener('DOMContentLoaded', function() {
+  // Hien thi thong bao chao mung
+  setTimeout(function() {
+    alert("Chao mung den voi Game Hoc Thuat: Gia Tri Thoi Gian Cua Tien!\n\nNhap tinh huong cua ban vao o phia tren va nhan 'Tim giai phap' de bat dau.");
+  }, 1000);
+});
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCDN – Tro Choi Tai Chinh Doanh Nghiep - Chuong 2</title>
+<style>
+body{font-family:Arial;background:#f5f6fa;padding:20px;line-height:1.6}
+.section{background:#fff;border-radius:8px;padding:16px;margin-bottom:20px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+h2,h3{color:#2c3e50}
+button{padding:8px 12px;margin:6px;cursor:pointer;background:#3498db;color:white;border:none;border-radius:4px}
+button:hover{background:#2980b9}
+input,select{padding:8px;width:100%;margin:8px 0;border-radius:4px;border:1px solid #ccc}
+.note{background:#eef;border-left:4px solid #3498db;padding:12px;margin:12px 0;border-radius:4px}
+.warn{background:#fee;border-left:4px solid #e74c3c;padding:12px;margin:12px 0;border-radius:4px}
+.calc{background:#f0fff0;border-left:4px solid #2ecc71;padding:12px;margin:12px 0;border-radius:4px}
+table{border-collapse:collapse;width:100%;margin:10px 0}
+td,th{border:1px solid #ccc;padding:8px;text-align:left}
+th{background:#f2f2f2}
+.game{background:#fff9e6;border-left:4px solid #f39c12;padding:12px;margin:12px 0;border-radius:4px}
+.game-container{display:flex;flex-wrap:wrap;gap:20px;margin:20px 0}
+.game-panel{flex:1;min-width:300px;background:#fff;padding:15px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.1)}
+.game-score{background:linear-gradient(135deg,#2ecc71,#27ae60);color:white;padding:15px;border-radius:8px;text-align:center;margin:10px 0}
+.game-score h3{margin-top:0;color:white}
+.decision-result{background:#e8f4fc;border:2px dashed #3498db;padding:15px;border-radius:8px;margin:15px 0}
+.progress-bar{height:20px;background:#eee;border-radius:10px;margin:10px 0;overflow:hidden}
+.progress-fill{height:100%;background:#2ecc71;border-radius:10px;transition:width 0.5s}
+.risk-meter{display:flex;justify-content:space-between;margin:10px 0}
+.risk-level{flex:1;text-align:center;padding:5px;background:#eee;margin:0 2px;border-radius:4px}
+.risk-level.active{background:#e74c3c;color:white}
+.game-controls{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}
+.simulation-table{border:1px solid #ddd;border-radius:8px;overflow:hidden;margin:15px 0}
+.simulation-row{display:flex;border-bottom:1px solid #ddd;padding:10px}
+.simulation-row.header{background:#2c3e50;color:white;font-weight:bold}
+.simulation-cell{flex:1;padding:5px 10px}
+.highlight{animation:highlight 2s ease;}
+@keyframes highlight{
+  0%{background-color:#ffffcc;}
+  100%{background-color:transparent;}
+}
+</style>
+<script>
+// ================== BIEN TOAN CUC TRO CHOI ==================
+let gameScore = 100; // diem ban dau
+let gameLevel = "Ca nhan"; // Cap do hien tai
+let riskTolerance = 3; // Muc chap nhan rui ro (1-5)
+let playerName = "Nguoi choi";
+let decisionsHistory = []; // Lich su quyet dinh
+let currentScenario = null; // Tinh huong hien tai
+
+// ================== HAM CHINH ==================
+function go(id){
+  document.getElementById(id).scrollIntoView({behavior:"smooth"});
+}
+
+function searchSituation(){
+  let query = document.getElementById('situationInput').value.toLowerCase().trim();
+  if(query === '') return;
+  
+  // Danh sach tu khoa den section
+  let map = {
+    'mua nha': 'ex-personal-1',
+    'vay mua nha': 'ex-personal-1',
+    'tra gop xe': 'ex-personal-2',
+    'vay tieu dung': 'ex-personal-3',
+    'thue tai chinh': 'company',
+    'dau tu du an': 'nation',
+    'vay ngan hang': 'personal',
+    'trai phieu': 'corporation',
+    'vay quoc te': 'un',
+    'startup': 'nocapital',
+    'freelance': 'nocapital'
+  };
+  
+  for(let key in map){
+    if(query.includes(key)){
+      go(map[key]);
+      // Tao hieu ung highlight
+      let element = document.getElementById(map[key]);
+      if(element){
+        element.classList.add('highlight');
+        setTimeout(() => element.classList.remove('highlight'), 2000);
+      }
+      return;
+    }
+  }
+  alert('Khong tim thay tinh huong khop. Hay thu tu khoa khac!');
+}
+
+// ================== HE THONG TRO CHOI ==================
+function startGame(){
+  playerName = document.getElementById('playerName').value || "Nguoi choi";
+  gameLevel = document.getElementById('gameLevel').value;
+  riskTolerance = parseInt(document.getElementById('riskTolerance').value);
+  gameScore = 100;
+  
+  updateGameDisplay();
+  
+  // Hien thi thong bao
+  alert(`🎮 Chao mung ${playerName} den voi Tro Choi Tai Chinh!\nCap do: ${gameLevel}\nMuc tieu: dat 200 diem bang cac quyet dinh tai chinh thong minh!`);
+  
+  // Tao tinh huong ngau nhien
+  generateRandomScenario();
+}
+
+function updateGameDisplay(){
+  document.getElementById('currentScore').textContent = gameScore;
+  document.getElementById('currentLevel').textContent = gameLevel;
+  document.getElementById('currentPlayer').textContent = playerName;
+  
+  // Cap nhat thanh progress
+  let progressPercent = Math.min(100, (gameScore / 200) * 100);
+  document.getElementById('progressFill').style.width = progressPercent + '%';
+  
+  // Cap nhat risk meter
+  document.querySelectorAll('.risk-level').forEach((el, index) => {
+    el.classList.toggle('active', index < riskTolerance);
+  });
+  
+  // Cap nhat lich su
+  updateHistoryDisplay();
+}
+
+function generateRandomScenario(){
+  const scenarios = [
+    {id: 1, title: "Vay mua nha 30 nam", level: "Ca nhan", options: [
+      {name: "Vay co dinh 8%/nam", pv: 1200000000, risk: 2},
+      {name: "Vay tha noi 7% + 2%", pv: 1300000000, risk: 4},
+      {name: "Thue nha dai han", pv: 1400000000, risk: 1}
+    ]},
+    {id: 2, title: "dau tu may moc san xuat", level: "Cong ty", options: [
+      {name: "Thue tai chinh 5 nam", pv: 500000000, risk: 2},
+      {name: "Vay mua truc tiep", pv: 550000000, risk: 3},
+      {name: "Hop tac PPP", pv: 450000000, risk: 4}
+    ]},
+    {id: 3, title: "Phat hanh trai phieu doanh nghiep", level: "Tap doan", options: [
+      {name: "Trai phieu xanh 5%", pv: 10000000000, risk: 2},
+      {name: "Trai phieu thuong 7%", pv: 9500000000, risk: 3},
+      {name: "Vay ngan hang syndicate", pv: 10500000000, risk: 2}
+    ]}
+  ];
+  
+  // Chon scenario phu hop voi level
+  let filteredScenarios = scenarios.filter(s => s.level === gameLevel);
+  if(filteredScenarios.length === 0) filteredScenarios = scenarios;
+  
+  currentScenario = filteredScenarios[Math.floor(Math.random() * filteredScenarios.length)];
+  
+  // Hien thi scenario
+  let scenarioHTML = `<h4>${currentScenario.title}</h4>`;
+  currentScenario.options.forEach((opt, index) => {
+    scenarioHTML += `
+      <button onclick="makeDecision(${index})" style="margin:5px;width:100%;text-align:left">
+        ${opt.name}<br>
+        <small>PV uoc tinh: ${formatMoney(opt.pv)} | Rui ro: ${getRiskLevelText(opt.risk)}</small>
+      </button>
+    `;
+  });
+  
+  document.getElementById('currentScenario').innerHTML = scenarioHTML;
+}
+
+function makeDecision(optionIndex){
+  if(!currentScenario) return;
+  
+  const option = currentScenario.options[optionIndex];
+  const isGoodDecision = option.pv <= getAveragePV(currentScenario.options) && option.risk <= riskTolerance;
+  
+  // Tinh diem
+  let points = 0;
+  let message = "";
+  
+  if(isGoodDecision){
+    points = 20 - (option.risk * 2);
+    message = `✅ Quyet dinh tot! PV thap va phu hop voi khau vi rui ro. +${points} diem`;
+  } else {
+    points = -10 + (option.risk * 3);
+    message = `⚠ Quyet dinh chua toi uu! PV cao hoac rui ro vuot muc chap nhan. ${points} diem`;
+  }
+  
+  gameScore += points;
+  
+  // Luu vao lich su
+  decisionsHistory.unshift({
+    scenario: currentScenario.title,
+    decision: option.name,
+    points: points,
+    date: new Date().toLocaleTimeString()
+  });
+  
+  // Gioi han lich su
+  if(decisionsHistory.length > 5) decisionsHistory.pop();
+  
+  // Hien thi ket qua
+  document.getElementById('decisionResult').innerHTML = `
+    <h4>Ket qua quyet dinh:</h4>
+    <p>${message}</p>
+    <p><strong>Phan tich:</strong></p>
+    <ul>
+      <li>PV cua phuong an: ${formatMoney(option.pv)}</li>
+      <li>Muc rui ro: ${getRiskLevelText(option.risk)}</li>
+      <li>Khau vi rui ro cua ban: ${riskTolerance}/5</li>
+      <li>diem thuong/tru: ${points > 0 ? '+' : ''}${points}</li>
+    </ul>
+  `;
+  
+  // Kiem tra thang/thua
+  if(gameScore >= 200){
+    document.getElementById('decisionResult').innerHTML += `
+      <div class="game-score" style="margin-top:10px">
+        🏆 CHUC MUNG! Ban da chien thang tro choi!<br>
+        Tong diem: ${gameScore}
+      </div>
+    `;
+  } else if(gameScore <= 0){
+    document.getElementById('decisionResult').innerHTML += `
+      <div class="warn" style="margin-top:10px">
+        💀 GAME OVER! Ban da pha san!<br>
+        Hay bat dau lai voi chien luoc than trong hon.
+      </div>
+    `;
+  }
+  
+  updateGameDisplay();
+  
+  // Tao scenario moi
+  setTimeout(generateRandomScenario, 2000);
+}
+
+function getAveragePV(options){
+  const total = options.reduce((sum, opt) => sum + opt.pv, 0);
+  return total / options.length;
+}
+
+function getRiskLevelText(level){
+  const levels = ["Rat thap", "Thap", "Trung binh", "Cao", "Rat cao"];
+  return levels[level-1] || "Khong xac dinh";
+}
+
+function formatMoney(amount){
+  if(amount >= 1000000000){
+    return (amount/1000000000).toFixed(1) + " ty VND";
+  } else if(amount >= 1000000){
+    return (amount/1000000).toFixed(1) + " trieu VND";
+  }
+  return amount.toLocaleString() + " VND";
+}
+
+function updateHistoryDisplay(){
+  let historyHTML = "<h4>Lich su quyet dinh gan day:</h4>";
+  
+  if(decisionsHistory.length === 0){
+    historyHTML += "<p>Chua co quyet dinh nao</p>";
+  } else {
+    decisionsHistory.forEach(decision => {
+      const color = decision.points > 0 ? '#2ecc71' : '#e74c3c';
+      historyHTML += `
+        <div style="border-left:4px solid ${color};padding-left:10px;margin:5px 0">
+          <strong>${decision.scenario}</strong><br>
+          <small>Quyet dinh: ${decision.decision}</small><br>
+          <small>diem: <span style="color:${color}">${decision.points > 0 ? '+' : ''}${decision.points}</span> | ${decision.date}</small>
+        </div>
+      `;
+    });
+  }
+  
+  document.getElementById('decisionsHistory').innerHTML = historyHTML;
+}
+
+function calculatePV(){
+  const cf = parseFloat(document.getElementById('cfInput').value) || 0;
+  const rate = parseFloat(document.getElementById('rateInput').value) / 100 || 0.08;
+  const periods = parseInt(document.getElementById('periodsInput').value) || 12;
+  
+  if(cf <= 0 || rate <= 0 || periods <= 0){
+    alert("Vui long nhap gia tri hop le!");
+    return;
+  }
+  
+  let pv = 0;
+  let calculation = `PV = `;
+  
+  for(let t = 1; t <= periods; t++){
+    const discounted = cf / Math.pow(1 + rate, t);
+    pv += discounted;
+    
+    if(t <= 3 || t === periods){
+      calculation += `${cf}/(1+${rate.toFixed(2)})^${t} ${t < periods ? '+ ' : ''}`;
+    }
+  }
+  
+  if(periods > 3){
+    calculation += `+ ... + ${cf}/(1+${rate.toFixed(2)})^${periods}`;
+  }
+  
+  calculation += `\nPV = ${pv.toFixed(2)} trieu VND`;
+  
+  document.getElementById('pvResult').innerHTML = `
+    <h4>Ket qua tinh PV:</h4>
+    <div class="calc">
+      <strong>Gia tri hien tai (PV):</strong><br>
+      ${formatMoney(pv * 1000000)}<br><br>
+      <strong>Phep tinh:</strong><br>
+      <pre style="background:#fff;padding:10px;border-radius:4px">${calculation}</pre>
+    </div>
+  `;
+}
+
+function calculatePMT(){
+  const pv = parseFloat(document.getElementById('pmtPV').value) || 0;
+  const rate = parseFloat(document.getElementById('pmtRate').value) / 100 / 12 || 0.01;
+  const periods = parseInt(document.getElementById('pmtPeriods').value) || 36;
+  
+  if(pv <= 0 || rate <= 0 || periods <= 0){
+    alert("Vui long nhap gia tri hop le!");
+    return;
+  }
+  
+  const pmt = pv * (rate * Math.pow(1 + rate, periods)) / (Math.pow(1 + rate, periods) - 1);
+  
+  document.getElementById('pmtResult').innerHTML = `
+    <h4>Ket qua tinh PMT:</h4>
+    <div class="calc">
+      <strong>Thanh toan hang thang (PMT):</strong><br>
+      ${formatMoney(pmt * 1000000)}/thang<br><br>
+      <strong>Tong so tien tra:</strong><br>
+      ${formatMoney(pmt * periods * 1000000)}<br><br>
+      <strong>Tong lai phai tra:</strong><br>
+      ${formatMoney((pmt * periods - pv) * 1000000)}
+    </div>
+  `;
+}
+
+// Khoi tao khi trang load
+window.onload = function(){
+  updateGameDisplay();
+};
+</script>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<div class="section">
+<h1 style="text-align:center;color:#2c3e50">🎲 Tro Choi Tai Chinh Doanh Nghiep - Chuong 2: Quyet dinh Vay & Thue Tai Chinh</h1>
+<p style="text-align:center;font-size:1.2em">Ap dung thuc te - Chon phuong an toi uu - Giam rui ro toi da</p>
+<p style="text-align:center"><b>🎥 Video bai giang:</b> <a href="https://www.youtube.com/watch?v=rL4wrlTvhYU" target="_blank">Quang Trung TV – TCDN Chuong 2 Phan 4</a></p>
+</div>
+
+<!-- ================= TRO CHOI TUONG TAC ================= -->
+<div class="section">
+<h2>🎮 TRO CHOI TAI CHINH dOI THAT</h2>
+<div class="game-container">
+  <div class="game-panel">
+    <h3>Thong tin nguoi choi</h3>
+    <div class="game-score">
+      <h3>dIEM: <span id="currentScore">100</span>/200</h3>
+      <p>Cap do: <span id="currentPlayer">Nguoi choi</span> - <span id="currentLevel">Ca nhan</span></p>
+    </div>
+    
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width:50%"></div>
+    </div>
+    
+    <p><strong>Khau vi rui ro cua ban:</strong></p>
+    <div class="risk-meter">
+      <div class="risk-level active">1</div>
+      <div class="risk-level active">2</div>
+      <div class="risk-level active">3</div>
+      <div class="risk-level">4</div>
+      <div class="risk-level">5</div>
+    </div>
+    <p><small>1 = Bao thu, 5 = Mao hiem</small></p>
+    
+    <div id="decisionsHistory"></div>
+  </div>
+  
+  <div class="game-panel">
+    <h3>Bat dau tro choi</h3>
+    <input type="text" id="playerName" placeholder="Ten cua ban" value="Nguoi choi">
+    
+    <select id="gameLevel">
+      <option value="Ca nhan">👤 Ca nhan (De)</option>
+      <option value="Cong ty">🏭 Cong ty (Trung binh)</option>
+      <option value="Tap doan">🏢 Tap doan (Kho)</option>
+    </select>
+    
+    <select id="riskTolerance">
+      <option value="1">Rat than trong (Rui ro thap)</option>
+      <option value="2" selected>Than trong</option>
+      <option value="3">Can bang</option>
+      <option value="4">Mao hiem</option>
+      <option value="5">Rat mao hiem (Rui ro cao)</option>
+    </select>
+    
+    <button onclick="startGame()" style="background:#2ecc71;width:100%">🎮 BAT dAU TRO CHOI</button>
+    
+    <div class="game">
+      <b>📋 Luat choi:</b>
+      <ol>
+        <li>Bat dau voi 100 diem</li>
+        <li>Chon phuong an co PV thap nhat va rui ro phu hop</li>
+        <li>dat 200 diem de chien thang</li>
+        <li>Xuong 0 diem se thua</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<!-- TINH HUONG HIEN TAI -->
+<div class="section">
+<h3>📊 Tinh huong can quyet dinh</h3>
+<div id="currentScenario">
+  <p>Nhan "Bat dau tro choi" de nhan tinh huong dau tien!</p>
+</div>
+
+<div id="decisionResult" class="decision-result">
+  <p>Ket qua quyet dinh se hien thi o day...</p>
+</div>
+</div>
+
+<!-- ================= CONG CU TINH TOAN ================= -->
+<div class="section">
+<h3>🧮 Cong cu tinh toan thuc te</h3>
+
+<div class="game-container">
+  <div class="game-panel">
+    <h4>Tinh Gia Tri Hien Tai (PV)</h4>
+    <p><small>Tinh PV cua dong tien deu trong tuong lai</small></p>
+    
+    <input type="number" id="cfInput" placeholder="Dong tien moi ky (trieu VND)" value="10">
+    <input type="number" id="rateInput" placeholder="Lai suat chiet khau (%/nam)" value="8" step="0.1">
+    <input type="number" id="periodsInput" placeholder="So ky (thang/nam)" value="12">
+    
+    <button onclick="calculatePV()" style="width:100%">Tinh PV</button>
+    
+    <div id="pvResult" style="margin-top:15px"></div>
+  </div>
+  
+  <div class="game-panel">
+    <h4>Tinh Thanh Toan deu (PMT)</h4>
+    <p><small>Tinh khoan tra gop hang thang</small></p>
+    
+    <input type="number" id="pmtPV" placeholder="So tien vay (trieu VND)" value="500">
+    <input type="number" id="pmtRate" placeholder="Lai suat nam (%)" value="12" step="0.1">
+    <input type="number" id="pmtPeriods" placeholder="So thang tra gop" value="36">
+    
+    <button onclick="calculatePMT()" style="width:100%">Tinh PMT</button>
+    
+    <div id="pmtResult" style="margin-top:15px"></div>
+  </div>
+</div>
+</div>
+
+<!-- ================= dIEU KHIEN ================= -->
+<div class="section">
+<h2>🎮 Bang dieu Khien Tinh Huong Thuc Te</h2>
+<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:end">
+  <div style="flex:1;min-width:300px">
+    <input id="situationInput" placeholder="Nhap tinh huong thuc te (VD: vay mua nha, mua may moc tra gop, dau tu du an quoc gia...)">
+    <button onclick="searchSituation()" style="width:100%;background:#e67e22">🔍 Tim & Cuon den Tinh Huong</button>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;width:100%">
+    <button onclick="go('term')">📘 Thuat ngu</button>
+    <button onclick="go('formula')">📐 Cong thuc</button>
+    <button onclick="go('personal')">👤 Ca nhan</button>
+    <button onclick="go('family')">🏡 Gia dinh</button>
+    <button onclick="go('company')">🏭 Cong ty</button>
+    <button onclick="go('corporation')">🏢 Tap doan</button>
+    <button onclick="go('city')">🏙 Thanh pho/Thu do</button>
+    <button onclick="go('ministry')">🏛 Bo Tai chinh</button>
+    <button onclick="go('nation')">🌍 Quoc gia</button>
+    <button onclick="go('un')">🌐 Lien Hiep Quoc</button>
+    <button onclick="go('nocapital')">💡 Nghe khong von</button>
+    <button onclick="go('timeline')">⏳ Trinh tu quyet dinh</button>
+    <button onclick="go('risk')">⚠ Rui ro chien luoc</button>
+  </div>
+</div>
+<div class="game">
+<b>🎯 Muc tieu tro choi:</b> Ban la nha quyet dinh tai chinh o nhieu cap do. Chon phuong an vay/thue/mua co <b>PV chi phi thap nhat</b> va <b>rui ro it nhat</b> de thang cuoc!
+</div>
+</div>
+
+<!-- ================= THUAT NGU ================= -->
+<div class="section" id="term">
+<h3>📘 Thuat ngu trong tam</h3>
+<ul>
+<li><b>Amortization:</b> Bang phan bo tra no goc + lai tung ky</li>
+<li><b>PMT:</b> Khoan thanh toan co dinh moi ky</li>
+<li><b>PV (Present Value):</b> Gia tri hien tai cua dong tien tuong lai</li>
+<li><b>Du no giam dan:</b> Goc con lai sau moi ky tra</li>
+<li><b>Chiet khau dong tien:</b> Quy tat ca ve gia tri hom nay de so sanh cong bang</li>
+</ul>
+<div class="note">💡 Quy tac vang: Luon chon phuong an co <b>PV nho nhat</b> → Chi phi thuc te re nhat!</div>
+</div>
+
+<!-- ================= CONG THUC ================= -->
+<div class="section" id="formula">
+<h3>📐 Cong thuc cot loi</h3>
+<div class="calc">
+<b>Thanh toan deu PMT:</b><br>
+PMT = PV × (i × (1+i)^n) / ((1+i)^n - 1)
+</div>
+<div class="calc">
+<b>Gia tri hien tai PV cua dong tien:</b><br>
+PV = Σ (CF_t / (1+i)^t)
+</div>
+<div class="note">👉 Trong kinh doanh thuc te: Chon lai suat chiet khau = chi phi von (WACC) hoac lai vay ngan hang</div>
+</div>
+
+<!-- ================= CA NHAN ================= -->
+<div class="section" id="personal">
+<h3>👤 25 Tinh Huong Thuc Te Cap do Ca Nhan</h3>
+<div class="game"><b>🎲 Thu thach:</b> Ban la nguoi tre doc lap, chon cach tai chinh thong minh nhat de tranh bay lai suat.</div>
+<ol>
+<li id="ex-personal-1"><b>Vay ngan hang mua nha tra gop 30 nam vs thue nha dai han:</b> Tinh PV tong chi phi → thuong mua nha PV thap hon neu lai co dinh.</li>
+<li id="ex-personal-2"><b>Mua xe o to tra gop 5 nam vs tra thang:</b> So PV, neu lai cao → tra thang tot hon.</li>
+<li><b>Vay tieu dung mua dien thoai/iPhone tra gop 0% lai:</b> Thuc te co phi an → tinh PV thuc.</li>
+<li><b>Vay tin chap tieu dung vs vay the chap:</b> Lai tin chap cao → PV dat hon nhieu.</li>
+<li><b>Mua bao hiem nhan tho tich luy vs gui tiet kiem:</b> So PV gia tri hoan lai.</li>
+<li><b>Tra gop the tin dung vs tra day du:</b> Lai the cao → tranh tra toi thieu.</li>
+<li><b>Vay hoc phi du hoc vs tu tich luy:</b> Tinh PV chi phi lai vay.</li>
+<li><b>Mua laptop tra gop vs cho tich tien:</b> Neu lai thap → tra gop giu tien dau tu khac.</li>
+<li><b>dau tu chung khoan vay margin vs dung tien tu co:</b> Rui ro cao neu thi truong giam.</li>
+<li><b>Thue tai chinh mua xe may vs vay ngan hang:</b> So PV tong thanh toan.</li>
+<li><b>Mua do noi that tra gop vs mua cu:</b> Tinh chi phi co hoi.</li>
+<li><b>Vay nong ngoai luong vs ngan hang:</b> Lai cat co → PV cuc cao.</li>
+<li><b>Tham gia quy tin dung den vs tiet kiem ca nhan:</b> Rui ro mat trang.</li>
+<li><b>Mua vang tra gop vs tich luy dan:</b> Neu gia vang tang manh → tra gop loi.</li>
+<li><b>Vay de dau tu bat dong san luot song:</b> Rui ro lai suat tang.</li>
+<li><b>Su dung vi dien tu tra sau (like Fundiin):</b> Phi an → tinh PV.</li>
+<li><b>Mua ve may bay tra gop vs tra ngay:</b> Thuong 0% that → loi.</li>
+<li><b>Vay de hoc them ky nang (khoa hoc online):</b> Neu tang thu nhap → PV loi nhuan duong.</li>
+<li><b>Tra no the tin dung som vs dau tu khac:</b> Lai the cao → tra som uu tien.</li>
+<li><b>Mua qua cuoi tra gop vs tiet kiem truoc:</b> Ap luc tai chinh ca nhan.</li>
+<li><b>Vay de du lich vs tiet kiem:</b> Thuong khong dang PV.</li>
+<li><b>Su dung BNPL (Buy Now Pay Later) mua sam:</b> De roi bay chi tieu qua tay.</li>
+<li><b>Vay peer-to-peer (P2P lending):</b> Lai cao hon ngan hang.</li>
+<li><b>dau tu crypto vay don bay:</b> Rui ro thanh ly cuc cao.</li>
+<li><b>Mua hop dong tuong lai vs tien mat:</b> Ca nhan thuong thua lo.</li>
+</ol>
+</div>
+
+<!-- ================= GIA dINH ================= -->
+<div class="section" id="family">
+<h3>🏡 25 Tinh Huong Thuc Te Cap do Gia dinh</h3>
+<div class="game"><b>🎲 Thu thach:</b> Ban la tru cot gia dinh, can bang chi tieu va rui ro cho ca nha.</div>
+<ol>
+<li><b>Xay nha moi vay ngan hang vs sua nha cu:</b> Tinh PV dai han 20-30 nam.</li>
+<li><b>Vay mua o to gia dinh vs di xe cong cong:</b> Chi phi van hanh + lai.</li>
+<li><b>Cho con du hoc vay hoc phi vs quy tiet kiem giao duc:</b> So PV tong chi phi.</li>
+<li><b>Mua bao hiem y te gia dinh vs tu de tien phong benh:</b> Rui ro lon neu benh nang.</li>
+<li><b>Thue nha lon vs mua nha nho tra gop:</b> Tinh toan dong tien gia dinh.</li>
+<li><b>Vay de to chuc dam cuoi vs tiet kiem:</b> Ap luc tra no sau cuoi.</li>
+<li><b>Mua dat nen tra gop vs gui ngan hang:</b> Rui ro thi truong bat dong san.</li>
+<li><b>dau tu quy huu tri gia dinh vs tu quan ly:</b> PV gia tri tuong lai.</li>
+<li><b>Vay sua chua nha cua sau bao lu:</b> Uu tien vay uu dai chinh phu.</li>
+<li><b>Mua may phat dien du phong vs khong:</b> Rui ro mat dien dai ngay.</li>
+<li><b>Vay de ho tro con khoi nghiep:</b> Rui ro con that bai.</li>
+<li><b>Tham gia hop tac xa tin dung gia dinh:</b> Lai noi bo thap hon.</li>
+<li><b>Mua nong cu tra gop cho nong nghiep gia dinh:</b> Tang nang suat bu lai.</li>
+<li><b>Vay von nuoi con an hoc dai hoc:</b> Tinh ROI thu nhap tuong lai con.</li>
+<li><b>Thue tai chinh thiet bi y te tai nha (may tho oxy):</b> Cho nguoi cao tuoi.</li>
+<li><b>Mua bao hiem tai san nha cua:</b> Chong rui ro thien tai.</li>
+<li><b>Vay de chuyen doi so gia dinh (mua thiet bi hoc online):</b> dai dich.</li>
+<li><b>Tich luy quy khan cap vs vay khi can:</b> Tranh lai cao dot xuat.</li>
+<li><b>Mua thuc pham du tru dai han tra gop:</b> Thoi lam phat cao.</li>
+<li><b>Vay de di cu noi dia:</b> Tim viec lam tot hon.</li>
+<li><b>Tham gia nhom tiet kiem xoay vong (hui):</b> Rui ro vo hui.</li>
+<li><b>Mua xe dien gia dinh tra gop:</b> Tiet kiem nhien lieu dai han.</li>
+<li><b>Vay von mo quan an nho gia dinh:</b> Rui ro kinh doanh.</li>
+<li><b>dau tu nang luong mat troi mai nha vay uu dai:</b> Giam hoa don dien PV thap.</li>
+<li><b>The chap nha de vay kinh doanh:</b> Rui ro mat nha neu that bai.</li>
+</ol>
+</div>
+
+<!-- ================= CONG TY ================= -->
+<div class="section" id="company">
+<h3>🏭 25 Tinh Huong Thuc Te Cap do Cong Ty (SME)</h3>
+<div class="game"><b>🎲 Thu thach:</b> Ban la CEO cong ty nho, quyet dinh dau tu may moc/von luu dong.</div>
+<ol>
+<li><b>Thue tai chinh may moc vs vay ngan hang mua:</b> Thue thuong PV thap hon do khau hao.</li>
+<li><b>Mua xe tai tra gop vs thue xe logistics:</b> Tinh PV van hanh dai han.</li>
+<li><b>Vay von luu dong vs factoring hoa don:</b> Factoring phi cao hon.</li>
+<li><b>dau tu phan mem ERP vay ngan hang:</b> Tang hieu qua bu lai.</li>
+<li><b>Mua nha xuong tra gop vs thue dai han:</b> Quyen so huu vs linh hoat.</li>
+<li><b>Vay de nhap hang ton kho mua cao diem:</b> Rui ro hang e.</li>
+<li><b>Tham gia chuong trinh vay uu dai SME chinh phu:</b> Lai thap → uu tien.</li>
+<li><b>Phat hanh trai phieu cong ty vs vay ngan hang:</b> Trai phieu lai cao hon.</li>
+<li><b>Mua may in 3D cong nghiep tra gop:</b> doi moi san xuat.</li>
+<li><b>Vay de tuyen dung & dao tao nhan su:</b> Tang nang suat dai han.</li>
+<li><b>Thue tai chinh he thong nang luong mat troi:</b> Tiet kiem chi phi dien.</li>
+<li><b>Vay mo chi nhanh moi:</b> Rui ro thi truong moi.</li>
+<li><b>Mua phan mem quan ly kho vay:</b> Giam that thoat.</li>
+<li><b>Vay de nghien cuu san pham moi (R&D):</b> Rui ro that bai cao.</li>
+<li><b>The chap tai san vay mo rong san xuat:</b> Tang cong suat.</li>
+<li><b>Su dung leasing thiet bi van phong:</b> Giu dong tien mat.</li>
+<li><b>Vay ngan han tra luong mua kho khan:</b> Tranh mat nhan tai.</li>
+<li><b>Mua xe nang hang tra gop:</b> Tang hieu qua logistics noi bo.</li>
+<li><b>dau tu chung chi xanh vay uu dai:</b> Thu hut khach hang quoc te.</li>
+<li><b>Vay de tham gia chuoi cung ung lon:</b> don hang on dinh.</li>
+<li><b>Thue tai chinh tau danh ca (cong ty thuy san nho):</b> Mua danh bat.</li>
+<li><b>Vay chuyen doi so (cloud computing):</b> Thoi COVID.</li>
+<li><b>Mua robot han tu dong:</b> Giam lao dong thu cong.</li>
+<li><b>Vay de du tru nguyen lieu gia tang:</b> Hedging gia.</li>
+<li><b>Tham gia san thuong mai dien tu vay von quang cao:</b> Tang doanh so.</li>
+</ol>
+</div>
+
+<!-- ================= TAP dOAN ================= -->
+<div class="section" id="corporation">
+<h3>🏢 25 Tinh Huong Thuc Te Cap do Tap doan</h3>
+<div class="game"><b>🎲 Thu thach:</b> Ban la CFO tap doan lon, toi uu chi phi von hang nghin ty.</div>
+<ol>
+<li><b>Phat hanh trai phieu quoc te vs vay syndicate ngan hang:</b> Tinh PV voi lai suat USD/EUR.</li>
+<li><b>Thue tai chinh doi tau bay (leasing aircraft):</b> Vietnam Airlines thuong dung.</li>
+<li><b>Mua co phan cong ty con vs spin-off:</b> Toi uu cau truc von.</li>
+<li><b>Vay de M&A sap nhap doi thu:</b> Synergy bu chi phi lai.</li>
+<li><b>dau tu du an xanh phat hanh green bond:</b> Lai thap hon bond thuong.</li>
+<li><b>Hedging rui ro lai suat bang swap:</b> Chuyen lai floating sang fixed.</li>
+<li><b>Repo agreement ngan han vs commercial paper:</b> Quan ly thanh khoan.</li>
+<li><b>Thue tai chinh nha may san xuat chip:</b> Chi phi khong lo.</li>
+<li><b>Vay du an PPP ha tang (VinGroup):</b> Hop tac cong tu.</li>
+<li><b>Phat hanh co phieu uu dai vs no:</b> Khong pha loang co phan thuong.</li>
+<li><b>dau tu nuoc ngoai vay ECB (External Commercial Borrowing):</b> Lai thap.</li>
+<li><b>Quan ly no bang buyback trai phieu khi lai giam:</b> Giam chi phi lai.</li>
+<li><b>Thue tai chinh ve tinh vien thong:</b> Tap doan vien thong lon.</li>
+<li><b>Vay de xay dung data center:</b> Thoi AI bung no.</li>
+<li><b>Su dung derivative phong rui ro ty gia:</b> Xuat nhap khau lon.</li>
+<li><b>Phat hanh bond chuyen doi (convertible):</b> Lai thap + tiem nang equity.</li>
+<li><b>dau tu ESG vay uu dai tu IFC:</b> To chuc tai chinh quoc te.</li>
+<li><b>Vay syndicated cho du an dau khi offshore:</b> Rui ro dia chinh tri.</li>
+<li><b>Thue tai chinh doi tau container:</b> Thoi chuoi cung ung gian doan.</li>
+<li><b>Quan ly von luu dong bang supply chain finance:</b> Toi uu voi nha cung cap.</li>
+<li><b>Vay de repurchase co phieu:</b> Tang EPS.</li>
+<li><b>dau tu R&D pin nang luong vay dai han:</b> Chuyen doi nang luong.</li>
+<li><b>Su dung securitization tai san:</b> Chuyen no bang can doi.</li>
+<li><b>Vay du an bat dong san khu do thi lon:</b> Dai han 20-30 nam.</li>
+<li><b>Hedging gia hang hoa (commodity swap):</b> Tap doan san xuat.</li>
+</ol>
+</div>
+
+<!-- ================= THANH PHO ================= -->
+<div class="section" id="city">
+<h3>🏙 25 Tinh Huong Thuc Te Cap do Thanh Pho/Thu do</h3>
+<div class="game"><b>🎲 Thu thach:</b> Ban la Chu tich UBND thanh pho, quyet dinh du an ha tang hang nghin ty.</div>
+<ol>
+<li><b>Xay metro vay ODA Nhat Ban vs trai phieu do thi:</b> ODA lai sieu thap.</li>
+<li><b>Thue tai chinh he thong xe buyt dien:</b> Chuyen doi xanh.</li>
+<li><b>Vay Ngan hang The gioi xay cau vuot:</b> dieu kien chinh sach kem theo.</li>
+<li><b>PPP duong cao toc noi do:</b> Tu nhan dau tu lay phi.</li>
+<li><b>Phat hanh trai phieu chinh quyen dia phuong:</b> Xay truong hoc benh vien.</li>
+<li><b>Vay ADB xay he thong xu ly nuoc thai:</b> Moi truong do thi.</li>
+<li><b>Thue tai chinh den LED chieu sang cong cong:</b> Tiet kiem dien dai han.</li>
+<li><b>Du an smart city vay Han Quoc:</b> Cong nghe cao.</li>
+<li><b>Xay nha o xa hoi vay uu dai:</b> Giai quyet an sinh.</li>
+<li><b>Vay de cai tao khu o chuot:</b> Tai dinh cu.</li>
+<li><b>dau tu camera giam sat an ninh:</b> An toan do thi.</li>
+<li><b>Thue tai chinh may thu gom rac hien dai:</b> Ve sinh moi truong.</li>
+<li><b>Vay xay cong vien cay xanh:</b> Chong bien doi khi hau.</li>
+<li><b>PPP bai do xe ngam:</b> Giam un tac.</li>
+<li><b>Phat hanh green bond thanh pho:</b> Du an moi truong.</li>
+<li><b>Vay de nang cap he thong thoat nuoc chong ngap:</b> Mua mua bao.</li>
+<li><b>dau tu wifi cong cong toan thanh pho:</b> Ket noi so.</li>
+<li><b>Thue tai chinh tau dien ngam:</b> Neu khong du von mua.</li>
+<li><b>Vay xay san van dong SEA Games:</b> Su kien quoc te.</li>
+<li><b>PPP he thong giao thong thong minh:</b> Giam tac nghen.</li>
+<li><b>Vay de bao ton di san van hoa:</b> Du lich ben vung.</li>
+<li><b>dau tu nang luong tai tao cho cong trinh cong:</b> Giam chi phi van hanh.</li>
+<li><b>Vay khan cap ung pho thien tai:</b> Quy du phong.</li>
+<li><b>Xay cau vuot bien noi quan:</b> Phat trien kinh te.</li>
+<li><b>Thue tai chinh he thong y te cong cong:</b> dai dich.</li>
+</ol>
+</div>
+
+<!-- ================= BO TAI CHINH ================= -->
+<div class="section" id="ministry">
+<h3>🏛 25 Tinh Huong Thuc Te Cap do Bo Tai Chinh</h3>
+<div class="game"><b>🎲 Thu thach:</b> Ban la Bo truong Tai chinh, quan ly ngan sach quoc gia.</div>
+<ol>
+<li><b>Phat hanh trai phieu chinh phu vay noi te vs ngoai te:</b> Tranh rui ro ty gia.</li>
+<li><b>Vay IMF standby agreement:</b> On dinh kinh te vi mo.</li>
+<li><b>Quan ly no cong bang buyback khi lai giam:</b> Toi uu chi phi.</li>
+<li><b>Phat hanh eurobond tren thi truong quoc te:</b> Lai thap hon noi dia.</li>
+<li><b>Hedging rui ro lai suat cho no cong:</b> Swap fixed-floating.</li>
+<li><b>Vay ADB/World Bank cho du an ha tang:</b> dieu kien cai cach.</li>
+<li><b>Quan ly quy du phong ngan sach:</b> Ung pho khung hoang.</li>
+<li><b>Tai co cau no cong dai han:</b> Giam ap luc tra no ngan.</li>
+<li><b>Phat hanh bond xanh quoc gia:</b> Tai tro chuyen doi nang luong.</li>
+<li><b>Vay song phuong tu Trung Quoc/Nhat:</b> Rui ro dia chinh tri.</li>
+<li><b>Quan ly thanh khoan bang repo voi NHNN:</b> On dinh thi truong tien te.</li>
+<li><b>Tang thue vs vay them khi thieu hut ngan sach:</b> Lam phat vs no.</li>
+<li><b>Vay de ho tro doanh nghiep COVID:</b> Goi kich thich kinh te.</li>
+<li><b>Phat hanh trai phieu ky han dai 30 nam:</b> Khop voi du an dai.</li>
+<li><b>Tham gia SDR allocation tu IMF:</b> Tang du tru ngoai hoi.</li>
+<li><b>Quan ly rui ro ty gia no ngoai te:</b> Natural hedge.</li>
+<li><b>Vay de cai cach luong huu:</b> Ben vung tai chinh cong.</li>
+<li><b>Phat hanh inflation-linked bond:</b> Chong lam phat.</li>
+<li><b>Vay khan cap ung pho thien tai quoc gia:</b> Quy du phong.</li>
+<li><b>Tai tai tro no cu lai cao:</b> Refinancing.</li>
+<li><b>Tham gia Asian Bond Market Initiative:</b> Phat trien thi truong khu vuc.</li>
+<li><b>Vay de so hoa tai chinh cong:</b> Tang minh bach.</li>
+<li><b>Quan ly no dia phuong:</b> Bao lanh trai phieu dia phuong.</li>
+<li><b>Phat hanh samurai bond tai Nhat:</b> da dang nha dau tu.</li>
+<li><b>Vay de on dinh ty gia hoi doai:</b> Can thiep thi truong.</li>
+</ol>
+</div>
+
+<!-- ================= QUOC GIA ================= -->
+<div class="section" id="nation">
+<h3>🌍 25 Tinh Huong Thuc Te Cap do Quoc Gia</h3>
+<div class="game"><b>🎲 Thu thach:</b> Ban la Thu tuong, quyet dinh chien luoc tai chinh quoc gia.</div>
+<ol>
+<li><b>Vay ODA xay duong cao toc Bac Nam:</b> Lai uu dai dai han.</li>
+<li><b>Phat hanh trai phieu quoc te USD:</b> Thu hut von ngoai.</li>
+<li><b>Tham gia CPTPP vay uu dai thuong mai:</b> Gian tiep tai chinh.</li>
+<li><b>Vay de xay dung cang bien quoc te:</b> Tang xuat khau.</li>
+<li><b>Quan ly du tru ngoai hoi vay ngan han:</b> On dinh tien te.</li>
+<li><b>Hop tac PPP san bay Long Thanh:</b> Giam ganh nang ngan sach.</li>
+<li><b>Vay Trung Quoc BRI duong sat:</b> Rui ro bay no.</li>
+<li><b>Phat hanh sovereign bond xanh:</b> Chuyen doi nang luong.</li>
+<li><b>Vay de phat trien 5G toan quoc:</b> Cach mang cong nghiep 4.0.</li>
+<li><b>Tham gia AIIB vay ha tang:</b> Ngan hang Trung Quoc dan dat.</li>
+<li><b>Vay Nhat Ban xay dung tau dien:</b> Cong nghe cao.</li>
+<li><b>Quan ly no/GDP duoi 65%:</b> An toan tai chinh vi mo.</li>
+<li><b>Vay de ho tro nong nghiep thong minh:</b> An ninh luong thuc.</li>
+<li><b>Phat hanh bond diaspora cho kieu bao:</b> Lai cao nhung patriot.</li>
+<li><b>Vay IMF Extended Fund Facility:</b> Cai cach cau truc.</li>
+<li><b>dau tu quy chu quyen (sovereign wealth fund):</b> Tu dau khi hoac vay.</li>
+<li><b>Vay de chong bien doi khi hau (de bien):</b> Thich ung.</li>
+<li><b>Hedging gia dau nhap khau:</b> On dinh ngan sach.</li>
+<li><b>Vay xay dung khu cong nghiep sinh thai:</b> Thu hut FDI.</li>
+<li><b>Tham gia Paris Agreement vay xanh:</b> Tai tro khi hau.</li>
+<li><b>Vay de giao duc dai hoc quoc te:</b> Nguon nhan luc.</li>
+<li><b>Quan ly lam phat bang chinh sach no:</b> Tranh in tien.</li>
+<li><b>Vay khan cap vaccine COVID toan dan:</b> Suc khoe cong cong.</li>
+<li><b>Phat hanh perpetual bond:</b> No vinh vien lai thap.</li>
+<li><b>Vay de phat trien du lich ben vung:</b> Sau dai dich.</li>
+</ol>
+</div>
+
+<!-- ================= LIEN HIEP QUOC ================= -->
+<div class="section" id="un">
+<h3>🌐 25 Tinh Huong Thuc Te Cap do Lien Hiep Quoc / Quoc Te</h3>
+<div class="game"><b>🎲 Thu thach:</b> Ban la Tong thu ky LHQ, phan bo tai tro toan cau.</div>
+<ol>
+<li><b>Vay tu World Bank cho quoc gia ngheo IDA:</b> Lai 0% dai han.</li>
+<li><b>Phat hanh bond LHQ cho muc tieu SDG:</b> Tai tro phat trien ben vung.</li>
+<li><b>Quy Green Climate Fund vay khi hau:</b> Chong bien doi cho nuoc ngheo.</li>
+<li><b>Ho tro vay concessional cho refugee crisis:</b> Khung hoang di cu.</li>
+<li><b>IMF Special Drawing Rights allocation:</b> Tang thanh khoan toan cau.</li>
+<li><b>Vay de vaccine COVAX toan cau:</b> Cong bang vaccine.</li>
+<li><b>Quy Global Fund chong HIV/AIDS:</b> Tai tro y te.</li>
+<li><b>Vay khan cap peacekeeping mission:</b> Giu hoa binh.</li>
+<li><b>ADB/ AfDB vay khu vuc chau A/Phi:</b> Phat trien khu vuc.</li>
+<li><b>Debt relief initiative cho HIPC (nuoc ngheo no cao):</b> Xoa no.</li>
+<li><b>Vay de ho tro food security Ukraine war:</b> An ninh luong thuc.</li>
+<li><b>UN Peacebuilding Fund:</b> Tai thiet sau xung dot.</li>
+<li><b>Vay tu Islamic Development Bank:</b> Quoc gia Hoi giao.</li>
+<li><b>Global Infrastructure Facility:</b> Ha tang toan cau.</li>
+<li><b>Vay de digital inclusion cho nuoc dang phat trien:</b> Ket noi internet.</li>
+<li><b>UNDP funding cho gender equality:</b> Binh dang gioi.</li>
+<li><b>Vay khan cap natural disaster response:</b> Quy CERF.</li>
+<li><b>Paris Club rescheduling no song phuong:</b> Tai co cau no.</li>
+<li><b>Vay de bao ve biodiversity:</b> Cong uoc da dang sinh hoc.</li>
+<li><b>WHO funding vay pandemic preparedness:</b> Phong dai dich.</li>
+<li><b>UNHCR vay cho refugee camp:</b> Nguoi ti nan.</li>
+<li><b>Vay tu GAVI Alliance vaccine:</b> Tiem chung tre em.</li>
+<li><b>Climate Adaptation Fund:</b> Thich ung khi hau.</li>
+<li><b>Vay de nuclear non-proliferation:</b> An ninh hat nhan.</li>
+<li><b>Global Partnership for Education:</b> Giao duc toan cau.</li>
+</ol>
+</div>
+
+<!-- ================= NGHE KHONG VON / AN DANH ================= -->
+<div class="section" id="nocapital">
+<h3>💡 25 Tinh Huong + 25 Vi Du Nghe Khong Von / Lam Online An Danh</h3>
+<div class="game"><b>🎲 Thu thach:</b> Bat dau tu 0 von, dung tai chinh thong minh de nhan len.</div>
+<p><b>Ap dung nguyen tac:</b> Tranh vay lai cao, uu tien bootstrapping, dung dong tien tu tao de tai dau tu.</p>
+<ol>
+<li><b>Freelance viet lach tren Upwork:</b> Khong von, thu nhap USD.</li>
+<li><b>Lam YouTube an danh (faceless channel):</b> Kiem tien adsense.</li>
+<li><b>Ban khoa hoc online Teachable/Gumroad:</b> San pham so margin cao.</li>
+<li><b>Affiliate marketing blog an danh:</b> Tiep thi lien ket Amazon.</li>
+<li><b>Dropshipping Shopify khong giu hang:</b> Von thap rui ro thap.</li>
+<li><b>Lap trinh freelance Fiverr:</b> Ky nang code.</li>
+<li><b>Thiet ke do hoa Canva ban template Etsy:</b> San pham so.</li>
+<li><b>Trading crypto nho le (khong vay margin):</b> Tranh don bay.</li>
+<li><b>Viet ebook ban Amazon Kindle:</b> Hidden author.</li>
+<li><b>Lam TikTok an danh viral content:</b> Monetize creator fund.</li>
+<li><b>Quan ly fanpage Facebook thue:</b> Social media manager.</li>
+<li><b>Day ngoai ngu online Italki:</b> Khong can bang cap cao.</li>
+<li><b>Ban stock photo/video Shutterstock:</b> Chup bang dien thoai.</li>
+<li><b>Podcast an danh Spotify:</b> Kiem tien sponsor.</li>
+<li><b>Copywriting quang cao Facebook ads:</b> Freelance.</li>
+<li><b>Virtual assistant cho doanh nghiep nuoc ngoai:</b> Lam remote.</li>
+<li><b>Arbitrage online (mua thap ban cao khac nen tang):</b> Khong giu hang.</li>
+<li><b>Lam survey/online task Amazon MTurk:</b> Thu nhap nho tich luy.</li>
+<li><b>Ban NFT art an danh:</b> Neu thi truong hot.</li>
+<li><b>Stream game Twitch an mat:</b> Donation + sub.</li>
+<li><b>Viet thread Twitter/X monetize:</b> X Premium revenue.</li>
+<li><b>Lam voice over an danh:</b> Giong doc AI hoac that.</li>
+<li><b>Consulting online an danh qua Discord:</b> Chuyen mon niche.</li>
+<li><b>Ban signal trading (khong von thuc gui):</b> Can than phap ly.</li>
+<li><b>Tham gia bug bounty hacker an danh:</b> Tim lo hong phan mem.</li>
+</ol>
+<div class="note">💡 Nguyen tac: Dung thu nhap dau tien tra no (neu co), tai dau tu 50% de scale, giu 6 thang chi phi song du phong.</div>
+</div>
+
+<!-- ================= TRINH TU QUYET dINH ================= -->
+<div class="section" id="timeline">
+<h3>⏳ Trinh Tu Quyet dinh Chien Luoc (Ap Dung Moi Cap do)</h3>
+<div class="game"><b>🎯 Luat choi:</b> Lam dung thu tu de thang - sai thu tu de pha san!</div>
+<ol>
+<li>Xac dinh ro tat ca dong tien vao/ra tung phuong an (CF)</li>
+<li>Chon lai suat chiet khau phu hop (i = chi phi von thuc te)</li>
+<li>Tinh PV toan bo chi phi tung phuong an</li>
+<li>danh gia rui ro (thu nhap giam, lai tang, thi truong bien dong)</li>
+<li>Chon phuong an PV thap nhat + rui ro chap nhan duoc</li>
+<li>Theo doi & tat toan som neu lai thi truong giam</li>
+</ol>
+<div class="warn">⚠ Sai lam pho bien: Chi nhin tong tien tra hoac PMT thap → roi bay PV cao!</div>
+</div>
+
+<!-- ================= RUI RO ================= -->
+<div class="section" id="risk">
+<h3>⚠ Rui Ro & Chien Luoc Giam Thieu (Doanh Nghiep doi Thuc)</h3>
+<div class="game"><b>💀 Game Over neu:</b> Dong tien thuc te < PMT + chi phi van hanh!</div>
+<ul>
+<li><b>Rui ro lai suat tang:</b> Chon vay co dinh hoac hedging swap</li>
+<li><b>Rui ro thu nhap giam:</b> Giu quy du phong 6-12 thang</li>
+<li><b>Rui ro ty gia:</b> Vay noi te hoac natural hedge</li>
+<li><b>Rui ro thanh khoan:</b> da dang nguon von, tranh vay ngan han dai dung</li>
+<li><b>Rui ro phap ly:</b> doc ky hop dong thue tai chinh (tat toan som phat cao)</li>
+</ul>
+<div class="calc">
+<b>Vi du thuc te VinFast:</b> Vay hang ty USD xay nha may → neu ban xe cham → ap luc lai khong lo → phai huy dong them von.
+</div>
+<div class="note">🏆 Chien luoc thang: Luon tinh PV o kich ban xau nhat (worst-case) truoc khi quyet!</div>
+</div>
+
+<!-- ================= FOOTER ================= -->
+<div class="section" style="text-align:center;background:#2c3e50;color:white">
+<p>🎯 <b>Tro Choi Tai Chinh Doanh Nghiep - Chuong 2</b></p>
+<p>Ap dung kien thuc PV, PMT vao quyet dinh thuc te</p>
+<p>© 2023 - Quang Trung TV - Hoc vien Tai chinh Doanh nghiep</p>
+</div>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

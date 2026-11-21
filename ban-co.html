@@ -1,0 +1,1610 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xac dinh Cap Bac va Vi Tri Ban Co - Bang Chu Xuoi/Nguoc</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            color: #333;
+            min-height: 100vh;
+            padding: 15px;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            overflow: hidden;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #1a2980;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #26d0ce;
+        }
+        
+        h2 {
+            color: #1a2980;
+            margin: 25px 0 15px 0;
+            font-size: 1.4rem;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        h3 {
+            color: #1a2980;
+            margin: 20px 0 10px 0;
+            font-size: 1.2rem;
+        }
+        
+        .input-section {
+            margin-bottom: 25px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #1a2980;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: #26d0ce;
+            outline: none;
+        }
+        
+        .btn {
+            background: linear-gradient(to right, #1a2980, #26d0ce);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(to right, #6c757d, #adb5bd);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(to right, #dc3545, #e35d6a);
+        }
+        
+        .btn-success {
+            background: linear-gradient(to right, #28a745, #34ce57);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(to right, #ffc107, #ffd54f);
+            color: #333;
+        }
+        
+        .btn-info {
+            background: linear-gradient(to right, #17a2b8, #5bc0de);
+        }
+        
+        .btn-purple {
+            background: linear-gradient(to right, #6f42c1, #a370f7);
+            color: white;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .toggle-container {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 2px solid #ffc107;
+        }
+        
+        .toggle-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .toggle-status {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background-color: #e9ecef;
+        }
+        
+        .letter-table-container {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+        
+        .rank-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .rank-table th, .rank-table td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        .rank-table th {
+            background-color: #1a2980;
+            color: white;
+        }
+        
+        .results-container {
+            margin-top: 25px;
+            overflow-x: auto;
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .results-table th {
+            background: linear-gradient(to right, #1a2980, #26d0ce);
+            color: white;
+            padding: 12px 8px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+        
+        .results-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .results-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .results-table tr:hover {
+            background-color: #e9ecef;
+        }
+        
+        .rank-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+            min-width: 60px;
+        }
+        
+        /* Cap bac dao nguoc (mac dinh) */
+        .rank-1 { background-color: #dc3545; } /* Tuong */
+        .rank-2 { background-color: #fd7e14; } /* Si */
+        .rank-3 { background-color: #ffc107; color: #333; } /* Tuong */
+        .rank-4 { background-color: #28a745; } /* Xe */
+        .rank-5 { background-color: #17a2b8; } /* Phao */
+        .rank-6 { background-color: #6f42c1; } /* Ma */
+        .rank-7 { background-color: #6c757d; } /* Tot */
+        
+        /* Cap bac thuan (khi doi) */
+        .rank-reverse-1 { background-color: #6c757d; } /* Tot */
+        .rank-reverse-2 { background-color: #6f42c1; } /* Ma */
+        .rank-reverse-3 { background-color: #17a2b8; } /* Phao */
+        .rank-reverse-4 { background-color: #28a745; } /* Xe */
+        .rank-reverse-5 { background-color: #ffc107; color: #333; } /* Tuong */
+        .rank-reverse-6 { background-color: #fd7e14; } /* Si */
+        .rank-reverse-7 { background-color: #dc3545; } /* Tuong */
+        
+        .letter-counts {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .count-item {
+            display: inline-block;
+            margin-right: 5px;
+            padding: 2px 5px;
+            background-color: #f1f1f1;
+            border-radius: 3px;
+        }
+        
+        .count-value {
+            font-weight: bold;
+            color: #1a2980;
+        }
+        
+        .letter-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            max-height: 300px;
+            overflow-y: auto;
+            display: block;
+        }
+        
+        .letter-table th, .letter-table td {
+            padding: 6px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        .letter-table th {
+            background-color: #6f42c1;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        
+        .letter-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .letter-value-1 { background-color: rgba(220, 53, 69, 0.1); }
+        .letter-value-2 { background-color: rgba(253, 126, 20, 0.1); }
+        .letter-value-3 { background-color: rgba(255, 193, 7, 0.1); }
+        .letter-value-4 { background-color: rgba(40, 167, 69, 0.1); }
+        .letter-value-5 { background-color: rgba(23, 162, 184, 0.1); }
+        .letter-value-6 { background-color: rgba(111, 66, 193, 0.1); }
+        .letter-value-7 { background-color: rgba(108, 117, 125, 0.1); }
+        
+        .chessboard-container {
+            margin-top: 30px;
+            overflow-x: auto;
+        }
+        
+        .chessboard-title {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #1a2980;
+            font-size: 1.3rem;
+        }
+        
+        .chessboard {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            border-collapse: collapse;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chessboard td {
+            width: 11.11%;
+            height: 35px;
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid #aaa;
+            position: relative;
+            font-size: 0.7rem;
+            font-weight: bold;
+            overflow: hidden;
+        }
+        
+        .chessboard tr:nth-child(odd) td:nth-child(odd),
+        .chessboard tr:nth-child(even) td:nth-child(even) {
+            background-color: #f0d9b5;
+        }
+        
+        .chessboard tr:nth-child(odd) td:nth-child(even),
+        .chessboard tr:nth-child(even) td:nth-child(odd) {
+            background-color: #b58863;
+        }
+        
+        .position-marker {
+            background-color: rgba(220, 53, 69, 0.8) !important;
+            color: white;
+            border-radius: 3px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .position-marker::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px solid #ff0000;
+            border-radius: 3px;
+            z-index: 1;
+        }
+        
+        .multiple-marker {
+            background-color: rgba(255, 193, 7, 0.9) !important;
+            color: #333;
+        }
+        
+        .river {
+            border-top: 2px solid #1a2980;
+            border-bottom: 2px solid #1a2980;
+        }
+        
+        .rank-name {
+            font-size: 0.75rem;
+            color: #1a2980;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 5px;
+        }
+        
+        .add-person-section {
+            background-color: #f0f7ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .instructions {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            border-left: 4px solid #26d0ce;
+        }
+        
+        .instructions h3 {
+            color: #1a2980;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 5px;
+        }
+        
+        .summary {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        
+        .summary-item {
+            text-align: center;
+            padding: 10px;
+            min-width: 120px;
+        }
+        
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1a2980;
+        }
+        
+        .summary-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        @media (max-width: 768px) {
+            .results-table {
+                font-size: 0.85rem;
+            }
+            
+            .results-table th,
+            .results-table td {
+                padding: 8px 5px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .form-group {
+                min-width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-right: 0;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .chessboard td {
+                height: 30px;
+                font-size: 0.6rem;
+            }
+            
+            .toggle-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .letter-table {
+                font-size: 0.7rem;
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1200px;
+                padding: 30px;
+            }
+            
+            .chessboard td {
+                height: 45px;
+                font-size: 0.85rem;
+            }
+        }
+        
+        .person-count {
+            display: inline-block;
+            background-color: #1a2980;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            margin-left: 5px;
+        }
+        
+        .position-count {
+            font-size: 0.7rem;
+            display: block;
+            margin-top: 2px;
+            color: #333;
+            font-weight: normal;
+        }
+        
+        .note-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 15px 0;
+            font-size: 0.9rem;
+            color: #856404;
+        }
+        
+        .note-box strong {
+            color: #d35400;
+        }
+        
+        .mode-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        .mode-forward {
+            background-color: #17a2b8;
+            color: white;
+        }
+        
+        .mode-backward {
+            background-color: #6f42c1;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>XAC dINH CAP BAC VA VI TRI BAN CO - BANG CHU XUOI/NGUOC</h1>
+        
+        <div class="toggle-container">
+            <div class="toggle-info">
+                <div>
+                    <h3>Che do cap bac hien tai:</h3>
+                    <p>Nhan nut de chuyen doi giua hai che do xac dinh cap bac</p>
+                </div>
+                <div class="toggle-status" id="rankModeStatus">Che do dao nguoc (1=TUONG, 7=TOT)</div>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-warning" id="toggleRankBtn">doi che do cap bac</button>
+                <button class="btn btn-info" id="showRulesBtn">Xem quy tac tinh cap bac</button>
+                <button class="btn btn-purple" id="toggleLetterModeBtn">Chuyen bang chu nguoc</button>
+            </div>
+        </div>
+        
+        <div class="letter-table-container" id="letterTableSection" style="display: none;">
+            <h3>Bang chu cai hien tai: <span id="letterModeStatus" class="mode-badge mode-forward">Xuoi</span></h3>
+            <p>Bang duoi day hien thi gia tri cua tung chu cai theo che do hien tai</p>
+            
+            <div class="button-group">
+                <button class="btn btn-secondary" id="findLettersBtn">Tim chu cai theo gia tri</button>
+            </div>
+            
+            <table class="letter-table" id="letterTable">
+                <!-- Bang chu cai se duoc tao bang JavaScript -->
+            </table>
+            
+            <div class="note-box">
+                <p><strong>Chu y:</strong> Bang chu nguoc la bang chu cai dao nguoc gia tri tu bang chu xuoi. Vi du: neu A=1 trong bang xuoi thi A=7 trong bang nguoc.</p>
+            </div>
+        </div>
+        
+        <div class="letter-table-container" id="rankRulesSection" style="display: none;">
+            <h3>Quy tac xac dinh cap bac:</h3>
+            <p><strong>Cach tinh:</strong> dem so lan xuat hien cua moi gia tri chu cai trong ten theo bang 237, sau do xac dinh gia tri nao xuat hien nhieu nhat.</p>
+            
+            <table class="rank-table">
+                <thead>
+                    <tr>
+                        <th>Gia tri</th>
+                        <th>Che do dao nguoc</th>
+                        <th>Che do thuan</th>
+                        <th>Vi du chu cai (xuoi)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>1</strong></td>
+                        <td><span class="rank-badge rank-1">TUONG</span></td>
+                        <td><span class="rank-badge rank-reverse-1">TOT</span></td>
+                        <td>A, H, P, X, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A, A</td>
+                    </tr>
+                    <tr>
+                        <td><strong>2</strong></td>
+                        <td><span class="rank-badge rank-2">SI</span></td>
+                        <td><span class="rank-badge rank-reverse-2">MA</span></td>
+                        <td>B, I, Q, Y, I, I, I, I, I, Y, Y, Y, Y, Y</td>
+                    </tr>
+                    <tr>
+                        <td><strong>3</strong></td>
+                        <td><span class="rank-badge rank-3">TUONG</span></td>
+                        <td><span class="rank-badge rank-reverse-3">PHAO</span></td>
+                        <td>C, K, R</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4</strong></td>
+                        <td><span class="rank-badge rank-4">XE</span></td>
+                        <td><span class="rank-badge rank-reverse-4">XE</span></td>
+                        <td>D, L, S</td>
+                    </tr>
+                    <tr>
+                        <td><strong>5</strong></td>
+                        <td><span class="rank-badge rank-5">PHAO</span></td>
+                        <td><span class="rank-badge rank-reverse-5">TUONG</span></td>
+                        <td>d, M, T</td>
+                    </tr>
+                    <tr>
+                        <td><strong>6</strong></td>
+                        <td><span class="rank-badge rank-6">Ma</span></td>
+                        <td><span class="rank-badge rank-reverse-6">SI</span></td>
+                        <td>E, N, U, V, E, E, E, E, E, E, E, E, E, E, E, U, U, U, U, U, U, U, U, U, U, U, Y</td>
+                    </tr>
+                    <tr>
+                        <td><strong>7</strong></td>
+                        <td><span class="rank-badge rank-7">TOT</span></td>
+                        <td><span class="rank-badge rank-reverse-7">TUONG</span></td>
+                        <td>G, O, V, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O, O</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="note-box">
+                <p><strong>Chu y quan trong:</strong></p>
+                <ul>
+                    <li><strong>Che do dao nguoc (mac dinh):</strong> 1=TUONG, 2=SI, 3=TUONG, 4=XE, 5=PHAO, 6=MA, 7=TOT</li>
+                    <li><strong>Che do thuan (khi doi):</strong> 1=TOT, 2=MA, 3=PHAO, 4=XE, 5=TUONG, 6=SI, 7=TUONG</li>
+                    <li>He thong se tu dong dem so luong chu cai theo tung gia tri (1-7) trong ten cua moi nguoi</li>
+                    <li>Cap bac duoc xac dinh bang gia tri co so luong nhieu nhat</li>
+                    <li>Neu co nhieu gia tri cung so luong, se uu tien gia tri nho hon</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="currentDate">Ngay thang nam hien tai (dung de tinh tuoi tat ca moi nguoi)</label>
+                <input type="date" id="currentDate" value="">
+            </div>
+            
+            <div class="button-group">
+                <button class="btn" id="calculateAllBtn">Tinh toan cho tat ca nguoi</button>
+                <button class="btn btn-secondary" id="exportBtn">Xuat ket qua ra CSV</button>
+                <button class="btn btn-danger" id="clearAllBtn">Xoa tat ca ket qua</button>
+            </div>
+        </div>
+        
+        <div class="summary" id="summarySection">
+            <!-- Phan tong ket se duoc cap nhat bang JavaScript -->
+        </div>
+        
+        <div class="results-container">
+            <h2>Ket qua tinh toan <span id="personCount" class="personCount">0</span></h2>
+            <table class="results-table" id="resultsTable">
+                <thead>
+                    <tr>
+                        <th width="4%">STT</th>
+                        <th width="16%">Ho ten</th>
+                        <th width="10%">Ngay sinh</th>
+                        <th width="9%">Tuoi (mod 90)</th>
+                        <th width="12%">Cap bac</th>
+                        <th width="20%">So luong chu cai theo gia tri</th>
+                        <th width="12%">Vi tri ban co</th>
+                        <th width="8%">Tuyen</th>
+                        <th width="9%">Thao tac</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody">
+                    <!-- Ket qua se duoc them vao day -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="add-person-section">
+            <h2>Them nguoi moi vao danh sach</h2>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="newPersonName">Ho va ten</label>
+                    <input type="text" id="newPersonName" placeholder="Nhap ho ten day du">
+                </div>
+                <div class="form-group">
+                    <label for="newPersonBirthDate">Ngay thang nam sinh</label>
+                    <input type="date" id="newPersonBirthDate">
+                </div>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-success" id="addPersonBtn">Them nguoi moi</button>
+                <button class="btn btn-secondary" id="addSampleBtn">Them nguoi mau</button>
+            </div>
+        </div>
+        
+        <div class="chessboard-container">
+            <h3 class="chessboard-title">BAN CO TUONG 90 dIEM - VI TRI CUA MOI NGUOI</h3>
+            <table class="chessboard" id="chessboard">
+                <!-- Ban co se duoc tao bang JavaScript -->
+            </table>
+            <div class="rank-name">Tuyen tren: tu trai sang phai | Tuyen duoi: tu phai sang trai | do: 1 nguoi | Vang: nhieu nguoi</div>
+        </div>
+        
+        <div class="instructions">
+            <h3>Huong dan su dung:</h3>
+            <ul>
+                <li><strong>Buoc 1:</strong> Chon ngay hien tai de tinh tuoi cho tat ca moi nguoi</li>
+                <li><strong>Buoc 2:</strong> Chon che do cap bac (dao nguoc hoac thuan) theo nhu cau</li>
+                <li><strong>Buoc 3:</strong> Nhan "Chuyen bang chu nguoc" de xem bang chu cai dao nguoc</li>
+                <li><strong>Buoc 4:</strong> Nhan "Tinh toan cho tat ca nguoi" de tinh cap bac va vi tri</li>
+                <li><strong>Buoc 5:</strong> Xem ket qua trong bang va tren ban co</li>
+                <li><strong>Buoc 6:</strong> Them nguoi moi neu can (tu dong tinh toan luon)</li>
+                <li><strong>Chu y:</strong> Cot "So luong chu cai theo gia tri" hien thi so lan xuat hien cua moi gia tri (1-7) trong ten</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Danh sach nguoi theo yeu cau
+        let people = [
+            { id: 1, name: "NGUYENKHACNANG", birthDate: "1944-06-04" },
+            { id: 2, name: "TOTHIHA", birthDate: "1948-08-29" },
+            { id: 3, name: "NGUYENMINHNAM", birthDate: "1971-03-03" },
+            { id: 4, name: "THANTHIKIMANH", birthDate: "1981-09-23" },
+            { id: 5, name: "NGUYENTONGANAN", birthDate: "2014-09-28" },
+            { id: 6, name: "NGUYENTOMINHCHAU", birthDate: "2016-07-25" },
+            { id: 7, name: "NGUYENTOBICHNGOC", birthDate: "2020-02-05" },
+            { id: 8, name: "NGUYENTHIMINHHANG", birthDate: "1974-01-07" },
+            { id: 9, name: "NGOQUYCUONG", birthDate: "1973-05-23" },
+            { id: 10, name: "NGOGIABACH", birthDate: "2000-10-12" },
+            { id: 11, name: "NGOGIALINH", birthDate: "2005-04-05" },
+            { id: 12, name: "NGUYENTHIMINHPHUONG", birthDate: "1978-11-06" },
+            { id: 13, name: "HOANGANHDUNG", birthDate: "1978-09-21" },
+            { id: 14, name: "HOANGHAIVINH", birthDate: "2010-06-03" },
+            { id: 15, name: "HOANGTHIENBACHANH", birthDate: "2015-11-14" },
+            { id: 16, name: "TO KIM HUE", birthDate: "1960-08-09" },
+            { id: 17, name: "NGUYEN TUAN ANH", birthDate: "1983-10-23" },
+            { id: 18, name: "NGUYEN THE ANH", birthDate: "2001-03-24" },
+            { id: 19, name: "NGO THI MAI", birthDate: "1948-12-12" },
+            { id: 20, name: "TO VIET HUNG", birthDate: "1996-06-17" },
+            { id: 21, name: "TO THI HONG", birthDate: "1964-10-10" },
+            { id: 22, name: "VU VAN HIEP", birthDate: "1974-04-24" },
+            { id: 23, name: "NGUYEN THI CHI", birthDate: "1946-02-08" },
+            { id: 24, name: "NGUYEN TAN BAC", birthDate: "1957-11-30" },
+            { id: 25, name: "NGUYEN THI TAM", birthDate: "1954-08-08" }
+        ];
+
+        // Bang chu cai theo yeu cau (xuoi)
+        const letterValuesForward = {
+            'A':1,'B':2,'C':3,'D':4,'d':5,'E':6,'G':7,'H':1,'I':2,'K':3,'L':4,'M':5,'N':6,'O':7,'P':1,'Q':2,'R':3,'S':4,'T':5,'U':6,'V':7,'X':1,'Y':2,
+            'A':1,'A':1,'A':1,'A':1,'A':1,'A':1,'A':1,'A':1,'A':1,'A':1,'A':1,'A':1,'A':1,'A':1,'A':1,'A':1,'A':1,
+            'E':6,'E':6,'E':6,'E':6,'E':6,'E':6,'E':6,'E':6,'E':6,'E':6,'E':6,
+            'I':2,'I':2,'I':2,'I':2,'I':2,
+            'O':7,'O':7,'O':7,'O':7,'O':7,'O':7,'O':7,'O':7,'O':7,'O':7,'O':7,'O':7,'O':7,'O':7,'O':7,'O':7,'O':7,
+            'U':6,'U':6,'U':6,'U':6,'U':6,'U':6,'U':6,'U':6,'U':6,'U':6,'U':6,
+            'Y':2,'Y':2,'Y':2,'Y':2,'Y':2,
+            'a':1,'b':2,'c':3,'d':4,'d':5,'e':6,'g':7,'h':1,'i':2,'k':3,'l':4,'m':5,'n':6,'o':7,'p':1,'q':2,'r':3,'s':4,'t':5,'u':6,'v':7,'x':1,'y':2,
+            'a':1,'a':1,'a':1,'a':1,'a':1,'a':1,'a':1,'a':1,'a':1,'a':1,'a':1,'a':1,'a':1,'a':1,'a':1,'a':1,'a':1,
+            'e':6,'e':6,'e':6,'e':6,'e':6,'e':6,'e':6,'e':6,'e':6,'e':6,'e':6,
+            'i':2,'i':2,'i':2,'i':2,'i':2,
+            'o':7,'o':7,'o':7,'o':7,'o':7,'o':7,'o':7,'o':7,'o':7,'o':7,'o':7,'o':7,'o':7,'o':7,'o':7,'o':7,'o':7,
+            'u':6,'u':6,'u':6,'u':6,'u':6,'u':6,'u':6,'u':6,'u':6,'u':6,'u':6,
+            'y':6,'y':2,'y':2,'y':2,'y':2
+        };
+
+        // Tao bang chu cai nguoc (dao nguoc gia tri)
+        const letterValuesBackward = {};
+        for (const [letter, value] of Object.entries(letterValuesForward)) {
+            // dao nguoc gia tri: 1->7, 2->6, 3->5, 4->4, 5->3, 6->2, 7->1
+            let backwardValue;
+            switch(value) {
+                case 1: backwardValue = 7; break;
+                case 2: backwardValue = 6; break;
+                case 3: backwardValue = 5; break;
+                case 4: backwardValue = 4; break;
+                case 5: backwardValue = 3; break;
+                case 6: backwardValue = 2; break;
+                case 7: backwardValue = 1; break;
+                default: backwardValue = value;
+            }
+            letterValuesBackward[letter] = backwardValue;
+        }
+
+        // Bien toan cuc de luu che do cap bac
+        let isReverseMode = true; // true: dao nguoc (1=TUONG, 7=TOT), false: thuan (1=TOT, 7=TUONG)
+        
+        // Bien toan cuc de luu che do bang chu
+        let isLetterModeForward = true; // true: bang chu xuoi, false: bang chu nguoc
+        
+        // Bang cap bac dao nguoc (mac dinh)
+        const rankNamesReverse = {
+            1: "TUONG",
+            2: "SI",
+            3: "TUONG",
+            4: "XE",
+            5: "PHAO",
+            6: "MA",
+            7: "TOT"
+        };
+        
+        // Bang cap bac thuan
+        const rankNamesForward = {
+            1: "TOT",
+            2: "MA",
+            3: "PHAO",
+            4: "XE",
+            5: "TUONG",
+            6: "SI",
+            7: "TUONG"
+        };
+
+        // Lay ten cap bac theo che do hien tai
+        function getRankName(rank) {
+            return isReverseMode ? rankNamesReverse[rank] : rankNamesForward[rank];
+        }
+
+        // Mau sac cho cac cap bac (theo che do)
+        function getRankColorClass(rank) {
+            const baseClass = "rank-badge";
+            if (isReverseMode) {
+                return `${baseClass} rank-${rank}`;
+            } else {
+                return `${baseClass} rank-reverse-${rank}`;
+            }
+        }
+
+        // Luu ket qua tinh toan
+        let calculationResults = [];
+        
+        // dem so nguoi theo cap bac
+        let rankCounts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0};
+        
+        // Luu vi tri tren ban co
+        let boardPositions = {};
+
+        // Khoi tao khi trang duoc tai
+        document.addEventListener('DOMContentLoaded', function() {
+            // dat ngay hien tai lam mac dinh
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0];
+            document.getElementById('currentDate').value = todayStr;
+            
+            // Xu ly su kien
+            document.getElementById('calculateAllBtn').addEventListener('click', calculateAll);
+            document.getElementById('addPersonBtn').addEventListener('click', addNewPerson);
+            document.getElementById('addSampleBtn').addEventListener('click', addSamplePerson);
+            document.getElementById('exportBtn').addEventListener('click', exportToCSV);
+            document.getElementById('clearAllBtn').addEventListener('click', clearAllResults);
+            document.getElementById('toggleRankBtn').addEventListener('click', toggleRankMode);
+            document.getElementById('showRulesBtn').addEventListener('click', toggleRulesSection);
+            document.getElementById('toggleLetterModeBtn').addEventListener('click', toggleLetterMode);
+            document.getElementById('findLettersBtn').addEventListener('click', findLettersByValue);
+            
+            // Tao ban co
+            createChessboard();
+            
+            // Cap nhat trang thai che do
+            updateRankModeStatus();
+            updateLetterModeStatus();
+            
+            // Tinh toan mac dinh cho tat ca nguoi
+            setTimeout(() => {
+                calculateAll();
+            }, 500);
+        });
+
+        // Ham doi che do cap bac
+        function toggleRankMode() {
+            isReverseMode = !isReverseMode;
+            updateRankModeStatus();
+            
+            // Tinh toan lai voi che do moi
+            if (calculationResults.length > 0) {
+                calculateAll();
+            }
+            
+            alert(`da chuyen sang che do: ${isReverseMode ? 'dao nguoc (1=TUONG, 7=TOT)' : 'Thuan (1=TOT, 7=TUONG)'}`);
+        }
+
+        // Ham doi che do bang chu
+        function toggleLetterMode() {
+            const letterTableSection = document.getElementById('letterTableSection');
+            if (letterTableSection.style.display === 'none' || letterTableSection.style.display === '') {
+                letterTableSection.style.display = 'block';
+                document.getElementById('toggleLetterModeBtn').textContent = 'An bang chu cai';
+                
+                // Tao bang chu cai
+                createLetterTable();
+            } else {
+                letterTableSection.style.display = 'none';
+                document.getElementById('toggleLetterModeBtn').textContent = 'Chuyen bang chu nguoc';
+            }
+        }
+
+        // Ham chuyen doi bang chu xuoi/nguoc
+        function switchLetterTableMode() {
+            isLetterModeForward = !isLetterModeForward;
+            updateLetterModeStatus();
+            createLetterTable();
+            
+            alert(`da chuyen sang bang chu: ${isLetterModeForward ? 'Xuoi' : 'Nguoc'}`);
+        }
+
+        // Ham cap nhat trang thai che do cap bac
+        function updateRankModeStatus() {
+            const statusElement = document.getElementById('rankModeStatus');
+            if (isReverseMode) {
+                statusElement.textContent = "Che do dao nguoc (1=TUONG, 2=SI, 3=TUONG, 4=XE, 5=PHAO, 6=MA, 7=TOT)";
+                statusElement.style.backgroundColor = "#ffc107";
+                statusElement.style.color = "#333";
+            } else {
+                statusElement.textContent = "Che do thuan (1=TOT, 2=MA, 3=PHAO, 4=XE, 5=TUONG, 6=SI, 7=TUONG)";
+                statusElement.style.backgroundColor = "#17a2b8";
+                statusElement.style.color = "white";
+            }
+        }
+
+        // Ham cap nhat trang thai che do bang chu
+        function updateLetterModeStatus() {
+            const statusElement = document.getElementById('letterModeStatus');
+            if (isLetterModeForward) {
+                statusElement.textContent = "Xuoi";
+                statusElement.className = "mode-badge mode-forward";
+                document.getElementById('toggleLetterModeBtn').textContent = 'Chuyen bang chu nguoc';
+            } else {
+                statusElement.textContent = "Nguoc";
+                statusElement.className = "mode-badge mode-backward";
+                document.getElementById('toggleLetterModeBtn').textContent = 'Chuyen bang chu xuoi';
+            }
+        }
+
+        // Ham hien thi/an phan quy tac
+        function toggleRulesSection() {
+            const rulesSection = document.getElementById('rankRulesSection');
+            if (rulesSection.style.display === 'none' || rulesSection.style.display === '') {
+                rulesSection.style.display = 'block';
+                document.getElementById('showRulesBtn').textContent = 'An quy tac tinh cap bac';
+            } else {
+                rulesSection.style.display = 'none';
+                document.getElementById('showRulesBtn').textContent = 'Xem quy tac tinh cap bac';
+            }
+        }
+
+        // Ham tao bang chu cai
+        function createLetterTable() {
+            const letterTable = document.getElementById('letterTable');
+            letterTable.innerHTML = '';
+            
+            // Tao header
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            
+            const headers = ['Chu cai', 'Gia tri', 'Chu cai', 'Gia tri', 'Chu cai', 'Gia tri', 'Chu cai', 'Gia tri'];
+            headers.forEach(headerText => {
+                const th = document.createElement('th');
+                th.textContent = headerText;
+                headerRow.appendChild(th);
+            });
+            
+            thead.appendChild(headerRow);
+            letterTable.appendChild(thead);
+            
+            // Tao body
+            const tbody = document.createElement('tbody');
+            
+            // Lay bang chu cai hien tai
+            const currentLetterValues = isLetterModeForward ? letterValuesForward : letterValuesBackward;
+            
+            // Chuyen doi doi tuong thanh mang va sap xep
+            const lettersArray = Object.entries(currentLetterValues);
+            
+            // Chia thanh 4 cot
+            const columns = 4;
+            const itemsPerColumn = Math.ceil(lettersArray.length / columns);
+            
+            for (let row = 0; row < itemsPerColumn; row++) {
+                const tr = document.createElement('tr');
+                
+                for (let col = 0; col < columns; col++) {
+                    const index = row + col * itemsPerColumn;
+                    
+                    if (index < lettersArray.length) {
+                        const [letter, value] = lettersArray[index];
+                        
+                        // O chu cai
+                        const tdLetter = document.createElement('td');
+                        tdLetter.textContent = letter;
+                        tdLetter.className = `letter-value-${value}`;
+                        tr.appendChild(tdLetter);
+                        
+                        // O gia tri
+                        const tdValue = document.createElement('td');
+                        tdValue.textContent = value;
+                        tdValue.className = `letter-value-${value}`;
+                        tr.appendChild(tdValue);
+                    } else {
+                        // O trong
+                        const tdEmpty1 = document.createElement('td');
+                        const tdEmpty2 = document.createElement('td');
+                        tr.appendChild(tdEmpty1);
+                        tr.appendChild(tdEmpty2);
+                    }
+                }
+                
+                tbody.appendChild(tr);
+            }
+            
+            letterTable.appendChild(tbody);
+        }
+
+        // Ham tim chu cai theo gia tri
+        function findLettersByValue() {
+            const value = prompt("Nhap gia tri can tim (1-7):");
+            if (!value || isNaN(value) || value < 1 || value > 7) {
+                alert("Vui long nhap gia tri tu 1 den 7");
+                return;
+            }
+            
+            const numericValue = parseInt(value);
+            const currentLetterValues = isLetterModeForward ? letterValuesForward : letterValuesBackward;
+            
+            // Tim cac chu cai co gia tri bang gia tri nhap vao
+            const matchingLetters = [];
+            for (const [letter, letterValue] of Object.entries(currentLetterValues)) {
+                if (letterValue === numericValue) {
+                    matchingLetters.push(letter);
+                }
+            }
+            
+            if (matchingLetters.length === 0) {
+                alert(`Khong tim thay chu cai nao co gia tri ${numericValue} trong bang chu ${isLetterModeForward ? 'xuoi' : 'nguoc'}`);
+                return;
+            }
+            
+            // Hien thi ket qua
+            const resultText = `Cac chu cai co gia tri ${numericValue} trong bang chu ${isLetterModeForward ? 'xuoi' : 'nguoc'}:\n\n${matchingLetters.join(', ')}\n\nTong cong: ${matchingLetters.length} chu cai`;
+            alert(resultText);
+        }
+
+        // Ham dinh dang ngay thang
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        // Ham tinh toan cho tat ca nguoi
+        function calculateAll() {
+            const currentDate = document.getElementById('currentDate').value;
+            
+            if (!currentDate) {
+                alert("Vui long chon ngay hien tai de tinh tuoi!");
+                return;
+            }
+            
+            // Reset du lieu
+            calculationResults = [];
+            rankCounts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0};
+            boardPositions = {};
+            
+            // Tinh toan cho tung nguoi
+            people.forEach(person => {
+                const result = calculatePerson(person, currentDate);
+                calculationResults.push(result);
+                
+                // dem so nguoi theo cap bac
+                rankCounts[result.rank]++;
+                
+                // Luu vi tri tren ban co
+                const positionKey = `${result.position.row}-${result.position.col}`;
+                if (!boardPositions[positionKey]) {
+                    boardPositions[positionKey] = [];
+                }
+                boardPositions[positionKey].push(result);
+            });
+            
+            // Hien thi ket qua
+            displayResults();
+            
+            // Cap nhat ban co
+            updateChessboard();
+            
+            // Cap nhat tong ket
+            updateSummary();
+            
+            alert(`da tinh toan xong cho ${people.length} nguoi!`);
+        }
+
+        // Ham tinh toan cho mot nguoi
+        function calculatePerson(person, currentDateStr) {
+            const name = person.name;
+            const birthDate = person.birthDate;
+            
+            // Tinh tuoi
+            const birth = new Date(birthDate);
+            const current = new Date(currentDateStr);
+            let age = current.getFullYear() - birth.getFullYear();
+            const monthDiff = current.getMonth() - birth.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && current.getDate() < birth.getDate())) {
+                age--;
+            }
+            
+            // Tuoi mod 90
+            const ageMod90 = age % 90;
+            
+            // Xac dinh cap bac va dem so luong chu cai
+            const { rank, letterCounts } = determineRankAndCounts(name);
+            const rankName = getRankName(rank);
+            
+            // Xac dinh vi tri tren ban co
+            const position = calculateBoardPosition(birth, ageMod90);
+            
+            return {
+                id: person.id,
+                name: name,
+                birthDate: birthDate,
+                age: age,
+                ageMod90: ageMod90,
+                rank: rank,
+                rankName: rankName,
+                letterCounts: letterCounts,
+                position: position,
+                isUpperLine: position.isUpperLine
+            };
+        }
+
+        // Ham xac dinh cap bac va dem so luong chu cai theo gia tri
+        function determineRankAndCounts(name) {
+            let counts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0};
+            
+            // dem so lan xuat hien cua moi gia tri trong ten
+            // Su dung bang chu xuoi (mac dinh)
+            for (let char of name) {
+                if (letterValuesForward.hasOwnProperty(char)) {
+                    const value = letterValuesForward[char];
+                    counts[value]++;
+                }
+            }
+            
+            // Xac dinh gia tri xuat hien nhieu nhat
+            let maxCount = 0;
+            let maxRank = 1;
+            
+            for (let rank in counts) {
+                if (counts[rank] > maxCount) {
+                    maxCount = counts[rank];
+                    maxRank = parseInt(rank);
+                }
+            }
+            
+            return {
+                rank: maxRank,
+                letterCounts: counts
+            };
+        }
+
+        // Ham tinh vi tri tren ban co
+        function calculateBoardPosition(birthDate, ageMod90) {
+            const month = birthDate.getMonth() + 1; // Thang tu 1-12
+            const isUpperLine = month >= 7; // Tuyen tren: thang 7-12
+            
+            // Tinh vi tri tren ban co (1-90)
+            let positionNumber = ageMod90 === 0 ? 90 : ageMod90;
+            
+            // Tinh hang va cot
+            let row, col;
+            
+            if (isUpperLine) {
+                // Tuyen tren: tinh tu trai sang phai, tu tren xuong
+                row = Math.ceil(positionNumber / 9);
+                col = positionNumber % 9 || 9;
+            } else {
+                // Tuyen duoi: tinh tu phai sang trai, tu duoi len
+                // dao nguoc vi tri: 1->90, 2->89, ...
+                const reversedPosition = 91 - positionNumber;
+                row = Math.ceil(reversedPosition / 9);
+                col = reversedPosition % 9 || 9;
+                
+                // dieu chinh hang cho tuyen duoi (tu hang 10 tro len)
+                row = 11 - row;
+            }
+            
+            // Mo ta vi tri
+            const description = `H${row}C${col} (${positionNumber})`;
+            
+            return {
+                row: row,
+                col: col,
+                positionNumber: positionNumber,
+                description: description,
+                isUpperLine: isUpperLine
+            };
+        }
+
+        // Ham hien thi ket qua
+        function displayResults() {
+            const resultsBody = document.getElementById('resultsBody');
+            resultsBody.innerHTML = '';
+            
+            calculationResults.forEach((result, index) => {
+                const row = document.createElement('tr');
+                
+                // STT
+                const td1 = document.createElement('td');
+                td1.textContent = index + 1;
+                row.appendChild(td1);
+                
+                // Ho ten
+                const td2 = document.createElement('td');
+                td2.textContent = result.name;
+                row.appendChild(td2);
+                
+                // Ngay sinh
+                const td3 = document.createElement('td');
+                td3.textContent = formatDate(result.birthDate);
+                row.appendChild(td3);
+                
+                // Tuoi (mod 90)
+                const td4 = document.createElement('td');
+                td4.textContent = `${result.age} (${result.ageMod90})`;
+                row.appendChild(td4);
+                
+                // Cap bac
+                const td5 = document.createElement('td');
+                const rankBadge = document.createElement('span');
+                rankBadge.className = getRankColorClass(result.rank);
+                rankBadge.textContent = result.rankName;
+                td5.appendChild(rankBadge);
+                row.appendChild(td5);
+                
+                // So luong chu cai theo gia tri
+                const td6 = document.createElement('td');
+                const countsDiv = document.createElement('div');
+                countsDiv.className = 'letter-counts';
+                
+                // Hien thi so luong cho moi gia tri tu 1 den 7
+                for (let i = 1; i <= 7; i++) {
+                    const countSpan = document.createElement('span');
+                    countSpan.className = 'count-item';
+                    countSpan.innerHTML = `<span class="count-value">${i}:${result.letterCounts[i]}</span>`;
+                    countsDiv.appendChild(countSpan);
+                }
+                
+                td6.appendChild(countsDiv);
+                row.appendChild(td6);
+                
+                // Vi tri ban co
+                const td7 = document.createElement('td');
+                td7.textContent = result.position.description;
+                row.appendChild(td7);
+                
+                // Tuyen
+                const td8 = document.createElement('td');
+                td8.textContent = result.isUpperLine ? 'Tren' : 'Duoi';
+                row.appendChild(td8);
+                
+                // Thao tac
+                const td9 = document.createElement('td');
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'btn btn-danger';
+                removeBtn.textContent = 'Xoa';
+                removeBtn.style.padding = '5px 10px';
+                removeBtn.style.fontSize = '0.8rem';
+                removeBtn.addEventListener('click', () => removePerson(result.id));
+                td9.appendChild(removeBtn);
+                row.appendChild(td9);
+                
+                resultsBody.appendChild(row);
+            });
+            
+            // Cap nhat so luong nguoi
+            document.getElementById('personCount').textContent = calculationResults.length;
+        }
+
+        // Ham tao ban co
+        function createChessboard() {
+            const chessboard = document.getElementById('chessboard');
+            chessboard.innerHTML = '';
+            
+            // Tao 10 hang
+            for (let row = 1; row <= 10; row++) {
+                const tr = document.createElement('tr');
+                
+                // Them lop "river" cho hang 5 va 6 (song)
+                if (row === 5 || row === 6) {
+                    tr.classList.add('river');
+                }
+                
+                // Tao 9 cot
+                for (let col = 1; col <= 9; col++) {
+                    const td = document.createElement('td');
+                    td.id = `cell-${row}-${col}`;
+                    td.textContent = (row-1)*9 + col;
+                    tr.appendChild(td);
+                }
+                
+                chessboard.appendChild(tr);
+            }
+        }
+
+        // Ham cap nhat ban co
+        function updateChessboard() {
+            // Xoa tat ca cac danh dau cu
+            const allCells = document.querySelectorAll('.chessboard td');
+            allCells.forEach(cell => {
+                cell.classList.remove('position-marker', 'multiple-marker');
+                // Khoi phuc so ban dau
+                const [row, col] = cell.id.replace('cell-', '').split('-').map(Number);
+                cell.textContent = (row-1)*9 + col;
+            });
+            
+            // danh dau cac o moi
+            for (const positionKey in boardPositions) {
+                const [row, col] = positionKey.split('-').map(Number);
+                const targetCell = document.getElementById(`cell-${row}-${col}`);
+                if (targetCell) {
+                    const peopleAtPosition = boardPositions[positionKey];
+                    
+                    if (peopleAtPosition.length === 1) {
+                        targetCell.classList.add('position-marker');
+                        targetCell.textContent = peopleAtPosition[0].position.positionNumber;
+                    } else {
+                        targetCell.classList.add('multiple-marker');
+                        targetCell.innerHTML = `${peopleAtPosition[0].position.positionNumber}<span class="position-count">${peopleAtPosition.length} nguoi</span>`;
+                    }
+                }
+            }
+        }
+
+        // Ham them nguoi moi
+        function addNewPerson() {
+            const name = document.getElementById('newPersonName').value.trim();
+            const birthDate = document.getElementById('newPersonBirthDate').value;
+            const currentDate = document.getElementById('currentDate').value;
+            
+            if (!name || !birthDate) {
+                alert("Vui long nhap day du ho ten va ngay sinh!");
+                return;
+            }
+            
+            if (!currentDate) {
+                alert("Vui long chon ngay hien tai truoc!");
+                return;
+            }
+            
+            // Tao ID moi
+            const newId = people.length > 0 ? Math.max(...people.map(p => p.id)) + 1 : 1;
+            
+            // Them vao danh sach
+            const newPerson = {
+                id: newId,
+                name: name.toUpperCase(),
+                birthDate: birthDate
+            };
+            
+            people.push(newPerson);
+            
+            // Tinh toan cho nguoi moi
+            const result = calculatePerson(newPerson, currentDate);
+            calculationResults.push(result);
+            
+            // dem so nguoi theo cap bac
+            rankCounts[result.rank]++;
+            
+            // Luu vi tri tren ban co
+            const positionKey = `${result.position.row}-${result.position.col}`;
+            if (!boardPositions[positionKey]) {
+                boardPositions[positionKey] = [];
+            }
+            boardPositions[positionKey].push(result);
+            
+            // Hien thi ket qua
+            displayResults();
+            
+            // Cap nhat ban co
+            updateChessboard();
+            
+            // Cap nhat tong ket
+            updateSummary();
+            
+            // Xoa form nhap lieu
+            document.getElementById('newPersonName').value = '';
+            document.getElementById('newPersonBirthDate').value = '';
+            
+            alert(`da them nguoi moi: ${name}`);
+        }
+
+        // Ham them nguoi mau
+        function addSamplePerson() {
+            const sampleNames = [
+                "LE VAN TU", "PHAM THI HOA", "TRAN VAN dUC", 
+                "VU THI LAN", "HOANG VAN MINH", "dANG THI THU"
+            ];
+            
+            const sampleBirthDates = [
+                "1990-05-15", "1985-11-22", "1978-03-08",
+                "1995-07-30", "1982-12-10", "1975-09-18"
+            ];
+            
+            const randomIndex = Math.floor(Math.random() * sampleNames.length);
+            
+            document.getElementById('newPersonName').value = sampleNames[randomIndex];
+            document.getElementById('newPersonBirthDate').value = sampleBirthDates[randomIndex];
+        }
+
+        // Ham xoa nguoi
+        function removePerson(personId) {
+            if (!confirm("Ban co chac chan muon xoa nguoi nay khoi danh sach?")) {
+                return;
+            }
+            
+            // Xoa khoi danh sach people
+            people = people.filter(p => p.id !== personId);
+            
+            // Xoa khoi ket qua tinh toan
+            const resultIndex = calculationResults.findIndex(r => r.id === personId);
+            if (resultIndex !== -1) {
+                const result = calculationResults[resultIndex];
+                
+                // Giam so dem cap bac
+                rankCounts[result.rank]--;
+                
+                // Xoa khoi vi tri ban co
+                const positionKey = `${result.position.row}-${result.position.col}`;
+                if (boardPositions[positionKey]) {
+                    boardPositions[positionKey] = boardPositions[positionKey].filter(r => r.id !== personId);
+                    if (boardPositions[positionKey].length === 0) {
+                        delete boardPositions[positionKey];
+                    }
+                }
+                
+                calculationResults.splice(resultIndex, 1);
+            }
+            
+            // Cap nhat hien thi
+            displayResults();
+            updateChessboard();
+            updateSummary();
+            
+            alert("da xoa nguoi khoi danh sach!");
+        }
+
+        // Ham cap nhat tong ket
+        function updateSummary() {
+            const summarySection = document.getElementById('summarySection');
+            
+            let summaryHTML = `
+                <div class="summary-item">
+                    <div class="summary-value">${calculationResults.length}</div>
+                    <div class="summary-label">Tong so nguoi</div>
+                </div>
+            `;
+            
+            // Them so luong theo tung cap bac
+            for (let rank = 1; rank <= 7; rank++) {
+                if (rankCounts[rank] > 0) {
+                    const rankName = getRankName(rank);
+                    const rankColor = isReverseMode ? 
+                        (rank === 1 ? '#dc3545' : rank === 2 ? '#fd7e14' : rank === 3 ? '#ffc107' : 
+                         rank === 4 ? '#28a745' : rank === 5 ? '#17a2b8' : rank === 6 ? '#6f42c1' : '#6c757d') :
+                        (rank === 1 ? '#6c757d' : rank === 2 ? '#6f42c1' : rank === 3 ? '#17a2b8' : 
+                         rank === 4 ? '#28a745' : rank === 5 ? '#ffc107' : rank === 6 ? '#fd7e14' : '#dc3545');
+                    
+                    summaryHTML += `
+                        <div class="summary-item">
+                            <div class="summary-value" style="color: ${rankColor}">${rankCounts[rank]}</div>
+                            <div class="summary-label">${rankName}</div>
+                        </div>
+                    `;
+                }
+            }
+            
+            // Tinh so vi tri doc lap tren ban co
+            const uniquePositions = Object.keys(boardPositions).length;
+            summaryHTML += `
+                <div class="summary-item">
+                    <div class="summary-value">${uniquePositions}</div>
+                    <div class="summary-label">Vi tri khac nhau</div>
+                </div>
+            `;
+            
+            summarySection.innerHTML = summaryHTML;
+        }
+
+        // Ham xuat ket qua ra CSV
+        function exportToCSV() {
+            if (calculationResults.length === 0) {
+                alert("Khong co du lieu de xuat!");
+                return;
+            }
+            
+            // Tao tieu de CSV
+            let csvContent = "STT,Ho ten,Ngay sinh,Tuoi,Tuoi (mod 90),Cap bac so,Ten cap bac,So luong chu (1),So luong chu (2),So luong chu (3),So luong chu (4),So luong chu (5),So luong chu (6),So luong chu (7),Vi tri ban co,Hang,Cot,Tuyen\n";
+            
+            // Them du lieu
+            calculationResults.forEach((result, index) => {
+                const row = [
+                    index + 1,
+                    `"${result.name}"`,
+                    formatDate(result.birthDate),
+                    result.age,
+                    result.ageMod90,
+                    result.rank,
+                    result.rankName,
+                    result.letterCounts[1],
+                    result.letterCounts[2],
+                    result.letterCounts[3],
+                    result.letterCounts[4],
+                    result.letterCounts[5],
+                    result.letterCounts[6],
+                    result.letterCounts[7],
+                    result.position.description,
+                    result.position.row,
+                    result.position.col,
+                    result.isUpperLine ? "Tren" : "Duoi"
+                ].join(',');
+                
+                csvContent += row + '\n';
+            });
+            
+            // Tao file va tai xuong
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'ket_qua_tinh_toan.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert("da xuat ket qua ra file CSV!");
+        }
+
+        // Ham xoa tat ca ket qua
+        function clearAllResults() {
+            if (!confirm("Ban co chac chan muon xoa tat ca ket qua tinh toan? Du lieu goc van duoc giu lai.")) {
+                return;
+            }
+            
+            calculationResults = [];
+            rankCounts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0};
+            boardPositions = {};
+            
+            displayResults();
+            updateChessboard();
+            updateSummary();
+            
+            alert("da xoa tat ca ket qua tinh toan!");
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trình Tạo Prompt Chuyên Gia & Phân Tích Dẫn Chứng HTML</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="h-full bg-slate-950 text-slate-100 font-sans antialiased flex flex-col">
+
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between shadow-lg">
+        <div class="flex items-center space-x-3">
+            <div class="bg-gradient-to-tr from-cyan-500 to-indigo-600 p-2.5 rounded-xl shadow-lg shadow-cyan-500/20">
+                <i class="fa-solid fa-file-shield text-white text-base"></i>
+            </div>
+            <div>
+                <h1 class="text-base font-bold bg-gradient-to-r from-cyan-400 via-indigo-300 to-emerald-400 bg-clip-text text-transparent">Trình Tạo Prompt Chuyên Gia & Phân Tích Dẫn Chứng</h1>
+                <p class="text-[11px] text-slate-400">Chọn thư mục chứa tệp HTML, nhập chủ đề để AI mổ xẻ mánh khóe, chống chèn ép và thua lỗ</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-2.5">
+            <button onclick="loadSampleScenario()" class="px-3 py-1.5 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition border border-slate-700 flex items-center gap-1.5">
+                <i class="fa-solid fa-bolt text-amber-400"></i> Nạp Mẫu Đàm Phán & Chống Lỗ
+            </button>
+            <button onclick="clearAll()" class="px-3 py-1.5 text-xs font-medium bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg transition border border-rose-500/20 flex items-center gap-1.5">
+                <i class="fa-solid fa-rotate-right"></i> Làm mới
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 overflow-hidden">
+        
+        <!-- Left Panel: Configuration & Folder Selection -->
+        <section class="lg:col-span-5 flex flex-col gap-5 overflow-y-auto pr-1">
+            
+            <!-- Persona & Topic Configuration Box -->
+            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-xl backdrop-blur-sm space-y-3">
+                <div class="flex items-center justify-between">
+                    <label class="text-xs font-semibold text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-user-tie text-cyan-400"></i> Vai trò chuyên gia & Tình huống/Chủ đề cần tránh
+                    </label>
+                    <span class="text-[10px] text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">Quy chuẩn chuyên sâu</span>
+                </div>
+
+                <div>
+                    <label class="text-[11px] text-slate-400 block mb-1">Vai trò của AI (Persona):</label>
+                    <input type="text" id="personaInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-cyan-500" value="Bạn là một chuyên gia chiến lược đàm phán quốc tế, chuyên gia tâm lý hành vi và phân tích ngoại giao/thương mại.">
+                </div>
+
+                <div>
+                    <label class="text-[11px] text-slate-400 block mb-1">Chủ đề hoặc câu hỏi/tình huống cần phân tích & phòng tránh thua lỗ:</label>
+                    <textarea id="topicInput" rows="3" placeholder="Nhập tình huống hoặc câu hỏi của bạn..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-cyan-500 resize-none">Hãy phân tích và mổ xẻ tình huống giao dịch dưới đây để giải mã tư duy, mánh khóe ép giá, điều khoản ẩn và đưa ra phương án phòng chống thua lỗ tuyệt đối cho tôi.</textarea>
+                </div>
+            </div>
+
+            <!-- HTML Folder Selector & Path Input Box -->
+            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-xl backdrop-blur-sm flex-1 flex flex-col">
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-xs font-semibold text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-folder-open text-amber-400"></i> Chọn Thư Mục & Đường Dẫn Tệp HTML Mẫu
+                    </label>
+                    <span class="text-[10px] text-slate-400" id="fileCountBadge">0 tệp</span>
+                </div>
+
+                <!-- Folder Selection Option (webkitdirectory) -->
+                <div class="mb-3">
+                    <label class="flex items-center justify-center border border-slate-700 hover:border-cyan-500 rounded-xl p-3 cursor-pointer bg-slate-950/70 hover:bg-slate-900 transition group gap-2">
+                        <i class="fa-solid fa-folder-tree text-cyan-400 text-sm"></i>
+                        <span class="text-xs font-medium text-slate-300 group-hover:text-cyan-300">Chọn cả Thư mục chứa tệp HTML mẫu</span>
+                        <input type="file" id="folderInput" webkitdirectory directory multiple class="hidden" onchange="handleFolderSelect(event)">
+                    </label>
+                </div>
+
+                <!-- Manual Path & HTML Code Input -->
+                <div class="space-y-2">
+                    <input type="text" id="manualPath" placeholder="Đường dẫn tệp theo ý muốn (ví dụ: giao_dich/hop_dong_cu.html)" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-amber-500">
+                    <textarea id="manualHtmlContent" rows="2" placeholder="Dán nội dung hoặc mã HTML mẫu vào đây..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:ring-1 focus:ring-amber-500 font-mono resize-none"></textarea>
+                    <button onclick="addManualSnippet()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg border border-slate-700 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus text-amber-400"></i> Thêm đường dẫn & nội dung thủ công
+                    </button>
+                </div>
+
+                <!-- Attached File List with Links -->
+                <div class="mt-3 border-t border-slate-800 pt-2 flex-1 flex flex-col">
+                    <span class="text-[11px] font-semibold text-slate-400 block mb-1.5">Danh sách đường dẫn & tệp HTML mẫu (Click để xem):</span>
+                    <div id="fileListContainer" class="space-y-1.5 max-h-36 overflow-y-auto pr-1">
+                        <div class="text-[11px] text-slate-600 italic text-center py-3 bg-slate-950/40 rounded-xl border border-slate-900">Chưa chọn thư mục hoặc tệp nào. Vui lòng chọn thư mục hoặc thêm đường dẫn.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Generate Action Button -->
+            <button onclick="generatePrompt()" class="w-full py-3.5 bg-gradient-to-r from-cyan-600 via-indigo-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 text-white font-semibold rounded-2xl shadow-lg shadow-cyan-600/30 transition flex items-center justify-center gap-2 text-xs uppercase tracking-wider">
+                <i class="fa-solid fa-wand-magic-sparkles text-sm"></i> Tạo Prompt Phân Tích & Đối Chiếu Dẫn Chứng
+            </button>
+        </section>
+
+        <!-- Right Panel: Terminal Output & Quick Copy -->
+        <section class="lg:col-span-7 flex flex-col bg-slate-900/90 border border-slate-800 rounded-2xl shadow-xl backdrop-blur-sm overflow-hidden">
+            
+            <!-- Terminal Header Bar -->
+            <div class="px-4 py-3 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
+                <div class="flex items-center space-x-2">
+                    <div class="flex space-x-1.5">
+                        <div class="w-3 h-3 rounded-full bg-rose-500/80"></div>
+                        <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
+                        <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+                    </div>
+                    <span class="text-xs font-mono text-slate-400 ml-2">PROMPT_PHAN_TICH_VA_DAN_CHUNG.txt</span>
+                </div>
+                <div>
+                    <button onclick="copyAllPrompt()" class="px-3.5 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-semibold rounded-lg shadow-md transition flex items-center gap-1.5">
+                        <i class="fa-regular fa-copy"></i> Copy tất cả dán vào AI
+                    </button>
+                </div>
+            </div>
+
+            <!-- Terminal Code Box Area -->
+            <div class="flex-1 bg-slate-950 p-4 overflow-y-auto relative font-mono">
+                <pre id="terminalPromptBox" class="text-xs text-cyan-300 whitespace-pre-wrap leading-relaxed select-all">// Kết quả Prompt chuẩn xác kèm cấu trúc phân tích chuyên gia và danh sách đường dẫn tệp HTML mẫu sẽ hiển thị tại đây...
+// Hãy chọn thư mục chứa tệp HTML, nhập chủ đề và nhấn "Tạo Prompt Phân Tích & Đối Chiếu Dẫn Chứng".</pre>
+            </div>
+
+            <!-- Footer Toast Notification -->
+            <div id="toastNotification" class="hidden px-4 py-2 bg-emerald-500/20 border-t border-emerald-500/30 text-emerald-300 text-xs flex items-center justify-between font-sans">
+                <span id="toastMessage">Đã copy thành công!</span>
+                <button onclick="hideToast()" class="text-emerald-300 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Preview for HTML File Content -->
+    <div id="previewModal" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
+            <div class="px-4 py-3 bg-slate-800 border-b border-slate-700 flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-file-code text-amber-400"></i>
+                    <span id="modalFileName" class="text-xs font-mono text-slate-200">duong_dan.html</span>
+                </div>
+                <button onclick="closePreviewModal()" class="text-slate-400 hover:text-white px-2 py-1"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-4 overflow-y-auto flex-1 font-mono text-xs text-slate-300 bg-slate-950 whitespace-pre-wrap" id="modalFileContent"></div>
+            <div class="px-4 py-2 bg-slate-900 border-t border-slate-800 flex justify-end">
+                <button onclick="closePreviewModal()" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs rounded-lg transition">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let referenceFiles = [];
+
+        // Load sample scenario for trading anti-loss and scam detection
+        function loadSampleScenario() {
+            document.getElementById('personaInput').value = "Bạn là một chuyên gia chiến lược đàm phán quốc tế, chuyên gia tâm lý hành vi và phân tích ngoại giao/thương mại.";
+            document.getElementById('topicInput').value = "Hãy phân tích tình huống giao dịch, phát hiện các điều khoản ẩn, chống bẫy hạ giá phút chót và bảo vệ lợi ích tuyệt đối không để xảy ra thua lỗ.";
+            
+            referenceFiles = [
+                {
+                    name: "hop_dong_nguyen_tac.html",
+                    path: "giao_dich/hop_dong_nguyen_tac.html",
+                    content: "<html><body><h1>Hợp đồng nguyên tắc cũ</h1><p>Điều 8.3: Bên A có quyền đơn phương tạm hoãn thanh toán 40% giá trị đợt cuối nếu phát sinh bất kỳ khiếu nại chất lượng nào từ phía khách hàng cuối cùng mà không cần biên bản giám định độc lập.</p></body></html>"
+                },
+                {
+                    name: "manh_khoe_ep_gia.html",
+                    path: "tai_lieu_phu/manh_khoe_ep_gia.html",
+                    content: "<html><body><h1>Phân tích chiêu trò ép giá</h1><p>Đối tác thường dùng chiến thuật tạo sức ép thời gian giao hàng gấp rút, sau đó ép nhà cung cấp ký phụ lục giảm giá 12% vào phút chót với lý do thay đổi biến động thị trường.</p></body></html>"
+                }
+            ];
+            renderFileList();
+            showToast("Đã nạp mẫu đàm phán & chống lỗ thành công!");
+        }
+
+        // Clear all fields and files
+        function clearAll() {
+            document.getElementById('personaInput').value = "";
+            document.getElementById('topicInput').value = "";
+            document.getElementById('manualPath').value = "";
+            document.getElementById('manualHtmlContent').value = "";
+            document.getElementById('folderInput').value = "";
+            referenceFiles = [];
+            renderFileList();
+            document.getElementById('terminalPromptBox').innerText = "// Kết quả Prompt chuẩn xác kèm cấu trúc phân tích chuyên gia và danh sách đường dẫn tệp HTML mẫu sẽ hiển thị tại đây...\n// Hãy chọn thư mục chứa tệp HTML, nhập chủ đề và nhấn 'Tạo Prompt Phân Tích & Đối Chiếu Dẫn Chứng'.";
+            showToast("Đã làm mới toàn bộ!");
+        }
+
+        // Handle folder selection with webkitdirectory
+        function handleFolderSelect(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+
+            for (let file of files) {
+                // Only process HTML files
+                if (file.name.endsWith('.html') || file.name.endsWith('.htm')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const relPath = file.webkitRelativePath || file.name;
+                        referenceFiles.push({
+                            name: file.name,
+                            path: relPath,
+                            content: e.target.result
+                        });
+                        renderFileList();
+                    };
+                    reader.readAsText(file);
+                }
+            }
+            showToast(`Đã tải thư mục thành công (${files.length} tệp)!`);
+        }
+
+        // Add manual snippet with custom path
+        function addManualSnippet() {
+            const path = document.getElementById('manualPath').value.trim() || `thu_muc/tai_lieu_${referenceFiles.length + 1}.html`;
+            const content = document.getElementById('manualHtmlContent').value.trim();
+
+            if (!content) {
+                alert("Vui lòng nhập nội dung mã HTML mẫu hoặc dẫn chứng.");
+                return;
+            }
+
+            referenceFiles.push({
+                name: path.split('/').pop(),
+                path: path,
+                content: content
+            });
+
+            document.getElementById('manualPath').value = "";
+            document.getElementById('manualHtmlContent').value = "";
+            renderFileList();
+            showToast("Đã thêm đường dẫn và nội dung thành công!");
+        }
+
+        // Remove file item
+        function removeFile(index) {
+            referenceFiles.splice(index, 1);
+            renderFileList();
+        }
+
+        // Render file list with links
+        function renderFileList() {
+            const container = document.getElementById('fileListContainer');
+            document.getElementById('fileCountBadge').innerText = `${referenceFiles.length} tệp`;
+
+            if (referenceFiles.length === 0) {
+                container.innerHTML = `<div class="text-[11px] text-slate-600 italic text-center py-3 bg-slate-950/40 rounded-xl border border-slate-900">Chưa chọn thư mục hoặc tệp nào. Vui lòng chọn thư mục hoặc thêm đường dẫn.</div>`;
+                return;
+            }
+
+            let html = '';
+            referenceFiles.forEach((file, idx) => {
+                html += `
+                    <div class="flex items-center justify-between bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs">
+                        <div class="flex items-center space-x-2 truncate pr-2">
+                            <i class="fa-solid fa-file-code text-cyan-400"></i>
+                            <button onclick="previewFile(${idx})" class="text-amber-300 font-mono underline hover:text-amber-200 truncate text-left" title="Click để xem nội dung tệp">${file.path}</button>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="previewFile(${idx})" class="text-slate-400 hover:text-cyan-300 transition" title="Mở xem"><i class="fa-solid fa-eye"></i></button>
+                            <button onclick="removeFile(${idx})" class="text-slate-500 hover:text-rose-400 transition" title="Xóa"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // Preview modal helpers
+        function previewFile(index) {
+            const file = referenceFiles[index];
+            if (!file) return;
+            document.getElementById('modalFileName').innerText = file.path;
+            document.getElementById('modalFileContent').innerText = file.content;
+            document.getElementById('previewModal').classList.remove('hidden');
+        }
+
+        function closePreviewModal() {
+            document.getElementById('previewModal').classList.add('hidden');
+        }
+
+        // Strip HTML helper to get raw text
+        function stripHtml(html) {
+            let tmp = document.createElement("DIV");
+            tmp.innerHTML = html;
+            return tmp.textContent || tmp.innerText || "";
+        }
+
+        // Generate the strict structured prompt matching user's exact template
+        function generatePrompt() {
+            const persona = document.getElementById('personaInput').value.trim();
+            const topic = document.getElementById('topicInput').value.trim();
+
+            if (!persona || !topic) {
+                alert("Vui lòng nhập đầy đủ vai trò chuyên gia và chủ đề/tình huống!");
+                return;
+            }
+
+            let evidencesBlock = "";
+            referenceFiles.forEach((file, idx) => {
+                const plainText = stripHtml(file.content);
+                evidencesBlock += `\n----------------------------------------\n[ĐƯỜNG DẪN TỆP MẪU #${idx + 1}: ${file.path}]\nNội dung trích xuất dẫn chứng & mánh khóe cần tránh:\n${plainText}\n`;
+            });
+
+            if (referenceFiles.length === 0) {
+                evidencesBlock = "\n(Không có tệp HTML mẫu nào trong thư mục được chọn. Phân tích dựa trên khung tình huống tổng quát).\n";
+            }
+
+            const structuredPrompt = `${persona} Hãy phân tích câu hỏi/phát biểu dưới đây để giải mã tư duy, chiến thuật, ẩn ý và đối chiếu với các dẫn chứng trong thư mục tệp HTML mẫu nhằm phòng chống thua lỗ, chèn ép.
+
+Vui lòng cấu trúc phân tích của bạn theo các phần sau:
+
+1. Ẩn ý và Mục đích cốt lõi (Subtext & Core Intent):
+   - Tình huống này thực sự đang cố gắng đạt được điều gì ở tầng ngầm?
+   - Họ đang bảo vệ lợi ích cốt lõi nào hay đang cố gắng thăm dò điểm yếu, ép giá hoặc tạo bẫy nào?
+
+2. Góc nhìn Tâm lý và Cảm xúc (Psychological & Emotional Stance):
+   - Sắc thái cảm xúc và áp lực trong tình huống này là gì (ví dụ: kiên quyết, hoài nghi, thăm dò, gây áp lực, ép thời gian)?
+   - Tình huống này phản ánh mức độ quyền lực, sự tự tin hay thế khó của họ ra sao?
+
+3. Phân loại Chiến thuật & Đối chiếu Dẫn chứng từ Thư mục (Tactical Classification & Evidence):
+   - Thuộc chiến thuật nào (ví dụ: câu giờ, đặt bẫy giả định, tạo áp lực hạ giá phút chót, điều khoản ẩn)?
+   - Đối chiếu trực tiếp với các đường dẫn và nội dung dẫn chứng trong thư mục tệp HTML mẫu sau đây:
+${evidencesBlock}
+
+4. Gợi ý Ứng phó và Phản đòn (Recommended Response Strategy & Prevention):
+   - Đâu là cách trả lời và xử lý tối ưu để vừa giữ được lập trường, vừa triệt tiêu hoàn toàn rủi ro thua lỗ hoặc bị chèn ép?
+   - Gợi ý một câu trả lời mẫu mang tính xây dựng nhưng kiên định, an toàn tuyệt đối.
+
+---
+Và đề bài/tình huống cụ thể cần phân tích của tôi là: ${topic}
+
+Mẹo nhỏ khi sử dụng:
+Khi copy prompt này cho AI, bạn nhớ chèn thêm đề bài cụ thể (nếu có). Cách này sẽ giúp AI hiểu thấu đáo và đưa ra lời giải cực kỳ trực diện, không lòng vòng.`;
+
+            document.getElementById('terminalPromptBox').innerText = structuredPrompt;
+            showToast("Đã tạo prompt quy chuẩn thành công!");
+        }
+
+        // Copy all prompt content
+        function copyAllPrompt() {
+            const promptText = document.getElementById('terminalPromptBox').innerText;
+            if (!promptText || promptText.startsWith("// Kết quả Prompt chuẩn xác")) {
+                alert("Chưa có nội dung prompt để copy!");
+                return;
+            }
+
+            const textarea = document.createElement("textarea");
+            textarea.value = promptText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+
+            showToast("Đã copy tất cả vào bộ nhớ tạm! Bạn có thể dán thẳng vào AI.");
+        }
+
+        // Toast notification helpers
+        function showToast(message) {
+            const toast = document.getElementById('toastNotification');
+            const msgSpan = document.getElementById('toastMessage');
+            msgSpan.innerText = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 4000);
+        }
+
+        function hideToast() {
+            document.getElementById('toastNotification').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

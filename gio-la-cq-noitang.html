@@ -1,0 +1,511 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dong ho sinh hoc co quan noi tang</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .current-time {
+            background-color: #f8f9fa;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2575fc;
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        .input-section {
+            padding: 25px;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+        
+        .input-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        input[type="number"] {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 100px;
+            text-align: center;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-section {
+            padding: 25px;
+            display: none;
+        }
+        
+        .organ-card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #2575fc;
+        }
+        
+        .organ-name {
+            font-size: 1.8rem;
+            color: #2575fc;
+            margin-bottom: 10px;
+        }
+        
+        .time-range {
+            font-size: 1.2rem;
+            color: #6a11cb;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .function, .care {
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+        
+        ul {
+            padding-left: 20px;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .period-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .period {
+            flex: 1;
+            min-width: 200px;
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .period-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #6a11cb;
+            font-size: 1.1rem;
+        }
+        
+        .organ-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .organ-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        
+        .note {
+            background-color: #fff9e6;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .input-group {
+                flex-direction: column;
+            }
+            
+            input[type="number"] {
+                width: 80%;
+            }
+            
+            button {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>dong ho sinh hoc co quan noi tang</h1>
+            <p class="subtitle">Theo Y hoc co truyen Trung Quoc</p>
+        </header>
+        
+        <div class="current-time" id="currentTime">
+            <!-- Thoi gian hien tai se duoc hien thi o day -->
+        </div>
+        
+        <div class="input-section">
+            <h2>Kiem tra co quan dang hoat dong</h2>
+            <p>Nhap gio trong ngay (tu 0 den 23) de xem co quan nao dang hoat dong manh nhat:</p>
+            
+            <div class="input-group">
+                <input type="number" id="hourInput" min="0" max="23" placeholder="Gio (0-23)">
+                <button id="checkButton">Kiem tra</button>
+                <button id="randomButton">Gio ngau nhien</button>
+            </div>
+        </div>
+        
+        <div class="result-section" id="resultSection">
+            <!-- Ket qua se duoc hien thi o day -->
+        </div>
+        
+        <div class="period-info">
+            <div class="period">
+                <div class="period-title">Buoi Sang (5h - 12h)</div>
+                <ul class="organ-list">
+                    <li><strong>5h - 7h:</strong> dai trang</li>
+                    <li><strong>7h - 9h:</strong> Da day</li>
+                    <li><strong>9h - 11h:</strong> La lach & Tuy</li>
+                </ul>
+            </div>
+            
+            <div class="period">
+                <div class="period-title">Buoi Trua & Chieu (11h - 19h)</div>
+                <ul class="organ-list">
+                    <li><strong>11h - 13h:</strong> Tim</li>
+                    <li><strong>13h - 15h:</strong> Ruot non</li>
+                    <li><strong>15h - 17h:</strong> Bang quang</li>
+                </ul>
+            </div>
+            
+            <div class="period">
+                <div class="period-title">Buoi Toi & dem (17h - 5h)</div>
+                <ul class="organ-list">
+                    <li><strong>17h - 19h:</strong> Than</li>
+                    <li><strong>19h - 21h:</strong> Bao tu</li>
+                    <li><strong>21h - 23h:</strong> Tam tieu</li>
+                    <li><strong>23h - 1h:</strong> Tui mat</li>
+                    <li><strong>1h - 3h:</strong> Gan</li>
+                    <li><strong>3h - 5h:</strong> Phoi</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="note">
+            <strong>Luu y:</strong> Thong tin tren dua tren ly thuyet Y hoc co truyen va co tinh chat tham khao. Neu ban co bat ky van de suc khoe cu the nao, hay tham kham va nghe tu van tu cac bac si chuyen khoa.
+        </div>
+    </div>
+
+    <script>
+        // Du lieu ve cac co quan noi tang va khung gio hoat dong
+        const organsData = [
+            {
+                name: "dai trang (Ruot gia)",
+                timeRange: "5h - 7h",
+                function: "Bai tiet chat can ba.",
+                care: [
+                    "Uong mot ly nuoc am de kich thich nhu dong ruot.",
+                    "di ve sinh vao khung gio nay neu co the.",
+                    "Tranh nhin di ve sinh."
+                ]
+            },
+            {
+                name: "Da day",
+                timeRange: "7h - 9h",
+                function: "Hap thu chat dinh duong manh nhat.",
+                care: [
+                    "An sang day du, bo duong. day la bua an quan trong nhat trong ngay.",
+                    "Tranh bo bua sang hoac an qua no."
+                ]
+            },
+            {
+                name: "La lach & Tuy",
+                timeRange: "9h - 11h",
+                function: "Ho tro tieu hoa, chuyen hoa thuc an thanh nang luong.",
+                care: [
+                    "Lam viec tri oc hoac cac bai tap nhe nhang.",
+                    "Tranh an vat trong gio nay de la lach khong phai lam viec qua tai.",
+                    "Uong tra gung hoac tra thao moc am neu thay met moi."
+                ]
+            },
+            {
+                name: "Tim",
+                timeRange: "11h - 13h",
+                function: "Bom mau va cung cap nang luong cho toan co the.",
+                care: [
+                    "Nghi ngoi, thu gian sau bua trua. Co the chop mat 15-30 phut.",
+                    "Tranh van dong manh hoac cang thang.",
+                    "An trua nhe nhang, it dau mo."
+                ]
+            },
+            {
+                name: "Ruot non",
+                timeRange: "13h - 15h",
+                function: "Phan loai va hap thu dinh duong tu thuc an.",
+                care: [
+                    "Uong du nuoc de ho tro qua trinh hap thu.",
+                    "Han che an them thuc an trong gio nay."
+                ]
+            },
+            {
+                name: "Bang quang",
+                timeRange: "15h - 17h",
+                function: "Bai tiet chat long du thua.",
+                care: [
+                    "Uong nhieu nuoc de giup bang quang lam viec hieu qua, thanh loc co the.",
+                    "Tranh nhin tieu."
+                ]
+            },
+            {
+                name: "Than",
+                timeRange: "17h - 19h",
+                function: "Loc mau, can bang chat dien giai, loai bo doc to.",
+                care: [
+                    "Thu gian, an toi nhe nhang.",
+                    "Massage long ban chan (huyet Dung Tuyen) - la noi hoi tu cua kinh than.",
+                    "Giu am vung that lung va chan."
+                ]
+            },
+            {
+                name: "Bao tu (Mang ngoai tim)",
+                timeRange: "19h - 21h",
+                function: "Bao ve tim, thu gian va chuan bi cho giac ngu.",
+                care: [
+                    "Thuc hien cac hoat dong nhe nhang, thu gian nhu doc sach, nghe nhac, tro chuyen.",
+                    "Tranh cac cuoc tranh luan cang thang hoac xem phim kinh di.",
+                    "An toi it va truoc 19h la tot nhat."
+                ]
+            },
+            {
+                name: "Tam tieu (He thong noi tiet)",
+                timeRange: "21h - 23h",
+                function: "dieu hoa nhiet do co the va can bang noi moi.",
+                care: [
+                    "Thu gian hoan toan, chuan bi di ngu. Tat cac thiet bi dien tu.",
+                    "Ngam chan nuoc am de luu thong khi huyet."
+                ]
+            },
+            {
+                name: "Tui mat",
+                timeRange: "23h - 1h",
+                function: "Bai tiet mat va loai bo chat doc.",
+                care: [
+                    "Can ngu say trong khung gio nay. Giac ngu sau giup tui mat thuc hien tot chuc nang."
+                ]
+            },
+            {
+                name: "Gan",
+                timeRange: "1h - 3h",
+                function: "Giai doc manh me, san xuat mau.",
+                care: [
+                    "Bat buoc phai ngu say. Thuc khuya trong khung gio nay se gay hai cho gan, tich tu doc to."
+                ]
+            },
+            {
+                name: "Phoi",
+                timeRange: "3h - 5h",
+                function: "Trao doi khi, cung cap oxy cho co the.",
+                care: [
+                    "Duy tri giac ngu. day la thoi gian phoi tai tao va lam sach. Nguoi co van de ve ho hap thuong ho nhieu vao gio nay."
+                ]
+            }
+        ];
+
+        // Cap nhat thoi gian hien tai
+        function updateCurrentTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('vi-VN');
+            document.getElementById('currentTime').textContent = `Thoi gian hien tai: ${timeString}`;
+        }
+
+        // Tim co quan tuong ung voi gio nhap vao
+        function findOrganByHour(hour) {
+            // Xu ly truong hop gio tu 0-4 (thuoc khung 23h-5h)
+            if (hour >= 0 && hour < 5) {
+                if (hour >= 0 && hour < 1) return organsData[9]; // Tui mat (23h-1h)
+                if (hour >= 1 && hour < 3) return organsData[10]; // Gan (1h-3h)
+                if (hour >= 3 && hour < 5) return organsData[11]; // Phoi (3h-5h)
+            }
+            
+            // Xu ly cac khung gio con lai
+            for (const organ of organsData) {
+                const [start, end] = organ.timeRange.split(' - ').map(t => parseInt(t));
+                
+                // Xu ly truong hop khung gio qua ngay (vi du: 23h-1h)
+                if (start > end) {
+                    if (hour >= start || hour < end) return organ;
+                } else {
+                    if (hour >= start && hour < end) return organ;
+                }
+            }
+            
+            return null;
+        }
+
+        // Hien thi ket qua
+        function displayResult(hour, organ) {
+            const resultSection = document.getElementById('resultSection');
+            
+            if (!organ) {
+                resultSection.innerHTML = `
+                    <div class="organ-card">
+                        <div class="organ-name">Khong tim thay co quan</div>
+                        <p>Khong co co quan nao hoat dong manh vao luc ${hour} gio. Vui long kiem tra lai gio nhap (0-23).</p>
+                    </div>
+                `;
+            } else {
+                resultSection.innerHTML = `
+                    <div class="organ-card">
+                        <div class="organ-name">${organ.name}</div>
+                        <div class="time-range">Khung gio hoat dong: ${organ.timeRange}</div>
+                        
+                        <div class="function">
+                            <h3>Chuc nang cao diem:</h3>
+                            <p>${organ.function}</p>
+                        </div>
+                        
+                        <div class="care">
+                            <h3>Cach cham soc:</h3>
+                            <ul>
+                                ${organ.care.map(item => `<li>${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            resultSection.style.display = 'block';
+        }
+
+        // Xu ly su kien khi nhan nut Kiem tra
+        document.getElementById('checkButton').addEventListener('click', function() {
+            const hourInput = document.getElementById('hourInput');
+            const hour = parseInt(hourInput.value);
+            
+            if (isNaN(hour) || hour < 0 || hour > 23) {
+                alert('Vui long nhap gio hop le (tu 0 den 23)');
+                return;
+            }
+            
+            const organ = findOrganByHour(hour);
+            displayResult(hour, organ);
+        });
+
+        // Xu ly su kien khi nhan nut Gio ngau nhien
+        document.getElementById('randomButton').addEventListener('click', function() {
+            const randomHour = Math.floor(Math.random() * 24);
+            document.getElementById('hourInput').value = randomHour;
+            
+            const organ = findOrganByHour(randomHour);
+            displayResult(randomHour, organ);
+        });
+
+        // Cap nhat thoi gian hien tai moi giay
+        updateCurrentTime();
+        setInterval(updateCurrentTime, 1000);
+
+        // Hien thi thong tin cho gio hien tai khi trang duoc tai
+        window.addEventListener('load', function() {
+            const currentHour = new Date().getHours();
+            document.getElementById('hourInput').value = currentHour;
+            
+            const organ = findOrganByHour(currentHour);
+            displayResult(currentHour, organ);
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

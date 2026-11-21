@@ -1,0 +1,1009 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mau sac – BPM – Cam xuc (101–150)</title>
+<style>
+    :root {
+        --primary-color: #2d8f3a;
+        --secondary-color: #4caf50;
+        --accent-color: #ff9800;
+        --light-bg: #f1f8e9;
+        --dark-text: #1b5e20;
+        --light-text: #fff;
+        --border-color: #c8e6c9;
+        --shadow: 0 4px 12px rgba(0,0,0,0.1);
+        --radius: 8px;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        color: var(--dark-text);
+        line-height: 1.6;
+        padding: 15px;
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 10px;
+    }
+
+    header {
+        text-align: center;
+        margin-bottom: 25px;
+        padding: 20px;
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        color: var(--light-text);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+    }
+
+    h1 {
+        font-size: 1.8rem;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+
+    .controls-section {
+        background-color: white;
+        border-radius: var(--radius);
+        padding: 20px;
+        margin-bottom: 25px;
+        box-shadow: var(--shadow);
+    }
+
+    .controls-title {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .controls-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .control-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .control-label {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #2e7d32;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .dropdown-container {
+        position: relative;
+    }
+
+    .dropdown-btn {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius);
+        background-color: white;
+        text-align: left;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .dropdown-btn:hover, .dropdown-btn.active {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(45, 143, 58, 0.1);
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        max-height: 200px;
+        overflow-y: auto;
+        background-color: white;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        z-index: 100;
+        margin-top: 5px;
+    }
+
+    .dropdown-content.show {
+        display: block;
+    }
+
+    .dropdown-item {
+        padding: 10px 15px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .dropdown-item:hover {
+        background-color: #e8f5e9;
+    }
+
+    .selected-items {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .selected-item {
+        background-color: #e8f5e9;
+        border: 1px solid #a5d6a7;
+        border-radius: 20px;
+        padding: 5px 12px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .remove-item {
+        background: none;
+        border: none;
+        color: #f44336;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1.1rem;
+        line-height: 1;
+    }
+
+    .buttons-section {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: var(--radius);
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(45, 143, 58, 0.2);
+    }
+
+    .btn-danger {
+        background: linear-gradient(to right, #f44336, #ff5252);
+        color: white;
+    }
+
+    .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(244, 67, 54, 0.2);
+    }
+
+    .table-container {
+        background-color: white;
+        border-radius: var(--radius);
+        padding: 20px;
+        margin-bottom: 25px;
+        box-shadow: var(--shadow);
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 800px;
+    }
+
+    th {
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 15px;
+        text-align: left;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    td {
+        padding: 12px 15px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    tr:hover {
+        background-color: #f9f9f9;
+    }
+
+    .color-box {
+        width: 60px;
+        height: 30px;
+        border-radius: 4px;
+        border: 1px solid rgba(0,0,0,0.1);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .nav-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 25px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .nav-link {
+        padding: 12px 25px;
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        color: white;
+        text-decoration: none;
+        border-radius: var(--radius);
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .nav-link:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(45, 143, 58, 0.2);
+    }
+
+    .explanation-section {
+        background-color: white;
+        border-radius: var(--radius);
+        padding: 20px;
+        margin-top: 25px;
+        box-shadow: var(--shadow);
+    }
+
+    .explanation-title {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .explanation-list {
+        list-style-type: none;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 15px;
+    }
+
+    .explanation-item {
+        background-color: #f9f9f9;
+        border-radius: 6px;
+        padding: 15px;
+        border-left: 4px solid var(--primary-color);
+    }
+
+    .term {
+        font-weight: 600;
+        color: var(--primary-color);
+        display: block;
+        margin-bottom: 5px;
+        font-size: 1.1rem;
+    }
+
+    .meaning {
+        color: #555;
+        line-height: 1.5;
+    }
+
+    footer {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border-color);
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        .controls-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .explanation-list {
+            grid-template-columns: 1fr;
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+        }
+        
+        .btn, .nav-link {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .nav-buttons {
+            flex-direction: column;
+        }
+    }
+
+    /* Animation for selected rows */
+    @keyframes highlight {
+        0% { background-color: rgba(255, 235, 59, 0.3); }
+        100% { background-color: transparent; }
+    }
+
+    .highlight {
+        animation: highlight 2s ease;
+    }
+</style>
+</head>
+
+<body>
+<div class="container">
+    <header>
+        <h1>🎨 Mau sac – BPM – Cam xuc (101–150)</h1>
+        <p class="subtitle">Kham pha moi lien he giua mau sac, nhip tim va trang thai cam xuc</p>
+    </header>
+
+    <section class="controls-section">
+        <h2 class="controls-title">📊 Bo loc du lieu</h2>
+        
+        <div class="controls-grid">
+            <!-- BPM Dropdown -->
+            <div class="control-group">
+                <label class="control-label">🎵 BPM (Nhip tim moi phut)</label>
+                <div class="dropdown-container">
+                    <button class="dropdown-btn" data-column="bpm">Chon BPM...</button>
+                    <div class="dropdown-content" id="bpmDropdown">
+                        <!-- BPM options will be populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="selected-items" id="bpmSelected"></div>
+            </div>
+
+            <!-- Mau da Dropdown -->
+            <div class="control-group">
+                <label class="control-label">👤 Mau da</label>
+                <div class="dropdown-container">
+                    <button class="dropdown-btn" data-column="skin">Chon loai da...</button>
+                    <div class="dropdown-content" id="skinDropdown">
+                        <div class="dropdown-item" data-value="nong">🔥 Da Nong</div>
+                        <div class="dropdown-item" data-value="lanh">❄ Da Lanh</div>
+                        <div class="dropdown-item" data-value="am">🌤 Da Am</div>
+                    </div>
+                </div>
+                <div class="selected-items" id="skinSelected"></div>
+            </div>
+
+            <!-- Cam xuc Dropdown -->
+            <div class="control-group">
+                <label class="control-label">😊 Cam xuc</label>
+                <div class="dropdown-container">
+                    <button class="dropdown-btn" data-column="emotion">Chon cam xuc...</button>
+                    <div class="dropdown-content" id="emotionDropdown">
+                        <!-- Emotion options will be populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="selected-items" id="emotionSelected"></div>
+            </div>
+
+            <!-- Trang thai co the Dropdown -->
+            <div class="control-group">
+                <label class="control-label">💪 Trang thai co the</label>
+                <div class="dropdown-container">
+                    <button class="dropdown-btn" data-column="body">Chon trang thai...</button>
+                    <div class="dropdown-content" id="bodyDropdown">
+                        <!-- Body state options will be populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="selected-items" id="bodySelected"></div>
+            </div>
+        </div>
+
+        <!-- Hex Color Dropdown -->
+        <div class="control-group">
+            <label class="control-label">🌈 Mau sac (Hex)</label>
+            <div class="dropdown-container">
+                <button class="dropdown-btn" data-column="color">Chon mau...</button>
+                <div class="dropdown-content" id="colorDropdown">
+                    <!-- Color options will be populated by JavaScript -->
+                </div>
+            </div>
+            <div class="selected-items" id="colorSelected"></div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="buttons-section">
+            <button class="btn btn-primary" id="filterBtn">
+                <span>🔍</span> Loc du lieu
+            </button>
+            <button class="btn btn-primary" id="resetBtn">
+                <span>🔄</span> Hien tat ca
+            </button>
+            <button class="btn btn-danger" id="clearBtn">
+                <span>🗑</span> Xoa nhap lai
+            </button>
+        </div>
+    </section>
+
+    <section class="table-container">
+        <table id="colorTable">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Mau</th>
+                    <th>Ma Hex</th>
+                    <th>Cam xuc</th>
+                    <th>BPM</th>
+                    <th>Trang thai co the</th>
+                    <th>Loai da</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Table rows will be populated by JavaScript -->
+            </tbody>
+        </table>
+    </section>
+
+    <section class="explanation-section">
+        <h2 class="explanation-title">📖 Giai thich tu kho</h2>
+        <ul class="explanation-list" id="explanationList">
+            <!-- Explanations will be populated by JavaScript -->
+        </ul>
+    </section>
+
+    <div class="nav-buttons">
+        <a href="mau-bpm-51-100.html" class="nav-link">
+            <span>←</span> Xem 51–100
+        </a>
+        <a href="mau-bpm-151-200.html" class="nav-link">
+            Xem 151–200 <span>→</span>
+        </a>
+    </div>
+
+    <footer>
+        <p>© 2023 Mau sac – BPM – Cam xuc | Du lieu tham khao tu nghien cuu tam ly mau sac</p>
+    </footer>
+</div>
+
+<script>
+    const colors = [
+        [101,"#F2FFF2","Hoi phuc",60,"Nghi ngoi sau","am"],
+        [102,"#E6FFE6","An yen",62,"Thu gian","am"],
+        [103,"#DAFFDA","Diu nhe",65,"Tim cham","am"],
+        [104,"#CEFFCE","On dinh",68,"Can bang","am"],
+        [105,"#C2FFC2","Tuoi moi",70,"Thoai mai","am"],
+
+        [106,"#B6FFB6","Tich cuc",72,"De chiu","am"],
+        [107,"#AAFFAA","Tinh tao",75,"Nhe nhang","am"],
+        [108,"#9EFF9E","Nang luong nhe",80,"San sang","nong"],
+        [109,"#92FF92","Hoat dong",85,"Tim tang nhe","nong"],
+        [110,"#86FF86","Khoi dong",90,"Chuan bi van dong","nong"],
+
+        [111,"#7AF27A","Tap trung",95,"Nao hoat dong","nong"],
+        [112,"#6EE66E","Hung khoi",100,"Tang chu y","nong"],
+        [113,"#62DA62","Soi noi",105,"Hung phan","nong"],
+        [114,"#56CE56","Nang luong cao",110,"Tim nhanh","nong"],
+        [115,"#4AC24A","Hanh dong",115,"Chuan bi cao","nong"],
+
+        [116,"#3EB63E","Ap luc nhe",120,"Cang vua","nong"],
+        [117,"#32AA32","Cang thang",125,"Khong keo dai","nong"],
+        [118,"#269E26","Stress",130,"De qua tai","nong"],
+        [119,"#1A921A","Canh bao",135,"Nen nghi","nong"],
+        [120,"#0E860E","Qua tai",140,"Tranh dung lau","nong"],
+
+        [121,"#1F6F3A","Giam nhip",110,"Ha dan","am"],
+        [122,"#2F7850","On dinh lai",100,"dieu hoa","am"],
+        [123,"#3F8166","Can bang",90,"De chiu","am"],
+        [124,"#4F8A7C","diem tinh",80,"Nhe nguoi","lanh"],
+        [125,"#5F9392","Binh than",75,"An tam","lanh"],
+
+        [126,"#6F9CA8","Mat me",72,"Thu gian","lanh"],
+        [127,"#7FA5BE","Tin cay",70,"On dinh","lanh"],
+        [128,"#8FAED4","Suy tu",68,"Huong noi","lanh"],
+        [129,"#9FB7EA","Nhe nhang",65,"Tim cham","lanh"],
+        [130,"#AFBFFF","Yen binh",60,"Hoi phuc","lanh"],
+
+        [131,"#C6D2FF","Mo mang",62,"Tha long","lanh"],
+        [132,"#DCE5FF","Tinh khiet",65,"Thoai mai","lanh"],
+        [133,"#F2F8FF","Trung tinh",68,"Binh thuong","am"],
+        [134,"#F0F0F0","On dinh",70,"Khong kich thich","am"],
+        [135,"#E6E6E6","Nhe",72,"De chiu","am"],
+
+        [136,"#DCDCDC","Giam nang luong",75,"Cham lai","am"],
+        [137,"#D2D2D2","Tram",78,"Noi tam","am"],
+        [138,"#C8C8C8","Buon nhe",80,"Suy tu","am"],
+        [139,"#BEBEBE","Lang",82,"On dinh","am"],
+        [140,"#B4B4B4","Tinh",85,"Giu nhip","am"],
+
+        [141,"#AAAAAA","Trung hoa",75,"Can bang","am"],
+        [142,"#A0A0A0","On dinh",72,"Binh thuong","am"],
+        [143,"#969696","Nhe tram",70,"Ha nhip","am"],
+        [144,"#8C8C8C","Tram tinh",68,"Thu gian","am"],
+        [145,"#828282","Buon",65,"Huong noi","am"],
+
+        [146,"#787878","Yen",62,"Nghi ngoi","am"],
+        [147,"#6E6E6E","Tinh sau",60,"Phuc hoi","am"],
+        [148,"#646464","Nang",75,"Giam kich thich","am"],
+        [149,"#5A5A5A","Co dong",80,"Tap trung thap","am"],
+        [150,"#505050","Ket thuc",70,"On dinh","am"]
+    ];
+
+    // Explanation for difficult terms specific to this data range
+    const explanations = [
+        { term: "BPM", meaning: "Nhip dap moi phut (Beats Per Minute) - chi so do nhip tim, thuong dung trong am nhac va theo doi suc khoe" },
+        { term: "Hex", meaning: "Ma mau he thap luc phan, gom 6 ky tu sau dau #, bieu dien gia tri mau do, xanh la va xanh duong" },
+        { term: "Hoi phuc", meaning: "Trang thai phuc hoi nang luong va suc khoe sau khi met moi hoac benh tat" },
+        { term: "Binh than", meaning: "Trang thai tam ly binh tinh, khong bi xao tron boi cam xuc manh" },
+        { term: "Tinh sau", meaning: "Trang thai thu gian va yen tinh o muc do cao, giup phuc hoi tinh than" },
+        { term: "Co dong", meaning: "Suc tich, tap trung vao nhung yeu to cot loi, khong dan trai" },
+        { term: "Huong noi", meaning: "Xu huong tap trung vao noi tam, suy nghi va cam xuc ben trong" },
+        { term: "Stress", meaning: "Phan ung cua co the voi cac yeu cau, ap luc tu moi truong, co the anh huong den suc khoe" },
+        { term: "Nang luong cao", meaning: "Trang thai co nhieu sinh luc, san sang cho cac hoat dong the chat va tinh than" },
+        { term: "Tim cham", meaning: "Nhip tim o muc thap hon binh thuong, thuong gap khi nghi ngoi hoac thu gian sau" },
+        { term: "Ap luc nhe", meaning: "Cam giac cang thang o muc do vua phai, co the thuc day hanh dong tich cuc" },
+        { term: "Qua tai", meaning: "Trang thai vuot qua kha nang chiu dung cua co the hoac tam ly, can duoc giai quyet" }
+    ];
+
+    // Store selected filters
+    const selectedFilters = {
+        bpm: [],
+        skin: [],
+        emotion: [],
+        body: [],
+        color: []
+    };
+
+    // DOM Elements
+    const tableBody = document.getElementById('tableBody');
+    const filterBtn = document.getElementById('filterBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const explanationList = document.getElementById('explanationList');
+
+    // Initialize dropdowns and table
+    function init() {
+        populateDropdowns();
+        renderTable(colors);
+        renderExplanations();
+        setupEventListeners();
+    }
+
+    // Populate dropdown options from data
+    function populateDropdowns() {
+        const bpmSet = new Set();
+        const emotionSet = new Set();
+        const bodySet = new Set();
+        const colorSet = new Set();
+        
+        colors.forEach(color => {
+            bpmSet.add(color[3]);
+            emotionSet.add(color[2]);
+            bodySet.add(color[4]);
+            colorSet.add(color[1]);
+        });
+        
+        // Populate BPM dropdown
+        const bpmDropdown = document.getElementById('bpmDropdown');
+        Array.from(bpmSet).sort((a, b) => a - b).forEach(bpm => {
+            const item = document.createElement('div');
+            item.className = 'dropdown-item';
+            item.textContent = bpm;
+            item.dataset.value = bpm;
+            item.dataset.column = 'bpm';
+            bpmDropdown.appendChild(item);
+        });
+        
+        // Populate Emotion dropdown
+        const emotionDropdown = document.getElementById('emotionDropdown');
+        Array.from(emotionSet).sort().forEach(emotion => {
+            const item = document.createElement('div');
+            item.className = 'dropdown-item';
+            item.textContent = emotion;
+            item.dataset.value = emotion;
+            item.dataset.column = 'emotion';
+            emotionDropdown.appendChild(item);
+        });
+        
+        // Populate Body State dropdown
+        const bodyDropdown = document.getElementById('bodyDropdown');
+        Array.from(bodySet).sort().forEach(body => {
+            const item = document.createElement('div');
+            item.className = 'dropdown-item';
+            item.textContent = body;
+            item.dataset.value = body;
+            item.dataset.column = 'body';
+            bodyDropdown.appendChild(item);
+        });
+        
+        // Populate Color dropdown
+        const colorDropdown = document.getElementById('colorDropdown');
+        Array.from(colorSet).sort().forEach(color => {
+            const item = document.createElement('div');
+            item.className = 'dropdown-item';
+            item.innerHTML = `<div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:20px; height:20px; background:${color}; border:1px solid #ddd; border-radius:3px;"></div>
+                <span>${color}</span>
+            </div>`;
+            item.dataset.value = color;
+            item.dataset.column = 'color';
+            colorDropdown.appendChild(item);
+        });
+    }
+
+    // Render explanations
+    function renderExplanations() {
+        explanations.forEach(exp => {
+            const li = document.createElement('li');
+            li.className = 'explanation-item';
+            li.innerHTML = `
+                <span class="term">${exp.term}</span>
+                <span class="meaning">${exp.meaning}</span>
+            `;
+            explanationList.appendChild(li);
+        });
+    }
+
+    // Render table with data
+    function renderTable(data) {
+        tableBody.innerHTML = '';
+        
+        if (data.length === 0) {
+            const row = document.createElement('tr');
+            const cell = document.createElement('td');
+            cell.colSpan = 7;
+            cell.textContent = 'Khong co du lieu phu hop voi bo loc';
+            cell.style.textAlign = 'center';
+            cell.style.padding = '30px';
+            cell.style.color = '#666';
+            row.appendChild(cell);
+            tableBody.appendChild(row);
+            return;
+        }
+        
+        data.forEach(color => {
+            const row = document.createElement('tr');
+            row.dataset.id = color[0];
+            
+            // STT
+            const sttCell = document.createElement('td');
+            sttCell.textContent = color[0];
+            sttCell.style.fontWeight = '600';
+            row.appendChild(sttCell);
+            
+            // Color box
+            const colorCell = document.createElement('td');
+            const colorBox = document.createElement('div');
+            colorBox.className = 'color-box';
+            colorBox.style.backgroundColor = color[1];
+            colorCell.appendChild(colorBox);
+            row.appendChild(colorCell);
+            
+            // Hex code
+            const hexCell = document.createElement('td');
+            hexCell.textContent = color[1];
+            hexCell.style.fontFamily = 'monospace';
+            hexCell.style.fontWeight = '600';
+            row.appendChild(hexCell);
+            
+            // Emotion
+            const emotionCell = document.createElement('td');
+            emotionCell.textContent = color[2];
+            row.appendChild(emotionCell);
+            
+            // BPM
+            const bpmCell = document.createElement('td');
+            bpmCell.textContent = color[3];
+            bpmCell.style.textAlign = 'center';
+            row.appendChild(bpmCell);
+            
+            // Body state
+            const bodyCell = document.createElement('td');
+            bodyCell.textContent = color[4];
+            row.appendChild(bodyCell);
+            
+            // Skin type
+            const skinCell = document.createElement('td');
+            let skinText = '';
+            let skinIcon = '';
+            switch(color[5]) {
+                case 'nong': 
+                    skinText = 'Da Nong';
+                    skinIcon = '🔥';
+                    break;
+                case 'lanh': 
+                    skinText = 'Da Lanh';
+                    skinIcon = '❄';
+                    break;
+                case 'am': 
+                    skinText = 'Da Am';
+                    skinIcon = '🌤';
+                    break;
+                default: 
+                    skinText = color[5];
+            }
+            skinCell.innerHTML = `${skinIcon} ${skinText}`;
+            row.appendChild(skinCell);
+            
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Update selected items display
+    function updateSelectedDisplay(column) {
+        const container = document.getElementById(`${column}Selected`);
+        container.innerHTML = '';
+        
+        selectedFilters[column].forEach(value => {
+            const item = document.createElement('div');
+            item.className = 'selected-item';
+            
+            // Format display value
+            let displayValue = value;
+            if (column === 'skin') {
+                switch(value) {
+                    case 'nong': displayValue = '🔥 Da Nong'; break;
+                    case 'lanh': displayValue = '❄ Da Lanh'; break;
+                    case 'am': displayValue = '🌤 Da Am'; break;
+                }
+            }
+            
+            const text = document.createElement('span');
+            text.textContent = displayValue;
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-item';
+            removeBtn.textContent = '×';
+            removeBtn.addEventListener('click', () => {
+                removeSelected(column, value);
+            });
+            
+            item.appendChild(text);
+            item.appendChild(removeBtn);
+            container.appendChild(item);
+        });
+    }
+
+    // Add selected item
+    function addSelected(column, value) {
+        if (!selectedFilters[column].includes(value)) {
+            selectedFilters[column].push(value);
+            updateSelectedDisplay(column);
+        }
+    }
+
+    // Remove selected item
+    function removeSelected(column, value) {
+        selectedFilters[column] = selectedFilters[column].filter(item => item !== value);
+        updateSelectedDisplay(column);
+    }
+
+    // Apply filters
+    function applyFilters() {
+        let filteredData = colors;
+        
+        // Apply BPM filter
+        if (selectedFilters.bpm.length > 0) {
+            filteredData = filteredData.filter(color => 
+                selectedFilters.bpm.includes(color[3].toString())
+            );
+        }
+        
+        // Apply skin filter
+        if (selectedFilters.skin.length > 0) {
+            filteredData = filteredData.filter(color => 
+                selectedFilters.skin.includes(color[5])
+            );
+        }
+        
+        // Apply emotion filter
+        if (selectedFilters.emotion.length > 0) {
+            filteredData = filteredData.filter(color => 
+                selectedFilters.emotion.includes(color[2])
+            );
+        }
+        
+        // Apply body state filter
+        if (selectedFilters.body.length > 0) {
+            filteredData = filteredData.filter(color => 
+                selectedFilters.body.includes(color[4])
+            );
+        }
+        
+        // Apply color filter
+        if (selectedFilters.color.length > 0) {
+            filteredData = filteredData.filter(color => 
+                selectedFilters.color.includes(color[1])
+            );
+        }
+        
+        renderTable(filteredData);
+        
+        // Highlight the filtered rows
+        const rows = tableBody.querySelectorAll('tr');
+        rows.forEach(row => {
+            row.classList.add('highlight');
+            setTimeout(() => {
+                row.classList.remove('highlight');
+            }, 2000);
+        });
+        
+        // Scroll to table
+        document.querySelector('.table-container').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+
+    // Reset all filters
+    function resetFilters() {
+        selectedFilters.bpm = [];
+        selectedFilters.skin = [];
+        selectedFilters.emotion = [];
+        selectedFilters.body = [];
+        selectedFilters.color = [];
+        
+        // Update all displays
+        Object.keys(selectedFilters).forEach(column => {
+            updateSelectedDisplay(column);
+        });
+        
+        renderTable(colors);
+    }
+
+    // Clear all selections
+    function clearSelections() {
+        resetFilters();
+        
+        // Reset dropdown buttons
+        document.querySelectorAll('.dropdown-btn').forEach(btn => {
+            btn.textContent = btn.textContent.replace('✓ ', '');
+            btn.classList.remove('active');
+        });
+        
+        // Close all dropdowns
+        document.querySelectorAll('.dropdown-content').forEach(dropdown => {
+            dropdown.classList.remove('show');
+        });
+    }
+
+    // Setup event listeners
+    function setupEventListeners() {
+        // Dropdown buttons
+        document.querySelectorAll('.dropdown-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const dropdown = this.nextElementSibling;
+                const isActive = dropdown.classList.contains('show');
+                
+                // Close all dropdowns
+                document.querySelectorAll('.dropdown-content').forEach(d => {
+                    d.classList.remove('show');
+                });
+                
+                // Toggle current dropdown
+                if (!isActive) {
+                    dropdown.classList.add('show');
+                    this.classList.add('active');
+                } else {
+                    this.classList.remove('active');
+                }
+            });
+        });
+        
+        // Dropdown items
+        document.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const column = this.dataset.column;
+                const value = this.dataset.value;
+                
+                // Add to selected
+                addSelected(column, value);
+                
+                // Update button text
+                const btn = document.querySelector(`.dropdown-btn[data-column="${column}"]`);
+                if (!btn.textContent.includes('✓')) {
+                    btn.innerHTML = `✓ ${btn.textContent} <span>▼</span>`;
+                }
+                
+                // Close dropdown
+                this.closest('.dropdown-content').classList.remove('show');
+                btn.classList.remove('active');
+            });
+        });
+        
+        // Filter button
+        filterBtn.addEventListener('click', applyFilters);
+        
+        // Reset button
+        resetBtn.addEventListener('click', resetFilters);
+        
+        // Clear button
+        clearBtn.addEventListener('click', clearSelections);
+        
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.dropdown-container')) {
+                document.querySelectorAll('.dropdown-content').forEach(dropdown => {
+                    dropdown.classList.remove('show');
+                });
+                document.querySelectorAll('.dropdown-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+            }
+        });
+    }
+
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

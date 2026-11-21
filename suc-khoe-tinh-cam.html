@@ -1,0 +1,710 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinh Toan Chu Ky Sinh Hoc</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+        
+        .col {
+            flex: 1;
+            padding: 0 10px;
+            min-width: 300px;
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        
+        button {
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        #calculateBtn {
+            background-color: #2ecc71;
+        }
+        
+        #calculateBtn:hover {
+            background-color: #27ae60;
+        }
+        
+        #resetBtn {
+            background-color: #e74c3c;
+        }
+        
+        #resetBtn:hover {
+            background-color: #c0392b;
+        }
+        
+        .results {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .results h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .result-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .warning {
+            background-color: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .info {
+            background-color: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .special-number {
+            background-color: #e8f4fc;
+            border: 1px solid #a8d4ff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin: 5px;
+            display: inline-block;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        
+        .number-badge {
+            display: inline-block;
+            background-color: #6c757d;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin: 2px;
+        }
+        
+        @media (max-width: 768px) {
+            .row {
+                flex-direction: column;
+            }
+            
+            .col {
+                margin-bottom: 15px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tinh Toan Chu Ky Sinh Hoc</h1>
+        
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    <label for="currentDate">O 1: Ngay thang nam hien tai</label>
+                    <input type="date" id="currentDate">
+                </div>
+            </div>
+            
+            <div class="col">
+                <div class="form-group">
+                    <label for="personSelect">O 2: Chon ten tu danh sach</label>
+                    <select id="personSelect">
+                        <option value="">-- Chon mot nguoi --</option>
+                        <!-- Danh sach se duoc them bang JavaScript -->
+                    </select>
+                </div>
+            </div>
+            
+            <div class="col">
+                <div class="form-group">
+                    <label for="birthDate">O 3: Ngay thang nam sinh</label>
+                    <input type="date" id="birthDate">
+                </div>
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button id="calculateBtn">Tinh toan ket qua</button>
+            <button id="resetBtn">dat lai form</button>
+        </div>
+        
+        <div class="results" id="resultsSection">
+            <h3>Ket qua tinh toan</h3>
+            <div id="resultsContent">
+                <!-- Ket qua se duoc hien thi o day -->
+            </div>
+        </div>
+        
+        <div class="info">
+            <p><strong>Huong dan:</strong> Chon ngay hien tai, chon ten tu danh sach (ngay sinh se tu dong dien), sau do nhan "Tinh toan ket qua".</p>
+            <p><strong>Bang 2 gom 38 so:</strong> 23, 28, 33, 38, 43, 53, 644, 759, 874, 989, 1219, 924, 1064, 1204, 1484, 1254, 1419, 1749, 1634, 2014, 2279, 108, 285, 298, 318, 1690, 1911, 4850, 21252, 24472, 27692, 34132, 35112, 39732, 48972, 53922, 66462, 86602</p>
+        </div>
+    </div>
+
+    <script>
+        // Du lieu nguoi (STT, Ten, Ngay sinh)
+        const peopleData = [
+            { id: 1, name: "NGUYENKHACNANG", birthDate: "1944-06-04" },
+            { id: 2, name: "TOTHIHA", birthDate: "1948-08-29" },
+            { id: 3, name: "NGUYENMINHNAM", birthDate: "1971-03-03" },
+            { id: 4, name: "THANTHIKIMANH", birthDate: "1981-09-23" },
+            { id: 5, name: "NGUYENTONGANAN", birthDate: "2014-09-28" },
+            { id: 6, name: "NGUYENTOMINHCHAU", birthDate: "2016-07-25" },
+            { id: 7, name: "NGUYENTOBICHNGOC", birthDate: "2020-02-05" },
+            { id: 8, name: "NGUYENTHIMINHHANG", birthDate: "1974-01-07" },
+            { id: 9, name: "NGOQUYCUONG", birthDate: "1973-05-23" },
+            { id: 10, name: "NGOGIABACH", birthDate: "2000-10-12" },
+            { id: 11, name: "NGOGIALINH", birthDate: "2005-04-05" },
+            { id: 12, name: "NGUYENTHIMINHPHUONG", birthDate: "1978-11-06" },
+            { id: 13, name: "HOANGANHDUNG", birthDate: "1978-09-21" },
+            { id: 14, name: "HOANGHAIVINH", birthDate: "2010-06-03" },
+            { id: 15, name: "HOANGTHIENBACHANH", birthDate: "2015-11-14" },
+            { id: 16, name: "TO KIM HUE", birthDate: "1960-08-09" },
+            { id: 17, name: "NGUYEN TUAN ANH", birthDate: "1983-10-23" },
+            { id: 18, name: "NGUYEN THE ANH", birthDate: "2001-03-24" },
+            { id: 19, name: "NGO THI MAI", birthDate: "1948-12-12" },
+            { id: 20, name: "TO VIET HUNG", birthDate: "1996-06-17" },
+            { id: 21, name: "TO THI HONG", birthDate: "1964-10-10" },
+            { id: 22, name: "VU VAN HIEP", birthDate: "1974-04-24" },
+            { id: 23, name: "NGUYEN THI CHI", birthDate: "1946-02-08" },
+            { id: 24, name: "NGUYEN TAN BAC", birthDate: "1957-11-30" },
+            { id: 25, name: "NGUYEN THI TAM", birthDate: "1954-08-08" }
+        ];
+
+        // Bang 2 - 38 so
+        const table2 = [23, 28, 33, 38, 43, 53, 644, 759, 874, 989, 1219, 924, 1064, 1204, 1484, 1254, 1419, 1749, 1634, 2014, 2279, 108, 285, 298, 318, 1690, 1911, 4850, 21252, 24472, 27692, 34132, 35112, 39732, 48972, 53922, 66462, 86602];
+
+        // So dac biet de so sanh
+        const specialNumbers = [
+            111,222,333,444,555,666,777,888,999,
+            123,234,345,456,567,678,789,
+            159, 195, 168,186,258,285,268,276,249,294,348,384,357,375, 438,483,429,492,519,591,537,573,582,528,627,672,618,681,726,762,735,753,825,852,816,861,834,843,915,951,924,942
+        ];
+
+        // DOM Elements
+        const currentDateInput = document.getElementById('currentDate');
+        const personSelect = document.getElementById('personSelect');
+        const birthDateInput = document.getElementById('birthDate');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsContent = document.getElementById('resultsContent');
+
+        // Khoi tao
+        document.addEventListener('DOMContentLoaded', function() {
+            // dat ngay hien tai mac dinh
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            currentDateInput.value = formattedDate;
+            
+            // dien danh sach nguoi vao dropdown
+            populatePersonSelect();
+            
+            // Thiet lap su kien
+            setupEventListeners();
+        });
+
+        // dien danh sach nguoi vao dropdown
+        function populatePersonSelect() {
+            peopleData.forEach(person => {
+                const option = document.createElement('option');
+                option.value = person.id;
+                option.textContent = `${person.id}. ${person.name}`;
+                personSelect.appendChild(option);
+            });
+        }
+
+        // Thiet lap cac su kien
+        function setupEventListeners() {
+            // Khi chon nguoi tu danh sach
+            personSelect.addEventListener('change', function() {
+                const selectedId = parseInt(this.value);
+                if (selectedId) {
+                    const selectedPerson = peopleData.find(p => p.id === selectedId);
+                    if (selectedPerson) {
+                        birthDateInput.value = selectedPerson.birthDate;
+                    }
+                } else {
+                    birthDateInput.value = '';
+                }
+            });
+
+            // Nut tinh toan
+            calculateBtn.addEventListener('click', calculateResults);
+
+            // Nut dat lai
+            resetBtn.addEventListener('click', function() {
+                currentDateInput.value = new Date().toISOString().split('T')[0];
+                personSelect.value = '';
+                birthDateInput.value = '';
+                resultsSection.style.display = 'none';
+            });
+        }
+
+        // Ham tinh toan ket qua chinh
+        function calculateResults() {
+            // Kiem tra du lieu dau vao
+            if (!currentDateInput.value || !birthDateInput.value) {
+                alert("Vui long chon ngay hien tai va chon mot nguoi tu danh sach!");
+                return;
+            }
+
+            // Lay gia tri tu form
+            const currentDate = new Date(currentDateInput.value);
+            const birthDate = new Date(birthDateInput.value);
+            
+            // Tinh so ngay chenh lech
+            const timeDiff = currentDate.getTime() - birthDate.getTime();
+            const dayDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
+            
+            // Tim thong tin nguoi duoc chon
+            const selectedPerson = peopleData.find(p => p.birthDate === birthDateInput.value);
+            const personName = selectedPerson ? selectedPerson.name : "Nguoi khong xac dinh";
+            
+            // Hien thi ket qua
+            showResults(dayDiff, currentDate, birthDate, personName);
+        }
+
+        // Hien thi ket qua
+        function showResults(dayDiff, currentDate, birthDate, personName) {
+            resultsContent.innerHTML = '';
+            
+            // Thong tin co ban
+            const basicInfo = document.createElement('div');
+            basicInfo.className = 'result-item';
+            basicInfo.innerHTML = `
+                <h4>Thong tin co ban</h4>
+                <p><strong>Ten:</strong> ${personName}</p>
+                <p><strong>Ngay sinh:</strong> ${formatDate(birthDate)}</p>
+                <p><strong>Ngay hien tai:</strong> ${formatDate(currentDate)}</p>
+                <p><strong>So ngay chenh lech:</strong> ${dayDiff} ngay</p>
+            `;
+            resultsContent.appendChild(basicInfo);
+            
+            // Phep tinh 1: Chia cho TAT CA cac so trong bang 2
+            const calc1Results = performCalculation1(dayDiff);
+            const calc1Div = document.createElement('div');
+            calc1Div.className = 'result-item';
+            calc1Div.innerHTML = `
+                <h4>Phep tinh 1: Ket qua chia cho TAT CA cac so trong bang 2</h4>
+                ${calc1Results}
+            `;
+            resultsContent.appendChild(calc1Div);
+            
+            // Phep tinh 2: Tinh ngay bat dau va ket thuc cho TAT CA cac so trong bang 2
+            const calc2Results = performCalculation2(dayDiff, currentDate, birthDate);
+            const calc2Div = document.createElement('div');
+            calc2Div.className = 'result-item';
+            calc2Div.innerHTML = `
+                <h4>Phep tinh 2: Chu ky va ngay dac biet cho TAT CA cac so trong bang 2</h4>
+                ${calc2Results}
+            `;
+            resultsContent.appendChild(calc2Div);
+            
+            // So sanh voi so dac biet
+            const specialResults = checkSpecialNumbers(dayDiff);
+            const specialDiv = document.createElement('div');
+            specialDiv.className = 'result-item';
+            specialDiv.innerHTML = `
+                <h4>So sanh voi cac so dac biet</h4>
+                ${specialResults}
+            `;
+            resultsContent.appendChild(specialDiv);
+            
+            // Hien thi khu vuc ket qua
+            resultsSection.style.display = 'block';
+            
+            // Tu dong cuon den ket qua
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Thuc hien phep tinh 1 - Chia cho TAT CA cac so trong bang 2
+        function performCalculation1(dayDiff) {
+            let resultsHTML = '';
+            const zeroResults = [];
+            const remainderLessThan7 = [];
+            
+            // Hien thi tat ca cac so trong bang 2
+            resultsHTML += `<p><strong>Bang 2 gom 38 so:</strong> `;
+            table2.forEach((num, index) => {
+                resultsHTML += `<span class="number-badge">${num}</span>`;
+                if ((index + 1) % 10 === 0) resultsHTML += '<br>';
+            });
+            resultsHTML += `</p>`;
+            
+            // Tao bang ket qua
+            resultsHTML += `<div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>So chia</th>
+                            <th>Ket qua chia</th>
+                            <th>So du</th>
+                            <th>Thong bao</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+            
+            // Duyet qua TAT CA cac so trong bang 2
+            table2.forEach(num => {
+                const quotient = Math.floor(dayDiff / num);
+                const remainder = dayDiff % num;
+                
+                let message = '';
+                let rowClass = '';
+                
+                // Kiem tra neu chia het (du = 0)
+                if (remainder === 0) {
+                    zeroResults.push(num);
+                    rowClass = 'warning';
+                    
+                    // Thong bao dac biet cho mot so so cu the
+                    switch(num) {
+                        case 23:
+                            message = "Can nghi ngoi, khong leo treo, lam nang 6 gio tiep theo";
+                            break;
+                        case 28:
+                            message = "Hay nghe nhac, xem phim Tam Ly, di dao ngoai troi, khong nghe ai than phien 6 gio tiep theo";
+                            break;
+                        case 33:
+                            message = "Khong hoc hanh nghien cuu sau 6 gio tiep theo";
+                            break;
+                        case 43:
+                            message = "Khong binh luan, chi xem trinh dien hoa hau thoi trang, 6 gio tiep theo";
+                            break;
+                        case 53:
+                            message = "Khong den noi am i vao chua, tho... tinh lang 6 gio tiep theo";
+                            break;
+                        default:
+                            message = `Chia het cho ${num}`;
+                    }
+                } 
+                // Kiem tra neu so du nho hon 7
+                else if (remainder < 7) {
+                    remainderLessThan7.push({num, remainder});
+                    rowClass = 'info';
+                    message = `Con ${remainder} lan nua`;
+                } else {
+                    message = `Du ${remainder}`;
+                }
+                
+                resultsHTML += `<tr class="${rowClass}">
+                    <td>${num}</td>
+                    <td>${dayDiff} ÷ ${num} = ${quotient}</td>
+                    <td>${remainder}</td>
+                    <td>${message}</td>
+                </tr>`;
+            });
+            
+            resultsHTML += `</tbody></table></div>`;
+            
+            // Tom tat ket qua dac biet
+            if (zeroResults.length > 0) {
+                resultsHTML += `<div class="warning"><strong>Cac so chia het (du = 0):</strong> ${zeroResults.join(', ')}</div>`;
+                
+                // Kiem tra trung so 0
+                if (zeroResults.length >= 2) {
+                    resultsHTML += `<div class="warning"><strong>CO ${zeroResults.length} VONG TRUNG NHAU:</strong> ${zeroResults.join(', ')}. Tranh rui ro tai nan nghi ${zeroResults.length} ngay.</div>`;
+                }
+            }
+            
+            if (remainderLessThan7.length > 0) {
+                resultsHTML += `<div class="info"><strong>Cac so co du nho hon 7:</strong> `;
+                remainderLessThan7.forEach(item => {
+                    resultsHTML += `${item.num} (du ${item.remainder}), `;
+                });
+                resultsHTML = resultsHTML.slice(0, -2); // Xoa dau ", " cuoi cung
+                resultsHTML += `</div>`;
+            }
+            
+            return resultsHTML;
+        }
+
+        // Thuc hien phep tinh 2 - Tinh toan voi TAT CA cac so trong bang 2
+        function performCalculation2(dayDiff, currentDate, birthDate) {
+            let resultsHTML = '';
+            
+            // Lay so chan (phan nguyen khi chia cho 23)
+            const soChan = Math.floor(dayDiff / 23);
+            
+            resultsHTML += `<div class="info"><strong>So chan (chia 23):</strong> ${soChan}</div>`;
+            
+            // Tao bang ket qua
+            resultsHTML += `<div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>So trong bang 2</th>
+                            <th>Ngay dau ky</th>
+                            <th>Ngay cuoi ky</th>
+                            <th>So du</th>
+                            <th>Ngay ket thuc chu ky</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+            
+            // Duyet qua TAT CA cac so trong bang 2
+            table2.forEach(num => {
+                // Tinh so du
+                const remainder = dayDiff % num;
+                
+                // Tinh ngay bat dau: soChan * num + ngay sinh
+                const startDays = soChan * num;
+                const startDate = new Date(birthDate);
+                startDate.setDate(startDate.getDate() + startDays);
+                
+                // Tinh ngay ket thuc: (soChan + 1) * num + ngay sinh
+                const endDays = (soChan + 1) * num;
+                const endDate = new Date(birthDate);
+                endDate.setDate(endDate.getDate() + endDays);
+                
+                // Tinh ngay ket thuc chu ky: currentDate + (num - remainder)
+                const cycleEndDays = num - remainder;
+                const cycleEndDate = new Date(currentDate);
+                cycleEndDate.setDate(cycleEndDate.getDate() + cycleEndDays);
+                
+                // Xac dinh class cho hang dua tren so du
+                let rowClass = '';
+                if (remainder === 0) {
+                    rowClass = 'warning';
+                } else if (remainder < 7) {
+                    rowClass = 'info';
+                }
+                
+                resultsHTML += `<tr class="${rowClass}">
+                    <td>${num}</td>
+                    <td>${formatDate(startDate)}<br><small>(${soChan} × ${num} + ngay sinh)</small></td>
+                    <td>${formatDate(endDate)}<br><small>((${soChan} + 1) × ${num} + ngay sinh)</small></td>
+                    <td>${remainder}</td>
+                    <td>${formatDate(cycleEndDate)}<br><small>(+${cycleEndDays} ngay tu hom nay)</small></td>
+                </tr>`;
+            });
+            
+            resultsHTML += `</tbody></table></div>`;
+            
+            return resultsHTML;
+        }
+
+        // Kiem tra so dac biet
+        function checkSpecialNumbers(dayDiff) {
+            let resultsHTML = '';
+            
+            // Kiem tra xem so chenh lech co bang so dac biet nao khong
+            const exactMatch = specialNumbers.find(num => num === dayDiff);
+            if (exactMatch) {
+                resultsHTML += `<div class="success"><strong>So chenh lech (${dayDiff}) TRUNG VOI SO dAC BIET:</strong> ${exactMatch}</div>`;
+            }
+            
+            // Kiem tra cac so gan voi so dac biet (trong khoang ±10)
+            const nearMatches = specialNumbers.filter(num => Math.abs(num - dayDiff) <= 10 && num !== dayDiff);
+            
+            if (nearMatches.length > 0) {
+                resultsHTML += `<p><strong>So chenh lech gan voi cac so dac biet:</strong></p>`;
+                nearMatches.forEach(num => {
+                    const diff = num - dayDiff;
+                    const direction = diff > 0 ? "con" : "da qua";
+                    resultsHTML += `<span class="special-number">${num} (${direction} ${Math.abs(diff)} ngay)</span>`;
+                });
+            }
+            
+            // Kiem tra so chan (chia cho 23)
+            const soChan = Math.floor(dayDiff / 23);
+            const soChanMatch = specialNumbers.find(num => num === soChan);
+            if (soChanMatch) {
+                resultsHTML += `<div class="info"><strong>So chan (${soChan}) trung voi so dac biet:</strong> ${soChanMatch}</div>`;
+            }
+            
+            // Kiem tra so du khi chia cho 23
+            const remainder23 = dayDiff % 23;
+            const remainderMatch = specialNumbers.find(num => num === remainder23);
+            if (remainderMatch) {
+                resultsHTML += `<div class="info"><strong>So du khi chia cho 23 (${remainder23}) trung voi so dac biet:</strong> ${remainderMatch}</div>`;
+            }
+            
+            // Kiem tra so du khi chia cho cac so trong bang 2
+            const specialRemainders = [];
+            table2.forEach(num => {
+                const remainder = dayDiff % num;
+                if (specialNumbers.includes(remainder)) {
+                    specialRemainders.push({num, remainder});
+                }
+            });
+            
+            if (specialRemainders.length > 0) {
+                resultsHTML += `<p><strong>So du khi chia cho cac so trong bang 2 trung voi so dac biet:</strong></p>`;
+                specialRemainders.forEach(item => {
+                    resultsHTML += `<span class="special-number">Chia ${dayDiff} cho ${item.num} du ${item.remainder}</span>`;
+                });
+            }
+            
+            if (!exactMatch && nearMatches.length === 0 && !soChanMatch && !remainderMatch && specialRemainders.length === 0) {
+                resultsHTML += `<p>Khong tim thay so chenh lech hoac so lien quan trung voi cac so dac biet.</p>`;
+            }
+            
+            return resultsHTML;
+        }
+
+        // dinh dang ngay thang
+        function formatDate(date) {
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Co Tuong – Toa do & Chu</title>
+<style>
+body { font-family: monospace; background:#f4f6fa; padding:20px }
+h1 { color:#b71c1c }
+pre { background:#fff; padding:15px; border-radius:10px }
+input,button { padding:6px; margin:4px }
+button { cursor:pointer }
+.red { color:red }
+.black { color:black }
+</style>
+</head>
+
+<body>
+
+<h1>♟ CO TUONG – CHOI BANG TOA dO & CHU</h1>
+
+<p>
+Toa do: x = 0→8 (cot) | y = 0→9 (hang)<br>
+Vi du: Xe do tai (0,9)
+</p>
+
+<pre id="board"></pre>
+
+<h3>🎯 Nhap nuoc di</h3>
+Quan tai (x,y):
+<input id="fx" type="number" min="0" max="8">
+<input id="fy" type="number" min="0" max="9"><br>
+
+den (x,y):
+<input id="tx" type="number" min="0" max="8">
+<input id="ty" type="number" min="0" max="9"><br>
+
+<button onclick="move()">▶ di quan</button>
+
+<p id="msg"></p>
+
+<script>
+const EMPTY = " . ";
+let turn = "red";
+
+let board = [
+["車","馬","象","士","將","士","象","馬","車"],
+[EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+[EMPTY,"砲",EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,"砲",EMPTY],
+["卒",EMPTY,"卒",EMPTY,"卒",EMPTY,"卒",EMPTY,"卒"],
+[EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+[EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+["兵",EMPTY,"兵",EMPTY,"兵",EMPTY,"兵",EMPTY,"兵"],
+[EMPTY,"炮",EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,"炮",EMPTY],
+[EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY],
+["俥","傌","相","仕","帥","仕","相","傌","俥"]
+];
+
+function draw(){
+  let s = "";
+  for(let y=0;y<10;y++){
+    s += y + " ";
+    for(let x=0;x<9;x++){
+      let c = board[y][x];
+      if("俥傌相仕帥兵炮".includes(c)) s += "%RED%" + c + "%END% ";
+      else if("車馬象士將卒砲".includes(c)) s += "%BLACK%" + c + "%END% ";
+      else s += c;
+    }
+    s += "\n";
+  }
+  s += "   0 1 2 3 4 5 6 7 8";
+  s = s.replace(/%RED%/g,'<span class="red">')
+       .replace(/%BLACK%/g,'<span class="black">')
+       .replace(/%END%/g,'</span>');
+  document.getElementById("board").innerHTML = s;
+}
+
+function isRed(c){ return "俥傌相仕帥兵炮".includes(c); }
+function isBlack(c){ return "車馬象士將卒砲".includes(c); }
+
+function move(){
+  let fx=+fxEl.value, fy=+fyEl.value;
+  let tx=+txEl.value, ty=+tyEl.value;
+}
+
+const fxEl = document.getElementById("fx");
+const fyEl = document.getElementById("fy");
+const txEl = document.getElementById("tx");
+const tyEl = document.getElementById("ty");
+
+function move(){
+  let fx=+fxEl.value, fy=+fyEl.value;
+  let tx=+txEl.value, ty=+tyEl.value;
+
+  let from = board[fy][fx];
+  let to = board[ty][tx];
+
+  if(from===EMPTY){ msg("❌ Khong co quan"); return; }
+
+  if(turn==="red" && !isRed(from)){ msg("❌ Luot do"); return; }
+  if(turn==="black" && !isBlack(from)){ msg("❌ Luot den"); return; }
+
+  if(isRed(from) && isRed(to)) { msg("❌ Quan cung phe"); return; }
+  if(isBlack(from) && isBlack(to)) { msg("❌ Quan cung phe"); return; }
+
+  board[ty][tx] = from;
+  board[fy][fx] = EMPTY;
+
+  turn = turn==="red" ? "black":"red";
+  msg("✔ di quan thanh cong – Luot " + (turn==="red"?"dO":"dEN"));
+  draw();
+}
+
+function msg(t){ document.getElementById("msg").innerText = t; }
+
+draw();
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tra mau tu thong tin xe - Bang 25 chu cai</title>
+<style>
+body{margin:0;font-family:sans-serif;background:#071027;color:#fff;padding:20px;}
+h1{text-align:center;font-size:1.5rem;margin-bottom:5px;}
+p.lead{text-align:center;font-size:0.95rem;opacity:0.8;margin-bottom:20px;}
+.card{background:rgba(255,255,255,0.03);padding:16px;border-radius:12px;max-width:800px;margin:0 auto;}
+.field{margin-bottom:12px;}
+label{font-weight:700;margin-bottom:4px;display:block;}
+input[type=text],input[type=number]{width:100%;padding:12px;font-size:1.1rem;border-radius:8px;border:none;background:rgba(255,255,255,0.05);color:#fff;}
+.btn{padding:12px 16px;font-weight:700;font-size:1rem;border:none;border-radius:10px;background:#06b6d4;color:#042f35;cursor:pointer;margin-right:8px;}
+.result{margin-top:16px;background:rgba(255,255,255,0.05);padding:12px;border-radius:10px;font-size:1rem;}
+.color-pill{display:inline-block;padding:6px 10px;margin:4px;border-radius:999px;font-weight:700;background:#333;color:#fff;}
+.mono{font-family:monospace;font-weight:700;}
+.small{font-size:0.9rem;opacity:0.85;}
+</style>
+</head>
+<body>
+<h1>Tra mau tu thong tin xe (Dung bang 25 chu cai)</h1>
+<p class="lead">Nhap tat ca du lieu de tim mau. He thong se ket hop cac truong de tim tat ca kha nang.</p>
+
+<div class="card">
+<div class="field">
+<label for="vehicleName">1) Ten xe</label>
+<input type="text" id="vehicleName" placeholder="Vi du: SRC, Wave Alpha, Dream">
+</div>
+
+<div class="field">
+<label for="engineCC">2) Dung tich xi-lanh</label>
+<input type="number" id="engineCC" placeholder="VD: 110" min="0">
+</div>
+
+<div class="field">
+<label for="batteryCode">3) Dung acquy / ma so</label>
+<input type="text" id="batteryCode" placeholder="VD: AC-123 hoac 113">
+</div>
+
+<div class="field">
+<label for="ownerName">4) Ten nguoi chu</label>
+<input type="text" id="ownerName" placeholder="Vi du: NAM, Nguyen Van A">
+</div>
+
+<button class="btn" id="runBtn">Chay</button>
+<button class="btn" id="clearBtn" style="background:#334155;color:#fff;">Xoa</button>
+
+<div id="output" class="result" style="display:none;"></div>
+</div>
+
+<script>
+// Bang mau 14 muc
+const colorTables=[
+["DO","VANG","TRANG","LUC","LAM","DO","VANG","TRANG","LUC","LAM","DO","VANG","TRANG","LUC"],
+["DEN","TRANG","HB","LAM","LUC","TIM","DO","CAM","VANG","DEN","TRANG","HB","LAM","LUC"],
+["VANG","DO","HONG","GHI","TRANG","DEN","HB","LAM","VANG","DO","HONG","GHI","TRANG","DEN"],
+["DO","VANG","CAM","LUC","LAM","CHAM","TIM","DO","VANG","CAM","LUC","LAM","CHAM","TIM"],
+["DO","VANG","LAM","DO","VANG","LAM","DO","VANG","LAM","DO","VANG","LAM","DO","VANG"],
+["LAM","DO","VANG","DEN","LAM","DO","VANG","DEN","LAM","DO","VANG","DEN","LAM","DO"]
+];
+
+// Bang chu 25 chu cai
+const baseMap={'a':1,'a':1,'a':1,'b':2,'c':3,'d':4,'d':4,'e':5,'e':5,'g':7,'h':8,'i':9,'k':11,'l':12,'m':13,'n':14,'o':15,'o':15,'o':15,'p':16,'q':17,'r':18,'s':19,'t':20,'u':21,'u':21,'v':22,'x':24,'y':25};
+
+// Chuan hoa ky tu
+function normChar(ch){
+if(!ch) return '';
+if(ch==='d') return 'd';
+if(ch==='d') return 'd';
+return ch.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+}
+
+// Lay so tu chu cai dau
+function firstLettersToNumbers(str){
+let arr=str.split(' ').filter(Boolean).map(w=>w[0]);
+let numStr='';
+arr.forEach(ch=>{
+const n=baseMap[normChar(ch)];
+if(n) numStr+=n;
+});
+return numStr;
+}
+
+// Lay tat ca nhom so tu chuoi
+function extractNumbers(str){
+return str.match(/\d+/g)||[];
+}
+
+// Chon so de tru dung tich
+function chooseNumber(numbers){
+if(numbers.length===0) return null;
+return parseInt(numbers[0]);
+}
+
+// Hieu thanh index bang 1..14
+function diffIndex(num,dungtich){
+let diff=Math.abs(num-dungtich);
+let idx=diff%14;
+if(idx===0) idx=14;
+return idx;
+}
+
+// Chay tra 3 bang
+function pickColors(idx){
+let res=[];
+for(let i=0;i<3;i++){
+const table=colorTables[i%colorTables.length];
+res.push(table[(idx-1)%14]);
+}
+return res;
+}
+
+// Xu ly va hien thi
+document.getElementById('runBtn').addEventListener('click',()=>{
+let vehicle=document.getElementById('vehicleName').value.trim();
+let engine=parseInt(document.getElementById('engineCC').value.trim());
+let battery=document.getElementById('batteryCode').value.trim();
+let owner=document.getElementById('ownerName').value.trim();
+
+if(!owner&&!vehicle&&!battery){
+alert("Vui long nhap it nhat Ten chu hoac Ten xe hoac Ma so");
+return;
+}
+if(!engine){
+alert("Vui long nhap Dung tich xi-lanh");
+return;
+}
+
+// Tao tat ca chuoi so
+let numbers=[];
+
+// 1. Chu cai dau ten chu
+if(owner) numbers.push(firstLettersToNumbers(owner));
+
+// 2. Nhom so tu ten xe
+if(vehicle) numbers=numbers.concat(extractNumbers(vehicle));
+
+// 3. Nhom so tu ma so/acquy
+if(battery) numbers=numbers.concat(extractNumbers(battery));
+
+// 4. Chuyen tat ca chuoi so thanh so nguyen
+numbers=numbers.map(s=>parseInt(s)).filter(n=>!isNaN(n));
+
+if(numbers.length===0){
+document.getElementById('output').style.display='block';
+document.getElementById('output').innerHTML='<strong>Khong tim thay du lieu voi bang chu hien tai</strong>';
+return;
+}
+
+// Tim mau cho tung so
+let results=numbers.map(n=>{
+let idx=diffIndex(n,engine);
+let colors=pickColors(idx);
+return {number:n,index:idx,colors};
+});
+
+// Hien thi ket qua
+let html='<div><strong>Ket qua tim mau tu tat ca truong hop:</strong></div>';
+results.forEach(r=>{
+html+=`<div class="small mono">So: ${r.number} - Index bang: ${r.index} - Mau: ${r.colors.map(c=>`<span class="color-pill">${c}</span>`).join('')}</div>`;
+});
+document.getElementById('output').style.display='block';
+document.getElementById('output').innerHTML=html;
+});
+
+// Xoa
+document.getElementById('clearBtn').addEventListener('click',()=>{
+document.getElementById('vehicleName').value='';
+document.getElementById('engineCC').value='';
+document.getElementById('batteryCode').value='';
+document.getElementById('ownerName').value='';
+document.getElementById('output').style.display='none';
+document.getElementById('output').innerHTML='';
+});
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thực đơn thực tế - Đong bằng bát, thìa, miếng, hộp</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f7f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            border-radius: 30px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 { color: #2e7d32; text-align: center; font-size: 1.6rem; }
+        .upload-area {
+            border: 2px dashed #4caf50;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            margin: 15px 0;
+            background: #f9fdf9;
+            cursor: pointer;
+        }
+        input[type="file"] { display: none; }
+        .btn {
+            background: #2e7d32;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn-secondary { background: #ff9800; }
+        .meal-card {
+            background: #fff8e1;
+            border-left: 8px solid #ffb74d;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 16px;
+        }
+        .meal-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .meal-items {
+            list-style: none;
+            padding: 0;
+        }
+        .meal-items li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ffecb3;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .serving {
+            background: #c8e6c9;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+        .form-group {
+            flex: 1;
+            min-width: 140px;
+        }
+        label { font-weight: bold; display: block; margin-bottom: 5px; font-size: 13px; }
+        select, input { width: 100%; padding: 8px; border-radius: 12px; border: 1px solid #c8e6c9; }
+        .stats { background: #e8f5e9; padding: 15px; border-radius: 16px; margin-top: 20px; }
+        .warning { background: #ffebee; border-left: 5px solid #f44336; padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🍚 Ăn bằng bát, thìa, miếng, hộp</h1>
+    <p style="text-align: center;">Upload file <strong>mon_an_thuc_te.txt</strong> (mỗi món có đơn vị đong thực tế)</p>
+
+    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+        📂 Nhấp chọn file mon_an_thuc_te.txt
+        <input type="file" id="fileInput" accept=".txt,.csv">
+    </div>
+
+    <div class="row">
+        <div class="form-group"><label>👤 Thể trạng</label>
+            <select id="bodyType">
+                <option value="binh">Bình thường</option>
+                <option value="han">Hàn (chân tay lạnh)</option>
+                <option value="nhiệt">Nhiệt (dễ nóng)</option>
+            </select>
+        </div>
+        <div class="form-group"><label>🌀 Ngũ hành</label>
+            <select id="userElement">
+                <option value="Thổ">Thổ</option><option value="Kim">Kim</option>
+                <option value="Mộc">Mộc</option><option value="Thủy">Thủy</option><option value="Hỏa">Hỏa</option>
+            </select>
+        </div>
+        <div class="form-group"><label>🍂 Mùa</label>
+            <select id="season">
+                <option value="Xuân">Xuân</option><option value="Hạ">Hạ</option>
+                <option value="Thu">Thu</option><option value="Đông">Đông</option>
+            </select>
+        </div>
+    </div>
+
+    <div style="text-align: center;">
+        <button class="btn" onclick="generateMeal()">🫕 TẠO THỰC ĐƠN (ĐONG THẬT)</button>
+        <button class="btn btn-secondary" onclick="downloadSample()">📄 Tải file mẫu</button>
+    </div>
+
+    <div id="result">
+        <div class="stats">💡 Hướng dẫn: Tải file mẫu về, sửa theo món bạn có, upload lên → nhấn tạo thực đơn.</div>
+    </div>
+</div>
+
+<script>
+    let foods = [];
+
+    // Dữ liệu mẫu có sẵn (để không bị lỗi nếu chưa upload)
+    const defaultFoods = [
+        { name: "Cơm trắng", caloPerUnit: 130, unit: "bát", group: "ngũ cốc", yinYang: "bình", element: "Thổ", servingSize: 1 },
+        { name: "Thịt gà luộc", caloPerUnit: 165, unit: "miếng (100g)", group: "protein", yinYang: "nhiệt", element: "Hỏa", servingSize: 1 },
+        { name: "Rau muống luộc", caloPerUnit: 15, unit: "bát con", group: "rau", yinYang: "hàn", element: "Mộc", servingSize: 1 },
+        { name: "Sữa chua", caloPerUnit: 80, unit: "hộp", group: "sữa", yinYang: "hàn", element: "Thủy", servingSize: 1 },
+        { name: "Trứng rán", caloPerUnit: 150, unit: "quả", group: "protein", yinYang: "nhiệt", element: "Hỏa", servingSize: 1 }
+    ];
+
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            foods = parseFoodData(evt.target.result);
+            document.getElementById('result').innerHTML = `<div class="stats">✅ Đã đọc ${foods.length} món. Nhấn "TẠO THỰC ĐƠN" để xem kết quả.</div>`;
+        };
+        reader.readAsText(file, 'UTF-8');
+    });
+
+    function parseFoodData(raw) {
+        const lines = raw.split(/\r?\n/);
+        const list = [];
+        for (let line of lines) {
+            line = line.trim();
+            if (!line || line.startsWith('#')) continue;
+            const parts = line.split(',');
+            if (parts.length >= 6) {
+                list.push({
+                    name: parts[0].trim(),
+                    caloPerUnit: parseInt(parts[1].trim()),
+                    unit: parts[2].trim(),
+                    group: parts[3].trim(),
+                    yinYang: parts[4].trim(),
+                    element: parts[5].trim(),
+                    servingSize: 1
+                });
+            }
+        }
+        return list;
+    }
+
+    function getServingAdvice(avgYin, userBody, season) {
+        let ideal = 0;
+        if (userBody === 'han' || season === 'Đông') ideal = 0.8;
+        else if (userBody === 'nhiệt' || season === 'Hạ') ideal = -0.8;
+        let diff = avgYin - ideal;
+        if (Math.abs(diff) < 0.6) return { text: 'Cân bằng tốt', color: '#4caf50' };
+        if (diff > 0.8) return { text: 'Hơi nóng → thêm rau sống, sữa chua, canh', color: '#f44336' };
+        return { text: 'Hơi lạnh → thêm gừng, hành, thịt gà', color: '#2196f3' };
+    }
+
+    function generateMeal() {
+        let useFoods = foods.length ? foods : defaultFoods;
+        let userBody = document.getElementById('bodyType').value;
+        let season = document.getElementById('season').value;
+        
+        // Lọc sơ bộ theo âm dương + ngũ hành
+        let targetYin = [];
+        if (userBody === 'han' || season === 'Đông') targetYin = ['nhiệt', 'ấm', 'bình'];
+        else if (userBody === 'nhiệt' || season === 'Hạ') targetYin = ['hàn', 'lương', 'bình'];
+        else targetYin = ['bình'];
+        
+        let available = useFoods.filter(f => targetYin.includes(f.yinYang));
+        if (available.length < 4) available = useFoods;
+        
+        // Chọn món sáng (ngũ cốc + sữa/trái cây)
+        let breakfastItems = [];
+        let breakfastItemsDetail = [];
+        let breakfastAvg = 0;
+        let candidates = available.filter(f => f.group === 'ngũ cốc');
+        if (candidates.length) breakfastItems.push(candidates[0]);
+        candidates = available.filter(f => f.group === 'sữa' || f.group === 'trái cây');
+        if (candidates.length) breakfastItems.push(candidates[0]);
+        
+        // Chọn món trưa (cơm + đạm + rau)
+        let lunchItems = [];
+        let lunchCandidates = available.filter(f => f.group === 'ngũ cốc');
+        if (lunchCandidates.length) lunchItems.push(lunchCandidates[0]);
+        let proteinCandidates = available.filter(f => f.group === 'protein');
+        if (proteinCandidates.length) lunchItems.push(proteinCandidates[0]);
+        let vegCandidates = available.filter(f => f.group === 'rau');
+        if (vegCandidates.length) lunchItems.push(vegCandidates[0]);
+        
+        // Chọn món tối (đạm + rau)
+        let dinnerItems = [];
+        let dinnerProtein = available.filter(f => f.group === 'protein');
+        if (dinnerProtein.length) dinnerItems.push(dinnerProtein[0]);
+        let dinnerVeg = available.filter(f => f.group === 'rau');
+        if (dinnerVeg.length) dinnerItems.push(dinnerVeg[0]);
+        
+        // Hàm hiển thị 1 bữa
+        function renderMeal(title, items, mealType) {
+            let totalCal = items.reduce((s, m) => s + m.caloPerUnit, 0);
+            let avgYin = items.length ? items.reduce((s, m) => s + (m.yinYang === 'nhiệt'?2: m.yinYang === 'ấm'?1: m.yinYang === 'bình'?0: m.yinYang === 'lương'?-1:-2),0)/items.length : 0;
+            let advice = getServingAdvice(avgYin, userBody, season);
+            return `
+                <div class="meal-card">
+                    <div class="meal-title">${title} (${totalCal} kcal)</div>
+                    <ul class="meal-items">
+                        ${items.map(m => `<li><strong>${m.name}</strong> <span class="serving">${m.servingSize} ${m.unit} ~ ${m.caloPerUnit} kcal</span> <span>${m.yinYang}/${m.element}</span></li>`).join('')}
+                    </ul>
+                    <div>⚖️ Cân bằng: ${advice.text}</div>
+                    ${advice.text !== 'Cân bằng tốt' ? `<div style="font-size:13px; margin-top:5px;">💡 ${advice.text}</div>` : ''}
+                </div>
+            `;
+        }
+        
+        let html = `
+            <div class="stats">
+                🌿 Thực đơn theo thể trạng ${userBody === 'han' ? 'Hàn (ưu ấm)' : userBody === 'nhiệt' ? 'Nhiệt (ưu mát)' : 'Bình thường'}, mùa ${season}
+            </div>
+            ${renderMeal('☀️ BỮA SÁNG', breakfastItems, 'sang')}
+            ${renderMeal('🌞 BỮA TRƯA', lunchItems, 'trua')}
+            ${renderMeal('🌙 BỮA TỐI', dinnerItems, 'toi')}
+            <div class="stats">
+                📝 <strong>Hướng dẫn ăn:</strong><br>
+                - Mỗi bữa ăn đúng số lượng như trên (1 bát cơm, 1 miếng thịt/cá, 1 bát rau).<br>
+                - Uống đủ 2-2.5 lít nước/ngày (khoảng 8-10 cốc).<br>
+                - Nếu đói giữa bữa: ăn thêm 1 hộp sữa chua hoặc 1 quả chuối.
+            </div>
+        `;
+        document.getElementById('result').innerHTML = html;
+    }
+
+    function downloadSample() {
+        const sample = `# Định dạng: Tên món,Calo/1 đơn vị,Đơn vị,Nhóm,Tính chất âm dương,Ngũ hành
+Cơm trắng,130,bát,ngũ cốc,bình,Thổ
+Thịt gà luộc,165,miếng (100g),protein,nhiệt,Hỏa
+Rau muống luộc,15,bát con,rau,hàn,Mộc
+Sữa chua,80,hộp,sữa,hàn,Thủy
+Cá hồi,208,miếng (100g),protein,ấm,Thủy
+Đậu phụ sốt,76,miếng (100g),protein,bình,Thổ
+Trứng rán,150,quả,protein,nhiệt,Hỏa
+Bí đỏ luộc,45,bát con,rau,ấm,Hỏa
+Chuối,90,quả,trái cây,hàn,Mộc
+Khoai lang,90,củ (150g),ngũ cốc,ấm,Thổ`;
+        const blob = new Blob([sample], {type: 'text/plain'});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'mon_an_thuc_te.txt';
+        a.click();
+        URL.revokeObjectURL(a.href);
+    }
+</script>
+</body>
+</html>

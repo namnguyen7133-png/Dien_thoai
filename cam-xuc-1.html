@@ -1,0 +1,1092 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Sach Bai Hat Theo Cam Xuc - day du</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+            --accent: #ff4d94;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: var(--light);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+        
+        .container {
+            max-width: 100%;
+            padding: 0 15px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px 15px 10px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 0 0 25px 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(106, 17, 203, 0.3), rgba(37, 117, 252, 0.3));
+            z-index: -1;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #ff4d94, #6a11cb);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            color: #b0b0ff;
+            margin-bottom: 15px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .stat-item {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .search-box {
+            position: relative;
+            margin: 15px auto;
+            max-width: 500px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border-radius: 50px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 5px 20px rgba(106, 17, 203, 0.4);
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #b0b0ff;
+            font-size: 1.2rem;
+        }
+        
+        .tabs-container {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .tabs-scroll-btn {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            z-index: 10;
+            display: none;
+        }
+        
+        .tabs-scroll-btn.left {
+            left: 0;
+        }
+        
+        .tabs-scroll-btn.right {
+            right: 0;
+        }
+        
+        .tabs {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 0;
+            gap: 10px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .tab {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 30px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            flex-shrink: 0;
+        }
+        
+        .tab.active {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .content {
+            display: none;
+        }
+        
+        .content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .song-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-height: 65vh;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        .song-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .song-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .song-list::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #6a11cb, #2575fc);
+            border-radius: 10px;
+        }
+        
+        .song-card {
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 15px;
+            padding: 18px;
+            transition: all 0.3s ease;
+            border-left: 5px solid transparent;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .song-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+            transform: translateX(-100%);
+        }
+        
+        .song-card:hover::before {
+            animation: shine 1.5s ease;
+        }
+        
+        @keyframes shine {
+            100% { transform: translateX(100%); }
+        }
+        
+        .song-card:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            border-left-color: var(--accent);
+        }
+        
+        .song-card.playing {
+            border-left-color: #ff4d94;
+            background: rgba(255, 77, 148, 0.1);
+        }
+        
+        .song-number {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 0.9rem;
+            box-shadow: 0 3px 8px rgba(106, 17, 203, 0.4);
+        }
+        
+        .song-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: white;
+        }
+        
+        .song-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        
+        .song-artist {
+            font-size: 0.95rem;
+            color: #b0b0ff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .song-artist i {
+            color: #ff4d94;
+        }
+        
+        .song-bpm {
+            display: inline-block;
+            padding: 5px 12px;
+            background: rgba(255, 193, 7, 0.15);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #ffd966;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .song-country {
+            display: inline-block;
+            padding: 3px 10px;
+            background: rgba(37, 117, 252, 0.2);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            color: #80b0ff;
+            border: 1px solid rgba(37, 117, 252, 0.3);
+        }
+        
+        .song-emotions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .emotion-tag {
+            padding: 5px 12px;
+            background: rgba(255, 77, 148, 0.15);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #ff99c2;
+            border: 1px solid rgba(255, 77, 148, 0.3);
+        }
+        
+        .bpm-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-left: 10px;
+        }
+        
+        .bpm-bar {
+            width: 80px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .bpm-fill {
+            height: 100%;
+            background: linear-gradient(to right, #28a745, #ffc107, #dc3545);
+            transition: width 0.5s ease;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px 20px;
+            color: #aaa;
+            font-size: 1.1rem;
+        }
+        
+        .no-results i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #6a11cb;
+        }
+        
+        .country-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        
+        .country-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .country-btn.active {
+            background: rgba(106, 17, 203, 0.3);
+            color: white;
+            border-color: #6a11cb;
+        }
+        
+        .country-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 15, 35, 0.95);
+            padding: 15px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+        
+        .player {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .player-info {
+            text-align: left;
+            flex-grow: 1;
+        }
+        
+        .player-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 150px;
+        }
+        
+        .player-artist {
+            font-size: 0.8rem;
+            color: #b0b0ff;
+        }
+        
+        .player-controls {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .player-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .player-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(106, 17, 203, 0.6);
+        }
+        
+        .player-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .highlight {
+            background-color: rgba(255, 255, 100, 0.3);
+            padding: 2px;
+            border-radius: 3px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .song-card {
+                padding: 15px;
+            }
+            
+            .player-title {
+                max-width: 120px;
+            }
+            
+            .tabs {
+                padding-bottom: 5px;
+            }
+            
+            .tab {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+            
+            .stats {
+                gap: 10px;
+            }
+            
+            .stat-item {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .song-info-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.3rem;
+            }
+            
+            .subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .player-title {
+                max-width: 100px;
+            }
+            
+            .player-controls {
+                gap: 10px;
+            }
+            
+            .player-btn {
+                width: 36px;
+                height: 36px;
+            }
+            
+            .country-filter {
+                gap: 8px;
+            }
+            
+            .country-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .song-bpm {
+                font-size: 0.8rem;
+                padding: 4px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-music"></i> DANH SACH BAI HAT THEO CAM XUC</h1>
+            <p class="subtitle">Chon cam xuc de tim bai hat phu hop voi tam trang cua ban</p>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <i class="fas fa-headphones"></i>
+                    <span id="totalSongs">0 bai hat</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span id="avgBpm">0 BPM</span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-heart"></i>
+                    <span id="totalEmotions">0 cam xuc</span>
+                </div>
+            </div>
+            
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Tim kiem bai hat, ca si, cam xuc, BPM...">
+            </div>
+        </header>
+        
+        <div class="country-filter" id="countryFilter">
+            <!-- Nut loc quoc gia se duoc them bang JavaScript -->
+        </div>
+        
+        <div class="tabs-container">
+            <button class="tabs-scroll-btn left" id="scrollLeftBtn"><i class="fas fa-chevron-left"></i></button>
+            <div class="tabs" id="emotionTabs">
+                <!-- Tabs se duoc them bang JavaScript -->
+            </div>
+            <button class="tabs-scroll-btn right" id="scrollRightBtn"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        
+        <div id="contentArea">
+            <!-- Noi dung se duoc them bang JavaScript -->
+        </div>
+    </div>
+    
+    <footer>
+        <div class="player">
+            <div class="player-info">
+                <div class="player-title" id="playerTitle">Chon mot bai hat de phat</div>
+                <div class="player-artist" id="playerArtist">---</div>
+            </div>
+            
+            <div class="player-controls">
+                <button class="player-btn" id="prevBtn">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="player-btn" id="playBtn">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button class="player-btn" id="nextBtn">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Du lieu bai hat day du theo cam xuc - dA BO SUNG BPM
+        const songsByEmotion = {
+            "Hanh phuc": [
+                {id: 1, title: "Atemlos durch die Nacht", artist: "Helene Fischer", country: "duc", emotions: ["Hanh phuc", "phan khich", "yeu doi"], bpm: 128},
+                {id: 2, title: "Tage wie diese", artist: "Die Toten Hosen", country: "duc", emotions: ["Vui ve", "doan ket", "hy vong"], bpm: 132},
+                {id: 3, title: "La Vie en Rose", artist: "Edith Piaf", country: "Phap", emotions: ["Lang man", "hanh phuc", "diu dang"], bpm: 96},
+                {id: 4, title: "Dancing Queen", artist: "ABBA", country: "Thuy dien", emotions: ["Vui ve", "phan khich", "lac quan"], bpm: 124},
+                {id: 5, title: "Lemon", artist: "Kenshi Yonezu", country: "Nhat", emotions: ["Hanh phuc"], bpm: 112},
+                {id: 6, title: "Pretender", artist: "Official HIGE DANDism", country: "Nhat", emotions: ["Hanh phuc"], bpm: 118},
+                {id: 7, title: "Koi", artist: "Gen Hoshino", country: "Nhat", emotions: ["Hanh phuc"], bpm: 120},
+                {id: 8, title: "Tieu Hanh Van", artist: "Hebe Tien", country: "Trung", emotions: ["Hanh phuc", "ngot ngao"], bpm: 105},
+                {id: 9, title: "Ode to Joy (Symphony No. 9)", artist: "Ludwig van Beethoven", country: "duc", emotions: ["Hanh phuc", "doan ket", "vi dai"], bpm: 120},
+                {id: 10, title: "Je Veux", artist: "Zaz", country: "Phap", emotions: ["Tu do", "vui tuoi"], bpm: 130},
+                {id: 11, title: "Vui ve, tu tin", artist: "Hoang Thuy Linh", country: "Viet Nam", emotions: ["Vui ve", "tu tin"], bpm: 110},
+                {id: 12, title: "Anh Nha O dau The", artist: "AMEE ft. B Ray", country: "Viet Nam", emotions: ["Hanh phuc", "to mo"], bpm: 110},
+                {id: 13, title: "See Tinh", artist: "Hoang Thuy Linh", country: "Viet Nam", emotions: ["Vui tuoi", "lac quan"], bpm: 125},
+                {id: 14, title: "Hai Phut Hon", artist: "Phao ft. Kaiz", country: "Viet Nam", emotions: ["Nang dong", "phan khich"], bpm: 145}
+            ],
+            "Buon ba": [
+                {id: 15, title: "99 Luftballons", artist: "Nena", country: "duc", emotions: ["Lo lang", "phan khang", "buon ba"], bpm: 126},
+                {id: 16, title: "Lili Marleen", artist: "Marlene Dietrich", country: "duc", emotions: ["Buon ba", "co don", "nho nhung"], bpm: 72},
+                {id: 17, title: "Ohne Dich", artist: "Rammstein", country: "duc", emotions: ["dau don", "mat mat", "tuyet vong"], bpm: 68},
+                {id: 18, title: "Faded", artist: "Alan Walker", country: "Na Uy", emotions: ["Co don", "mo ho", "ue oai"], bpm: 90},
+                {id: 19, title: "Yoru ni Kakeru", artist: "YOASOBI", country: "Nhat", emotions: ["Buon"], bpm: 85},
+                {id: 20, title: "First Love", artist: "Utada Hikaru", country: "Nhat", emotions: ["Buon"], bpm: 88},
+                {id: 21, title: "Nandemonaiya", artist: "RADWIMPS", country: "Nhat", emotions: ["Buon"], bpm: 82},
+                {id: 22, title: "Ly Biet Khuc", artist: "Thach Tien", country: "Trung", emotions: ["Buon", "sau lang"], bpm: 76},
+                {id: 23, title: "Ne Me Quitte Pas", artist: "Jacques Brel", country: "Phap", emotions: ["dau buon", "khan thiet"], bpm: 70},
+                {id: 24, title: "Derniere Danse", artist: "Indila", country: "Phap", emotions: ["Bi thuong", "noi tam"], bpm: 92},
+                {id: 25, title: "Je suis malade", artist: "Serge Lama", country: "Phap", emotions: ["Tuyet vong", "cam xuc vo oa"], bpm: 65},
+                {id: 26, title: "Nhung con hac (Cranes)", artist: "Mark Bernes", country: "Nga", emotions: ["Bi thuong", "tuong nho chien tranh"], bpm: 60},
+                {id: 27, title: "Sai Gon dau Long Qua", artist: "Hua Kim Tuyen ft. Hoang Duyen", country: "Viet Nam", emotions: ["Buon ba", "tiec nuoi"], bpm: 85},
+                {id: 28, title: "Hong Nhan", artist: "Jack", country: "Viet Nam", emotions: ["U sau", "day dut"], bpm: 95},
+                {id: 29, title: "Bac Phan", artist: "Jack ft. K-ICM", country: "Viet Nam", emotions: ["dau long", "bat luc"], bpm: 105}
+            ],
+            "Lang man": [
+                {id: 30, title: "Manchmal mochte ich schon mit dir", artist: "Roland Kaiser", country: "duc", emotions: ["Lang man", "tiec nuoi", "khao khat"], bpm: 108},
+                {id: 31, title: "Irgendwie, Irgendwo, Irgendwann", artist: "Nena", country: "duc", emotions: ["Lang man", "mo mong", "hy vong"], bpm: 112},
+                {id: 32, title: "Mam tylko ciebie", artist: "Taco Hemingway", country: "Ba Lan", emotions: ["Lang man", "nho nhung", "sau lang"], bpm: 98},
+                {id: 33, title: "La Vie en Rose", artist: "Edith Piaf", country: "Phap", emotions: ["Lang man", "ngot ngao"], bpm: 96},
+                {id: 34, title: "Koi", artist: "Gen Hoshino", country: "Nhat", emotions: ["Hanh phuc"], bpm: 120},
+                {id: 35, title: "Quang Nien", artist: "G.E.M. dang Tu Ky", country: "Trung", emotions: ["Lang man", "bay bong"], bpm: 115},
+                {id: 36, title: "Katyusha", artist: "Dan ca Nga", country: "Nga", emotions: ["Yeu nuoc", "lang man"], bpm: 110},
+                {id: 37, title: "Mot trieu bong hong do", artist: "Alla Pugacheva", country: "Nga", emotions: ["Lang man", "hy sinh vi tinh yeu"], bpm: 104},
+                {id: 38, title: "Con Mua Ngang Qua", artist: "Son Tung M-TP", country: "Viet Nam", emotions: ["Nho nhung", "nhe nhang"], bpm: 110},
+                {id: 39, title: "Mot Nha", artist: "Da LAB", country: "Viet Nam", emotions: ["Am ap", "doan vien"], bpm: 95}
+            ],
+            "Manh me": [
+                {id: 40, title: "Du Hast", artist: "Rammstein", country: "duc", emotions: ["Gian du", "manh me", "quyet liet"], bpm: 140},
+                {id: 41, title: "Schrei nach Liebe", artist: "Die Arzte", country: "duc", emotions: ["Phan no", "that vong", "keu goi"], bpm: 168},
+                {id: 42, title: "Sweet Dreams (Are Made of This)", artist: "Eurythmics", country: "Anh", emotions: ["Bi an", "khao khat", "manh me"], bpm: 126},
+                {id: 43, title: "Euphoria", artist: "Loreen", country: "Thuy dien", emotions: ["Hung phan", "hy vong", "manh liet"], bpm: 138},
+                {id: 44, title: "Gurenge", artist: "LiSA", country: "Nhat", emotions: ["Manh me"], bpm: 155},
+                {id: 45, title: "Inferno", artist: "Mrs. GREEN APPLE", country: "Nhat", emotions: ["Manh me"], bpm: 148},
+                {id: 46, title: "Phong Bao", artist: "Vuong Phong", country: "Trung", emotions: ["Manh me", "quyet liet"], bpm: 142},
+                {id: 47, title: "Toi tu do", artist: "Aria", country: "Nga", emotions: ["Manh me", "noi loan"], bpm: 152},
+                {id: 48, title: "Chay Ngay di", artist: "Son Tung M-TP", country: "Viet Nam", emotions: ["Kich tinh", "manh me"], bpm: 135},
+                {id: 49, title: "Hay Trao Cho Anh", artist: "Son Tung M-TP", country: "Viet Nam", emotions: ["Soi dong", "yeu doi"], bpm: 130}
+            ],
+            "Hoai niem": [
+                {id: 50, title: "Bochum", artist: "Herbert Gronemeyer", country: "duc", emotions: ["Tu hao", "hoai niem", "yeu thuong"], bpm: 102},
+                {id: 51, title: "Viva La Vida", artist: "Coldplay", country: "Anh", emotions: ["Tu do", "hoai niem", "hung vi"], bpm: 138},
+                {id: 52, title: "Haru no Tonari", artist: "YUI", country: "Nhat", emotions: ["Hoai niem"], bpm: 90},
+                {id: 53, title: "Platinum", artist: "Maaya Sakamoto", country: "Nhat", emotions: ["Hoai niem"], bpm: 88},
+                {id: 54, title: "Duc Phong", artist: "Ngo Thanh Phong", country: "Trung", emotions: ["Hoai niem", "xuc dong"], bpm: 92},
+                {id: 55, title: "Aux Champs-Elysees", artist: "Joe Dassin", country: "Phap", emotions: ["Hoai niem", "vui ve"], bpm: 120},
+                {id: 56, title: "Nhung dem Moskva", artist: "Vladimir Troshin", country: "Nga", emotions: ["Binh yen", "hoai niem"], bpm: 98},
+                {id: 57, title: "Thu gui me", artist: "Muslim Magomaev", country: "Nga", emotions: ["Cam dong", "nho thuong"], bpm: 76},
+                {id: 58, title: "Em Cua Ngay Hom Qua", artist: "Son Tung M-TP", country: "Viet Nam", emotions: ["Hoai niem", "buon nhe"], bpm: 105}
+            ],
+            "Binh yen": [
+                {id: 59, title: "Manchmal", artist: "Quadro Nuevo", country: "duc", emotions: ["Binh yen", "suy tu", "nhe nhang"], bpm: 85},
+                {id: 60, title: "Hoa Chi dao", artist: "Hoa Truoc (FLORIA)", country: "Trung", emotions: ["Nhe nhang", "tinh khoi"], bpm: 92},
+                {id: 61, title: "Thien Thien", artist: "dao Triet", country: "Trung", emotions: ["Nhe nhang", "binh yen"], bpm: 88},
+                {id: 62, title: "Tuyet Chi Mong", artist: "Bandari", country: "Trung", emotions: ["Thu thai", "mong mo"], bpm: 72},
+                {id: 63, title: "Bai ru (Lullaby)", artist: "Nhieu ca si", country: "Nga", emotions: ["Diu dang", "mau tu"], bpm: 68},
+                {id: 64, title: "Gac Lai Au Lo", artist: "Da LAB ft. Miu Le", country: "Viet Nam", emotions: ["Binh yen", "thu gian"], bpm: 95},
+                {id: 65, title: "Tron Tim", artist: "den Vau ft. MTV", country: "Viet Nam", emotions: ["Suy tu", "sau lang"], bpm: 115}
+            ],
+            "Gian du": [
+                {id: 66, title: "Du Hast", artist: "Rammstein", country: "duc", emotions: ["Gian du", "manh me", "quyet liet"], bpm: 140},
+                {id: 67, title: "Schrei nach Liebe", artist: "Die Arzte", country: "duc", emotions: ["Phan no", "that vong", "keu goi"], bpm: 168},
+                {id: 68, title: "Nga Bat Tuong Tin", artist: "Truong Quoc Vinh", country: "Trung", emotions: ["dau kho", "tuyet vong"], bpm: 125},
+                {id: 69, title: "Voila Voila", artist: "Rachid Taha", country: "Phap", emotions: ["Gian du", "phan khang xa hoi"], bpm: 145},
+                {id: 70, title: "Nhom mau (Blood Type)", artist: "Kino", country: "Nga", emotions: ["Cang thang", "phan chien"], bpm: 160}
+            ],
+            "Co don": [
+                {id: 71, title: "Lili Marleen", artist: "Marlene Dietrich", country: "duc", emotions: ["Buon ba", "co don", "nho nhung"], bpm: 72},
+                {id: 72, title: "Faded", artist: "Alan Walker", country: "Na Uy", emotions: ["Co don", "mo ho", "ue oai"], bpm: 90},
+                {id: 73, title: "Papaoutai", artist: "Stromae", country: "Phap", emotions: ["Co don", "tim kiem cha"], bpm: 122},
+                {id: 74, title: "Hoa hong trang (White Roses)", artist: "Laskoviy Mai", country: "Nga", emotions: ["Co don", "dau thuong"], bpm: 85},
+                {id: 75, title: "Sai Gon dau Long Qua", artist: "Hua Kim Tuyen ft. Hoang Duyen", country: "Viet Nam", emotions: ["Buon ba", "tiec nuoi"], bpm: 85}
+            ],
+            "Hy vong": [
+                {id: 76, title: "Tage wie diese", artist: "Die Toten Hosen", country: "duc", emotions: ["Vui ve", "doan ket", "hy vong"], bpm: 132},
+                {id: 77, title: "Irgendwie, Irgendwo, Irgendwann", artist: "Nena", country: "duc", emotions: ["Lang man", "mo mong", "hy vong"], bpm: 112},
+                {id: 78, title: "Euphoria", artist: "Loreen", country: "Thuy dien", emotions: ["Hung phan", "hy vong", "manh liet"], bpm: 138},
+                {id: 79, title: "L’Amour Existe Encore", artist: "Celine Dion", country: "Phap", emotions: ["Hy vong", "cam xuc sau sac"], bpm: 118},
+                {id: 80, title: "Parce qu'on vient de loin", artist: "Corneille", country: "Phap", emotions: ["Cam hung", "vuot kho"], bpm: 125}
+            ]
+        };
+
+        // Lay tat ca cac cam xuc duy nhat
+        const allEmotions = Object.keys(songsByEmotion);
+        
+        // Bien toan cuc
+        let currentEmotion = allEmotions[0];
+        let currentSongIndex = 0;
+        let currentSongList = [];
+        let isPlaying = false;
+        let searchTerm = "";
+        let selectedCountry = "Tat ca";
+        
+        // Khoi tao trang
+        document.addEventListener('DOMContentLoaded', function() {
+            renderStats();
+            renderCountryFilter();
+            renderTabs();
+            renderContent(currentEmotion);
+            setupEventListeners();
+            updateScrollButtons();
+        });
+        
+        // Hien thi thong ke
+        function renderStats() {
+            let totalSongs = 0;
+            let totalBpm = 0;
+            
+            allEmotions.forEach(emotion => {
+                songsByEmotion[emotion].forEach(song => {
+                    totalSongs++;
+                    totalBpm += song.bpm || 0;
+                });
+            });
+            
+            const avgBpm = totalSongs > 0 ? Math.round(totalBpm / totalSongs) : 0;
+            
+            document.getElementById('totalSongs').textContent = `${totalSongs} bai hat`;
+            document.getElementById('avgBpm').textContent = `~${avgBpm} BPM`;
+            document.getElementById('totalEmotions').textContent = `${allEmotions.length} cam xuc`;
+        }
+        
+        // Render bo loc quoc gia
+        function renderCountryFilter() {
+            const countryFilter = document.getElementById('countryFilter');
+            countryFilter.innerHTML = '';
+            
+            // Lay tat ca cac quoc gia duy nhat
+            const countries = new Set();
+            allEmotions.forEach(emotion => {
+                songsByEmotion[emotion].forEach(song => {
+                    countries.add(song.country);
+                });
+            });
+            
+            // Them nut "Tat ca"
+            const allBtn = document.createElement('button');
+            allBtn.className = selectedCountry === "Tat ca" ? 'country-btn active' : 'country-btn';
+            allBtn.innerHTML = '<i class="fas fa-globe"></i> Tat ca';
+            allBtn.dataset.country = "Tat ca";
+            allBtn.addEventListener('click', () => filterByCountry("Tat ca"));
+            countryFilter.appendChild(allBtn);
+            
+            // Them nut cho tung quoc gia
+            Array.from(countries).sort().forEach(country => {
+                const countryBtn = document.createElement('button');
+                countryBtn.className = selectedCountry === country ? 'country-btn active' : 'country-btn';
+                countryBtn.innerHTML = `<i class="fas fa-flag"></i> ${country}`;
+                countryBtn.dataset.country = country;
+                countryBtn.addEventListener('click', () => filterByCountry(country));
+                countryFilter.appendChild(countryBtn);
+            });
+        }
+        
+        // Loc theo quoc gia
+        function filterByCountry(country) {
+            selectedCountry = country;
+            renderCountryFilter();
+            renderContent(currentEmotion);
+        }
+        
+        // Render cac tab cam xuc
+        function renderTabs() {
+            const tabsContainer = document.getElementById('emotionTabs');
+            tabsContainer.innerHTML = '';
+            
+            allEmotions.forEach(emotion => {
+                const tab = document.createElement('div');
+                tab.className = emotion === currentEmotion ? 'tab active' : 'tab';
+                tab.textContent = emotion;
+                tab.dataset.emotion = emotion;
+                tab.addEventListener('click', () => switchEmotion(emotion));
+                tabsContainer.appendChild(tab);
+            });
+        }
+        
+        // Render noi dung theo cam xuc
+        function renderContent(emotion) {
+            currentEmotion = emotion;
+            
+            // Cap nhat tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.emotion === emotion);
+            });
+            
+            // Render noi dung
+            const contentArea = document.getElementById('contentArea');
+            
+            // Xoa noi dung cu
+            contentArea.innerHTML = '';
+            
+            // Tao container moi
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'content active';
+            contentDiv.id = emotion;
+            
+            // Tao danh sach bai hat
+            const songList = document.createElement('div');
+            songList.className = 'song-list';
+            
+            // Lay danh sach bai hat theo cam xuc
+            let songs = songsByEmotion[emotion];
+            currentSongList = [...songs]; // Sao chep mang
+            
+            // Loc theo quoc gia neu duoc chon
+            if (selectedCountry !== "Tat ca") {
+                songs = songs.filter(song => song.country === selectedCountry);
+            }
+            
+            // Loc theo tu khoa tim kiem neu co
+            if (searchTerm.trim() !== "") {
+                const term = searchTerm.toLowerCase();
+                songs = songs.filter(song => 
+                    song.title.toLowerCase().includes(term) ||
+                    song.artist.toLowerCase().includes(term) ||
+                    song.country.toLowerCase().includes(term) ||
+                    song.emotions.some(e => e.toLowerCase().includes(term)) ||
+                    (song.bpm && song.bpm.toString().includes(term))
+                );
+            }
+            
+            // Hien thi ket qua
+            if (songs.length === 0) {
+                const noResults = document.createElement('div');
+                noResults.className = 'no-results';
+                noResults.innerHTML = `
+                    <i class="fas fa-music"></i>
+                    <p>Khong tim thay bai hat nao phu hop</p>
+                    <p>Thu thay doi bo loc hoac tu khoa tim kiem</p>
+                `;
+                songList.appendChild(noResults);
+            } else {
+                songs.forEach((song, index) => {
+                    const songCard = document.createElement('div');
+                    songCard.className = 'song-card';
+                    songCard.dataset.id = song.id;
+                    
+                    // Tinh toan phan tram BPM cho thanh hien thi (gia su BPM toi da la 200)
+                    const bpmPercent = Math.min((song.bpm / 200) * 100, 100);
+                    
+                    // Highlight tu khoa tim kiem neu co
+                    let title = song.title;
+                    let artist = song.artist;
+                    let country = song.country;
+                    let emotions = song.emotions.join(", ");
+                    let bpm = song.bpm ? song.bpm.toString() : "N/A";
+                    
+                    if (searchTerm.trim() !== "") {
+                        const term = searchTerm.toLowerCase();
+                        const regex = new RegExp(`(${term})`, 'gi');
+                        
+                        title = title.replace(regex, '<span class="highlight">$1</span>');
+                        artist = artist.replace(regex, '<span class="highlight">$1</span>');
+                        country = country.replace(regex, '<span class="highlight">$1</span>');
+                        emotions = emotions.replace(regex, '<span class="highlight">$1</span>');
+                        bpm = bpm.replace(regex, '<span class="highlight">$1</span>');
+                    }
+                    
+                    songCard.innerHTML = `
+                        <div>
+                            <span class="song-number">${index + 1}</span>
+                            <span class="song-title">${title}</span>
+                        </div>
+                        <div class="song-info-row">
+                            <div class="song-artist">
+                                <i class="fas fa-user"></i>
+                                <span>${artist}</span>
+                            </div>
+                            <div class="song-bpm">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>${bpm} BPM</span>
+                                <div class="bpm-indicator">
+                                    <div class="bpm-bar">
+                                        <div class="bpm-fill" style="width: ${bpmPercent}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="song-country">
+                            <i class="fas fa-globe"></i> ${country}
+                        </div>
+                        <div class="song-emotions">
+                            ${song.emotions.map(emotion => `<span class="emotion-tag">${emotion}</span>`).join('')}
+                        </div>
+                    `;
+                    
+                    songCard.addEventListener('click', () => playSong(song, index));
+                    songList.appendChild(songCard);
+                });
+            }
+            
+            contentDiv.appendChild(songList);
+            contentArea.appendChild(contentDiv);
+        }
+        
+        // Chuyen doi cam xuc
+        function switchEmotion(emotion) {
+            renderContent(emotion);
+        }
+        
+        // Phat bai hat
+        function playSong(song, index) {
+            currentSongIndex = index;
+            
+            // Cap nhat player
+            document.getElementById('playerTitle').textContent = song.title;
+            document.getElementById('playerArtist').textContent = `${song.artist} - ${song.country} (${song.bpm} BPM)`;
+            
+            // Cap nhat trang thai phat
+            const playBtn = document.getElementById('playBtn');
+            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            isPlaying = true;
+            
+            // Highlight bai hat dang choi
+            document.querySelectorAll('.song-card').forEach(card => {
+                card.classList.remove('playing');
+            });
+            
+            const currentCard = document.querySelector(`.song-card[data-id="${song.id}"]`);
+            if (currentCard) {
+                currentCard.classList.add('playing');
+                currentCard.style.borderLeftColor = "#ff4d94";
+                currentCard.style.background = "rgba(255, 77, 148, 0.15)";
+            }
+        }
+        
+        // Cap nhat nut cuon tab
+        function updateScrollButtons() {
+            const tabsContainer = document.querySelector('.tabs');
+            const scrollLeftBtn = document.getElementById('scrollLeftBtn');
+            const scrollRightBtn = document.getElementById('scrollRightBtn');
+            
+            // Kiem tra xem co can hien thi nut cuon khong
+            if (tabsContainer.scrollWidth > tabsContainer.clientWidth) {
+                scrollLeftBtn.style.display = 'block';
+                scrollRightBtn.style.display = 'block';
+                
+                scrollLeftBtn.addEventListener('click', () => {
+                    tabsContainer.scrollBy({ left: -100, behavior: 'smooth' });
+                });
+                
+                scrollRightBtn.addEventListener('click', () => {
+                    tabsContainer.scrollBy({ left: 100, behavior: 'smooth' });
+                });
+            } else {
+                scrollLeftBtn.style.display = 'none';
+                scrollRightBtn.style.display = 'none';
+            }
+        }
+        
+        // Thiet lap su kien
+        function setupEventListeners() {
+            // Tim kiem
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', function() {
+                searchTerm = this.value;
+                renderContent(currentEmotion);
+            });
+            
+            // Player controls
+            document.getElementById('playBtn').addEventListener('click', function() {
+                isPlaying = !isPlaying;
+                this.innerHTML = isPlaying ? 
+                    '<i class="fas fa-pause"></i>' : 
+                    '<i class="fas fa-play"></i>';
+                
+                // Neu chua co bai hat nao duoc chon, chon bai dau tien
+                if (!document.getElementById('playerTitle').textContent.includes("Chon mot bai hat")) {
+                    return;
+                }
+                
+                if (currentSongList.length > 0 && document.getElementById('playerTitle').textContent === "Chon mot bai hat de phat") {
+                    playSong(currentSongList[0], 0);
+                }
+            });
+            
+            document.getElementById('prevBtn').addEventListener('click', function() {
+                if (currentSongList.length === 0) return;
+                
+                currentSongIndex = (currentSongIndex - 1 + currentSongList.length) % currentSongList.length;
+                playSong(currentSongList[currentSongIndex], currentSongIndex);
+            });
+            
+            document.getElementById('nextBtn').addEventListener('click', function() {
+                if (currentSongList.length === 0) return;
+                
+                currentSongIndex = (currentSongIndex + 1) % currentSongList.length;
+                playSong(currentSongList[currentSongIndex], currentSongIndex);
+            });
+            
+            // Tu dong chon bai hat dau tien khi nhan phat ma chua co bai nao
+            document.getElementById('playBtn').addEventListener('click', function() {
+                if (document.getElementById('playerTitle').textContent === "Chon mot bai hat de phat") {
+                    if (currentSongList.length > 0) {
+                        playSong(currentSongList[0], 0);
+                    }
+                }
+            });
+            
+            // Cap nhat nut cuon khi thay doi kich thuoc cua so
+            window.addEventListener('resize', updateScrollButtons);
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

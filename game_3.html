@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Ngũ Hành Luân Chuyển - Chuyến Đò Cân Bằng</title>
+    <style>
+        :root {
+            --kim: #ffd700; --moc: #4caf50; --thuy: #2196f3; --hoa: #f44336; --tho: #795548;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; padding: 20px; display: flex; justify-content: center; }
+        .game-card { width: 100%; max-width: 800px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 25px; }
+        .header { text-align: center; border-bottom: 2px solid #eee; margin-bottom: 20px; padding-bottom: 10px; }
+        
+        .pentagon-display { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 20px; }
+        .element-box { padding: 15px; border-radius: 12px; text-align: center; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; opacity: 0.7; }
+        .element-box.active { opacity: 1; transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        
+        .kim { background: var(--kim); color: #333; }
+        .moc { background: var(--moc); }
+        .thuy { background: var(--thuy); }
+        .hoa { background: var(--hoa); }
+        .tho { background: var(--tho); }
+
+        .info-panel { background: #f9f9f9; border-radius: 15px; padding: 20px; border: 1px solid #ddd; }
+        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .data-item { background: white; padding: 10px; border-radius: 8px; border-left: 5px solid #333; }
+        
+        .scroll-area { max-height: 300px; overflow-y: auto; margin-top: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+        .food-btn { padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: white; cursor: pointer; font-size: 0.85em; }
+        .food-btn:hover { background: #f0f0f0; }
+        
+        .alert-box { margin-top: 20px; padding: 15px; border-radius: 10px; font-weight: bold; text-align: center; }
+    </style>
+</head>
+<body>
+
+<div class="game-card">
+    <div class="header">
+        <h2>☯ NGŨ HÀNH LUÂN CHUYỂN 🚢</h2>
+        <p>Chọn một "Hành" để xem vạn vật tương ứng và cách cân bằng</p>
+    </div>
+
+    <div class="pentagon-display">
+        <div class="element-box kim" onclick="selectElement('Kim')">KIM<br>⚪</div>
+        <div class="element-box moc" onclick="selectElement('Mộc')">MỘC<br>🟢</div>
+        <div class="element-box thuy" onclick="selectElement('Thủy')">THỦY<br>🔵</div>
+        <div class="element-box hoa" onclick="selectElement('Hỏa')">HỎA<br>🔴</div>
+        <div class="element-box tho" onclick="selectElement('Thổ')">THỔ<br>🟤</div>
+    </div>
+
+    <div id="main-info" class="info-panel" style="display:none;">
+        <h3 id="current-title" style="margin-top:0;"></h3>
+        <div class="data-grid">
+            <div class="data-item" id="data-food"></div>
+            <div class="data-item" id="data-body"></div>
+            <div class="data-item" id="data-taste"></div>
+            <div class="data-item" id="data-weather"></div>
+            <div class="data-item" id="data-price"></div>
+            <div class="data-item" id="data-health"></div>
+        </div>
+        
+        <div id="logic-alert" class="alert-box"></div>
+    </div>
+
+    <div class="scroll-area" id="menu-list">
+        </div>
+</div>
+
+<script>
+const nnguHanh = {
+    'Kim': {
+        color: 'kim', sinh: 'Thủy', khac: 'Mộc', 
+        food: 'Gà, trứng, Sữa ông thọ, Củ cải, Bánh cuốn, Miến',
+        body: 'Xương, Chân phải, Da mát',
+        taste: 'Cay, Bùi',
+        weather: 'Mát mẻ, khô ráo (23°C - 28°C)',
+        price: 'Vàng (8.2tr/chỉ)',
+        health: 'Phân cứng, khó thở',
+        logic: 'Kim sinh Thủy: Nếu phổi (Kim) khô, hãy dùng món mặn (Thủy) để làm nhuận.'
+    },
+    'Mộc': {
+        color: 'moc', sinh: 'Hỏa', khac: 'Thổ',
+        food: 'Rau xanh, Dấm, Chanh, Mộc nhĩ, nấm hương, Táo',
+        body: 'Lông, Tóc, Đầu tóc, Da ấm',
+        taste: 'Chua',
+        weather: 'Ấm, nồm (16°C - 22°C)',
+        price: 'Gỗ sồi (25tr/m3)',
+        health: 'Phân xanh, âm u',
+        logic: 'Mộc sinh Hỏa: Ăn chua (Mộc) giúp tăng cường tiêu hóa và sinh nhiệt (Hỏa).'
+    },
+    'Thủy': {
+        color: 'thuy', sinh: 'Mộc', khac: 'Hỏa',
+        food: 'Cá, mực, Phở, Cháo, Canh dưỡng sinh, Canh ngan',
+        body: 'Tủy, Tay phải, Da ướt',
+        taste: 'Mặn',
+        weather: 'Lạnh, mưa (0°C - 19°C)',
+        price: 'Xăng (24.5k/lít)',
+        health: 'Tiêu chảy, chảy mũi',
+        logic: 'Thủy sinh Mộc: Nếu người quá lạnh (Thủy), dùng canh dưỡng sinh để nuôi dưỡng gan (Mộc).'
+    },
+    'Hỏa': {
+        color: 'hoa', sinh: 'Thổ', khac: 'Kim',
+        food: 'Thịt bò, Ớt, Ngải cứu, Mướp đắng, Gừng, Hạt ngô',
+        body: 'Tim, Gan, Bầu dục, Tay trái',
+        taste: 'Đắng',
+        weather: 'Nắng, nóng (29°C - 45°C)',
+        price: 'Điện (Bậc 1-5)',
+        health: 'Sốt, nhiệt, táo bón, khó ngủ',
+        logic: 'Hỏa sinh Thổ: Đồ nướng (Hỏa) cung cấp năng lượng nhanh cho tỳ vị (Thổ).'
+    },
+    'Thổ': {
+        color: 'tho', sinh: 'Kim', khac: 'Thủy',
+        food: 'Khoai tây, Bánh kẹo, Trái ngọt, Khoai lang, Sữa chua',
+        body: 'Thịt, Chân trái, Da vừa',
+        taste: 'Ngọt',
+        weather: 'Giao thời, ôn hòa',
+        price: 'Đất (50tr/m2)',
+        health: 'Người vừa, vàng, phân vàng',
+        logic: 'Thổ sinh Kim: Ăn ngọt vừa (Thổ) giúp tăng sức bền cho xương khớp (Kim).'
+    }
+};
+
+function selectElement(name) {
+    // Cập nhật giao diện nút
+    document.querySelectorAll('.element-box').forEach(el => el.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    const data = nnguHanh[name];
+    document.getElementById('main-info').style.display = 'block';
+    document.getElementById('current-title').innerText = "HÀNH " + name.toUpperCase();
+    document.getElementById('current-title').style.color = `var(--${data.color})`;
+    
+    document.getElementById('data-food').innerHTML = "<b>🍎 Thực phẩm:</b><br>" + data.food;
+    document.getElementById('data-body').innerHTML = "<b>💪 Cơ thể:</b><br>" + data.body;
+    document.getElementById('data-taste').innerHTML = "<b>👅 Vị giác:</b><br>" + data.taste;
+    document.getElementById('data-weather').innerHTML = "<b>☁️ Thời tiết:</b><br>" + data.weather;
+    document.getElementById('data-price').innerHTML = "<b>💰 Giá cả:</b><br>" + data.price;
+    document.getElementById('data-health').innerHTML = "<b>🏥 Sức khỏe:</b><br>" + data.health;
+
+    const alertBox = document.getElementById('logic-alert');
+    alertBox.className = 'alert-box ' + data.color;
+    alertBox.innerHTML = `Luật: ${data.logic} <br> (Khắc chế: ${name} khắc ${data.khac})`;
+}
+
+// Khởi tạo danh sách nhanh
+const allFoods = ["Bao tử hầm tiêu", "Trứng vịt lộn", "Pín bò", "Đuôi bò", "Tiết canh", "Sách bò", "Cật lợn", "Móng giò", "Sữa hạt", "Ức gà", "Khoai lang", "Cá hồi"];
+const listArea = document.getElementById('menu-list');
+allFoods.forEach(f => {
+    let btn = document.createElement('button');
+    btn.className = 'food-btn';
+    btn.innerText = f;
+    btn.onclick = () => alert("Món này giúp bổ trợ hệ thống " + f);
+    listArea.appendChild(btn);
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Sổ Tay Thực Dưỡng: Âm Dương Cân Bằng</title>
+    <style>
+        :root {
+            --am: #f44336;
+            --duong: #2196f3;
+            --bg: #f9f9f9;
+        }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); padding: 15px; display: flex; justify-content: center; }
+        .app-container { width: 100%; max-width: 500px; background: white; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 20px; border: 2px solid #eee; }
+        h2 { text-align: center; color: #333; margin-bottom: 20px; font-size: 1.4em; }
+        
+        .search-box { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 20px; box-sizing: border-box; font-size: 16px; }
+
+        .category-title { font-weight: bold; margin: 15px 0 10px; color: #666; border-left: 4px solid #4caf50; padding-left: 10px; }
+
+        .food-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .food-item { padding: 12px; border-radius: 12px; border: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; }
+        .food-item:hover { background: #f0f0f0; }
+
+        .sig-am { color: var(--am); font-weight: bold; }
+        .sig-duong { color: var(--duong); font-weight: bold; }
+
+        .instruction-card { background: #fffde7; border: 1px dashed #fbc02d; padding: 15px; border-radius: 10px; margin-top: 20px; font-size: 0.9em; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <h2>⚖️ TRA CỨU ÂM DƯƠNG</h2>
+    
+    <input type="text" id="searchInput" class="search-box" placeholder="Tìm tên món ăn (cá, tôm, cam...)" onkeyup="filterFood()">
+
+    <div id="foodList">
+        </div>
+
+    <div class="instruction-card">
+        <b>💡 Mẹo nhỏ:</b> <br>
+        - Nếu lỡ ăn món <b>▼ (Âm)</b>: Hãy thêm gia vị <b>▲ (Dương)</b> như Gừng, Nghệ, hoặc Muối hầm để quân bình. <br>
+        - Đồ ngọt và trái cây chua thường rất Âm, nên ăn vào ban ngày (Dương) để trung hòa.
+    </div>
+</div>
+
+<script>
+const data = [
+    { cat: "Thức uống & Đường", items: [
+        { n: "Cà phê thường", s: "▼▼▼", t: "Âm mạnh" },
+        { n: "Cà phê Ohsawa", s: "▲", t: "Dương" },
+        { n: "Đường trắng", s: "▼▼", t: "Âm" },
+        { n: "Đường vàng/thô", s: "▼", t: "Âm nhẹ" },
+        { n: "Mật ong", s: "▼▼", t: "Âm" },
+        { n: "Nước đá", s: "▼▼", t: "Âm" }
+    ]},
+    { cat: "Trái cây", items: [
+        { n: "Cam, Quýt", s: "▼▼▼", t: "Âm mạnh" },
+        { n: "Bưởi", s: "▼", t: "Âm" },
+        { n: "Chanh", s: "▼▼", t: "Âm" },
+        { n: "Táo tây", s: "▲▲", t: "Dương" },
+        { n: "Chuối, Xoài", s: "▼▼▼", t: "Âm mạnh" }
+    ]},
+    { cat: "Thủy hải sản", items: [
+        { n: "Tôm biển", s: "▲", t: "Dương" },
+        { n: "Cá thu/hồi/mòi", s: "▲", t: "Dương" },
+        { n: "Cá chép/lóc", s: "▼", t: "Âm" },
+        { n: "Lươn, Mực", s: "▼▼", t: "Âm nhiều" },
+        { n: "Hàu, Sò, Ốc", s: "▼▼", t: "Âm nhiều" }
+    ]},
+    { cat: "Gia vị & Khác", items: [
+        { n: "Muối hầm", s: "▲▲▲", t: "Dương mạnh" },
+        { n: "Gừng, Nghệ", s: "▲", t: "Dương" },
+        { n: "Trứng gà", s: "▲", t: "Dương" },
+        { n: "Bí đỏ", s: "▲", t: "Dương" }
+    ]}
+];
+
+function render(filter = "") {
+    const container = document.getElementById('foodList');
+    container.innerHTML = "";
+    
+    data.forEach(group => {
+        const filteredItems = group.items.filter(i => i.n.toLowerCase().includes(filter.toLowerCase()));
+        
+        if (filteredItems.length > 0) {
+            const catDiv = document.createElement('div');
+            catDiv.innerHTML = `<div class="category-title">${group.cat}</div>`;
+            const grid = document.createElement('div');
+            grid.className = "food-grid";
+            
+            filteredItems.forEach(item => {
+                const isAm = item.s.includes('▼');
+                grid.innerHTML += `
+                    <div class="food-item">
+                        <span>${item.n}</span>
+                        <span class="${isAm ? 'sig-am' : 'sig-duong'}">${item.s}</span>
+                    </div>
+                `;
+            });
+            catDiv.appendChild(grid);
+            container.appendChild(catDiv);
+        }
+    });
+}
+
+function filterFood() {
+    const val = document.getElementById('searchInput').value;
+    render(val);
+}
+
+// Khởi tạo
+render();
+</script>
+
+</body>
+</html>

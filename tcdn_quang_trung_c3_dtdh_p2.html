@@ -1,0 +1,225 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>TCDN – Chuong 3 – dau tu dai han (ARR)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{font-family:Arial,Helvetica,sans-serif;background:#f2f4f8;margin:0}
+header{background:#1a237e;color:#fff;padding:20px}
+section{background:#fff;margin:16px;padding:20px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+h2{color:#283593}
+h3{color:#3949ab}
+.note{background:#e8eaf6;padding:12px;border-left:5px solid #3f51b5}
+.warn{background:#ffebee;padding:12px;border-left:5px solid #c62828}
+input,button{width:100%;padding:8px;margin-bottom:8px}
+button{background:#3949ab;color:#fff;border:none;border-radius:6px;cursor:pointer}
+button:hover{background:#1a237e}
+table{width:100%;border-collapse:collapse}
+th,td{border:1px solid #ccc;padding:8px;text-align:center}
+th{background:#e8eaf6}
+footer{text-align:center;padding:16px;color:#555}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>📊 TCDN – Chuong 3: dau tu dai han (ARR)</h1>
+<p>Phuong phap Ty suat loi nhuan binh quan von dau tu</p>
+</header>
+
+<!-- 2.1 -->
+<section id="thuatngu">
+<h2>2.1 Thuat ngu & cong thuc kho (giai thich doi song)</h2>
+
+<h3>ARR – Average Rate of Return</h3>
+<p><b>ARR tra loi:</b> “Bo von ra thi binh quan moi nam loi bao nhieu %?”</p>
+
+<p><b>Cong thuc:</b></p>
+<p><code>ARR = Loi nhuan sau thue binh quan / Von dau tu binh quan</code></p>
+
+<div class="note">
+Vi du doi song:
+<ul>
+<li>Mo quan an dau tu 500 trieu</li>
+<li>Moi nam loi trung binh 75 trieu</li>
+<li>ARR = 75 / 500 = 15%</li>
+</ul>
+</div>
+
+<h3>Von dau tu binh quan</h3>
+<p>La <b>von thuc te con nam trong du an</b> sau khi tru khau hao.</p>
+
+<div class="warn">
+⚠ Sai lam pho bien:  
+Chi nhin loi nhuan, quen von dang bi “chon” bao nhieu nam
+</div>
+
+<h3>Khau hao duong thang</h3>
+<p>Tai san mat gia deu moi nam → giup tinh von con lai don gian.</p>
+</section>
+
+<!-- 2.2 -->
+<section id="dungchoai">
+<h2>2.2 Dung ARR cho ca nhan hay cong viec?</h2>
+
+<table>
+<tr>
+<th>doi tuong</th>
+<th>Co dung ARR?</th>
+<th>Dung khi nao</th>
+</tr>
+<tr>
+<td>Ca nhan</td>
+<td>✔ Co</td>
+<td>So sanh: kinh doanh vs gui ngan hang</td>
+</tr>
+<tr>
+<td>Gia dinh</td>
+<td>✔ Co</td>
+<td>Mo tiem nho, dau tu thiet bi</td>
+</tr>
+<tr>
+<td>Startup</td>
+<td>⚠ Han che</td>
+<td>Chi dung de tham khao nhanh</td>
+</tr>
+<tr>
+<td>Doanh nghiep</td>
+<td>✔ Co</td>
+<td>So sanh nhieu du an cung luc</td>
+</tr>
+</table>
+
+<div class="note">
+✔ Ca nhan: dung de “lieu com gap mam”  
+✔ DN: dung de loc nhanh du an
+</div>
+</section>
+
+<!-- 3.2 -->
+<section id="trinh-tu">
+<h2>3.2 Trinh tu lam dUNG theo bai giang</h2>
+
+<h3>Buoc 1: Xac dinh loai du an</h3>
+<ul>
+<li>Du an doc lap → ARR > 0 la chap nhan</li>
+<li>Du an xung khac → chon ARR lon nhat</li>
+</ul>
+
+<h3>Buoc 2: Tinh loi nhuan binh quan</h3>
+<p>Lay tong loi nhuan sau thue / tong so nam (ke ca thi cong)</p>
+
+<h3>Buoc 3: Tinh von dau tu binh quan</h3>
+<ul>
+<li>Tinh von dau tu ban dau</li>
+<li>Tru dan khau hao moi nam</li>
+<li>Lay trung binh</li>
+</ul>
+
+<h3>Buoc 4: So sanh & ra quyet dinh</h3>
+<ul>
+<li>ARR &lt; lai vay → KHONG dau tu</li>
+<li>ARR chi nhinh hon gui ngan hang → rui ro cao</li>
+<li>ARR cao + dong tien on → nen lam</li>
+</ul>
+
+<div class="warn">
+⚠ ARR KHONG phan anh dong tien tung nam  
+→ de “lai tren giay, chet ngoai doi”
+</div>
+</section>
+
+<!-- BAI TOAN -->
+<section id="baitoan">
+<h2>📐 Bai toan ARR – nhap so de thay lai & rui ro</h2>
+
+<label>Von dau tu ban dau (trieu):</label>
+<input id="von" placeholder="500">
+
+<label>Loi nhuan sau thue binh quan / nam (trieu):</label>
+<input id="ln" placeholder="75">
+
+<label>Thoi gian du an (nam):</label>
+<input id="nam" placeholder="5">
+
+<button onclick="tinhARR()">Tinh ARR</button>
+
+<div id="kq"></div>
+
+<script>
+function tinhARR(){
+ let von = Number(document.getElementById('von').value);
+ let ln = Number(document.getElementById('ln').value);
+ let nam = Number(document.getElementById('nam').value);
+
+ if(!von || !ln || !nam){
+  kq.innerHTML="⚠ Nhap du du lieu";
+  return;
+ }
+
+ let vonBQ = von / 2;
+ let arr = (ln / vonBQ) * 100;
+
+ kq.innerHTML = `
+ <b>Von dau tu binh quan:</b> ${vonBQ.toFixed(1)} trieu<br>
+ <b>ARR:</b> ${arr.toFixed(2)} %<br>
+ ${arr < 10 ? "❌ Thap – rui ro cao" : "✔ Co the xem xet"}
+ `;
+}
+</script>
+</section>
+
+<!-- 4.2 -->
+<section id="tinhhuong">
+<h2>4.2 Nhap tinh huong & xu ly nhanh</h2>
+
+<input placeholder="Vi du: mo xuong, mua may, mo quan...">
+
+<button onclick="go('thuatngu')">❓ Khong hieu ARR</button><br>
+<button onclick="go('dungchoai')">👤 Ca nhan hay DN?</button><br>
+<button onclick="go('trinh-tu')">🧭 Lam buoc nao truoc?</button><br>
+<button onclick="go('baitoan')">💰 Tinh lai – von – rui ro</button>
+
+<script>
+function go(id){
+ document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+</script>
+</section>
+
+<footer>
+ARR giup quyet nhanh – nhung dung quyet mu
+</footer>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

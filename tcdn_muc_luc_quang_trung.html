@@ -1,0 +1,712 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCDN Chuong 1 – Tro choi tai chinh thuc te</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f4f6f8 0%, #e3e9f7 100%);
+            line-height: 1.6;
+            padding: 20px;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1, h2, h3 {
+            color: #0b5394;
+            margin-top: 0;
+        }
+        
+        h1 {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            border-bottom: 5px solid #0b5394;
+        }
+        
+        .box {
+            background: #fff;
+            border-left: 6px solid #0b5394;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .box:hover {
+            transform: translateY(-5px);
+        }
+        
+        .menu {
+            background: #fff;
+            padding: 15px;
+            border: 2px solid #0b5394;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .menu h3 {
+            margin-top: 0;
+            text-align: center;
+        }
+        
+        .menu-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 8px;
+        }
+        
+        .menu button {
+            padding: 10px;
+            cursor: pointer;
+            background: #e8f0fe;
+            border: 1px solid #0b5394;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .menu button:hover {
+            background: #0b5394;
+            color: white;
+            transform: scale(1.02);
+        }
+        
+        .good {
+            color: green;
+            font-weight: bold;
+        }
+        
+        .bad {
+            color: red;
+            font-weight: bold;
+        }
+        
+        .game {
+            background: #e8f0fe;
+            border: 2px dashed #0b5394;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+        
+        .situation-input {
+            margin: 25px 0;
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .situation-input h3 {
+            margin-top: 0;
+            color: #0b5394;
+        }
+        
+        .situation-input input {
+            width: 80%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #0b5394;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .situation-input button {
+            margin: 5px;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #0b5394;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .situation-input button:hover {
+            background: #073b6d;
+            transform: scale(1.05);
+        }
+        
+        .quick-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .quick-buttons button {
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+        
+        .scenario {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border-left: 4px solid #0b5394;
+        }
+        
+        .scenario h4 {
+            margin-top: 0;
+            color: #0b5394;
+        }
+        
+        .example-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .example-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .example-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .example-number {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            background: #0b5394;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        .decision-point {
+            background: #fff8e1;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ff9800;
+        }
+        
+        .decision-point h4 {
+            color: #ff9800;
+            margin-top: 0;
+        }
+        
+        .interactive-quiz {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .quiz-question {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2e7d32;
+        }
+        
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .quiz-option {
+            padding: 12px;
+            background: white;
+            border: 1px solid #c8e6c9;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .quiz-option:hover {
+            background: #c8e6c9;
+            transform: translateX(5px);
+        }
+        
+        .quiz-result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .real-life-story {
+            background: #f3e5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #9c27b0;
+        }
+        
+        .real-life-story h4 {
+            color: #9c27b0;
+            margin-top: 0;
+        }
+        
+        .key-takeaway {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            font-weight: bold;
+            border-left: 4px solid #2196f3;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .menu-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .situation-input input {
+                width: 95%;
+            }
+            
+            .quick-buttons {
+                flex-direction: column;
+            }
+            
+            .quick-buttons button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h1>🎮 TCDN CHUONG 1 – TRO CHOI TAI CHINH THUC TE</h1>
+
+<!-- GHI CHU: Toi da them o nhap tinh huong thong minh voi kha nang phan tich tu khoa -->
+<div class="situation-input">
+    <h3>🔍 NHAP TINH HUONG TAI CHINH CUA BAN</h3>
+    <p>Mo ta tinh hinh hien tai cua ban de nhan chien luoc phu hop:</p>
+    <input type="text" id="situation" placeholder="Vi du: Toi dang no 50 trieu, mat viec, khong co thu nhap..." />
+    <br>
+    <button onclick="analyzeSituation()">Phan tich tinh huong & de xuat</button>
+    
+    <div class="quick-buttons">
+        <button onclick="go('von0')">Von = 0 / dang no nan</button>
+        <button onclick="go('canhan')">Ca nhan co thu nhap on dinh</button>
+        <button onclick="go('dn-nho')">Doanh nghiep nho / Startup</button>
+        <button onclick="go('dn-lon')">Doanh nghiep lon / Co quy mo</button>
+        <button onclick="go('thuatngu')">Giai thich thuat ngu tai chinh</button>
+    </div>
+    
+    <!-- GHI CHU: Khu vuc hien thi ket qua phan tich tinh huong -->
+    <div id="analysis-result" style="display:none; margin-top:20px; padding:15px; background:#e8f0fe; border-radius:8px;">
+        <h4>📊 PHAN TICH TINH HUONG CUA BAN</h4>
+        <div id="result-content"></div>
+        <button onclick="goToRecommendedSection()" style="margin-top:10px;">di den phan de xuat chien luoc</button>
+    </div>
+</div>
+
+<!-- GHI CHU: Menu dieu huong co dinh voi thiet ke cai tien -->
+<div class="menu">
+    <h3>📌 MENU NHANH - CHON TINH HUONG CUA BAN</h3>
+    <div class="menu-buttons">
+        <button onclick="go('von0')">💰 Von = 0 / dang kho khan</button>
+        <button onclick="go('canhan')">👤 Ca nhan co thu nhap</button>
+        <button onclick="go('dn-nho')">🏪 Doanh nghiep nho</button>
+        <button onclick="go('dn-lon')">🏢 Doanh nghiep lon</button>
+        <button onclick="go('thuatngu')">📘 Thuat ngu doi thuong</button>
+        <button onclick="go('tracnghiem')">🧠 Trac nghiem tai chinh</button>
+    </div>
+</div>
+
+<!-- THUAT NGU -->
+<div class="box" id="thuatngu">
+    <h2>📘 THUAT NGU TAI CHINH → dOI THUONG</h2>
+    <p>Hieu dung de ra quyet dinh dung:</p>
+    <ul>
+        <li><b>Von:</b> Tien ban co the dung ma khong chet doi</li>
+        <li><b>Rui ro:</b> Kha nang mat tien</li>
+        <li><b>Loi nhuan:</b> Tien loi sau khi tru het chi phi</li>
+        <li><b>Dong tien:</b> Tien vao – tien ra moi thang</li>
+        <li><b>Von vay:</b> Tien muon → phai tra</li>
+        <li><b>Von chu:</b> Tien cua minh → khong ap luc</li>
+        <li><b>Gia tri DN:</b> Nguoi khac san sang mua DN ban gia bao nhieu</li>
+        <li><b>Tai san:</b> Thu tao ra tien cho ban</li>
+        <li><b>No phai tra:</b> Tien ban no nguoi khac</li>
+        <li><b>Thanh khoan:</b> Kha nang chuyen thanh tien mat nhanh</li>
+    </ul>
+    
+    <!-- GHI CHU: Them vi du thuc te ve thuat ngu -->
+    <div class="scenario">
+        <h4>Vi du thuc te:</h4>
+        <p><b>Tinh huong:</b> Anh A co 50 trieu, muon them 100 trieu de mo quan ca phe.</p>
+        <p><b>Phan tich:</b> Von chu = 50 trieu, von vay = 100 trieu, tong von = 150 trieu. Rui ro cao vi neu kinh doanh that bai, anh A mat 50 trieu cua minh va van no 100 trieu.</p>
+    </div>
+</div>
+
+<!-- VON 0 -->
+<div class="game" id="von0">
+    <h2>🎯 TRANG THAI: VON = 0 / dANG NO / KHO KHAN TAI CHINH</h2>
+    
+    <div class="decision-point">
+        <h4>QUYET dINH QUAN TRONG NHAT LUC NAY:</h4>
+        <p>Khi khong co von, moi quyet dinh dau tu deu co rui ro cuc cao. Uu tien so 1 la tao dong tien va giam no.</p>
+    </div>
+    
+    <h3>Chien luoc IT RUI RO NHAT</h3>
+    <ul>
+        <li class="good">✔ Khong dau tu bang tien (chi dau tu bang thoi gian va cong suc)</li>
+        <li class="good">✔ dau tu kien thuc, ky nang co the kiem tien ngay</li>
+        <li class="bad">✘ Tuyet doi khong vay de dau tu, choi chung khoan, coin</li>
+        <li class="good">✔ Tim viec lam ngay, bat ky viec gi co thu nhap</li>
+    </ul>
+    
+    <h3>Vi du thuc te (1–10)</h3>
+    <ul class="example-list">
+        <li><span class="example-number">1</span> di lam thue (giao do an, phuc vu, ban hang) de co dong tien ngay</li>
+        <li><span class="example-number">2</span> Hoc ky nang ban hang online (mien phi tren YouTube)</li>
+        <li><span class="example-number">3</span> Khong mo quan khi chua co tien, chua co kinh nghiem</li>
+        <li><span class="example-number">4</span> Khong choi coin, chung khoan, forex voi hy vong "doi doi"</li>
+        <li><span class="example-number">5</span> Ban suc lao dong truoc, tich luy sau</li>
+        <li><span class="example-number">6</span> Tich luy quy du phong (3-6 thang chi tieu co ban)</li>
+        <li><span class="example-number">7</span> Tra no lai cao truoc (vay tin dung, vay nong)</li>
+        <li><span class="example-number">8</span> Nhan them viec phu (lam online, part-time)</li>
+        <li><span class="example-number">9</span> Khong gop von lam an voi nguoi khac khi khong co tien</li>
+        <li><span class="example-number">10</span> Tap quan ly chi tieu bang ung dung (Money Lover, Misa)</li>
+    </ul>
+    
+    <!-- GHI CHU: Them cau chuyen thuc te -->
+    <div class="real-life-story">
+        <h4>Cau chuyen thuc te: Tu no nan den on dinh</h4>
+        <p><b>Hoan canh:</b> Chi B mat viec, no 30 trieu the tin dung, khong co tien tiet kiem.</p>
+        <p><b>Hanh dong:</b> Chap nhan lam 2 cong viec: ban hang online buoi toi va phu quan ca phe ban ngay. Cat giam moi chi tieu khong can thiet. Tra het no the tin dung trong 8 thang.</p>
+        <p><b>Ket qua:</b> Sau 1 nam, co 10 trieu tiet kiem va ky nang ban hang thanh thao.</p>
+        <div class="key-takeaway">📌 Bai hoc: Khi khong co von, ban thoi gian va suc lao dong la cach an toan nhat de tao dong tien.</div>
+    </div>
+</div>
+
+<!-- CA NHAN -->
+<div class="box" id="canhan">
+    <h2>👤 CA NHAN CO THU NHAP ON dINH</h2>
+    
+    <h3>Lo trinh tai chinh an toan</h3>
+    <ol>
+        <li><b>Giai doan 1:</b> Co thu nhap on dinh, tien du moi thang</li>
+        <li><b>Giai doan 2:</b> Xay dung quy du phong (6-12 thang chi tieu)</li>
+        <li><b>Giai doan 3:</b> Hieu ro rui ro cua tung kenh dau tu</li>
+        <li><b>Giai doan 4:</b> Bat dau dau tu voi so tien nho de hoc hoi</li>
+        <li><b>Giai doan 5:</b> da dang hoa dau tu khi co kinh nghiem</li>
+    </ol>
+    
+    <h3>Vi du thuc te (11–20)</h3>
+    <ul class="example-list">
+        <li><span class="example-number">11</span> Gui tiet kiem ngan hang (ky han 6-12 thang) truoc khi dau tu</li>
+        <li><span class="example-number">12</span> Khong vay tieu dung mua dien thoai, xe may tra gop lai cao</li>
+        <li><span class="example-number">13</span> dau tu nho 1-2 trieu vao chung khoan de hoc, khong ky vong loi lon</li>
+        <li><span class="example-number">14</span> Khong all-in (don het tien) vao mot kenh dau tu duy nhat</li>
+        <li><span class="example-number">15</span> Chap nhan lai thap (6-8%/nam) nhung an toan thay vi lai cao rui ro lon</li>
+        <li><span class="example-number">16</span> Khong vay dau tu khi thu nhap bap benh hoac chua on dinh</li>
+        <li><span class="example-number">17</span> Chi dung tien nhan roi (sau khi tru chi tieu, du phong) de dau tu</li>
+        <li><span class="example-number">18</span> Chap nhan loi it, an toan thay vi tham loi cao</li>
+        <li><span class="example-number">19</span> Rut lui ngay khi thay dau hieu lo, khong co "go gac"</li>
+        <li><span class="example-number">20</span> Uu tien on dinh tai chinh ca nhan truoc khi nghi den lam giau nhanh</li>
+    </ul>
+    
+    <!-- GHI CHU: Them tinh huong quyet dinh -->
+    <div class="decision-point">
+        <h4>TINH HUONG QUYET dINH:</h4>
+        <p>Ban co 50 trieu tien nhan roi, thu nhap 15 trieu/thang on dinh. Ban nen:</p>
+        <ul>
+            <li class="good">✔ Gui 30 trieu tiet kiem (an toan, thanh khoan cao)</li>
+            <li class="good">✔ dau tu 10 trieu vao chung khoan (de hoc hoi)</li>
+            <li class="good">✔ dau tu 10 trieu vao ban than (hoc them ky nang)</li>
+            <li class="bad">✘ dau tu het 50 trieu vao mot du an "hot" ban khong hieu ro</li>
+        </ul>
+    </div>
+</div>
+
+<!-- DN NHO -->
+<div class="box" id="dn-nho">
+    <h2>🏪 DOANH NGHIEP NHO / STARTUP</h2>
+    
+    <h3>Nguyen tac song con</h3>
+    <ul>
+        <li>Dong tien la mach mau - phai quan ly chat che hang ngay</li>
+        <li>Khong mo rong quy mo khi chua co loi nhuan on dinh it nhat 6 thang</li>
+        <li>Vay it, vay ngan han, quay vong von nhanh</li>
+        <li>Uu tien khach hang tra tien truoc, tra tien ngay</li>
+    </ul>
+    
+    <h3>Vi du thuc te (21–30)</h3>
+    <ul class="example-list">
+        <li><span class="example-number">21</span> Mo quan nho, dia diem binh dan truoc khi thue mat bang dat tien</li>
+        <li><span class="example-number">22</span> Khong thue mat bang lon, dep khi chua co du khach hang on dinh</li>
+        <li><span class="example-number">23</span> Uu tien khach hang thanh toan ngay, giam gia cho khach tra tien mat</li>
+        <li><span class="example-number">24</span> Tranh ton kho lon, chi nhap hang khi co don dat truoc</li>
+        <li><span class="example-number">25</span> Khong vay dai han khi chua chac chan ve dong tien tuong lai</li>
+        <li><span class="example-number">26</span> Tai dau tu it nhat 50% loi nhuan vao phat trien kinh doanh</li>
+        <li><span class="example-number">27</span> Khong chia het tien loi, giu lai quy du phong cho doanh nghiep</li>
+        <li><span class="example-number">28</span> Cat lo som voi san pham/dich vu khong ban duoc sau 3 thang</li>
+        <li><span class="example-number">29</span> Khong mo them chi nhanh khi chua co he thong quan ly bai ban</li>
+        <li><span class="example-number">30</span> Uu tien song sot qua khung hoang thay vi tang truong nhanh</li>
+    </ul>
+    
+    <!-- GHI CHU: Them kich ban kinh doanh -->
+    <div class="scenario">
+        <h4>Kich ban kinh doanh thuc te:</h4>
+        <p><b>Tinh huong:</b> Quan ca phe nho co doanh thu 30 trieu/thang, loi nhuan 8 trieu/thang.</p>
+        <p><b>Quyet dinh sai:</b> Vay 200 trieu mo chi nhanh moi tai vi tri dat do.</p>
+        <p><b>Rui ro:</b> Chi nhanh moi can 50 khach/ngay moi hoa von, nhung chi dat 20 khach/ngay. Lo 15 trieu/thang, de doa ca quan goc.</p>
+        <p><b>Quyet dinh dung:</b> Toi uu quan hien tai, tang loi nhuan len 10-12 trieu/thang. Sau 1-2 nam tich luy, mo chi nhanh nho hon voi von tu co.</p>
+    </div>
+</div>
+
+<!-- DN LON -->
+<div class="box" id="dn-lon">
+    <h2>🏢 DOANH NGHIEP LON / CO QUY MO</h2>
+    
+    <h3>Chien luoc theo chu ky kinh te</h3>
+    <ul>
+        <li><b>Thi truong tang truong:</b> Mo rong, dau tu, vay von voi lai suat co dinh</li>
+        <li><b>Thi truong on dinh:</b> Cung co thi phan, toi uu chi phi</li>
+        <li><b>Thi truong suy thoai:</b> Giu tien mat, mua lai doi thu gap kho khan</li>
+        <li><b>Khung hoang:</b> Song con la uu tien, cat giam moi chi phi khong can thiet</li>
+    </ul>
+    
+    <h3>Vi du thuc te (31–40)</h3>
+    <ul class="example-list">
+        <li><span class="example-number">31</span> Phat hanh trai phieu doanh nghiep khi lai suat thap de co von dai han</li>
+        <li><span class="example-number">32</span> Dung la chan thue hop phap (dau tu vao nghien cuu, phat trien)</li>
+        <li><span class="example-number">33</span> da dang hoa dau tu vao nhieu nganh, giam rui ro tap trung</li>
+        <li><span class="example-number">34</span> Khong phu thuoc vao 1 thi truong, 1 nha cung cap, 1 khach hang lon</li>
+        <li><span class="example-number">35</span> Mua lai doanh nghiep cung nganh khi ho gap kho khan (gia thap)</li>
+        <li><span class="example-number">36</span> Giu ty le tien mat cao khi thay dau hieu khung hoang kinh te</li>
+        <li><span class="example-number">37</span> Khong vay qua 60% tong tai san, duy tri he so no an toan</li>
+        <li><span class="example-number">38</span> So sanh chi phi von vay va chi phi von chu truoc khi quyet dinh huy dong von</li>
+        <li><span class="example-number">39</span> danh gia rui ro quoc gia, rui ro nganh truoc khi dau tu lon</li>
+        <li><span class="example-number">40</span> Toi da hoa gia tri doanh nghiep trong dai han thay vi loi nhuan ngan han</li>
+    </ul>
+    
+    <!-- GHI CHU: Them case study doanh nghiep lon -->
+    <div class="real-life-story">
+        <h4>Case study: Chien luoc cua doanh nghiep lon trong khung hoang</h4>
+        <p><b>Tinh huong 2020:</b> dai dich COVID-19, nhieu doanh nghiep dong cua, thieu tien mat.</p>
+        <p><b>Chien luoc doanh nghiep thong minh:</b></p>
+        <ol>
+            <li>Cat giam ngay 30% chi phi khong thiet yeu</li>
+            <li>dam phan gia han no voi ngan hang</li>
+            <li>Tan dung chinh sach ho tro cua Nha nuoc</li>
+            <li>Chuyen doi mo hinh kinh doanh (offline → online)</li>
+            <li>Mua lai doi thu yeu the voi gia bang 30-50% gia tri thuc</li>
+        </ol>
+        <p><b>Ket qua:</b> Khi kinh te phuc hoi, doanh nghiep nay co thi phan lon hon, manh hon truoc khung hoang.</p>
+    </div>
+</div>
+
+<!-- GHI CHU: Them phan trac nghiem tuong tac -->
+<div class="interactive-quiz" id="tracnghiem">
+    <h3>🧠 TRAC NGHIEM TAI CHINH THUC TE</h3>
+    
+    <div class="quiz-question">Cau 1: Ban dang no 20 trieu the tin dung, khong co viec lam. Ban nen:</div>
+    <div class="quiz-options">
+        <div class="quiz-option" onclick="checkAnswer(1, 'A')">A. Vay them 50 trieu de dau tu chung khoan hy vong go gac</div>
+        <div class="quiz-option" onclick="checkAnswer(1, 'B')">B. Tim ngay viec lam bat ky, cat giam chi tieu toi da, tra no truoc</div>
+        <div class="quiz-option" onclick="checkAnswer(1, 'C')">C. Mo quan an nho voi so tien vay tu nguoi than</div>
+    </div>
+    <div id="quiz-result-1" class="quiz-result"></div>
+    
+    <div class="quiz-question" style="margin-top:20px;">Cau 2: Ban co thu nhap on dinh 20 trieu/thang, tiet kiem duoc 100 trieu. Ban nen:</div>
+    <div class="quiz-options">
+        <div class="quiz-option" onclick="checkAnswer(2, 'A')">A. dau tu het 100 trieu vao mot du an bat dong san "hot"</div>
+        <div class="quiz-option" onclick="checkAnswer(2, 'B')">B. Gui tiet kiem 50 trieu, dau tu 30 trieu vao chung khoan, 20 trieu de du phong</div>
+        <div class="quiz-option" onclick="checkAnswer(2, 'C')">C. Mua xe o to 800 trieu tra gop de di lam cho oai</div>
+    </div>
+    <div id="quiz-result-2" class="quiz-result"></div>
+    
+    <div class="quiz-question" style="margin-top:20px;">Cau 3: Doanh nghiep nho cua ban dang co loi nhuan 15 trieu/thang. Ban nen:</div>
+    <div class="quiz-options">
+        <div class="quiz-option" onclick="checkAnswer(3, 'A')">A. Vay 500 trieu mo rong sang linh vuc moi ban chua co kinh nghiem</div>
+        <div class="quiz-option" onclick="checkAnswer(3, 'B')">B. Giu nguyen quy mo, toi uu hoa hoat dong, tich luy von it nhat 1 nam</div>
+        <div class="quiz-option" onclick="checkAnswer(3, 'C')">C. Rut het loi nhuan de mua nha, xe cho ca nhan</div>
+    </div>
+    <div id="quiz-result-3" class="quiz-result"></div>
+    
+    <button onclick="resetQuiz()" style="margin-top:20px; padding:10px 20px;">Lam lai trac nghiem</button>
+</div>
+
+<footer>
+    <p>🎯 TCDN Chuong 1 - 40 vi du thuc te & Chien luoc it rui ro</p>
+    <p>Ap dung kien thuc tai chinh phu hop voi tinh hinh thuc te cua ban</p>
+    <p>💡 Luu y: day la tai lieu tham khao, hay can nhac ky truoc moi quyet dinh tai chinh</p>
+</footer>
+
+<script>
+    // Ham cuon den phan tu voi hieu ung muot
+    function go(id) {
+        document.getElementById(id).scrollIntoView({behavior: 'smooth'});
+    }
+    
+    // GHI CHU: Ham phan tich tinh huong thong minh voi tu khoa
+    function analyzeSituation() {
+        const input = document.getElementById('situation').value.toLowerCase().trim();
+        const resultDiv = document.getElementById('analysis-result');
+        const resultContent = document.getElementById('result-content');
+        
+        if (!input) {
+            alert("Vui long nhap tinh huong cua ban!");
+            return;
+        }
+        
+        let analysis = "<p><b>Tinh huong cua ban:</b> " + document.getElementById('situation').value + "</p>";
+        let recommendation = "";
+        let targetSection = "thuatngu";
+        
+        // Phan tich tu khoa
+        if (input.includes('khong co tien') || input.includes('von 0') || input.includes('no') || 
+            input.includes('kho khan') || input.includes('mat viec') || input.includes('that nghiep') ||
+            input.includes('pha san') || input.includes('tung thieu')) {
+            
+            analysis += "<p><b>Phan tich:</b> Ban dang trong tinh trang tai chinh kho khan, can uu tien tao dong tien va giam no.</p>";
+            recommendation = "Chien luoc phu hop: <b>Von = 0 / dang no</b> - Tap trung vao tao thu nhap ngay, khong dau tu rui ro.";
+            targetSection = "von0";
+            
+        } else if (input.includes('luong') || input.includes('thu nhap') || input.includes('on dinh') || 
+                   input.includes('tiet kiem') || input.includes('co tien du') || input.includes('nhan roi') ||
+                   input.includes('cong chuc') || input.includes('vien chuc') || input.includes('nhan vien')) {
+            
+            analysis += "<p><b>Phan tich:</b> Ban co thu nhap on dinh, co kha nang tich luy va dau tu.</p>";
+            recommendation = "Chien luoc phu hop: <b>Ca nhan co thu nhap</b> - Xay dung lo trinh dau tu an toan, da dang hoa.";
+            targetSection = "canhan";
+            
+        } else if (input.includes('doanh nghiep nho') || input.includes('quan') || input.includes('shop') || 
+                   input.includes('ban hang') || input.includes('startup') || input.includes('khoi nghiep') ||
+                   input.includes('cua hang') || input.includes('kinh doanh nho')) {
+            
+            analysis += "<p><b>Phan tich:</b> Ban dang dieu hanh doanh nghiep nho, can quan ly dong tien chat che.</p>";
+            recommendation = "Chien luoc phu hop: <b>Doanh nghiep nho</b> - Uu tien song sot, quan ly dong tien, khong mo rong voi.";
+            targetSection = "dn-nho";
+            
+        } else if (input.includes('doanh nghiep lon') || input.includes('cong ty lon') || input.includes('tap doan') || 
+                   input.includes('nhieu nhan vien') || input.includes('quy mo') || input.includes('chi nhanh') ||
+                   input.includes('cong ty co phan')) {
+            
+            analysis += "<p><b>Phan tich:</b> Ban dieu hanh doanh nghiep co quy mo, can chien luoc dai han va quan tri rui ro.</p>";
+            recommendation = "Chien luoc phu hop: <b>Doanh nghiep lon</b> - da dang hoa, toi uu co cau von, chien luoc theo chu ky kinh te.";
+            targetSection = "dn-lon";
+            
+        } else {
+            analysis += "<p><b>Phan tich:</b> Tinh huong cua ban can hieu ro cac khai niem tai chinh co ban truoc khi ra quyet dinh.</p>";
+            recommendation = "Bat dau voi: <b>Giai thich thuat ngu</b> - Hieu dung ngon ngu tai chinh de ra quyet dinh dung.";
+            targetSection = "thuatngu";
+        }
+        
+        analysis += "<p><b>de xuat:</b> " + recommendation + "</p>";
+        resultContent.innerHTML = analysis;
+        resultDiv.style.display = 'block';
+        
+        // Luu section duoc de xuat de dieu huong
+        window.recommendedSection = targetSection;
+        
+        // Cuon den ket qua phan tich
+        resultDiv.scrollIntoView({behavior: 'smooth'});
+    }
+    
+    // dieu huong den phan duoc de xuat
+    function goToRecommendedSection() {
+        if (window.recommendedSection) {
+            go(window.recommendedSection);
+        }
+    }
+    
+    // GHI CHU: Xu ly trac nghiem tuong tac
+    function checkAnswer(questionNumber, selectedOption) {
+        const correctAnswers = {
+            1: 'B',
+            2: 'B', 
+            3: 'B'
+        };
+        
+        const explanations = {
+            1: {
+                'A': 'SAI - Vay them de dau tu rui ro khi dang no va khong co thu nhap la cuc ky nguy hiem, co the khien ban no chong no.',
+                'B': 'dUNG - Khi khong co von va dang no, uu tien so 1 la tao thu nhap va tra no. day la chien luoc it rui ro nhat.',
+                'C': 'SAI - Mo quan an can von, kinh nghiem va thoi gian. Khi dang no va khong co thu nhap, day la rui ro rat cao.'
+            },
+            2: {
+                'A': 'SAI - dau tu het tien vao mot du an la rui ro cao. "dung bo tat ca trung vao mot gio".',
+                'B': 'dUNG - day la chien luoc phan bo von hop ly: an toan (tiet kiem), dau tu (chung khoan), va du phong.',
+                'C': 'SAI - Mua xe dat tien tra gop la tieu san (ton tien), khong phai tai san (tao ra tien).'
+            },
+            3: {
+                'A': 'SAI - Mo rong sang linh vuc moi voi so von vay lon khi chua co kinh nghiem la rui ro cuc cao.',
+                'B': 'dUNG - Voi doanh nghiep nho, tich luy von va toi uu hoa hoat dong hien tai la chien luoc it rui ro va ben vung.',
+                'C': 'SAI - Rut het loi nhuan lam mat von phat trien doanh nghiep, khien doanh nghiep de bi ton thuong khi co khung hoang.'
+            }
+        };
+        
+        const resultDiv = document.getElementById(`quiz-result-${questionNumber}`);
+        const isCorrect = selectedOption === correctAnswers[questionNumber];
+        
+        resultDiv.innerHTML = `<p><b>${isCorrect ? '✅ dUNG!' : '❌ SAI!'}</b> ${explanations[questionNumber][selectedOption]}</p>`;
+        resultDiv.className = `quiz-result ${isCorrect ? 'correct' : 'incorrect'}`;
+        resultDiv.style.display = 'block';
+    }
+    
+    // Lam lai trac nghiem
+    function resetQuiz() {
+        for (let i = 1; i <= 3; i++) {
+            document.getElementById(`quiz-result-${i}`).style.display = 'none';
+        }
+    }
+    
+    // GHI CHU: Them chuc nang phim tat
+    document.addEventListener('keydown', function(event) {
+        // Alt + 1 den Alt + 5 de dieu huong nhanh
+        if (event.altKey) {
+            switch(event.key) {
+                case '1': go('von0'); break;
+                case '2': go('canhan'); break;
+                case '3': go('dn-nho'); break;
+                case '4': go('dn-lon'); break;
+                case '5': go('thuatngu'); break;
+                case '6': go('tracnghiem'); break;
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,562 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Tu Van Mon An - Phan 9</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        
+        .input-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-top: 25px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .results-section {
+            margin-top: 30px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #3498db;
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        
+        .pagination button {
+            margin: 0;
+            padding: 8px 15px;
+        }
+        
+        .page-info {
+            font-weight: bold;
+            margin: 0 10px;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+            color: #7f8c8d;
+        }
+        
+        .result-count {
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        @media (max-width: 768px) {
+            .input-section {
+                flex-direction: column;
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            th, td {
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Game Tu Van Mon An Theo Nhiet do va Benh Tat - Phan 9/15</h1>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="temperature">Nhiet do hien tai (°C):</label>
+                <input type="number" id="temperature" placeholder="Nhap nhiet do...">
+            </div>
+            
+            <div class="input-group">
+                <label for="condition">Tinh trang suc khoe:</label>
+                <select id="condition">
+                    <option value="">-- Chon tinh trang --</option>
+                    <option value="Nguoi an chay">Nguoi an chay</option>
+                    <option value="Nguoi hay lanh bung">Nguoi hay lanh bung</option>
+                    <option value="Nguoi can boi bo">Nguoi can boi bo</option>
+                    <option value="Nguoi nong trong">Nguoi nong trong</option>
+                    <option value="Nguoi an kieng">Nguoi an kieng</option>
+                    <option value="Nguoi lao dong">Nguoi lao dong</option>
+                    <option value="Nguoi kho tieu">Nguoi kho tieu</option>
+                    <option value="Nguoi om day">Nguoi om day</option>
+                    <option value="Nguoi thuc khuya">Nguoi thuc khuya</option>
+                    <option value="Nguoi lao dong dem">Nguoi lao dong dem</option>
+                </select>
+            </div>
+            
+            <button id="search-btn">Tim Mon An</button>
+        </div>
+        
+        <div class="results-section">
+            <div class="result-count" id="result-count"></div>
+            
+            <div class="table-container">
+                <table id="results-table">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Nguoi benh</th>
+                            <th>Trieu chung</th>
+                            <th>Mon an the han</th>
+                            <th>Mon an the nhiet</th>
+                            <th>Luong an</th>
+                            <th>Thoi diem</th>
+                            <th>Mon thay the</th>
+                            <th>Hoa qua</th>
+                            <th>do uong</th>
+                            <th>Gia</th>
+                            <th>Thuc pham tranh</th>
+                            <th>Ghi chu</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body">
+                        <!-- Ket qua se duoc hien thi o day -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pagination" id="pagination">
+                <button id="prev-btn">Truoc</button>
+                <span class="page-info" id="page-info">Trang 1/1</span>
+                <button id="next-btn">Sau</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Du lieu 10 dong tiep theo (81-90)
+        const foodData = [
+            {
+                organ: "Co bap",
+                code: "Sang81",
+                patient_id: "81",
+                disease: "Nguoi can nang luong nhanh",
+                temperature_range: "0-10°C",
+                cold_constitution: "Co",
+                hot_constitution: "Xoi thit kho trung",
+                meal_amount: "1 goi nho",
+                meal_time: "5:30-6:30",
+                rest_time: "10 phut",
+                alternative_dish: "Banh mi thit",
+                suitable_fruits: "Chuoi",
+                suitable_drinks: "Ca phe sua nong",
+                estimated_price: "20.000-35.000",
+                avoid_foods: "do ngot",
+                note: "Nang luong tuc thi"
+            },
+            {
+                organ: "Khong",
+                code: "Sang82",
+                patient_id: "82",
+                disease: "Nguoi ban ron",
+                temperature_range: "0-10°C",
+                cold_constitution: "Co",
+                hot_constitution: "Banh bao nhan thit",
+                meal_amount: "2 cai",
+                meal_time: "6:30-7:00",
+                rest_time: "5 phut",
+                alternative_dish: "Yen mach tron sua",
+                suitable_fruits: "Tao",
+                suitable_drinks: "Sua dau nanh",
+                estimated_price: "15.000-30.000",
+                avoid_foods: "do chien",
+                note: "Tien loi, de mang theo"
+            },
+            {
+                organ: "Khong",
+                code: "Sang83",
+                patient_id: "83",
+                disease: "Nguoi an chay",
+                temperature_range: "0-10°C",
+                cold_constitution: "Co",
+                hot_constitution: "Chao nam dau phu",
+                meal_amount: "1 bat nho",
+                meal_time: "7:00-8:00",
+                rest_time: "20 phut",
+                alternative_dish: "Banh mi bo dau phong",
+                suitable_fruits: "Chuoi",
+                suitable_drinks: "Sua hat am",
+                estimated_price: "20.000-35.000",
+                avoid_foods: "do man",
+                note: "Bo sung vitamin B12"
+            },
+            {
+                organ: "Da day",
+                code: "Sang84",
+                patient_id: "84",
+                disease: "Nguoi hay lanh bung",
+                temperature_range: "0-10°C",
+                cold_constitution: "Co",
+                hot_constitution: "Chao ga gung nong",
+                meal_amount: "1 bat day",
+                meal_time: "6:30-7:30",
+                rest_time: "20 phut",
+                alternative_dish: "Xoi ga",
+                suitable_fruits: "Tao hap",
+                suitable_drinks: "Tra gung mat ong",
+                estimated_price: "25.000-40.000",
+                avoid_foods: "do lanh, sua lanh",
+                note: "Giu am bung sau an"
+            },
+            {
+                organ: "Co the",
+                code: "Sang85",
+                patient_id: "85",
+                disease: "Nguoi can boi bo",
+                temperature_range: "0-10°C",
+                cold_constitution: "Co",
+                hot_constitution: "Chao chim bo cau hat sen",
+                meal_amount: "1 bat lon",
+                meal_time: "7:00-8:00",
+                rest_time: "30 phut",
+                alternative_dish: "Chao ga ac",
+                suitable_fruits: "Tao tau",
+                suitable_drinks: "Sua hanh nhan am",
+                estimated_price: "35.000-55.000",
+                avoid_foods: "do song",
+                note: "An khi con nong"
+            },
+            {
+                organ: "Gan",
+                code: "Sang86",
+                patient_id: "86",
+                disease: "Nguoi nong trong",
+                temperature_range: "0-10°C",
+                cold_constitution: "Khong",
+                hot_constitution: "Chao dau xanh duong phen",
+                meal_amount: "1 bat nho",
+                meal_time: "7:00-8:00",
+                rest_time: "15 phut",
+                alternative_dish: "Sua chua dau do",
+                suitable_fruits: "Le",
+                suitable_drinks: "Nuoc rau ma",
+                estimated_price: "15.000-25.000",
+                avoid_foods: "do cay nong",
+                note: "An am vua phai"
+            },
+            {
+                organ: "Khong",
+                code: "Sang87",
+                patient_id: "87",
+                disease: "Nguoi an kieng",
+                temperature_range: "0-10°C",
+                cold_constitution: "Khong",
+                hot_constitution: "Yen mach sua hanh nhan",
+                meal_amount: "1 bat nho",
+                meal_time: "7:00-8:00",
+                rest_time: "10 phut",
+                alternative_dish: "Trung luoc + banh mi den",
+                suitable_fruits: "Buoi",
+                suitable_drinks: "Tra xanh",
+                estimated_price: "20.000-35.000",
+                avoid_foods: "do ngot",
+                note: "It duong, it beo"
+            },
+            {
+                organ: "Co bap",
+                code: "Sang88",
+                patient_id: "88",
+                disease: "Nguoi lao dong",
+                temperature_range: "0-10°C",
+                cold_constitution: "Co",
+                hot_constitution: "Xoi dau phong thit kho",
+                meal_amount: "1 goi vua",
+                meal_time: "5:30-6:30",
+                rest_time: "15 phut",
+                alternative_dish: "Banh mi thit",
+                suitable_fruits: "Chuoi",
+                suitable_drinks: "Ca phe sua nong",
+                estimated_price: "20.000-35.000",
+                avoid_foods: "do lanh",
+                note: "Nhieu nang luong"
+            },
+            {
+                organ: "Da day",
+                code: "Sang89",
+                patient_id: "89",
+                disease: "Nguoi kho tieu",
+                temperature_range: "0-10°C",
+                cold_constitution: "Co",
+                hot_constitution: "Chao tia to thit bam",
+                meal_amount: "1 bat nho",
+                meal_time: "7:00-8:00",
+                rest_time: "30 phut",
+                alternative_dish: "Sup khoai tay",
+                suitable_fruits: "du du",
+                suitable_drinks: "Tra hoa cuc",
+                estimated_price: "25.000-40.000",
+                avoid_foods: "do chien ran",
+                note: "An cham nhai ky"
+            },
+            {
+                organ: "Co the",
+                code: "Sang90",
+                patient_id: "90",
+                disease: "Nguoi om day",
+                temperature_range: "0-10°C",
+                cold_constitution: "Co",
+                hot_constitution: "Chao ga hat sen tao tau",
+                meal_amount: "1 bat vua",
+                meal_time: "7:30-8:30",
+                rest_time: "45 phut",
+                alternative_dish: "Sup ga",
+                suitable_fruits: "Tao hap",
+                suitable_drinks: "Nuoc gung am",
+                estimated_price: "30.000-50.000",
+                avoid_foods: "do song",
+                note: "Nghi ngoi sau an"
+            }
+        ];
+
+        // Bien toan cuc
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let filteredData = [];
+
+        // Cac phan tu DOM
+        const temperatureInput = document.getElementById('temperature');
+        const conditionSelect = document.getElementById('condition');
+        const searchBtn = document.getElementById('search-btn');
+        const resultsBody = document.getElementById('results-body');
+        const resultCount = document.getElementById('result-count');
+        const pageInfo = document.getElementById('page-info');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const pagination = document.getElementById('pagination');
+
+        // Ham loc du lieu
+        function filterData() {
+            const temperature = parseInt(temperatureInput.value);
+            const condition = conditionSelect.value;
+            
+            filteredData = foodData.filter(item => {
+                let matchesTemperature = true;
+                let matchesCondition = true;
+                
+                // Kiem tra nhiet do
+                if (!isNaN(temperature)) {
+                    const tempRange = item.temperature_range;
+                    if (tempRange && tempRange.includes('°C')) {
+                        try {
+                            let rangeText = tempRange.replace('°C', '').trim();
+                            if (rangeText.includes('-')) {
+                                const rangeParts = rangeText.split('-');
+                                const minTemp = parseInt(rangeParts[0]);
+                                const maxTemp = parseInt(rangeParts[1]);
+                                matchesTemperature = temperature >= minTemp && temperature <= maxTemp;
+                            }
+                            else if (!isNaN(parseInt(rangeText))) {
+                                const exactTemp = parseInt(rangeText);
+                                matchesTemperature = temperature === exactTemp;
+                            }
+                        } catch (e) {
+                            console.error("Loi xu ly nhiet do:", e);
+                            matchesTemperature = false;
+                        }
+                    } else {
+                        matchesTemperature = true;
+                    }
+                }
+                
+                // Kiem tra tinh trang suc khoe
+                if (condition) {
+                    matchesCondition = item.disease.includes(condition);
+                }
+                
+                return matchesTemperature && matchesCondition;
+            });
+            
+            currentPage = 1;
+            displayResults();
+        }
+
+        // Ham hien thi ket qua
+        function displayResults() {
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageData = filteredData.slice(startIndex, endIndex);
+            
+            resultsBody.innerHTML = '';
+            
+            if (pageData.length === 0) {
+                resultsBody.innerHTML = '<tr><td colspan="13" class="no-results">Khong tim thay ket qua phu hop</td></tr>';
+                pagination.style.display = 'none';
+                resultCount.textContent = 'Khong tim thay ket qua nao';
+            } else {
+                pageData.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.code}</td>
+                        <td>${item.patient_id}</td>
+                        <td>${item.disease}</td>
+                        <td>${item.cold_constitution}</td>
+                        <td>${item.hot_constitution}</td>
+                        <td>${item.meal_amount}</td>
+                        <td>${item.meal_time}</td>
+                        <td>${item.alternative_dish}</td>
+                        <td>${item.suitable_fruits}</td>
+                        <td>${item.suitable_drinks}</td>
+                        <td>${item.estimated_price}</td>
+                        <td>${item.avoid_foods}</td>
+                        <td>${item.note}</td>
+                    `;
+                    resultsBody.appendChild(row);
+                });
+                
+                const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+                pageInfo.textContent = `Trang ${currentPage}/${totalPages}`;
+                
+                prevBtn.disabled = currentPage === 1;
+                nextBtn.disabled = currentPage === totalPages;
+                
+                resultCount.textContent = `Tim thay ${filteredData.length} ket qua`;
+                pagination.style.display = totalPages > 1 ? 'flex' : 'none';
+            }
+        }
+
+        // Su kien
+        searchBtn.addEventListener('click', filterData);
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                displayResults();
+            }
+        });
+        nextBtn.addEventListener('click', () => {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                displayResults();
+            }
+        });
+
+        // Tu dong tim kiem khi trang duoc tai
+        window.addEventListener('DOMContentLoaded', () => {
+            filterData();
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

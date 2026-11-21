@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Phân Tích & Tính Toán Dữ Liệu JSON</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans text-slate-800 antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-brand-600 text-white rounded-lg shadow">
+                        <i class="fa-solid fa-calculator text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-slate-900 leading-tight">DataCalc Studio</h1>
+                        <p class="text-xs text-slate-500">Hệ thống phân tích dữ liệu & tính toán tự động</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                    <button id="btnOpenJsonModal" class="inline-flex items-center px-3 py-2 border border-slate-300 shadow-sm text-sm font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition">
+                        <i class="fa-solid fa-code text-brand-600 mr-2"></i> Chỉnh sửa JSON
+                    </button>
+                    <button id="btnExportCSV" class="inline-flex items-center px-3 py-2 bg-slate-900 text-white shadow-sm text-sm font-medium rounded-lg hover:bg-slate-800 transition">
+                        <i class="fa-solid fa-download mr-2"></i> Xuất dữ liệu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col">
+        
+        <!-- Navigation Tabs -->
+        <div class="mb-6 border-b border-slate-200 bg-white rounded-xl p-1.5 shadow-sm">
+            <nav class="flex space-x-1 sm:space-x-2 overflow-x-auto" aria-label="Tabs">
+                <button tab-target="tab-1" class="tab-btn active flex items-center px-4 py-2.5 text-sm font-medium rounded-lg whitespace-nowrap transition">
+                    <i class="fa-solid fa-users mr-2"></i> Nhân sự & Metadata
+                </button>
+                <button tab-target="tab-2" class="tab-btn flex items-center px-4 py-2.5 text-sm font-medium rounded-lg whitespace-nowrap transition">
+                    <i class="fa-solid fa-list-ol mr-2"></i> Ref Numbers & Phân tích
+                </button>
+                <button tab-target="tab-3" class="tab-btn flex items-center px-4 py-2.5 text-sm font-medium rounded-lg whitespace-nowrap transition">
+                    <i class="fa-solid fa-square-root-variable mr-2"></i> Công cụ tính toán tuổi & time
+                </button>
+                <button tab-target="tab-4" class="tab-btn flex items-center px-4 py-2.5 text-sm font-medium rounded-lg whitespace-nowrap transition">
+                    <i class="fa-solid fa-link mr-2"></i> Custom Tabs & Liên kết
+                </button>
+            </nav>
+        </div>
+
+        <!-- TAB CONTENT CONTAINER -->
+        <div class="flex-1">
+
+            <!-- TAB 1: Danh Sách Nhân Sự & Metadata -->
+            <div id="tab-1" class="tab-content block space-y-6">
+                <!-- Metadata Card -->
+                <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-2xl text-white p-6 shadow-md relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 opacity-10 text-9xl">
+                        <i class="fa-solid fa-database"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/20 text-brand-300 border border-brand-500/30">
+                                <i class="fa-solid fa-circle-info mr-1.5 text-[10px]"></i> Metadata Hệ Thống
+                            </span>
+                            <span id="metaTimestamp" class="text-xs text-slate-400 font-mono">--</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
+                            <div class="bg-white/5 backdrop-blur p-3.5 rounded-xl border border-white/10">
+                                <p class="text-xs text-slate-400 mb-1">Tên Script Tạo</p>
+                                <p id="metaScript" class="font-semibold text-slate-100 font-mono text-sm">--</p>
+                            </div>
+                            <div class="bg-white/5 backdrop-blur p-3.5 rounded-xl border border-white/10">
+                                <p class="text-xs text-slate-400 mb-1">Thư Mục Gốc</p>
+                                <p id="metaFolder" class="font-semibold text-slate-100 font-mono text-sm">--</p>
+                            </div>
+                            <div class="bg-white/5 backdrop-blur p-3.5 rounded-xl border border-white/10">
+                                <p class="text-xs text-slate-400 mb-1">File Nguồn</p>
+                                <p id="metaFile" class="font-semibold text-slate-100 font-mono text-sm">--</p>
+                            </div>
+                            <div class="bg-white/5 backdrop-blur p-3.5 rounded-xl border border-white/10">
+                                <p class="text-xs text-slate-400 mb-1">Thời Gian Tham Chiếu (Ref Date)</p>
+                                <p id="metaRefDate" class="font-semibold text-emerald-400 font-mono text-sm">--</p>
+                            </div>
+                        </div>
+                        <div class="mt-3 pt-3 border-t border-white/10 flex items-center text-xs text-slate-400">
+                            <i class="fa-solid fa-folder-tree mr-2 text-slate-400"></i>
+                            <span class="font-mono truncate" id="metaPath">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- People Table Section -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-5 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900">Danh Sách Nhân Sự</h2>
+                            <p class="text-xs text-slate-500">Thông tin cá nhân, ngày sinh và thời gian hoạt động</p>
+                        </div>
+                        <div class="w-full sm:w-72 relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                            <input type="text" id="searchPeople" placeholder="Tìm kiếm tên..." class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition">
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead>
+                                <tr class="bg-slate-50 text-slate-500 font-semibold text-xs border-b border-slate-200">
+                                    <th class="py-3.5 px-6">STT</th>
+                                    <th class="py-3.5 px-6">Họ và Tên</th>
+                                    <th class="py-3.5 px-6">Ngày Sinh (DOB)</th>
+                                    <th class="py-3.5 px-6">Thông Số Time</th>
+                                    <th class="py-3.5 px-6">Tính Đến Ref Date (2026)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="peopleTableBody" class="divide-y divide-slate-100">
+                                <!-- Dynamic Content -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: Ref Numbers & Phân tích -->
+            <div id="tab-2" class="tab-content hidden space-y-6">
+                <!-- Summary Stats Bar -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <p class="text-xs font-medium text-slate-500">Tổng Số Lượng</p>
+                        <p id="statCount" class="text-2xl font-bold text-slate-900 mt-1">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <p class="text-xs font-medium text-slate-500">Tổng Giá Trị (Sum)</p>
+                        <p id="statSum" class="text-2xl font-bold text-brand-600 mt-1">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <p class="text-xs font-medium text-slate-500">Trung Bình (Avg)</p>
+                        <p id="statAvg" class="text-2xl font-bold text-indigo-600 mt-1">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <p class="text-xs font-medium text-slate-500">Lớn Nhất (Max)</p>
+                        <p id="statMax" class="text-2xl font-bold text-emerald-600 mt-1">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <p class="text-xs font-medium text-slate-500">Nhỏ Nhất (Min)</p>
+                        <p id="statMin" class="text-2xl font-bold text-rose-600 mt-1">0</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                        <p class="text-xs font-medium text-slate-500">Số Lượng Số Đặc Biệt (&gt;1000)</p>
+                        <p id="statSpecial" class="text-2xl font-bold text-amber-600 mt-1">0</p>
+                    </div>
+                </div>
+
+                <!-- Data Filters & Table -->
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-5 border-b border-slate-200 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4">
+                        <div class="flex items-center space-x-3">
+                            <h2 class="text-lg font-bold text-slate-900">Mảng Ref Numbers</h2>
+                            <span id="refBadge" class="bg-brand-50 text-brand-700 text-xs px-2.5 py-1 rounded-full font-medium border border-brand-200">Hiển thị toàn bộ</span>
+                        </div>
+                        
+                        <!-- Filters -->
+                        <div class="flex flex-wrap items-center gap-3">
+                            <div class="relative flex-1 sm:w-48">
+                                <input type="text" id="searchRefNum" placeholder="Tìm số..." class="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                <i class="fa-solid fa-search absolute left-2.5 top-2.5 text-xs text-slate-400"></i>
+                            </div>
+                            <select id="filterType" class="bg-slate-50 border border-slate-200 text-sm rounded-lg py-1.5 px-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                <option value="all">Tất cả số</option>
+                                <option value="even">Số chẵn</option>
+                                <option value="odd">Số lẻ</option>
+                                <option value="gt1000">Lớn hơn 1000</option>
+                                <option value="lt100">Nhỏ hơn 100</option>
+                            </select>
+                            <select id="sortType" class="bg-slate-50 border border-slate-200 text-sm rounded-lg py-1.5 px-3 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                <option value="original">Thứ tự gốc</option>
+                                <option value="asc">Tăng dần (0-9)</option>
+                                <option value="desc">Giảm dần (9-0)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Container for numbers display -->
+                    <div class="p-6">
+                        <div id="refNumbersGrid" class="grid grid-cols-3 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-12 gap-2.5 max-h-[500px] overflow-y-auto p-1">
+                            <!-- Dynamic Numbers Badges -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: Công cụ tính toán -->
+            <div id="tab-3" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Calculator Sidebar / Configuration -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+                        <h3 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3">
+                            <i class="fa-solid fa-sliders text-brand-600 mr-2"></i> Cấu Hình Tính Tuổi
+                        </h3>
+                        
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-2">Mốc Thời Gian Tính Tuổi</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center space-x-3 p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition">
+                                    <input type="radio" name="calcBaseDate" value="ref_date" checked class="text-brand-600 focus:ring-brand-500">
+                                    <div>
+                                        <p class="text-sm font-medium text-slate-800">Ref Date từ JSON</p>
+                                        <p class="text-xs text-slate-500" id="calcRefDateDisplay">2026-10-25</p>
+                                    </div>
+                                </label>
+                                <label class="flex items-center space-x-3 p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition">
+                                    <input type="radio" name="calcBaseDate" value="today" class="text-brand-600 focus:ring-brand-500">
+                                    <div>
+                                        <p class="text-sm font-medium text-slate-800">Hôm Nay (Thời điểm hiện tại)</p>
+                                        <p class="text-xs text-slate-500" id="calcTodayDisplay">--</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Time Total Aggregation Summary -->
+                        <div class="p-4 bg-brand-50 rounded-xl border border-brand-100">
+                            <h4 class="text-xs font-bold text-brand-800 uppercase tracking-wider mb-2">Tổng Thông Số Time</h4>
+                            <div class="flex items-baseline space-x-2">
+                                <span id="totalTimeValue" class="text-3xl font-extrabold text-brand-600">0</span>
+                                <span class="text-xs text-brand-700">đơn vị tổng cộng</span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-2">Tính tổng trường "time" của tất cả cá nhân có trong danh sách.</p>
+                        </div>
+                    </div>
+
+                    <!-- Calculated Results Main Panel -->
+                    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                        <div class="p-5 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold text-slate-900">Bảng Tính Tuổi Chi Tiết</h3>
+                                <p class="text-xs text-slate-500">Tự động tính tuổi theo năm, tháng, ngày & số ngày sống</p>
+                            </div>
+                            <span class="text-xs font-semibold px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-full">
+                                Tự động cập nhật
+                            </span>
+                        </div>
+
+                        <div class="flex-1 overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-sm">
+                                <thead>
+                                    <tr class="bg-slate-100/70 text-slate-600 text-xs font-semibold uppercase tracking-wider border-b border-slate-200">
+                                        <th class="py-3 px-4">Họ và Tên</th>
+                                        <th class="py-3 px-4">Ngày sinh</th>
+                                        <th class="py-3 px-4">Tuổi (Năm)</th>
+                                        <th class="py-3 px-4">Tổng số ngày sống</th>
+                                        <th class="py-3 px-4">Time Param</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="calcTableBody" class="divide-y divide-slate-100">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: Custom Tabs & Liên kết ngoài -->
+            <div id="tab-4" class="tab-content hidden space-y-6">
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <div class="p-3 bg-red-100 text-red-600 rounded-xl">
+                            <i class="fa-solid fa-link text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900">Custom Tabs & Danh Sách Liên Kết</h3>
+                            <p class="text-xs text-slate-500">Quản lý danh mục custom_tabs từ cấu hình JSON</p>
+                        </div>
+                    </div>
+
+                    <div id="customTabsContainer" class="space-y-4">
+                        <!-- Dynamic Custom Tabs -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
+            Ứng dụng hiển thị & xử lý dữ liệu JSON hoàn chỉnh &copy; 2026 - DataCalc Studio
+        </div>
+    </footer>
+
+    <!-- JSON MODAL -->
+    <div id="jsonModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-3xl max-h-[90vh] flex flex-col">
+            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50 rounded-t-2xl">
+                <h3 class="font-bold text-slate-900 flex items-center">
+                    <i class="fa-solid fa-code text-brand-600 mr-2"></i> Cập Nhật Dữ Liệu JSON
+                </h3>
+                <button id="btnCloseJsonModal" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <div class="p-4 flex-1 overflow-hidden flex flex-col">
+                <p class="text-xs text-slate-500 mb-2">Bạn có thể chỉnh sửa trực tiếp hoặc dán đoạn JSON mới vào bên dưới:</p>
+                <textarea id="jsonInputArea" class="w-full flex-1 p-3 bg-slate-900 text-emerald-400 font-mono text-xs rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none h-96"></textarea>
+                <div id="jsonError" class="mt-2 text-xs text-rose-600 font-medium hidden"></div>
+            </div>
+
+            <div class="p-4 border-t border-slate-200 flex justify-end space-x-3 bg-slate-50 rounded-b-2xl">
+                <button id="btnResetDefault" class="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-100 transition">
+                    Khôi phục mặc định
+                </button>
+                <button id="btnSaveJson" class="px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700 transition">
+                    Cập nhật Dữ Liệu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN JAVASCRIPT LOGIC -->
+    <script>
+        // Default Input JSON Data
+        const defaultData = {
+            "metadata": {
+                "ten_script_tao": "chuong_trinh",
+                "ten_thu_muc_goc": "ThuMuc_1",
+                "ten_file_nguon": "bang_1.txt",
+                "duong_dan_file_nguon": "G:\\My Drive\\QL6TEP\\ThuMuc_1\\bang_1.txt",
+                "timestamp": "2026-10-25 20:02:03"
+            },
+            "people": [
+                { "name": "NGUYỄN KHẮC NĂNG", "dob": "4/6/1944", "time": "11" },
+                { "name": "TÔ THỊ HÀ", "dob": "29/8/1948", "time": "10" },
+                { "name": "NGUYỄN MINH NAM", "dob": "3/3/1971", "time": "21" },
+                { "name": "THÂN THỊ KIM ANH", "dob": "23/9/1981", "time": "9" },
+                { "name": "NGUYỄN TÔ NGÂN AN", "dob": "28/9/2014", "time": "20" },
+                { "name": "NGUYỄN TÔ MINH CHÂU", "dob": "25/7/2016", "time": "21" },
+                { "name": "NGUYỄN TÔ BÍCH NGỌC", "dob": "5/2/2020", "time": "22" }
+            ],
+            "ref_numbers": [
+                0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 4123, 
+                28, 27, 30, 29, 32, 33, 31, 35, 4132, 34, 38, 36, 40, 37, 39, 43, 41, 45, 42, 44, 48, 49, 46, 47, 50, 53, 
+                51, 52, 54, 55, 58, 56, 60, 57, 59, 63, 61, 65, 62, 64, 68, 66, 67, 69, 72, 73, 74, 75, 70, 71, 78, 76, 
+                77, 79, 80, 83, 81, 82, 2134, 84, 88, 89, 90, 85, 86, 93, 87, 2143, 96, 91, 98, 92, 100, 101, 94, 103, 
+                95, 97, 99, 102, 108, 104, 105, 111, 106, 113, 107, 115, 109, 4213, 118, 110, 120, 112, 114, 123, 116, 
+                125, 117, 119, 128, 121, 130, 122, 132, 124, 126, 4231, 135, 129, 131, 133, 134, 136, 137, 138, 139, 
+                140, 141, 142, 143, 149, 150, 144, 145, 146, 147, 155, 148, 151, 152, 159, 160, 153, 154, 156, 164, 
+                165, 157, 158, 168, 161, 162, 163, 166, 167, 169, 170, 171, 172, 173, 174, 180, 175, 176, 177, 178, 
+                185, 186, 179, 181, 189, 182, 183, 192, 184, 187, 195, 188, 190, 198, 191, 193, 194, 196, 197, 199, 
+                200, 201, 202, 208, 209, 210, 203, 204, 213, 205, 206, 4312, 211, 212, 214, 220, 215, 222, 216, 217, 
+                4321, 225, 218, 219, 221, 230, 231, 232, 224, 234, 226, 227, 228, 229, 233, 240, 235, 236, 243, 237, 
+                238, 246, 239, 249, 250, 252, 255, 258, 260, 261, 264, 2314, 267, 270, 276, 278, 280, 285, 288, 290, 
+                2341, 294, 298, 299, 300, 304, 305, 307, 312, 315, 316, 321, 324, 327, 328, 330, 333, 335, 336, 342, 
+                345, 348, 350, 354, 357, 360, 2413, 365, 370, 375, 377, 380, 2431, 384, 385, 390, 395, 397, 398, 400, 
+                402, 405, 407, 408, 409, 415, 420, 423, 425, 429, 432, 435, 438, 440, 443, 444, 446, 450, 453, 456, 
+                458, 465, 480, 483, 485, 490, 492, 495, 498, 505, 510, 519, 525, 528, 529, 530, 534, 535, 537, 540, 
+                543, 546, 547, 550, 555, 556, 560, 564, 565, 567, 570, 573, 575, 576, 582, 584, 585, 587, 590, 591, 
+                594, 595, 603, 610, 615, 618, 620, 627, 630, 127, 640, 644, 645, 650, 654, 657, 660, 666, 672, 675, 
+                678, 681, 687, 688, 690, 699, 700, 703, 704, 705, 710, 713, 715, 720, 725, 726, 730, 735, 745, 753, 
+                756, 760, 762, 765, 768, 777, 786, 789, 790, 793, 795, 798, 808, 815, 816, 819, 825, 834, 838, 840, 
+                843, 845, 852, 855, 861, 867, 870, 876, 879, 880, 884, 888, 891, 897, 900, 912, 915, 918, 924, 925, 
+                930, 942, 945, 951, 960, 964, 973, 978, 981, 987, 995, 999, 1000, 1008, 1012, 1020, 1028, 1030, 207, 
+                1050, 1060, 1065, 3124, 1080, 1085, 1088, 3142, 1105, 1110, 1112, 1120, 223, 1125, 1135, 1140, 1148, 
+                3214, 1170, 1177, 1178, 1185, 1190, 3241, 1200, 1205, 1208, 1215, 1220, 1230, 1231, 1234, 1240, 1243, 
+                1245, 1255, 1260, 1268, 1275, 1290, 1295, 1305, 1320, 1324, 1335, 1342, 3412, 1369, 3421, 1375, 1410, 
+                1423, 1425, 1432
+            ],
+            "ref_date": "2026-10-25",
+            "ref_time": "20:02:03",
+            "custom_tabs": {
+                "Tab_Tu_Dong": {
+                    "links": [
+                        "https://www.youtube.com"
+                    ]
+                }
+            },
+            "data": {
+                "thong_ke_tab4": [],
+                "chia_so_tab5": [],
+                "so_trung_tab6": []
+            }
+        };
+
+        // Working data copy
+        let appData = JSON.parse(JSON.stringify(defaultData));
+
+        // Global DOM Elements & State
+        document.addEventListener('DOMContentLoaded', () => {
+            initTabs();
+            initModalHandlers();
+            renderApp();
+            
+            // Event listeners for filters and calculations
+            document.getElementById('searchPeople').addEventListener('input', renderPeopleTable);
+            document.getElementById('searchRefNum').addEventListener('input', renderRefNumbers);
+            document.getElementById('filterType').addEventListener('change', renderRefNumbers);
+            document.getElementById('sortType').addEventListener('change', renderRefNumbers);
+            
+            document.querySelectorAll('input[name="calcBaseDate"]').forEach(radio => {
+                radio.addEventListener('change', renderAgeCalculation);
+            });
+
+            document.getElementById('btnExportCSV').addEventListener('click', exportToCSV);
+        });
+
+        // Tab Navigation Switcher
+        function initTabs() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const target = btn.getAttribute('tab-target');
+
+                    // Style active button
+                    tabBtns.forEach(b => {
+                        b.classList.remove('active', 'bg-brand-600', 'text-white', 'shadow-sm');
+                        b.classList.add('text-slate-600', 'hover:bg-slate-100');
+                    });
+                    btn.classList.add('active', 'bg-brand-600', 'text-white', 'shadow-sm');
+                    btn.classList.remove('text-slate-600', 'hover:bg-slate-100');
+
+                    // Show content
+                    tabContents.forEach(content => {
+                        if (content.id === target) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            // Set first tab active by default
+            if(tabBtns.length > 0) {
+                tabBtns[0].click();
+            }
+        }
+
+        // Render Application Data
+        function renderApp() {
+            renderMetadata();
+            renderPeopleTable();
+            renderRefNumbers();
+            renderAgeCalculation();
+            renderCustomTabs();
+        }
+
+        // Render Metadata (Tab 1)
+        function renderMetadata() {
+            const meta = appData.metadata || {};
+            document.getElementById('metaScript').textContent = meta.ten_script_tao || 'N/A';
+            document.getElementById('metaFolder').textContent = meta.ten_thu_muc_goc || 'N/A';
+            document.getElementById('metaFile').textContent = meta.ten_file_nguon || 'N/A';
+            document.getElementById('metaPath').textContent = meta.duong_dan_file_nguon || 'N/A';
+            document.getElementById('metaTimestamp').textContent = meta.timestamp || 'N/A';
+            
+            const refDate = appData.ref_date || '2026-10-25';
+            const refTime = appData.ref_time || '';
+            document.getElementById('metaRefDate').textContent = `${refDate} ${refTime}`;
+            document.getElementById('calcRefDateDisplay').textContent = refDate;
+
+            // Today's Date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('calcTodayDisplay').textContent = today;
+        }
+
+        // Helper: Parse DOB (DD/MM/YYYY)
+        function parseDOB(dobStr) {
+            if (!dobStr) return null;
+            const parts = dobStr.split('/');
+            if (parts.length === 3) {
+                const day = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10) - 1;
+                const year = parseInt(parts[2], 10);
+                return new Date(year, month, day);
+            }
+            return null;
+        }
+
+        // Helper: Calculate Exact Age
+        function calculateAge(dobStr, targetDateStr) {
+            const dob = parseDOB(dobStr);
+            if (!dob) return { years: 0, days: 0 };
+            
+            const targetDate = targetDateStr ? new Date(targetDateStr) : new Date();
+            
+            let years = targetDate.getFullYear() - dob.getFullYear();
+            const monthDiff = targetDate.getMonth() - dob.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && targetDate.getDate() < dob.getDate())) {
+                years--;
+            }
+
+            const diffTime = Math.abs(targetDate - dob);
+            const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            return { years, days };
+        }
+
+        // Render People Table (Tab 1)
+        function renderPeopleTable() {
+            const tbody = document.getElementById('peopleTableBody');
+            const searchKeyword = document.getElementById('searchPeople').value.toLowerCase().trim();
+            const refDate = appData.ref_date || '2026-10-25';
+
+            tbody.innerHTML = '';
+
+            const people = appData.people || [];
+            const filteredPeople = people.filter(p => p.name.toLowerCase().includes(searchKeyword));
+
+            if (filteredPeople.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-8 text-slate-400">
+                            Không tìm thấy nhân sự phù hợp
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            filteredPeople.forEach((person, index) => {
+                const ageInfo = calculateAge(person.dob, refDate);
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50/80 transition';
+                tr.innerHTML = `
+                    <td class="py-3.5 px-6 font-medium text-slate-400">${index + 1}</td>
+                    <td class="py-3.5 px-6 font-bold text-slate-900 flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-xs">
+                            ${person.name.charAt(0)}
+                        </div>
+                        <span>${person.name}</span>
+                    </td>
+                    <td class="py-3.5 px-6 font-mono text-slate-600">${person.dob}</td>
+                    <td class="py-3.5 px-6">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">
+                            Time: ${person.time}
+                        </span>
+                    </td>
+                    <td class="py-3.5 px-6 font-medium text-slate-700">
+                        <span class="text-emerald-600 font-bold">${ageInfo.years}</span> tuổi
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Render Ref Numbers & Analysis (Tab 2)
+        function renderRefNumbers() {
+            const grid = document.getElementById('refNumbersGrid');
+            const numbers = appData.ref_numbers || [];
+            
+            const searchVal = document.getElementById('searchRefNum').value.trim();
+            const filterType = document.getElementById('filterType').value;
+            const sortType = document.getElementById('sortType').value;
+
+            // Stats Calculation
+            if(numbers.length > 0) {
+                const sum = numbers.reduce((a, b) => a + b, 0);
+                const avg = (sum / numbers.length).toFixed(2);
+                const max = Math.max(...numbers);
+                const min = Math.min(...numbers);
+                const gt1000Count = numbers.filter(n => n > 1000).length;
+
+                document.getElementById('statCount').textContent = numbers.length;
+                document.getElementById('statSum').textContent = sum.toLocaleString();
+                document.getElementById('statAvg').textContent = avg;
+                document.getElementById('statMax').textContent = max.toLocaleString();
+                document.getElementById('statMin').textContent = min.toLocaleString();
+                document.getElementById('statSpecial').textContent = gt1000Count;
+            }
+
+            // Filtering
+            let filtered = [...numbers];
+
+            if (searchVal !== '') {
+                filtered = filtered.filter(n => n.toString().includes(searchVal));
+            }
+
+            if (filterType === 'even') {
+                filtered = filtered.filter(n => n % 2 === 0);
+            } else if (filterType === 'odd') {
+                filtered = filtered.filter(n => n % 2 !== 0);
+            } else if (filterType === 'gt1000') {
+                filtered = filtered.filter(n => n > 1000);
+            } else if (filterType === 'lt100') {
+                filtered = filtered.filter(n => n < 100);
+            }
+
+            // Sorting
+            if (sortType === 'asc') {
+                filtered.sort((a, b) => a - b);
+            } else if (sortType === 'desc') {
+                filtered.sort((a, b) => b - a);
+            }
+
+            document.getElementById('refBadge').textContent = `Hiển thị ${filtered.length} / ${numbers.length} số`;
+
+            grid.innerHTML = '';
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-8 text-slate-400">Không có số nào phù hợp bộ lọc</div>`;
+                return;
+            }
+
+            filtered.forEach(num => {
+                const div = document.createElement('div');
+                let isHighlight = num > 1000;
+                
+                div.className = `p-2 rounded-lg text-center font-mono text-xs font-semibold border transition hover:scale-105 cursor-pointer ${
+                    isHighlight 
+                    ? 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100' 
+                    : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-white hover:shadow-sm'
+                }`;
+                div.textContent = num;
+                grid.appendChild(div);
+            });
+        }
+
+        // Render Age Calculation Tool (Tab 3)
+        function renderAgeCalculation() {
+            const tbody = document.getElementById('calcTableBody');
+            const people = appData.people || [];
+            
+            // Check base date selection
+            const selectedBase = document.querySelector('input[name="calcBaseDate"]:checked').value;
+            let targetDateStr = appData.ref_date || '2026-10-25';
+
+            if (selectedBase === 'today') {
+                targetDateStr = new Date().toISOString().split('T')[0];
+            }
+
+            // Calculate total time
+            const totalTime = people.reduce((acc, p) => acc + (parseFloat(p.time) || 0), 0);
+            document.getElementById('totalTimeValue').textContent = totalTime;
+
+            tbody.innerHTML = '';
+
+            people.forEach(person => {
+                const ageInfo = calculateAge(person.dob, targetDateStr);
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition';
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-bold text-slate-800">${person.name}</td>
+                    <td class="py-3 px-4 font-mono text-slate-500">${person.dob}</td>
+                    <td class="py-3 px-4 font-semibold text-brand-600">${ageInfo.years} tuổi</td>
+                    <td class="py-3 px-4 font-mono text-slate-600">${ageInfo.days.toLocaleString()} ngày</td>
+                    <td class="py-3 px-4"><span class="px-2 py-0.5 bg-slate-100 rounded text-xs text-slate-600 font-mono">${person.time}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Render Custom Tabs (Tab 4)
+        function renderCustomTabs() {
+            const container = document.getElementById('customTabsContainer');
+            const customTabs = appData.custom_tabs || {};
+
+            container.innerHTML = '';
+
+            const keys = Object.keys(customTabs);
+            if (keys.length === 0) {
+                container.innerHTML = `<p class="text-slate-400 text-sm">Không có danh mục custom tab nào.</p>`;
+                return;
+            }
+
+            keys.forEach(key => {
+                const tabData = customTabs[key];
+                const links = tabData.links || [];
+
+                const card = document.createElement('div');
+                card.className = 'border border-slate-200 rounded-xl p-4 bg-slate-50/50';
+
+                let linksHTML = links.map(link => `
+                    <a href="${link}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-brand-600 hover:text-brand-700 text-sm font-medium hover:underline">
+                        <i class="fa-solid fa-arrow-up-right-from-square text-xs mr-2"></i> ${link}
+                    </a>
+                `).join('');
+
+                card.innerHTML = `
+                    <h4 class="font-bold text-slate-800 text-base mb-2">${key.replace(/_/g, ' ')}</h4>
+                    <div class="flex flex-col space-y-2">
+                        ${linksHTML || '<span class="text-xs text-slate-400">Không có liên kết</span>'}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // JSON Modal Handlers
+        function initModalHandlers() {
+            const modal = document.getElementById('jsonModal');
+            const openBtn = document.getElementById('btnOpenJsonModal');
+            const closeBtn = document.getElementById('btnCloseJsonModal');
+            const saveBtn = document.getElementById('btnSaveJson');
+            const resetBtn = document.getElementById('btnResetDefault');
+            const textArea = document.getElementById('jsonInputArea');
+            const errorDiv = document.getElementById('jsonError');
+
+            openBtn.addEventListener('click', () => {
+                textArea.value = JSON.stringify(appData, null, 4);
+                errorDiv.classList.add('hidden');
+                modal.classList.remove('hidden');
+            });
+
+            closeBtn.addEventListener('click', () => {
+                modal.classList.add('hidden');
+            });
+
+            resetBtn.addEventListener('click', () => {
+                appData = JSON.parse(JSON.stringify(defaultData));
+                textArea.value = JSON.stringify(appData, null, 4);
+                errorDiv.classList.add('hidden');
+            });
+
+            saveBtn.addEventListener('click', () => {
+                try {
+                    const parsed = JSON.parse(textArea.value);
+                    appData = parsed;
+                    renderApp();
+                    modal.classList.add('hidden');
+                } catch (err) {
+                    errorDiv.textContent = `Lỗi định dạng JSON: ${err.message}`;
+                    errorDiv.classList.remove('hidden');
+                }
+            });
+        }
+
+        // Export Data to CSV
+        function exportToCSV() {
+            const people = appData.people || [];
+            if (people.length === 0) return;
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "STT,Ho va Ten,Ngay Sinh,Time Param,Tuoi (Ref Date)\n";
+
+            const refDate = appData.ref_date || '2026-10-25';
+            people.forEach((p, idx) => {
+                const age = calculateAge(p.dob, refDate).years;
+                csvContent += `${idx + 1},"${p.name}",${p.dob},${p.time},${age}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "bao_cao_nhan_su.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>

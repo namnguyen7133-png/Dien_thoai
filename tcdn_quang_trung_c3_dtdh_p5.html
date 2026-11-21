@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>IRR Thuc Chien – Tai Chinh Doanh Nghiep</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{font-family:Arial;background:#f4f6f8;margin:0;line-height:1.6}
+header{background:#0d47a1;color:#fff;padding:20px;text-align:center}
+section{background:#fff;margin:15px;padding:20px;border-radius:8px}
+h2{color:#0d47a1}
+.term{background:#e3f2fd;padding:10px;border-left:5px solid #1976d2;margin-bottom:10px}
+.example{background:#f1f8ff;padding:10px;border-left:5px solid #42a5f5}
+.warning{background:#fff3e0;padding:10px;border-left:5px solid #fb8c00}
+input{padding:6px;margin:4px;width:120px}
+button{padding:8px 14px;margin:5px;border:none;background:#1976d2;color:#fff;border-radius:5px;cursor:pointer}
+button:hover{background:#0d47a1}
+.result{margin-top:10px;font-weight:bold;white-space:pre-line}
+nav{
+position:fixed;right:10px;top:80px;background:#fff;
+padding:10px;border-radius:8px;box-shadow:0 0 8px rgba(0,0,0,.2)
+}
+nav button{display:block;width:100%}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>📊 IRR – TY SUAT DOANH LOI NOI BO</h1>
+<p>Hieu ban chat – Tranh bay % – Ra quyet dinh dung</p>
+</header>
+
+<nav>
+<button onclick="go('thuatngu')">Thuat ngu</button>
+<button onclick="go('dunggi')">Dung khi nao?</button>
+<button onclick="go('thoidiem')">Thoi diem</button>
+<button onclick="go('tinhtoan')">Tinh IRR</button>
+<button onclick="go('tinhhuong')">Tinh huong</button>
+</nav>
+
+<!-- 2.1 -->
+<section id="thuatngu">
+<h2>2.1 Thuat ngu IRR – giai thich de hieu</h2>
+
+<div class="term">
+<b>IRR (Internal Rate of Return):</b><br>
+La muc lai suat lam cho <b>NPV = 0</b>.<br>
+→ Hieu don gian: <b>du an tu sinh loi bao nhieu %/nam</b>.
+</div>
+
+<div class="term">
+<b>Chi phi su dung von (r):</b><br>
+Lai vay ngan hang / ty suat sinh loi ky vong.
+</div>
+
+<div class="term">
+<b>Nguyen tac cot loi:</b><br>
+IRR &gt; r → Du an dang lam<br>
+IRR &lt; r → Du an lam ban ngheo di
+</div>
+
+<div class="example">
+📌 IRR KHONG cho ban biet loi bao nhieu tien –<br>
+📌 IRR chi cho biet <b>ty le % sinh loi</b>
+</div>
+</section>
+
+<!-- 2.2 -->
+<section id="dunggi">
+<h2>2.2 Ca nhan & Doanh nghiep – dung IRR khi nao?</h2>
+
+<div class="example">
+<b>CA NHAN:</b><br>
+✔ So sanh cac kenh dau tu (%/nam)<br>
+✔ Goi bao hiem – chung chi quy – sua nha cho thue
+</div>
+
+<div class="example">
+<b>DOANH NGHIEP:</b><br>
+✔ So sanh du an <b>cung quy mo von</b><br>
+✔ Chi dung IRR kem NPV
+</div>
+
+<div class="warning">
+⛔ Khong dung IRR mot minh khi:<br>
+– Quy mo von khac nhau<br>
+– Dong tien doi dau nhieu lan
+</div>
+</section>
+
+<!-- 3.2 -->
+<section id="thoidiem">
+<h2>3.2 Lam gi truoc – sau? Khi nao IRR moi co y nghia?</h2>
+
+<div class="term">
+<b>Buoc 1:</b> Kiem tra dong tien co hop ly khong
+</div>
+
+<div class="term">
+<b>Buoc 2:</b> Tinh NPV truoc – xem co duong khong
+</div>
+
+<div class="term">
+<b>Buoc 3:</b> So IRR voi chi phi von
+</div>
+
+<div class="warning">
+⛔ IRR cao nhung NPV thap → <b>bay %</b><br>
+⛔ IRR cao nhung von nho → khong lam giau duoc
+</div>
+</section>
+
+<!-- TINH IRR -->
+<section id="tinhtoan">
+<h2>3.2 Bai toan IRR – nhap so de hieu ban chat</h2>
+
+Von dau tu ban dau: <input id="cf0" type="number"><br>
+Dong tien moi nam: <input id="cf" type="number"><br>
+So nam: <input id="n" type="number"><br>
+Chi phi von (%): <input id="r" type="number"><br>
+
+<button onclick="tinhIRR()">Uoc tinh IRR</button>
+
+<div id="kq" class="result"></div>
+</section>
+
+<!-- 4.2 -->
+<section id="tinhhuong">
+<h2>4.2 Nhap tinh huong & chon cach xu ly</h2>
+
+<input id="caseInput" placeholder="VD: mua may, mo xuong, dau tu quy"><br>
+
+<button onclick="xuLy('ca_nhan')">Ca nhan</button>
+<button onclick="xuLy('doanh_nghiep')">Doanh nghiep</button>
+<button onclick="xuLy('bay')">Canh bao bay IRR</button>
+
+<div id="caseResult" class="result"></div>
+</section>
+
+<script>
+function go(id){
+document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+
+function tinhIRR(){
+let cf0 = Number(document.getElementById("cf0").value);
+let cf = Number(document.getElementById("cf").value);
+let n = Number(document.getElementById("n").value);
+let cost = Number(document.getElementById("r").value);
+
+let irr = (cf*n - cf0)/cf0*100/n;
+
+document.getElementById("kq").innerText =
+"IRR uoc tinh ≈ " + irr.toFixed(2) + "%\n" +
+(irr>cost ? "✔ IRR > chi phi von → CO THE LAM"
+          : "⛔ IRR < chi phi von → KHONG NEN");
+}
+
+function xuLy(type){
+let t = document.getElementById("caseInput").value;
+let msg="";
+if(type==="ca_nhan"){
+msg="✔ Ca nhan: dung IRR de so %/nam, nhung phai du tien song.";
+}
+if(type==="doanh_nghiep"){
+msg="✔ DN: IRR chi dung khi von tuong duong + phai xem NPV.";
+}
+if(type==="bay"){
+msg="⛔ IRR cao khong co nghia la giau – hay coi NPV.";
+}
+document.getElementById("caseResult").innerText =
+"Tinh huong: "+t+"\n"+msg;
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

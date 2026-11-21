@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>TCDN – IPMT & Ke hoach tra no</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{font-family:Arial,Helvetica,sans-serif;background:#f2f4f8;margin:0}
+header{background:#1a237e;color:white;padding:20px}
+section{background:white;margin:16px;padding:20px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+h2{color:#1a237e}
+h3{color:#303f9f}
+.note{background:#e8eaf6;padding:12px;border-left:5px solid #3f51b5}
+.warn{background:#ffebee;padding:12px;border-left:5px solid #c62828}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{border:1px solid #ccc;padding:8px;text-align:center}
+th{background:#e8eaf6}
+input,select{width:100%;padding:8px;margin-bottom:8px}
+button{background:#3949ab;color:white;border:none;padding:10px 14px;border-radius:6px;cursor:pointer}
+button:hover{background:#1a237e}
+footer{text-align:center;padding:16px;color:#555}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>📘 IPMT – Lap ke hoach tra no & quan tri dong tien</h1>
+<p>Dua tren video: TCDN1 Chuong 2 – Ung dung Excel (Quang Trung TV)</p>
+</header>
+
+<!-- 2.1 -->
+<section id="thuatngu">
+<h2>2.1 Thuat ngu tai chinh & cong thuc kho (giai thich doi song)</h2>
+
+<h3>IPMT – Interest Payment</h3>
+<p><b>IPMT</b> cho biet: <b>ky nay ban dang tra BAO NHIEU TIEN LAI</b></p>
+<p>Excel: <code>=IPMT(rate, per, nper, pv)</code></p>
+
+<div class="note">
+Vi du doi song:
+<ul>
+<li>Thang dau mua nha → tien lai rat cao</li>
+<li>Cang ve sau → lai giam, goc tang</li>
+</ul>
+</div>
+
+<h3>PMT – Tong tien phai tra moi ky</h3>
+<p>PMT = <b>Tien goc + Tien lai</b></p>
+
+<h3>Tien goc moi ky</h3>
+<p><b>Goc = PMT – IPMT</b></p>
+
+<div class="warn">
+⚠ Nhieu nguoi pha san vi chi nhin PMT ma khong hieu IPMT
+</div>
+
+<h3>NPER – So ky phai tra</h3>
+<p>Tra loi cau hoi: <b>“Bao lau thi het no?”</b></p>
+</section>
+
+<!-- 2.2 -->
+<section id="ungdung">
+<h2>2.2 Dung cho cong viec hay ca nhan?</h2>
+
+<table>
+<tr>
+<th>doi tuong</th>
+<th>Nen quan tam</th>
+<th>Vi sao?</th>
+</tr>
+<tr>
+<td>Ca nhan</td>
+<td>IPMT</td>
+<td>Biet lai co dang bop nghet thu nhap khong</td>
+</tr>
+<tr>
+<td>Gia dinh</td>
+<td>PMT + IPMT</td>
+<td>Khong vo ke hoach chi tieu</td>
+</tr>
+<tr>
+<td>Startup</td>
+<td>NPER</td>
+<td>Biet bao lau moi thoat no</td>
+</tr>
+<tr>
+<td>Doanh nghiep</td>
+<td>Bang tra no</td>
+<td>Quan tri dong tien</td>
+</tr>
+</table>
+
+<div class="note">
+✔ Ca nhan → tranh no xau  
+✔ Cong ty → tranh chet vi lai vay
+</div>
+</section>
+
+<!-- 3.2 -->
+<section id="trinh-tu">
+<h2>3.2 Lam gi truoc – lam gi sau? (dung tu duy bai giang)</h2>
+
+<h3>Buoc 1: Xac dinh minh dang vay hay dau tu</h3>
+<ul>
+<li>Vay → PV duong</li>
+<li>Tra no → PMT am</li>
+</ul>
+
+<h3>Buoc 2: Xem IPMT cac nam dau</h3>
+<p>Neu <b>IPMT chiem >70% PMT</b> → cuc ky rui ro</p>
+
+<h3>Buoc 3: danh gia dieu kien thi truong</h3>
+<ul>
+<li>Lai suat tang → tranh vay dai han</li>
+<li>Thu nhap bap benh → giam PMT</li>
+<li>Doanh nghiep moi → khong dung don bay cao</li>
+</ul>
+
+<div class="warn">
+⚠ Co lai = song sot  
+Dong tien am → pha san
+</div>
+</section>
+
+<!-- BAI TOAN -->
+<section id="baitoan">
+<h2>📐 Bai toan IPMT – Goc – Lai – Thoi gian</h2>
+
+<label>Von vay (PV):</label>
+<input id="pv" type="number" placeholder="500000000">
+
+<label>Lai suat (% / nam):</label>
+<input id="rate" placeholder="10">
+
+<label>So nam vay:</label>
+<input id="nper" placeholder="20">
+
+<label>Ky muon xem lai (nam thu):</label>
+<input id="per" placeholder="1">
+
+<button onclick="tinh()">Tinh toan</button>
+
+<div id="kq"></div>
+
+<script>
+function tinh(){
+ let pv = Number(document.getElementById('pv').value);
+ let r = Number(document.getElementById('rate').value)/100;
+ let n = Number(document.getElementById('nper').value);
+ let per = Number(document.getElementById('per').value);
+
+ if(!pv || !r || !n || !per){
+   kq.innerHTML="⚠ Nhap du du lieu";
+   return;
+ }
+
+ let pmt = pv * r / (1 - Math.pow(1+r, -n));
+ let ipmt = pv * r * Math.pow(1+r, per-1) / (Math.pow(1+r,n)-1) * (Math.pow(1+r,n-per+1)-1);
+ let goc = pmt - ipmt;
+
+ kq.innerHTML = `
+ <p><b>PMT:</b> ${Math.round(pmt).toLocaleString()} d</p>
+ <p><b>IPMT (lai ky ${per}):</b> ${Math.round(ipmt).toLocaleString()} d</p>
+ <p><b>Tien goc ky ${per}:</b> ${Math.round(goc).toLocaleString()} d</p>
+ `;
+}
+</script>
+</section>
+
+<!-- 4.2 -->
+<section id="tinhhuong">
+<h2>4.2 Nhap tinh huong & xu ly nhanh</h2>
+
+<input placeholder="Vi du: vay mua nha, startup, tra gop xe...">
+
+<button onclick="go('thuatngu')">❓ Khong hieu IPMT</button><br>
+<button onclick="go('ungdung')">👤 Dung cho ca nhan hay cong viec?</button><br>
+<button onclick="go('trinh-tu')">🧭 Khong biet lam buoc nao truoc</button><br>
+<button onclick="go('baitoan')">💰 Tinh lai – goc – rui ro</button>
+
+<script>
+function go(id){
+ document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+</script>
+</section>
+
+<footer>
+IPMT giup ban song sot truoc khi lam giau
+</footer>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

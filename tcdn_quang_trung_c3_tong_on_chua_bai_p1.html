@@ -1,0 +1,174 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>TCDN 1 – ARR / TSV – Hoc & Ap dung</title>
+
+<style>
+body{font-family:Arial;background:#f4f6f8;padding:20px;line-height:1.6}
+h2,h3{color:#003366}
+section{background:#fff;padding:15px;margin-bottom:20px;border-left:6px solid #003366}
+button{padding:6px 12px;margin:5px;cursor:pointer}
+.term{color:#0066cc;cursor:pointer}
+.box{background:#eef;padding:10px;margin:10px 0}
+.highlight{background:#fff3cd;padding:10px;border-left:5px solid #ff9800}
+input,select{padding:6px;width:100%;margin:5px 0}
+</style>
+</head>
+
+<body>
+
+<h2>📘 TAI CHINH DOANH NGHIEP 1 – CHUONG 3 (TSV / ARR)</h2>
+
+<!-- ===== MUC LUC ===== -->
+<section>
+<h3>📌 Muc luc</h3>
+<button onclick="go('term')">1. Thuat ngu</button>
+<button onclick="go('formula')">2. Cong thuc</button>
+<button onclick="go('timeline')">3. Trinh tu quyet dinh</button>
+<button onclick="go('apply')">4. Ap dung thuc te</button>
+<button onclick="go('case')">5. Nhap tinh huong</button>
+</section>
+
+<!-- ===== THUAT NGU ===== -->
+<section id="term">
+<h3>1⃣ Thuat ngu tai chinh (Click de hieu)</h3>
+
+<p><span class="term" onclick="explain('LN')">Loi nhuan sau thue</span> (LN)</p>
+<p><span class="term" onclick="explain('V')">Von dau tu</span> (V)</p>
+<p><span class="term" onclick="explain('KH')">Khau hao</span></p>
+<p><span class="term" onclick="explain('TSV')">Ty suat loi nhuan binh quan (TSV/ARR)</span></p>
+
+<div id="explainBox" class="box"></div>
+</section>
+
+<!-- ===== CONG THUC ===== -->
+<section id="formula">
+<h3>2⃣ Cong thuc kho & cach dung</h3>
+
+<div class="box">
+<b>Cong thuc TSV / ARR:</b><br>
+TSV = (Loi nhuan sau thue binh quan nam) / (Von dau tu binh quan)
+</div>
+
+<div class="highlight">
+<b>Vi du doi song:</b><br>
+Ban bo 30 trieu hoc ky nang → moi nam luong tang 10 trieu → TSV ≈ 33%/nam
+</div>
+</section>
+
+<!-- ===== TRINH TU ===== -->
+<section id="timeline">
+<h3>3⃣ Trinh tu lam viec – Lam gi truoc, sau?</h3>
+
+<ol>
+<li>Xac dinh <b>von bo ra</b> (tien, thoi gian, cong suc)</li>
+<li>Xac dinh <b>dong loi ich hang nam</b></li>
+<li>Tinh <b>khau hao</b> neu la tai san</li>
+<li>Tinh <b>TSV</b></li>
+<li>So sanh voi:
+  <ul>
+    <li>Lai ngan hang</li>
+    <li>Rui ro thi truong</li>
+    <li>Phuong an khac</li>
+  </ul>
+</li>
+</ol>
+
+<div class="highlight">
+<b>Chi thuc hien neu:</b><br>
+TSV &gt; lai ngan hang + bu rui ro
+</div>
+</section>
+
+<!-- ===== AP DUNG ===== -->
+<section id="apply">
+<h3>4⃣ Dung cho ca nhan hay cong viec?</h3>
+
+<table border="1" cellpadding="8">
+<tr><th>doi tuong</th><th>Dung TSV khi</th></tr>
+<tr><td>Ca nhan</td><td>Hoc nghe, mua xe, doi viec</td></tr>
+<tr><td>Gia dinh</td><td>Mua nha cho thue</td></tr>
+<tr><td>Cong ty</td><td>So sanh may moc A – B</td></tr>
+<tr><td>Quoc gia</td><td>dau tu ha tang</td></tr>
+</table>
+</section>
+
+<!-- ===== NHAP TINH HUONG ===== -->
+<section id="case">
+<h3>5⃣ Nhap tinh huong cua ban</h3>
+
+<label>Von dau tu (trieu):</label>
+<input id="von" type="number">
+
+<label>Loi nhuan sau thue moi nam (trieu):</label>
+<input id="ln" type="number">
+
+<label>So nam:</label>
+<input id="nam" type="number">
+
+<button onclick="solve()">📊 Giai quyet</button>
+
+<div id="result" class="box"></div>
+</section>
+
+<script>
+function go(id){
+ document.getElementById(id).scrollIntoView({behavior:"smooth"});
+}
+
+function explain(t){
+ const e={
+  LN:"Tien ban thuc su giu lai sau khi tru thue.",
+  V:"Toan bo tien + nguon luc bo vao du an.",
+  KH:"Phan bo gia tri tai san theo thoi gian.",
+  TSV:"do hieu qua sinh loi trung binh cua du an."
+ };
+ document.getElementById("explainBox").innerHTML="<b>"+t+"</b>: "+e[t];
+}
+
+function solve(){
+ const v=+von.value;
+ const ln=+document.getElementById("ln").value;
+ const n=+nam.value;
+ const tsv=(ln/v*100).toFixed(2);
+
+ let kq=`TSV ≈ ${tsv}%/nam<br>`;
+ if(tsv>12) kq+="👉 NEN lam (cao hon gui ngan hang)";
+ else kq+="⚠ KHONG nen lam (hieu qua thap)";
+
+ document.getElementById("result").innerHTML=kq;
+ go("result");
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

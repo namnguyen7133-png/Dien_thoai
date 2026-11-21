@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Hệ Thống Tra Cứu Ngũ Hành Luân Chuyển</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1a1a1a; color: #eee; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: #252525; border-radius: 15px; padding: 25px; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        h2 { text-align: center; color: #4caf50; }
+        
+        .search-section { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; background: #333; padding: 20px; border-radius: 10px; }
+        input { padding: 12px; border-radius: 5px; border: 1px solid #555; background: #111; color: #fff; width: 250px; }
+        button { padding: 12px 20px; border: none; border-radius: 5px; background: #4caf50; color: white; cursor: pointer; font-weight: bold; }
+        
+        .result-grid { display: none; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { background: #333; padding: 15px; border-radius: 10px; border-left: 5px solid #888; }
+        .full-width { grid-column: 1 / -1; }
+        
+        .highlight { color: #ffeb3b; font-weight: bold; }
+        .tag { padding: 3px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; margin-right: 5px; }
+        .tag-sinh { background: #2e7d32; color: white; }
+        .tag-khac { background: #c62828; color: white; }
+        
+        .info-label { color: #aaa; font-size: 0.9em; display: block; margin-bottom: 5px; }
+        .title-hanh { font-size: 1.5em; font-weight: bold; text-transform: uppercase; margin-bottom: 15px; display: block; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🚢 TRA CỨU NGŨ HÀNH LUẬN</h2>
+    
+    <div class="search-section">
+        <input type="text" id="userInput" placeholder="Nhập số (1-5) hoặc tên Hành...">
+        <button onclick="searchHanh()">TRA CỨU</button>
+    </div>
+
+    <div id="result" class="result-grid">
+        <div class="card full-width">
+            <span id="res-name" class="title-hanh"></span>
+            <div id="res-general"></div>
+        </div>
+
+        <div class="card">
+            <span class="info-label">🌀 TƯƠNG SINH (Nuôi dưỡng)</span>
+            <div id="res-sinh"></div>
+        </div>
+
+        <div class="card">
+            <span class="info-label">🚫 TƯƠNG KHẮC (Chế ngự)</span>
+            <div id="res-khac"></div>
+        </div>
+
+        <div class="card full-width">
+            <span class="info-label">🍽️ DANH SÁCH THỰC PHẨM & GIA VỊ TRỊ LIỆU</span>
+            <div id="res-food"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+const dataHanh = {
+    "1": { 
+        ten: "Thủy", màu: "#2196f3", so_sinh: "2", so_khac: "3, 4",
+        thoigian: "Đêm", bophan: "Tay phải, Tủy", tinh: "Lạnh, ẩm",
+        food: "Cá, mực, Phở, Cháo, Bún mắm tôm, Canh dưỡng sinh, Muối (mặn)",
+        logic: "Đêm lạnh (Thủy) dùng vị Chua (Mộc - số 2) để ấm người, tránh đồ Hỏa (số 3) trực tiếp nếu đang sốt."
+    },
+    "2": { 
+        ten: "Mộc", màu: "#4caf50", so_sinh: "3", so_khac: "5, 1",
+        thoigian: "Sáng", bophan: "Đầu tóc, Trĩ, Lông", tinh: "Ấm, nồm",
+        food: "Rau xanh, Dấm, Chanh (chua), Mộc nhĩ, Nấm hương, Táo, Bún chả",
+        logic: "Sáng (Mộc) nuôi dưỡng đầu tóc và vùng hạ bộ (trĩ). Dùng vị ngọt (Thổ - số 5) để bình ổn."
+    },
+    "3": { 
+        ten: "Hỏa", màu: "#f44336", so_sinh: "5", so_khac: "1, 4",
+        thoigian: "Trưa", bophan: "Tim, Gan, Bầu dục, Tay trái", tinh: "Nắng nóng",
+        food: "Thịt bò, Ớt, Ngải cứu, Mướp đắng, Gừng sắc trà, Rượu, Đồ nướng",
+        logic: "Trưa nóng (Hỏa) dùng vị mặn (Thủy - số 1) để hạ hỏa, dùng vị ngọt (Thổ - số 5) để sinh sức."
+    },
+    "4": { 
+        ten: "Kim", màu: "#ffd700", so_sinh: "1", so_khac: "2, 3",
+        thoigian: "Tối", bophan: "Xương, Chân phải, Da mát", tinh: "Khô ráo, mát",
+        food: "Gà, trứng, Sữa ông thọ, Củ cải, Bánh cuốn, Miến, Vị cay",
+        logic: "Tối (Kim) phổi dễ khó thở. Dùng vị chua (Mộc - số 2) để tạo nhiệt ấm cơ thể."
+    },
+    "5": { 
+        ten: "Thổ", màu: "#795548", so_sinh: "4", so_khac: "1, 2",
+        thoigian: "Chiều", bophan: "Thịt, Chân trái, Da vừa", tinh: "Ôn hòa",
+        food: "Khoai tây, Khoai lang, Bánh kẹo, Trái ngọt, Sữa chua, Đường (ngọt)",
+        logic: "Chiều (Thổ) là lúc cơ thể cân bằng. Dùng vị cay (Kim - số 4) để thông phổi cho buổi tối."
+    }
+};
+
+function searchHanh() {
+    let input = document.getElementById('userInput').value.trim();
+    let res = document.getElementById('result');
+    let item = dataHanh[input];
+
+    // Tìm theo tên nếu không nhập số
+    if (!item) {
+        for (let k in dataHanh) {
+            if (dataHanh[k].ten.toLowerCase() === input.toLowerCase()) {
+                item = dataHanh[k];
+                break;
+            }
+        }
+    }
+
+    if (item) {
+        res.style.display = 'grid';
+        document.getElementById('res-name').innerText = "HÀNH " + item.ten;
+        document.getElementById('res-name').style.color = item.màu;
+        document.querySelector('.card.full-width').style.borderLeftColor = item.màu;
+
+        document.getElementById('res-general').innerHTML = `
+            <p><b>Thời gian:</b> ${item.thoigian} | <b>Bộ phận:</b> ${item.bophan}</p>
+            <p><b>Trạng thái:</b> ${item.tinh}</p>
+        `;
+
+        document.getElementById('res-sinh').innerHTML = `
+            <span class="tag tag-sinh">Sinh ra số: ${item.so_sinh}</span>
+            <p>Dùng để nuôi dưỡng, chuyển hóa năng lượng lâu dài.</p>
+        `;
+
+        document.getElementById('res-khac').innerHTML = `
+            <span class="tag tag-khac">Bị khắc/Khắc bởi số: ${item.so_khac}</span>
+            <p>Các yếu tố đối xung, dùng để chế ngự trạng thái cực đoan.</p>
+        `;
+
+        document.getElementById('res-food').innerHTML = `
+            <p class="highlight">${item.food}</p>
+            <p style="font-size: 0.85em; color: #ccc;">💡 <b>Mẹo:</b> ${item.logic}</p>
+        `;
+    } else {
+        alert("Vui lòng nhập số từ 1 đến 5!");
+    }
+}
+</script>
+
+</body>
+</html>

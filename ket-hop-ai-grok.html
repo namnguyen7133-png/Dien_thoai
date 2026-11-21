@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quy Trinh Ket Hop 4 AI + Cong Cu Minh Hoa</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+        .flowchart { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .step { margin: 10px 0; padding: 10px; border: 1px solid #ccc; border-radius: 5px; background: #e9f7ff; }
+        .arrow { text-align: center; font-size: 24px; color: #007bff; }
+        .extra { margin-top: 20px; background: #fff3e6; }
+    </style>
+</head>
+<body>
+    <div class="flowchart">
+        <h1>Quy Trinh Ket Hop 4 AI</h1>
+        <div class="step">
+            <h2>Buoc 1: Gemini - Khoi dau</h2>
+            <p>Tim kiem y tuong, thu thap du lieu ban dau (e.g., nghien cuu thi truong an uong, dau tu).</p>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="step">
+            <h2>Buoc 2: ChatGPT - Hoan Thien</h2>
+            <p>Viet noi dung chi tiet, chinh sua (e.g., soan ke hoach tiet kiem, giai thich rui ro).</p>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="step">
+            <h2>Buoc 3: Grok - Tiep Tuc</h2>
+            <p>Phan tich sau, kiem tra thuc te tu X (e.g., ap dung Cashflow Quadrant, tranh rui ro).</p>
+        </div>
+        <div class="arrow">↓</div>
+        <div class="step">
+            <h2>Buoc 4: Deepseek - Ket Thuc</h2>
+            <p>Tinh toan, viet code (e.g., thuat toan dinh gia, len lich lam viec).</p>
+        </div>
+        <div class="extra">
+            <h2>Them Cong Cu Minh Hoa</h2>
+            <ul>
+                <li>DALL-E: Tao hinh anh (e.g., bieu do dong tien).</li>
+                <li>Leonardo: Thiet ke infographic (e.g., ma tran tien bac).</li>
+                <li>Kling: Tao video (e.g., huong dan tung buoc dau tu).</li>
+            </ul>
+            <p>Su dung sau buoc 4 de visualize ket qua.</p>
+        </div>
+    </div>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

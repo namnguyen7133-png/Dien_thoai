@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý & Tìm Kiếm Video Reels / Shorts</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f6f9; color: #333; }
+        h1 { color: #2c3e50; text-align: center; }
+        .control-panel { background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+        .control-panel input, .control-panel select, .control-panel button { padding: 8px 12px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; }
+        .control-panel button { background: #2c3e50; color: white; cursor: pointer; font-weight: bold; border: none; }
+        .control-panel button:hover { background: #34495e; }
+        
+        /* Khu vực hiển thị lưới video động theo số cột */
+        #video-grid {
+            display: grid;
+            grid-template-columns: repeat(var(--num-cols, 3), 1fr);
+            gap: 15px;
+        }
+        .video-card { background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: space-between; }
+        .video-title { font-weight: bold; margin-bottom: 8px; font-size: 15px; color: #2980b9; }
+        .video-duration { display: inline-block; background: #e74c3c; color: white; padding: 2px 6px; font-size: 11px; border-radius: 3px; margin-bottom: 8px; font-weight: bold; }
+        .video-link { font-size: 12px; color: #7f8c8d; word-break: break-all; margin-bottom: 10px; }
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-group button { padding: 6px 10px; font-size: 12px; border: none; border-radius: 4px; cursor: pointer; color: white; }
+        .btn-copy { background: #f39c12; }
+        .btn-sheet { background: #27ae60; }
+        .btn-open { background: #2980b9; }
+    </style>
+</head>
+<body>
+
+    <h1>🎬 QUẢN LÝ & TÌM KIẾM VIDEO REELS / SHORTS</h1>
+
+    <!-- Thanh công cụ điều khiển -->
+    <div class="control-panel">
+        <div>
+            <label><b>Chủ đề:</b></label>
+            <input type="text" id="topicInput" placeholder="Nhập chủ đề (VD: nấu ăn, công nghệ)..." style="width: 200px;">
+        </div>
+        <div>
+            <label><b>Thời lượng:</b></label>
+            <select id="durationSelect">
+                <option value="all">Tất cả thời lượng</option>
+                <option value="short">Dưới 1 phút (Shorts/Reels)</option>
+                <option value="medium">Từ 1 - 3 phút</option>
+                <option value="long">Trên 3 phút</option>
+            </select>
+        </div>
+        <div>
+            <label><b>Số cột hiển thị:</b></label>
+            <select id="colSelect" onchange="changeColumns()">
+                <option value="1">1 Cột</option>
+                <option value="2">2 Cột</option>
+                <option value="3" selected>3 Cột</option>
+                <option value="4">4 Cột</option>
+            </select>
+        </div>
+        <button onclick="taiDanhSachVideo()">🔍 Tìm Kiếm & Tải Video</button>
+    </div>
+
+    <!-- Lưới hiển thị danh sách video -->
+    <div id="video-grid" style="--num-cols: 3;">
+        <!-- Dữ liệu mẫu minh họa -->
+        <div class="video-card" data-duration="short">
+            <div>
+                <div class="video-title">Top 3 mẹo vặt hay ho mỗi ngày</div>
+                <span class="video-duration">00:45 (Shorts)</span>
+                <div class="video-link">https://www.youtube.com/shorts/example1</div>
+            </div>
+            <div class="btn-group">
+                <button class="btn-copy" onclick="saoChepLink('https://www.youtube.com/shorts/example1', this)">Sao chép</button>
+                <button class="btn-sheet" onclick="luuGoogleSheet('Top 3 mẹo vặt hay ho mỗi ngày', 'https://www.youtube.com/shorts/example1')">Lưu Sheet</button>
+                <button class="btn-open" onclick="moLink('https://www.youtube.com/shorts/example1')">Mở</button>
+            </div>
+        </div>
+        
+        <div class="video-card" data-duration="medium">
+            <div>
+                <div class="video-title">Hướng dẫn code Python cơ bản</div>
+                <span class="video-duration" style="background: #e67e22;">02:15 (Video vừa)</span>
+                <div class="video-link">https://www.youtube.com/watch?v=example2</div>
+            </div>
+            <div class="btn-group">
+                <button class="btn-copy" onclick="saoChepLink('https://www.youtube.com/watch?v=example2', this)">Sao chép</button>
+                <button class="btn-sheet" onclick="luuGoogleSheet('Hướng dẫn code Python cơ bản', 'https://www.youtube.com/watch?v=example2')">Lưu Sheet</button>
+                <button class="btn-open" onclick="moLink('https://www.youtube.com/watch?v=example2')">Mở</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Thay đổi số cột hiển thị linh hoạt
+        function changeColumns() {
+            let cols = document.getElementById('colSelect').value;
+            document.getElementById('video-grid').style.setProperty('--num-cols', cols);
+        }
+
+        // Sao chép link vào clipboard
+        function saoChepLink(link, btn) {
+            navigator.clipboard.writeText(link).then(() => {
+                let oldText = btn.innerText;
+                btn.innerText = "Đã chép!";
+                btn.style.background = "#e67e22";
+                setTimeout(() => {
+                    btn.innerText = oldText;
+                    btn.style.background = "#f39c12";
+                }, 1500);
+            });
+        }
+
+        // Mở liên kết video trực tiếp
+        function moLink(link) {
+            window.open(link, '_blank');
+        }
+
+        // Lưu vào Google Sheet thông qua Web App URL (Google Apps Script)
+        function luuGoogleSheet(title, link) {
+            const scriptURL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_URL_HERE";
+            
+            if (scriptURL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_URL_HERE") {
+                alert("Vui lòng cấu hình Google Apps Script Web URL trong mã nguồn để lưu vào Google Sheet!");
+                return;
+            }
+
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title: title, link: link })
+            }).then(() => {
+                alert("Đã gửi dữ liệu lưu vào Google Sheet thành công!");
+            }).catch(error => {
+                alert("Lỗi khi lưu: " + error);
+            });
+        }
+
+        // Hàm tìm kiếm và lọc theo chủ đề & thời lượng
+        function taiDanhSachVideo() {
+            let topic = document.getElementById('topicInput').value;
+            let duration = document.getElementById('durationSelect').value;
+            
+            if(!topic) {
+                alert("Vui lòng nhập chủ đề cần tìm!");
+                return;
+            }
+            alert(`Đang quét video theo chủ đề: "${topic}" với bộ lọc thời lượng: [${duration}]`);
+            // Tại đây bạn có thể kết hợp gọi API Backend Python để đổ dữ liệu trả về giao diện thực tế
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Điều hành dây chuyền nước gia đình - V2</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f3f6f8;color:#182026;line-height:1.45}header{background:#263238;color:#fff;padding:24px}header h1{margin:0 0 8px;font-size:28px}header p{margin:0;opacity:.92}.wrap{max-width:1600px;margin:auto;padding:18px}.card{background:#fff;border-radius:12px;padding:18px;margin-bottom:18px;box-shadow:0 2px 10px rgba(0,0,0,.08)}h2{margin:0 0 12px;color:#263238}h3{margin:16px 0 8px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.field label{display:block;font-weight:700;margin-bottom:5px}.field input,.field select,.field textarea{width:100%;padding:9px;border:1px solid #b8c0c5;border-radius:7px;font-size:15px}.field textarea{min-height:90px}.scroll{overflow:auto}table{width:100%;border-collapse:collapse}th,td{border:1px solid #d8dde0;padding:8px;text-align:center;vertical-align:middle}th{background:#eceff1;position:sticky;top:0;z-index:1}td input,td select{width:100%;min-width:70px;padding:7px;border:1px solid #bcc4c8;border-radius:6px}.btn{border:0;border-radius:7px;padding:10px 14px;margin:4px;cursor:pointer;color:#fff;font-weight:700}.green{background:#2e7d32}.blue{background:#1565c0}.orange{background:#ef6c00}.red{background:#c62828}.gray{background:#455a64}.purple{background:#6a1b9a}.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.stat{padding:14px;border-radius:9px;background:#eceff1}.stat b{display:block;font-size:27px;margin-top:5px}.alert{padding:12px;border-radius:8px;margin:8px 0}.ok{background:#e8f5e9;border-left:5px solid #2e7d32}.warn{background:#fff8e1;border-left:5px solid #ef6c00}.danger{background:#ffebee;border-left:5px solid #c62828}.info{background:#e3f2fd;border-left:5px solid #1565c0}.tiny{font-size:13px;color:#647078}.big{font-size:20px;font-weight:800}.pill{display:inline-block;padding:4px 8px;border-radius:20px;background:#e0e0e0;font-size:12px;font-weight:700}.timeline{border-left:4px solid #455a64;margin:8px 0 8px 10px;padding-left:16px}.item{background:#f6f7f8;border-radius:8px;padding:11px;margin-bottom:10px}.item strong{color:#263238}.check{width:20px;height:20px}.mono{font-family:Consolas,monospace}.dangerText{color:#b71c1c;font-weight:800}.okText{color:#1b5e20;font-weight:800}.sectionNote{background:#f7fafb;border:1px dashed #b8c3c8;padding:10px;border-radius:8px}.footer{text-align:center;color:#68757c;padding:18px}@media(max-width:700px){header h1{font-size:22px}th,td{font-size:12px;padding:5px}}
+</style>
+</head>
+<body>
+<header>
+<h1>🔥 Điều hành dây chuyền đun – chứa – làm nguội – phân phối nước gia đình</h1>
+<p>Bản V2: không chỉ tính tổng lít; còn trả lời “mấy giờ làm gì, khi nào nhóm bếp, khi nào đun tiếp, khi nào đủ 4 giờ để chuyển, và còn thiếu bao nhiêu”.</p>
+</header>
+<div class="wrap">
+
+<div class="card">
+<h2>0. 🎯 Kết luận nhanh theo số liệu hiện tại</h2>
+<div class="alert info"><b>Nhu cầu cố định hiện tại = 13 L/ngày:</b> 04:00 = 3 L; 10:00 = 4 L; 16:00 = 4 L; buổi sáng phòng đun = 2 L.</div>
+<div class="alert ok"><b>Mẻ chuẩn = 15 L:</b> 1 viên than cháy mạnh cho khoảng 13–15 L ⇒ lấy mốc bảo thủ 15 L/mẻ, tức khoảng 1 viên/mẻ. Mẻ 15 L tạo ra khoảng 2 L dự phòng sau khi trừ 13 L nhu cầu cố định.</div>
+<div class="alert warn"><b>Điểm quan trọng:</b> không lấy “một phích cạn” làm tín hiệu nhóm bếp. Tín hiệu đúng là <b>tồn nước sôi dự kiến đến mốc kế tiếp</b>. Vì 04:00 sáng không được làm bếp lúc ngủ, nước cho 04:00 phải được sản xuất từ hôm trước.</div>
+<div class="alert danger"><b>An toàn:</b> lịch máy chỉ là lịch hỗ trợ. Bếp than phải đặt ở nơi thông thoáng, người lớn theo dõi; không để bếp than cháy khi ngủ, không để trẻ xử lý than/nước sôi.</div>
+</div>
+
+<div class="card">
+<h2>1. ⚙️ Thông số bếp than & logistics</h2>
+<div class="grid">
+<div class="field"><label>Nhóm than mất (giờ)</label><input id="igniteH" type="number" step="0.1" value="1"></div>
+<div class="field"><label>Mồi viên mới (phút)</label><input id="reloadM" type="number" value="20"></div>
+<div class="field"><label>Cháy mạnh tối đa (giờ)</label><input id="strongH" type="number" step="0.1" value="3"></div>
+<div class="field"><label>Âm ỉ tối đa (giờ)</label><input id="slowH" type="number" step="0.1" value="12"></div>
+<div class="field"><label>Nước/1 viên khi cháy mạnh (L)</label><input id="coalL" type="number" step="0.1" value="15"></div>
+<div class="field"><label>Mốc thận trọng thấp (L/viên)</label><input id="coalLowL" type="number" step="0.1" value="13"></div>
+<div class="field"><label>Thời gian 15L theo thực tế (giờ)</label><input id="batchH" type="number" step="0.1" value="3"></div>
+<div class="field"><label>Sức chứa 1 lượt xách (L)</label><input id="carryL" type="number" step="0.1" value="5"></div>
+<div class="field"><label>Thời gian 1 lượt xách (giờ)</label><input id="carryH" type="number" step="0.1" value="1"></div>
+<div class="field"><label>Thời gian làm nguội bắt buộc (giờ)</label><input id="coolH" type="number" step="0.1" value="4"></div>
+<div class="field"><label>Dự phòng an toàn trước mốc cần nước (phút)</label><input id="bufferM" type="number" value="20"></div>
+<div class="field"><label>Ngưỡng báo “cần sản xuất lại” (% nhu cầu ngày)</label><input id="reorderPct" type="number" value="100"></div>
+</div>
+<p class="tiny">Nếu sau khi đong đo thực tế thấy 1 viên chỉ được 14L, sửa “Nước/1 viên” thành 14. Nếu 15L chỉ mất 2,5 giờ, sửa “Thời gian 15L” thành 2,5. Máy sẽ tự tính lại.</p>
+</div>
+
+<div class="card">
+<h2>2. 🧰 Kho dụng cụ – sửa được số lượng, dung tích, vai trò, lượng hiện có</h2>
+<p class="tiny">Tích <b>Cạn toàn bộ</b> khi cả nhóm dụng cụ đang rỗng. Nếu chỉ một phần cạn, nhập <b>số món cạn</b>. Với Aquafina có thể nhập trực tiếp số chai cạn và lượng đang có. Có thể thêm/xóa dòng.</p>
+<div class="scroll"><table id="containerTable"><thead><tr><th>STT</th><th>Tên</th><th>Số lượng</th><th>Lít/món</th><th>Tổng L</th><th>Số món cạn</th><th>Lít hiện có</th><th>Cạn toàn bộ</th><th>Vai trò</th><th>Khu vực</th><th></th></tr></thead><tbody></tbody></table></div>
+<button class="btn green" onclick="addContainer()">➕ Thêm dụng cụ</button>
+<button class="btn blue" onclick="saveAll()">💾 Lưu</button><button class="btn orange" onclick="loadAll()">📂 Tải</button><button class="btn red" onclick="resetAll()">♻️ Mặc định</button>
+<div id="containerSummary"></div>
+</div>
+
+<div class="card">
+<h2>3. 🕐 Nhu cầu nước sôi theo giờ</h2>
+<p class="tiny">Đây là “đơn hàng” của gia đình. Máy dùng các mốc này để lùi ngược thời điểm phải chuẩn bị.</p>
+<div class="scroll"><table id="demandTable"><thead><tr><th>Giờ</th><th>Khu vực</th><th>Mục đích</th><th>Lít</th><th>Đã có sẵn?</th><th></th></tr></thead><tbody></tbody></table></div>
+<button class="btn green" onclick="addDemand()">➕ Thêm nhu cầu</button>
+</div>
+
+<div class="card">
+<h2>4. 🍳 Nấu ăn dùng than – tính riêng để không đếm than hai lần</h2>
+<p class="tiny">Có 2 cách nhập. Nếu đã đo được số viên than thực tế cho món, nhập trực tiếp “than”. Nếu chưa đo, nhập thời gian và hệ thống có thể quy đổi theo % thời gian cháy mạnh của 1 viên. Hệ thống có tùy chọn “dùng chung viên than đang đun nước” để tránh cộng đôi.</p>
+<div class="scroll"><table id="cookTable"><thead><tr><th>Món</th><th>Thời gian (giờ)</th><th>Than riêng (viên)</th><th>Dùng chung lửa nước?</th><th></th></tr></thead><tbody></tbody></table></div>
+<button class="btn green" onclick="addCook()">➕ Thêm món</button>
+</div>
+
+<div class="card">
+<h2>5. 💰 Chi phí than – củi – cồn – điện</h2>
+<div class="grid">
+<div class="field"><label>Giá than tổ ong/viên (đ)</label><input id="coalPrice" type="number" value="5000"></div>
+<div class="field"><label>Giá than củi/lần (đ)</label><input id="woodPrice" type="number" value="15000"></div>
+<div class="field"><label>Giá cồn khô/lần (đ)</label><input id="dryAlcohol" type="number" value="30000"></div>
+<div class="field"><label>Giá cồn chai/lần (đ)</label><input id="liquidAlcohol" type="number" value="20000"></div>
+<div class="field"><label>Điện tiêu thụ cho 1 mẻ 15L (kWh)</label><input id="electricKwh" type="number" step="0.01" value="0"></div>
+<div class="field"><label>Giá điện (đ/kWh)</label><input id="electricPrice" type="number" value="0"></div>
+<div class="field"><label>Số lần dùng cồn/ngày</label><input id="alcoholUses" type="number" step="0.1" value="1"></div>
+<div class="field"><label>Số lần dùng than củi/ngày</label><input id="woodUses" type="number" step="0.1" value="0"></div>
+</div>
+<div id="costResult"></div>
+</div>
+
+<div class="card">
+<h2>6. 📊 Bảng điều khiển – hệ thống đang khỏe hay thiếu?</h2>
+<div class="statgrid">
+<div class="stat">Dung tích tối đa<b id="sMax">0 L</b></div><div class="stat">Nước hiện có<b id="sCurrent">0 L</b></div><div class="stat">Nước cạn/thiếu kho<b id="sEmpty">0 L</b></div><div class="stat">Nhu cầu/ngày<b id="sDemand">0 L</b></div><div class="stat">Mẻ 15L cần/ngày<b id="sBatches">0</b></div><div class="stat">Than cho nước<b id="sCoalWater">0</b></div><div class="stat">Than nấu ăn riêng<b id="sCoalCook">0</b></div><div class="stat">Tổng than ước tính<b id="sCoalTotal">0</b></div><div class="stat">Lượt xách 5L<b id="sTrips">0</b></div><div class="stat">Giờ xách tối thiểu<b id="sCarryTime">0</b></div></div>
+<div id="dashboard"></div>
+</div>
+
+<div class="card">
+<h2>7. 🧮 Tính “cạn một phích thì bao giờ đun tiếp?”</h2>
+<div class="grid">
+<div class="field"><label>Kho nước sôi hiện có (L)</label><input id="hotStock" type="number" step="0.1" value="13"></div>
+<div class="field"><label>Kho nước đang nguội (L)</label><input id="coolStock" type="number" step="0.1" value="0"></div>
+<div class="field"><label>Kho nguồn Aquafina sẵn sàng (L)</label><input id="sourceStock" type="number" step="0.1" value="15"></div>
+<div class="field"><label>Giờ hiện tại để lập lịch</label><input id="nowTime" type="time" value="14:00"></div>
+</div>
+<div id="triggerResult"></div>
+</div>
+
+<div class="card">
+<h2>8. 🔥 Lịch sản xuất gối đầu – 3 nhóm dây chuyền</h2>
+<div class="alert info"><b>Nhóm 1 – Nguồn vào:</b> xách Aquafina/bình nước theo lượt 5L. <b>Nhóm 2 – Đun:</b> chỉ làm khi có người lớn theo dõi. <b>Nhóm 3 – Làm nguội:</b> ghi giờ bắt đầu nguội; đủ 4 giờ mới chuyển sang bình sứ/bình nhựa.</div>
+<div id="productionPlan"></div>
+</div>
+
+<div class="card">
+<h2>9. 🗓️ Lịch 24 giờ gắn với sinh hoạt gia đình</h2>
+<div class="scroll"><table id="scheduleTable"><thead><tr><th>Giờ</th><th>Việc gia đình</th><th>Việc nước/bếp</th><th>Trạng thái</th></tr></thead><tbody></tbody></table></div>
+<p class="tiny">Thứ 4 và thứ 6: 18:30–21:00 khóa lịch bếp/nước vì đưa đón con. 23:00–05:30 khóa tuyệt đối việc bếp than, xách nước và xử lý nước.</p>
+</div>
+
+<div class="card">
+<h2>10. 🏠 Phân phối 4 khu vực và quay vòng</h2>
+<div class="scroll"><table id="areaTable"><thead><tr><th>Khu vực</th><th>Dụng cụ ưu tiên</th><th>Dung tích mục tiêu</th><th>Nhu cầu/chu kỳ</th><th>Nguyên tắc cấp</th></tr></thead><tbody></tbody></table></div>
+<div id="rotationPlan"></div>
+</div>
+
+<div class="card">
+<h2>11. ☀️ Bộ nước buổi sáng: tính lại cho đúng</h2>
+<div class="alert ok"><b>Nếu phích mới là 2L:</b> 2 phích nấu cơm = 4L; 1 phích pha chè = 1L; 1 phích nấu ăn trên nhà = 1L; 1 phích pha chè trên nhà = 1L. <b>Tổng bộ sáng = 7L.</b></div>
+<div class="alert warn">Bộ sáng 7L không có nghĩa nhu cầu cả ngày là 7L. Các mốc cố định của bạn là 3 + 4 + 4 + 2 = <b>13L/ngày</b>. Vì vậy mẻ chuẩn 15L/ngày là hợp lý hơn 7L/ngày.</div>
+<div id="flaskPlan"></div>
+</div>
+
+<div class="card">
+<h2>12. 🧊 Theo dõi các mẻ đang nguội</h2>
+<div class="scroll"><table id="coolTable"><thead><tr><th>Mẻ</th><th>Lít</th><th>Bắt đầu nguội</th><th>Đủ 4 giờ lúc</th><th>Trạng thái</th></tr></thead><tbody></tbody></table></div>
+<button class="btn blue" onclick="refreshCooling()">⏱️ Kiểm tra lại</button>
+</div>
+
+<div class="card">
+<h2>13. 👨‍👩‍👧 Trẻ em cuối tuần – chỉ việc an toàn</h2>
+<table><thead><tr><th>Tuổi</th><th>Giờ phù hợp</th><th>Việc được làm</th><th>Không được làm</th></tr></thead><tbody>
+<tr><td>6</td><td>08:00–08:20 hoặc 10:30–10:50</td><td>Hứng nước nguội, báo người lớn, xếp chai nhẹ tại chỗ.</td><td>Không xách 5L, không chạm bếp, không bê nước sôi.</td></tr>
+<tr><td>10</td><td>08:00–08:30 hoặc 10:30–11:00</td><td>Hứng nước nguội và hỗ trợ bình nhỏ dưới sự giám sát.</td><td>Không nhóm than, không chuyển nước vừa sôi.</td></tr>
+<tr><td>13</td><td>08:00–09:00 hoặc 10:00–11:00</td><td>Đếm Aquafina, ghi số bình đầy/cạn, xách lượng nhỏ nếu người lớn thấy an toàn.</td><td>Không tự vận hành bếp than/nước sôi.</td></tr>
+</tbody></table>
+<p class="tiny">Cuối tuần các con học buổi chiều nên ưu tiên việc nước buổi sáng, nhưng việc nặng vẫn do người lớn.</p>
+</div>
+
+<div class="card">
+<h2>14. 🔄 Vòng đời một mẻ nước</h2>
+<div class="timeline">
+<div class="item"><b>Bước 1 – Kiểm kho:</b> xem nhu cầu 04:00/10:00/16:00 và nước sôi còn lại.</div>
+<div class="item"><b>Bước 2 – Nguồn:</b> xách Aquafina 5L lên trước. 15L = 3 lượt × 1 giờ = 3 giờ công vận chuyển nếu đi từng bình.</div>
+<div class="item"><b>Bước 3 – Nhóm:</b> dành 1 giờ để than bén. Không tính 1 giờ này là giờ ngủ hay giờ không có người.</div>
+<div class="item"><b>Bước 4 – Đun:</b> 1 viên cho khoảng 13–15L. Mẻ chuẩn chọn 15L nếu thực tế đạt được.</div>
+<div class="item"><b>Bước 5 – Phân nhánh:</b> nước dùng nóng → vào phích; nước muốn nguội → vào xoong/ấm lớn để nguội tự nhiên.</div>
+<div class="item"><b>Bước 6 – Đủ 4 giờ:</b> chỉ lúc này mới chuyển nước nguội sang bình sứ/bình nhựa.</div>
+<div class="item"><b>Bước 7 – Quay vòng:</b> phích cạn → nhận từ kho nóng; Aquafina cạn → xuống lấy nước; bình nguội đầy → đưa vào khu vực sử dụng.</div>
+</div>
+</div>
+
+<div class="card">
+<h2>15. 📝 Nhật ký đo thực tế</h2>
+<div class="field"><label>Ghi chú</label><textarea id="notes" placeholder="Ví dụ: 15L hết 2 giờ 35 phút; 1 viên than còn đỏ 10 giờ; rán cá 55 phút dùng 0,35 viên... Sau mỗi lần đo sửa ô thông số để hệ thống càng ngày càng chính xác."></textarea></div>
+<button class="btn green" onclick="saveAll()">💾 Lưu tất cả</button>
+<button class="btn red" onclick="clearStorage()">🗑️ Xóa dữ liệu đã lưu</button>
+</div>
+
+<div class="footer">Bản V2 chạy độc lập trên trình duyệt, không cần Internet. Dữ liệu lưu bằng LocalStorage của trình duyệt.</div>
+</div>
+
+<script>
+const KEY='NUOC_GIA_DINH_V2';
+const defaultContainers=[
+ {name:'Phích con',qty:3,cap:1,empty:0,role:'hot',area:'Bếp dưới'},
+ {name:'Ấm điện cũ',qty:1,cap:1,empty:0,role:'hot',area:'Phòng đun'},
+ {name:'Bình sứ',qty:2,cap:4,empty:0,role:'hotcool',area:'Phòng đun'},
+ {name:'Phích to',qty:3,cap:2,empty:0,role:'hot',area:'Bếp dưới'},
+ {name:'Ấm inox to',qty:1,cap:5,empty:0,role:'direct',area:'Phòng đun'},
+ {name:'Ấm inox nhỏ',qty:1,cap:3.5,empty:0,role:'direct',area:'Phòng đun'},
+ {name:'Xoong 1',qty:1,cap:4,empty:0,role:'direct',area:'Phòng đun'},
+ {name:'Xoong 2',qty:1,cap:5,empty:0,role:'direct',area:'Phòng đun'},
+ {name:'Bình nhựa',qty:2,cap:7.5,empty:0,role:'cool',area:'Phòng ăn'},
+ {name:'Aquafina',qty:8,cap:5,empty:0,role:'source',area:'Phòng ngủ'},
+];
+const defaultDemands=[
+ {time:'04:00',area:'Bếp dưới',purpose:'Pha chè + nấu cơm',liters:3,prepared:false},
+ {time:'05:30',area:'Phòng đun',purpose:'Nấu ăn + pha chè',liters:2,prepared:false},
+ {time:'10:00',area:'Bếp dưới',purpose:'Nấu cơm',liters:4,prepared:false},
+ {time:'16:00',area:'Bếp dưới',purpose:'Nấu cơm',liters:4,prepared:false}
+];
+const defaultCook=[
+ {name:'Rán cá',time:1,coal:0,shared:true},{name:'Rán trứng',time:.3333,coal:0,shared:true},{name:'Xào',time:.5,coal:0,shared:true},{name:'Nấu canh',time:.5,coal:0,shared:true},{name:'Món khác',time:0,coal:0,shared:true}
+];
+function n(v){v=parseFloat(v);return Number.isFinite(v)?v:0}
+function fmt(v,d=1){return n(v).toLocaleString('vi-VN',{maximumFractionDigits:d})}
+function id(x){return document.getElementById(x)}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function val(x){return x?.value??''}
+function renderContainers(data=defaultContainers){const tb=document.querySelector('#containerTable tbody');tb.innerHTML='';data.forEach((r,i)=>{tb.insertAdjacentHTML('beforeend',`<tr><td>${i+1}</td><td><input class="cname" value="${esc(r.name)}"></td><td><input class="cqty" type="number" min="0" step="1" value="${r.qty}"></td><td><input class="ccap" type="number" min="0" step="0.1" value="${r.cap}"></td><td class="ctotal">0</td><td><input class="cempty" type="number" min="0" step="1" value="${r.empty}"></td><td class="ccurrent">0</td><td><input class="call check" type="checkbox"></td><td><select class="crole"><option value="hot">Nước sôi</option><option value="hotcool">Sôi/nguội</option><option value="direct">Đun trực tiếp</option><option value="cool">Nước nguội</option><option value="source">Nguồn/vận tải</option></select></td><td><select class="carea"><option>Bếp dưới</option><option>Phòng ăn</option><option>Phòng ngủ</option><option>Phòng đun</option></select></td><td><button class="btn red" onclick="this.closest('tr').remove();calculate()">Xóa</button></td></tr>`);let tr=tb.lastElementChild;tr.querySelector('.crole').value=r.role;tr.querySelector('.carea').value=r.area;tr.querySelector('.call').checked=(r.empty>=r.qty&&r.qty>0);});calculate()}
+function readContainers(){return [...document.querySelectorAll('#containerTable tbody tr')].map(tr=>({name:val(tr.querySelector('.cname')),qty:n(val(tr.querySelector('.cqty'))),cap:n(val(tr.querySelector('.ccap')),),empty:n(val(tr.querySelector('.cempty'))),role:tr.querySelector('.crole').value,area:tr.querySelector('.carea').value,all:tr.querySelector('.call').checked})).map(r=>{if(r.all)r.empty=r.qty;r.empty=Math.max(0,Math.min(r.qty,r.empty));return r})}
+function renderDemands(data=defaultDemands){const tb=document.querySelector('#demandTable tbody');tb.innerHTML='';data.forEach((r,i)=>{tb.insertAdjacentHTML('beforeend',`<tr><td><input class="dtime" type="time" value="${r.time}"></td><td><select class="darea"><option>Bếp dưới</option><option>Phòng ăn</option><option>Phòng ngủ</option><option>Phòng đun</option></select></td><td><input class="dpurpose" value="${esc(r.purpose)}"></td><td><input class="dliters" type="number" step="0.1" min="0" value="${r.liters}"></td><td><input class="dprep check" type="checkbox" ${r.prepared?'checked':''}></td><td><button class="btn red" onclick="this.closest('tr').remove();calculate()">Xóa</button></td></tr>`);tb.lastElementChild.querySelector('.darea').value=r.area});calculate()}
+function readDemands(){return [...document.querySelectorAll('#demandTable tbody tr')].map(tr=>({time:val(tr.querySelector('.dtime')),area:tr.querySelector('.darea').value,purpose:val(tr.querySelector('.dpurpose')),liters:n(val(tr.querySelector('.dliters'))),prepared:tr.querySelector('.dprep').checked})).sort((a,b)=>a.time.localeCompare(b.time))}
+function renderCook(data=defaultCook){const tb=document.querySelector('#cookTable tbody');tb.innerHTML='';data.forEach(r=>{tb.insertAdjacentHTML('beforeend',`<tr><td><input class="kname" value="${esc(r.name)}"></td><td><input class="ktime" type="number" step="0.05" min="0" value="${r.time}"></td><td><input class="kcoal" type="number" step="0.01" min="0" value="${r.coal}"></td><td><input class="kshared check" type="checkbox" ${r.shared?'checked':''}></td><td><button class="btn red" onclick="this.closest('tr').remove();calculate()">Xóa</button></td></tr>`)});calculate()}
+function readCook(){return [...document.querySelectorAll('#cookTable tbody tr')].map(tr=>({name:val(tr.querySelector('.kname')),time:n(val(tr.querySelector('.ktime'))),coal:n(val(tr.querySelector('.kcoal'))),shared:tr.querySelector('.kshared').checked}))}
+function addContainer(){const d=readContainers();d.push({name:'Dụng cụ mới',qty:1,cap:2,empty:1,role:'hot',area:'Phòng đun'});renderContainers(d)}
+function addDemand(){const d=readDemands();d.push({time:'12:00',area:'Phòng đun',purpose:'Nhu cầu mới',liters:1,prepared:false});renderDemands(d)}
+function addCook(){const d=readCook();d.push({name:'Món mới',time:.5,coal:0,shared:true});renderCook(d)}
+function settings(){return {igniteH:n(id('igniteH').value),reloadM:n(id('reloadM').value),strongH:n(id('strongH').value),slowH:n(id('slowH').value),coalL:n(id('coalL').value),coalLowL:n(id('coalLowL').value),batchH:n(id('batchH').value),carryL:n(id('carryL').value),carryH:n(id('carryH').value),coolH:n(id('coolH').value),bufferM:n(id('bufferM').value),reorderPct:n(id('reorderPct').value),coalPrice:n(id('coalPrice').value),woodPrice:n(id('woodPrice').value),dryAlcohol:n(id('dryAlcohol').value),liquidAlcohol:n(id('liquidAlcohol').value),electricKwh:n(id('electricKwh').value),electricPrice:n(id('electricPrice').value),alcoholUses:n(id('alcoholUses').value),woodUses:n(id('woodUses').value),hotStock:n(id('hotStock').value),coolStock:n(id('coolStock').value),sourceStock:n(id('sourceStock').value),nowTime:id('nowTime').value,notes:id('notes').value}}
+function setSettings(s){Object.entries(s||{}).forEach(([k,v])=>{if(id(k))id(k).value=v})}
+function calculate(){const s=settings(),cs=readContainers(),ds=readDemands(),ks=readCook();let max=0,current=0,empty=0,direct=0,storage=0,source=0,hot=0,cool=0;cs.forEach(r=>{let total=r.qty*r.cap;let cur=total-r.empty*r.cap;max+=total;current+=cur;empty+=total-cur;if(r.role==='direct')direct+=total;else storage+=total;if(r.role==='source')source+=cur;if(r.role==='hot')hot+=cur;if(r.role==='cool'||r.role==='hotcool')cool+=cur;r.__total=total;r.__current=cur});let demand=ds.reduce((a,r)=>a+r.liters,0);let batches=Math.ceil(demand/Math.max(0.01,s.coalL));let coalWater=batches;let coalCook=ks.filter(k=>!k.shared).reduce((a,k)=>a+k.coal,0);let sharedTime=ks.filter(k=>k.shared).reduce((a,k)=>a+k.time,0);let sharedCoal=s.strongH>0?sharedTime/s.strongH:0;let totalCoal=coalWater+coalCook;let trips=Math.ceil(demand/Math.max(.01,s.carryL));let carryTime=trips*s.carryH;id('sMax').textContent=fmt(max)+' L';id('sCurrent').textContent=fmt(current)+' L';id('sEmpty').textContent=fmt(empty)+' L';id('sDemand').textContent=fmt(demand)+' L';id('sBatches').textContent=batches;id('sCoalWater').textContent=coalWater;id('sCoalCook').textContent=fmt(coalCook,2);id('sCoalTotal').textContent=fmt(totalCoal,2);id('sTrips').textContent=trips;id('sCarryTime').textContent=fmt(carryTime,1)+' giờ';id('containerSummary').innerHTML=`<div class="alert info"><b>Phân loại:</b> tổng tối đa ${fmt(max)}L; đun trực tiếp ${fmt(direct)}L; các dụng cụ trữ/luân chuyển ${fmt(storage)}L; nguồn Aquafina hiện có khoảng ${fmt(source)}L; nước sôi hiện có trong nhóm phích = ${fmt(hot)}L; nước nguội hiện có = ${fmt(cool)}L.</div>`;dashboard(current,demand,batches,source,s);production(demand,batches,s);schedule(ds,s);areas(cs,ds);flasks(cs,ds);costs(batches,coalCook,s);trigger(s,demand);refreshCooling();}
+function dashboard(current,demand,batches,source,s){let need=Math.max(0,demand-current),reserve=demand*s.reorderPct/100;let html='';if(need>0)html+=`<div class="alert danger">🔴 Kho hiện tại thiếu <b>${fmt(need)}L</b> so với nhu cầu ngày. Cần chuẩn bị ít nhất ${Math.ceil(need/Math.max(.01,s.carryL))} lượt xách.</div>`;else html+=`<div class="alert ok">🟢 Kho hiện tại đủ cho nhu cầu cơ sở ${fmt(demand)}L/ngày, còn ${fmt(current-demand)}L trên mức nhu cầu.</div>`;if(current<=reserve)html+=`<div class="alert warn">🟡 Đã chạm ngưỡng sản xuất lại (${fmt(reserve)}L). Không đợi phích cuối cùng cạn.</div>`;html+=`<div class="sectionNote"><b>Quy tắc điều hành:</b> 1) nhìn mốc 04:00 kế tiếp; 2) bảo đảm 3L cho 04:00 từ tối hôm trước; 3) giữ ít nhất 4L cho 10:00; 4) giữ 4L cho 16:00; 5) giữ 2L cho phòng đun sáng; 6) khi kho sôi dự kiến xuống dưới 13L thì sản xuất mẻ kế tiếp.</div>`;id('dashboard').innerHTML=html}
+function production(demand,batches,s){let batch=Math.max(demand,15);let waterHours=Math.min(s.batchH,s.strongH);let totalStrong=Math.ceil(demand/Math.max(.01,s.coalL))*s.batchH;let html=`<div class="alert ok"><b>Mẻ chuẩn đề xuất:</b> ${fmt(batch)}L. Với dữ liệu hiện tại, 1 viên ≈ ${fmt(s.coalL)}L và mẻ 15L ≈ ${fmt(s.batchH,1)} giờ cháy mạnh. Nếu đo thực tế 2,5 giờ, sửa ô “Thời gian 15L” thành 2,5.</div>`;html+=`<div class="scroll"><table><thead><tr><th>Nhóm</th><th>Việc</th><th>Tính toán</th><th>Thời điểm đề xuất</th></tr></thead><tbody>`;html+=`<tr><td>1. Nguồn vào</td><td>Đưa nguồn lên</td><td>15L = 3 lượt × 5L = 3 giờ công</td><td><b>Chủ động từ chiều hôm trước</b>; không chờ đến lúc nhóm.</td></tr>`;html+=`<tr><td>2. Đun</td><td>Nhóm + đun mẻ</td><td>1h bén + khoảng ${fmt(s.batchH,1)}h cháy mạnh</td><td><b>Ưu tiên cửa sổ 13:30–16:00 rồi 16:00–18:30 nếu cần</b>; tuyệt đối không bỏ bếp khi không an toàn.</td></tr>`;html+=`<tr><td>3. Nguội</td><td>Phần không dùng nóng</td><td>Đủ ${fmt(s.coolH,1)}h mới chuyển</td><td>Ví dụ bắt đầu nguội 17:30 ⇒ chuyển từ 21:30.</td></tr>`;html+=`</tbody></table></div>`;html+=`<div class="alert warn"><b>Không nên đun 45L một lèo:</b> 45L tương đương khoảng 3 viên nếu 15L/viên, chưa kể thời gian mồi thêm 20 phút/viên. Trong lịch gia đình hiện tại rất khó có một cửa sổ liên tục đủ dài mà vẫn bảo đảm theo dõi bếp. Tốt hơn là các mẻ 15L gối đầu.</div>`;id('productionPlan').innerHTML=html}
+function trigger(s,demand){let hot=n(id('hotStock').value),cool=n(id('coolStock').value),source=n(id('sourceStock').value),now=id('nowTime').value||'14:00';let reserve=demand;let shortage=Math.max(0,reserve-hot);let trips=Math.ceil(shortage/Math.max(.01,s.carryL));let prep=s.igniteH+s.batchH+trips*s.carryH+s.bufferM/60;let [hh,mm]=now.split(':').map(Number);let totalMin=hh*60+mm+Math.ceil(prep*60);let day=Math.floor(totalMin/1440);let end=((totalMin%1440)+1440)%1440;let endH=String(Math.floor(end/60)).padStart(2,'0'),endM=String(end%60).padStart(2,'0');let html=hot<demand?`<div class="alert danger">🔴 Với tồn kho sôi ${fmt(hot)}L, đang thiếu ${fmt(shortage)}L để đủ 1 ngày. Cần tối thiểu ${trips} lượt xách (${fmt(trips*s.carryL)}L) và khoảng ${fmt(prep,1)} giờ cho xách + nhóm + mẻ + dự phòng.</div>`:`<div class="alert ok">🟢 Chưa cần nhóm chỉ vì một phích cạn. Tồn sôi ${fmt(hot)}L vẫn đạt mức 1 ngày ${fmt(demand)}L.</div>`;html+=`<div class="sectionNote"><b>Nguyên tắc giờ đun:</b> nếu cần sản xuất ngay từ thời điểm ${now}, tổng thời gian chuẩn bị ước ${fmt(prep,1)} giờ. Tuy nhiên máy không tự ép lịch vào thời gian bạn ngủ/đưa đón; lịch bên dưới ưu tiên các cửa sổ ban ngày.</div>`;html+=`<div class="alert info">Kho nguồn hiện có ${fmt(source)}L. Nếu nguồn chưa đủ cho mẻ 15L thì phải xách trước. 15L = 3 lượt × ${fmt(s.carryL)}L.</div>`;id('triggerResult').innerHTML=html}
+function schedule(ds,s){const rows=[['23:00–05:30','Ngủ','Không bếp, không xách, không xử lý nước','🔒 KHÓA'],['05:30–07:00','Nấu cơm/canh, làm thức ăn, mở cửa hàng, chuẩn bị đồ cho vợ, cho con ăn','Chỉ kiểm tra nhanh kho; không giao bếp than nếu phải rời nhà lúc 07:00','🟡 ƯU TIÊN GIA ĐÌNH'],['07:00–11:00','Đưa trẻ đi học; công việc ban ngày','Cửa sổ tốt cho xách nguồn và chuyển mẻ đủ 4h','🟢 LOGISTICS'],['11:00–12:00','Đón trẻ, cho ăn trưa','Không đặt mẻ bếp quan trọng','🔒 GIA ĐÌNH'],['12:00–13:30','Ngủ trưa','Không bếp','🔒 KHÓA'],['13:30–16:00','Đưa trẻ đi học chiều','Cửa sổ chính để nhóm/đun nếu có người lớn theo dõi','🔥 CỬA SỔ BẾP'],['16:00–18:30','Đón trẻ, sinh hoạt','Hoàn tất mẻ, chuyển nước sôi/nước nguội; không để bếp không người','🔥/🚚'],['Thứ 4 & 6 18:30–21:00','Đưa/đón trẻ đi học','Không đặt việc bếp than quan trọng','🔒 KHÓA'],['21:00–22:00','Gia đình','Kiểm kho, đưa nước đã đủ 4h vào bình','🟢 QUAY VÒNG'],['22:00–23:00','Cất đồ cho vợ đi làm về','Chốt kho và chuẩn bị 3L cho 04:00 hôm sau','🟢 CHỐT NGÀY']];id('scheduleTable').querySelector('tbody').innerHTML=rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('')}
+function areas(cs,ds){let areaMap={"Bếp dưới":'3 phích to + 2 phích con',"Phòng ăn":'1 bình nhựa 7,5L',"Phòng ngủ":'2 Aquafina + 1 bình nhựa 7,5L',"Phòng đun":'Phích 1L + ấm cũ 1L + 2 bình sứ + ấm inox 3–5L'};let demandBy={};ds.forEach(d=>demandBy[d.area]=(demandBy[d.area]||0)+d.liters);id('areaTable').querySelector('tbody').innerHTML=Object.keys(areaMap).map(a=>`<tr><td>${a}</td><td>${areaMap[a]}</td><td>${fmt(cs.filter(x=>x.area===a).reduce((q,x)=>q+x.qty*x.cap,0))}L theo cấu hình</td><td>${fmt(demandBy[a]||0)}L trong các mốc khai báo</td><td>Ưu tiên bù từ kho trung tâm; không để khu vực cuối cùng mới được cấp.</td></tr>`).join('');id('rotationPlan').innerHTML=`<div class="alert info"><b>Quay vòng:</b> Phòng bếp dưới nhận trước nước cho mốc 04:00 → 10:00 → 16:00; phòng đun giữ 2L buổi sáng; phòng ăn là kho nguội; phòng ngủ là kho trung gian Aquafina + nguội. Aquafina vừa là nguồn lên, vừa có thể là vỏ chứa nước nguội đem xuống.</div>`}
+function flasks(cs,ds){let cap2=cs.filter(x=>Math.abs(x.cap-2)<.01).reduce((a,x)=>a+x.qty,0)*2;let text=`Hiện cấu hình có <b>${fmt(cap2)}L</b> từ các phích 2L. Nếu bổ sung 2 phích 2L: thêm 4L. Bộ sáng theo yêu cầu = <b>7L</b> nếu 2 phích nấu cơm là 2L và ba phích còn lại là 1L.`;id('flaskPlan').innerHTML=`<div class="alert ok">${text}</div><div class="sectionNote"><b>Đề xuất:</b> nên có tối thiểu 5 phích 2L nếu muốn quay vòng dễ: 2 phích cho nấu cơm, 1 phích cho pha chè dưới, 1 phích nấu ăn trên, 1 phích pha chè trên = 10L. Đây là năng lực chứa của bộ phích, không phải nhu cầu cả ngày. Nhu cầu cả ngày vẫn là 13L theo các mốc cố định.</div>`}
+function costs(batches,coalCook,s){let coalDaily=batches+coalCook;let coalCost=coalDaily*s.coalPrice;let starter=s.alcoholUses>0?s.alcoholUses*s.liquidAlcohol:0;let wood=s.woodUses*s.woodPrice;let electric=s.electricKwh*s.electricPrice*batches;let totalCoalMoney=coalCost+starter+wood;let save=electric-totalCoalMoney;id('costResult').innerHTML=`<div class="statgrid"><div class="stat">Than/ngày<b>${fmt(coalDaily,2)} viên</b></div><div class="stat">Tiền than/ngày<b>${fmt(coalCost,0)} đ</b></div><div class="stat">Cồn + củi/ngày<b>${fmt(starter+wood,0)} đ</b></div><div class="stat">Tổng bếp than/ngày<b>${fmt(totalCoalMoney,0)} đ</b></div><div class="stat">Điện/mẻ theo ô nhập<b>${fmt(electric,0)} đ</b></div><div class="stat">Chênh lệch điện – than<b>${fmt(save,0)} đ</b></div></div><p class="tiny">Muốn kết luận tiết kiệm thật so với công tơ điện, cần đo điện kWh thực tế cho cùng một lượng nước. Nếu chưa biết, để 0; hệ thống không tự bịa số.</p>`}
+function refreshCooling(){const tb=id('coolTable').querySelector('tbody');let html='';for(let i=1;i<=6;i++){let start=localStorage.getItem(KEY+'_cool_'+i)||'';let liters=localStorage.getItem(KEY+'_coolL_'+i)||'';if(start){let d=new Date(start);let ready=new Date(d.getTime()+n(id('coolH').value)*3600000);let ok=Date.now()>=ready.getTime();html+=`<tr><td>${i}</td><td>${liters||'-'}</td><td>${d.toLocaleString('vi-VN')}</td><td>${ready.toLocaleString('vi-VN')}</td><td>${ok?'🟢 Đủ 4 giờ – có thể chuyển':'🟡 Đang nguội'}</td></tr>`}}tb.innerHTML=html||'<tr><td colspan="5">Chưa có mẻ nào được ghi giờ bắt đầu nguội.</td></tr>'}
+function saveCooling(i){let start=prompt('Nhập thời điểm bắt đầu nguội, ví dụ 2026-09-15T17:30','');if(!start)return;let l=prompt('Mẻ này bao nhiêu lít?','5');localStorage.setItem(KEY+'_cool_'+i,start);localStorage.setItem(KEY+'_coolL_'+i,l);refreshCooling()}
+function collect(){return {settings:settings(),containers:readContainers(),demands:readDemands(),cook:readCook()}}
+function saveAll(){localStorage.setItem(KEY,JSON.stringify(collect()));alert('Đã lưu cấu hình trên trình duyệt.')}
+function loadAll(){let raw=localStorage.getItem(KEY);if(!raw){alert('Chưa có dữ liệu đã lưu.');return}try{let d=JSON.parse(raw);setSettings(d.settings);renderContainers(d.containers);renderDemands(d.demands);renderCook(d.cook);calculate();alert('Đã tải cấu hình đã lưu.')}catch(e){alert('Dữ liệu lưu bị lỗi. Hãy khôi phục mặc định.')}}
+function resetAll(){if(!confirm('Khôi phục toàn bộ về mặc định?'))return;localStorage.removeItem(KEY);location.reload()}
+function clearStorage(){if(!confirm('Xóa dữ liệu đã lưu?'))return;Object.keys(localStorage).filter(k=>k.startsWith(KEY)).forEach(k=>localStorage.removeItem(k));alert('Đã xóa dữ liệu lưu.')} 
+function bind(){document.addEventListener('input',e=>{if(e.target.matches('input,select,textarea'))calculate()});document.addEventListener('change',e=>{if(e.target.matches('input,select,textarea'))calculate()})}
+renderContainers();renderDemands();renderCook();bind();calculate();
+</script>
+</body>
+</html>

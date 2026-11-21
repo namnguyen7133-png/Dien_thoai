@@ -1,0 +1,529 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinh Toan Ngay Thang</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(90deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            border-bottom: 5px solid #3498db;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        
+        .input-section {
+            flex: 1;
+            min-width: 320px;
+            padding: 20px;
+            border-right: 1px solid #eee;
+        }
+        
+        .result-section {
+            flex: 2;
+            min-width: 500px;
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        select, button {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        select {
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        button {
+            background: linear-gradient(90deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background: linear-gradient(90deg, #2980b9, #1c6ea4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-box {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .result-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .person-name {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        
+        .date-info {
+            color: #7f8c8d;
+            margin: 5px 0;
+            line-height: 1.4;
+        }
+        
+        .time-info {
+            color: #3498db;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+        
+        .days-info {
+            font-weight: 600;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed #ddd;
+        }
+        
+        .past {
+            color: #e74c3c;
+        }
+        
+        .future {
+            color: #27ae60;
+        }
+        
+        .highlight {
+            background-color: #fff9e6;
+            border-left: 5px solid #f1c40f;
+        }
+        
+        .instructions {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 5px solid #3498db;
+            line-height: 1.5;
+        }
+        
+        .instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .instructions p {
+            margin-bottom: 8px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .input-section {
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+            
+            .result-section {
+                min-width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .input-section, .result-section {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>TINH TOAN NGAY THANG</h1>
+            <p class="subtitle">Ung dung tinh toan ngay thang theo thuat toan dac biet<br>Dua tren du lieu nhan vat lich su</p>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="mainPerson">Chon nhan vat chinh:</label>
+                    <select id="mainPerson">
+                        <option value="0">Ho Chi Minh (19/5/1890 - 3/9/1969)</option>
+                        <option value="1">Vo Nguyen Giap (25/8/1911 - 4/10/2013)</option>
+                        <option value="2">Tran duc Luong (5/5/1937 - 20/5/2025)</option>
+                        <option value="3">do Muoi (2/2/1917 - 1/10/2018)</option>
+                        <option value="4">Tran dai Quang (12/10/1956 - 21/9/2018)</option>
+                        <option value="5">Ton duc Thang (20/8/1888 - 30/3/1980)</option>
+                        <option value="6">Nguyen Phu Trong (14/4/1944 - 19/7/2024)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="targetPerson">Chon nguoi de tinh toan:</label>
+                    <select id="targetPerson">
+                        <!-- Danh sach se duoc them bang JavaScript -->
+                    </select>
+                </div>
+                
+                <button id="calculateBtn">Tinh Toan</button>
+                
+                <div class="instructions">
+                    <h3>Huong dan su dung:</h3>
+                    <p>1. Chon mot nhan vat chinh tu danh sach tren</p>
+                    <p>2. Chon mot nguoi tu danh sach de tinh toan</p>
+                    <p>3. Nhan nut "Tinh Toan" de xem ket qua</p>
+                    <p>Ket qua se hien thi so ngay da qua hoac con lai so voi ngay hien tai</p>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <div class="result-box">
+                    <h2 class="result-title">KET QUA TINH TOAN</h2>
+                    <div id="resultContainer">
+                        <div class="result-item">
+                            <p>Chon nhan vat va nhan "Tinh Toan" de xem ket qua</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h2 class="result-title">SU KIEN SAP TOI</h2>
+                    <div id="upcomingEvents">
+                        <div class="result-item">
+                            <p>dang tai du lieu...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Ung dung Tinh Toan Ngay Thang &copy; 2023</p>
+        </footer>
+    </div>
+
+    <script>
+        // Du lieu nhan vat chinh (co them gio)
+        const mainPersons = [
+            { name: "Ho Chi Minh", birth: "19/5/1890", death: "3/9/1969", time: "09:47" },
+            { name: "Vo Nguyen Giap", birth: "25/8/1911", death: "4/10/2013", time: "18:09" },
+            { name: "Tran duc Luong", birth: "5/5/1937", death: "20/5/2025", time: "22:51" },
+            { name: "do Muoi", birth: "2/2/1917", death: "1/10/2018", time: "18:06" },
+            { name: "Tran dai Quang", birth: "12/10/1956", death: "21/9/2018", time: "10:05" },
+            { name: "Ton duc Thang", birth: "20/8/1888", death: "30/3/1980", time: "06:35" },
+            { name: "Nguyen Phu Trong", birth: "14/4/1944", death: "19/7/2024", time: "13:38" }
+        ];
+
+        // Du lieu nguoi de tinh toan
+        const targetPersons = [
+            { name: "Nguyen Khac Nang", birth: "4/6/1944" },
+            { name: "To Thi Ha", birth: "29/8/1948" },
+            { name: "Nguyen Minh Nam", birth: "3/3/1971" },
+            { name: "Than Thi Kim Anh", birth: "23/9/1981" },
+            { name: "Nguyen To Ngan An", birth: "28/9/2014" },
+            { name: "Nguyen To Minh Chau", birth: "27/5/2016" },
+            { name: "Nguyen To Bich Ngoc", birth: "5/2/2020" },
+            { name: "Vu Van Hiep", birth: "24/4/1974" },
+            { name: "To Thi Hong", birth: "10/10/1964" },
+            { name: "To Kim Hue", birth: "9/8/1960" },
+            { name: "Nguyen Tuan Anh", birth: "23/10/1993" },
+            { name: "Nguyen The Anh", birth: "24/3/2001" },
+            { name: "To Viet Hung", birth: "17/6/1996" },
+            { name: "Nguyen Thi Minh Hang", birth: "7/1/1974" },
+            { name: "Ngo Quy Cuong", birth: "23/5/1973" },
+            { name: "Ngo Gia Bach", birth: "12/10/2000" },
+            { name: "Ngo Gia Linh", birth: "5/4/2005" },
+            { name: "Nguyen Thi Minh Phuong", birth: "6/11/1978" },
+            { name: "Hoang Anh Dung", birth: "21/9/1978" },
+            { name: "Hoang Hai Vinh", birth: "3/6/2010" },
+            { name: "Hoang Thien Bach Anh", birth: "14/11/2015" },
+            { name: "Nguyen Thi Chi", birth: "8/2/1946" },
+            { name: "Nguyen Tan Bac", birth: "30/11/1957" },
+            { name: "Nguyen Thi Tam", birth: "8/8/1954" }
+        ];
+
+        // Khoi tao danh sach nguoi de tinh toan
+        const targetPersonSelect = document.getElementById('targetPerson');
+        targetPersons.forEach((person, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = `${person.name} (${person.birth})`;
+            targetPersonSelect.appendChild(option);
+        });
+
+        // Ham chuyen doi chuoi ngay thang thanh doi tuong Date
+        function parseDate(dateStr) {
+            const parts = dateStr.split('/');
+            return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+        }
+
+        // Ham tinh so ngay giua hai ngay
+        function daysBetween(date1, date2) {
+            const oneDay = 24 * 60 * 60 * 1000; // So mili giay trong mot ngay
+            return Math.round(Math.abs((date1 - date2) / oneDay));
+        }
+
+        // Ham dinh dang ngay thang va gio
+        function formatDateTime(date, time = null) {
+            const dateStr = date.toLocaleDateString('vi-VN');
+            if (time) {
+                return `${dateStr} luc ${time}`;
+            }
+            return dateStr;
+        }
+
+        // Ham tao thoi gian ngau nhien (neu khong co thoi gian cu the)
+        function generateRandomTime() {
+            const hours = Math.floor(Math.random() * 24).toString().padStart(2, '0');
+            const minutes = Math.floor(Math.random() * 60).toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+
+        // Ham tinh toan va hien thi ket qua
+        function calculate() {
+            const mainPersonIndex = parseInt(document.getElementById('mainPerson').value);
+            const targetPersonIndex = parseInt(document.getElementById('targetPerson').value);
+            
+            const mainPerson = mainPersons[mainPersonIndex];
+            const targetPerson = targetPersons[targetPersonIndex];
+            
+            // Tinh so ngay giua ngay mat va ngay sinh cua nhan vat chinh
+            const mainBirthDate = parseDate(mainPerson.birth);
+            const mainDeathDate = parseDate(mainPerson.death);
+            const mainDays = daysBetween(mainBirthDate, mainDeathDate);
+            
+            // Tinh ngay ket qua bang cach cong so ngay tren voi ngay sinh cua nguoi duoc chon
+            const targetBirthDate = parseDate(targetPerson.birth);
+            const resultDate = new Date(targetBirthDate);
+            resultDate.setDate(resultDate.getDate() + mainDays);
+            
+            // Tao thoi gian ngau nhien cho ket qua
+            const resultTime = generateRandomTime();
+            
+            // So sanh voi ngay hien tai
+            const today = new Date();
+            const daysFromToday = daysBetween(resultDate, today);
+            
+            // Hien thi ket qua
+            const resultContainer = document.getElementById('resultContainer');
+            
+            let statusText, statusClass;
+            if (resultDate < today) {
+                statusText = `da qua ${daysFromToday} ngay`;
+                statusClass = 'past';
+            } else {
+                statusText = `Con ${daysFromToday} ngay nua`;
+                statusClass = 'future';
+            }
+            
+            resultContainer.innerHTML = `
+                <div class="result-item highlight">
+                    <div class="person-name">${mainPerson.name} → ${targetPerson.name}</div>
+                    <div class="date-info">${mainPerson.name}: ${formatDateTime(mainBirthDate)} - ${formatDateTime(mainDeathDate, mainPerson.time)} (${mainDays} ngay)</div>
+                    <div class="date-info">${targetPerson.name}: ${formatDateTime(targetBirthDate)}</div>
+                    <div class="date-info">Ngay ket qua: <strong>${formatDateTime(resultDate, resultTime)}</strong></div>
+                    <div class="days-info ${statusClass}">${statusText}</div>
+                </div>
+            `;
+            
+            // Hien thi su kien sap toi
+            displayUpcomingEvents();
+        }
+
+        // Ham hien thi su kien sap toi
+        function displayUpcomingEvents() {
+            const upcomingEventsContainer = document.getElementById('upcomingEvents');
+            const today = new Date();
+            
+            // Tao danh sach tat ca cac su kien
+            let allEvents = [];
+            
+            mainPersons.forEach(mainPerson => {
+                const mainBirthDate = parseDate(mainPerson.birth);
+                const mainDeathDate = parseDate(mainPerson.death);
+                const mainDays = daysBetween(mainBirthDate, mainDeathDate);
+                
+                targetPersons.forEach(targetPerson => {
+                    const targetBirthDate = parseDate(targetPerson.birth);
+                    const resultDate = new Date(targetBirthDate);
+                    resultDate.setDate(resultDate.getDate() + mainDays);
+                    
+                    // Tao thoi gian ngau nhien cho su kien
+                    const eventTime = generateRandomTime();
+                    
+                    // Chi hien thi su kien trong tuong lai
+                    if (resultDate > today) {
+                        allEvents.push({
+                            mainPerson: mainPerson.name,
+                            targetPerson: targetPerson.name,
+                            date: resultDate,
+                            time: eventTime,
+                            daysUntil: daysBetween(resultDate, today)
+                        });
+                    }
+                });
+            });
+            
+            // Sap xep theo so ngay con lai (tang dan)
+            allEvents.sort((a, b) => a.daysUntil - b.daysUntil);
+            
+            // Chi hien thi 5 su kien sap toi nhat
+            const upcomingEvents = allEvents.slice(0, 5);
+            
+            if (upcomingEvents.length === 0) {
+                upcomingEventsContainer.innerHTML = '<div class="result-item"><p>Khong co su kien sap toi</p></div>';
+                return;
+            }
+            
+            let eventsHTML = '';
+            upcomingEvents.forEach(event => {
+                eventsHTML += `
+                    <div class="result-item">
+                        <div class="person-name">${event.mainPerson} → ${event.targetPerson}</div>
+                        <div class="date-info">Ngay: ${formatDateTime(event.date, event.time)}</div>
+                        <div class="days-info future">Con ${event.daysUntil} ngay nua</div>
+                    </div>
+                `;
+            });
+            
+            upcomingEventsContainer.innerHTML = eventsHTML;
+        }
+
+        // Gan su kien cho nut tinh toan
+        document.getElementById('calculateBtn').addEventListener('click', calculate);
+        
+        // Hien thi su kien sap toi khi tai trang
+        displayUpcomingEvents();
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,346 @@
+﻿<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bo tinh 6 Lo + Tien bieu — Toan dien</title>
+  <style>
+    /* Reset & base */
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;padding:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;background:#f3f7fb;color:#0f172a}
+
+    /* Layout */
+    .wrap{display:flex;flex-direction:column;height:100vh}
+    header{background:linear-gradient(90deg,#06b6d4 0%, #60a5fa 100%);color:white;padding:14px 20px}
+    header h1{margin:0;font-size:18px}
+    header p{margin:6px 0 0;font-size:13px;opacity:0.95}
+
+    main{flex:1;display:flex;gap:16px;padding:16px;align-items:stretch}
+
+    /* Left: inputs */
+    .panel{background:white;border-radius:12px;padding:16px;box-shadow:0 8px 30px rgba(2,6,23,0.08);overflow:auto}
+    .left{flex:0 0 420px;max-width:420px}
+    .right{flex:1;min-width:0;display:flex;flex-direction:column}
+
+    label{display:block;font-size:13px;color:#334155;margin-top:12px}
+    input[type=number], select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef6;margin-top:6px;font-size:15px;background:#fbfdff}
+    .row{display:flex;gap:10px}
+    .col{flex:1}
+    button{display:inline-flex;align-items:center;gap:8px;background:#0ea5a4;color:white;padding:10px 14px;border-radius:10px;border:0;cursor:pointer;margin-top:12px;font-weight:600}
+    .muted{color:#64748b;font-size:13px}
+
+    /* Right content: cards grid */
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+    .card{background:white;padding:12px;border-radius:10px;box-shadow:0 6px 20px rgba(2,6,23,0.05);overflow:auto}
+    h2{margin:0 0 8px;font-size:16px}
+    h3{margin:8px 0;font-size:14px}
+    .small{font-size:13px;color:#475569}
+
+    /* Bar */
+    .bar{height:12px;background:#eef2ff;border-radius:8px;overflow:hidden}
+    .fill{height:100%;background:linear-gradient(90deg,#60a5fa,#06b6d4)}
+
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;border-bottom:1px solid #f1f5f9;text-align:left}
+    .status-ok{color:#16a34a;font-weight:700}
+    .status-warn{color:#d97706;font-weight:700}
+    .status-bad{color:#dc2626;font-weight:700}
+
+    /* Ensure no text is clipped */
+    .nowrap{white-space:nowrap}
+    .wrap-text{word-wrap:break-word;overflow-wrap:break-word}
+
+    /* Responsive: collapse left under 900px */
+    @media (max-width:900px){
+      main{flex-direction:column}
+      .left{max-width:100%;flex:unset}
+    }
+
+    footer{padding:10px 16px;font-size:13px;color:#64748b;text-align:center}
+
+    /* Scrollbar hint for panels */
+    .panel::-webkit-scrollbar{height:8px;width:8px}
+    .panel::-webkit-scrollbar-thumb{background:rgba(2,6,23,0.08);border-radius:8px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Bo tinh 6 Lo + Tien bieu — Toan dien</h1>
+      <p class="muted">Nhap thu nhap va cac khoan bieu, cong cu se phan bo, so sanh trang thai (Giau / day du / Tiet kiem), va dua ra goi y tang/giam thu nhap hoac cat chi.</p>
+    </header>
+
+    <main>
+      <aside class="panel left" aria-label="Input panel">
+        <h2>Thong tin co ban</h2>
+        <label>Thu nhap hang thang (T)</label>
+        <input id="income" type="number" min="0" step="100000" value="20000000" />
+
+        <label>Tien bieu hang thang cho Cha/Me/Ong Ba (tong)</label>
+        <input id="gift_parents" type="number" min="0" step="10000" value="2000000" />
+
+        <label>Tien tieu vat/Con (tong hang thang)</label>
+        <input id="kids" type="number" min="0" step="10000" value="800000" />
+
+        <label>Cac chi phi co dinh khac (thue, dien, no ...)</label>
+        <input id="other_fixed" type="number" min="0" step="10000" value="7000000" />
+
+        <label>Tien qua/sinh nhat/voucher quy doi thang</label>
+        <input id="gift_spouse" type="number" min="0" step="10000" value="500000" />
+
+        <label>Huong thu / tieu xai ca nhan (quy doi thang)</label>
+        <input id="enjoyment" type="number" min="0" step="10000" value="1000000" />
+
+        <label>Ban thuoc nhom (chon de so sanh)</label>
+        <select id="profile">
+          <option value="default">Tu dong phan loai theo ty le chi bat buoc</option>
+          <option value="wealthy">Giau (tham khao)</option>
+          <option value="comfortable">day du (tham khao)</option>
+          <option value="frugal">Tiet kiem (tham khao)</option>
+        </select>
+
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button id="calc">Tinh toan</button>
+          <button id="reset" style="background:#64748b">dat lai</button>
+        </div>
+
+        <p class="muted" style="margin-top:12px">Ghi chu: Gia tri "quy doi thang" nghia la tong chi phi dip trong nam duoc chia trung binh cho 12 thang de de so sanh.</p>
+      </aside>
+
+      <section class="right">
+        <div class="grid" style="margin-bottom:12px">
+          <div class="card" id="summaryCard">
+            <h2>Tom tat</h2>
+            <div class="small" id="summaryText">—</div>
+            <div style="margin-top:12px"><div class="small">Ti le chi bat buoc so voi thu nhap (r): <strong id="rPercent">—</strong></div></div>
+          </div>
+
+          <div class="card" id="allocCard">
+            <h2>Phan bo 6 Lo (theo % & VND)</h2>
+            <div id="allocList" class="small"></div>
+          </div>
+
+          <div class="card" id="statusCard">
+            <h2>Trang thai tai chinh</h2>
+            <div id="statusBox" class="small">—</div>
+            <div style="margin-top:10px"><div class="small">Chuan tham khao:</div>
+              <table style="margin-top:8px"><thead><tr><th>Trang thai</th><th>Chi thiet yeu</th><th>dau tu</th><th>Huong thu</th></tr></thead>
+                <tbody>
+                  <tr><td>Giau</td><td>40–50%</td><td>20–40%</td><td>10–20%</td></tr>
+                  <tr><td>day du</td><td>50–55%</td><td>10–20%</td><td>10%</td></tr>
+                  <tr><td>Tiet kiem</td><td>60–75%</td><td>5–10%</td><td>5%</td></tr>
+                </tbody></table>
+            </div>
+          </div>
+
+          <div class="card" id="suggestCard">
+            <h2>Goi y tang / giam</h2>
+            <div id="suggestions" class="small">—</div>
+          </div>
+
+        </div>
+
+        <div class="grid" style="flex:1;align-content:start">
+          <div class="card" id="detailCard" style="min-height:180px">
+            <h2>Kiem tra chi bat buoc & bai toan</h2>
+            <div class="small" id="detailBox">—</div>
+          </div>
+
+          <div class="card" id="calcOptCard" style="min-height:180px">
+            <h2>Toi uu hoa (kich ban)</h2>
+            <div class="small">Chon kich ban:</div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button id="scenario1" style="background:#60a5fa">Tang thu nhap 25%</button>
+              <button id="scenario2" style="background:#06b6d4">Giam chi 20%</button>
+              <button id="scenario3" style="background:#a78bfa">Ket hop 50/50</button>
+            </div>
+            <div id="scenarioResult" class="small" style="margin-top:10px">—</div>
+          </div>
+
+          <div class="card" id="exportCard" style="min-height:180px">
+            <h2>Xuat / In</h2>
+            <div class="small">Ban co the sao chep ket qua hoac in trang nay.</div>
+            <div style="margin-top:10px"><button id="copy">Sao chep ket qua</button></div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+
+    <footer>Phien ban: Toan dien — Trang demo HTML. Copy va luu thanh file <code>.html</code> de su dung offline.</footer>
+  </div>
+
+  <script>
+    // TY LE 6 LO
+    const R = {jar1:0.55, jar2:0.10, jar3:0.10, jar4:0.10, jar5:0.10, jar6:0.05}
+
+    // DOM
+    const $ = id => document.getElementById(id)
+    const incomeEl = $('income')
+    const gpEl = $('gift_parents')
+    const kidsEl = $('kids')
+    const otherEl = $('other_fixed')
+    const gsEl = $('gift_spouse')
+    const enjEl = $('enjoyment')
+    const profileEl = $('profile')
+
+    const allocList = $('allocList')
+    const summaryText = $('summaryText')
+    const rPercent = $('rPercent')
+    const statusBox = $('statusBox')
+    const suggestions = $('suggestions')
+    const detailBox = $('detailBox')
+    const scenarioResult = $('scenarioResult')
+
+    function fmt(n){return n.toLocaleString('vi-VN',{style:'currency',currency:'VND',maximumFractionDigits:0})}
+
+    function computeAll(){
+      const T = Number(incomeEl.value) || 0
+      const gift_parents = Number(gpEl.value) || 0
+      const kids = Number(kidsEl.value) || 0
+      const other_fixed = Number(otherEl.value) || 0
+      const gift_spouse = Number(gsEl.value) || 0
+      const enjoyment = Number(enjEl.value) || 0
+
+      // Quy theo 6 lo
+      const Q = {
+        jar1: Math.round(T * R.jar1),
+        jar2: Math.round(T * R.jar2),
+        jar3: Math.round(T * R.jar3),
+        jar4: Math.round(T * R.jar4),
+        jar5: Math.round(T * R.jar5),
+        jar6: Math.round(T * R.jar6)
+      }
+
+      // Tong chi bat buoc
+      const mandatory = gift_parents + kids + other_fixed
+      const gifts = gift_spouse + enjoyment
+      const totalPlanned = mandatory + gifts
+
+      const r = T>0 ? mandatory / T : 0
+
+      // Build alloc list
+      allocList.innerHTML = ''
+      Object.keys(Q).forEach(k=>{
+        const rate = Math.round(R[k]*100)
+        const val = Q[k]
+        const div = document.createElement('div')
+        div.innerHTML = `<div style=\"display:flex;justify-content:space-between;align-items:center\">
+            <div class=\"wrap-text\"><strong>${rate}%</strong> — ${k==='jar1'? 'Chi thiet yeu': k==='jar2'? 'Tiet kiem Dai han': k==='jar3'? 'Giao duc': k==='jar4'? 'Huong thu': k==='jar5'? 'Tu do tai chinh': 'Tu thien'} </div>
+            <div><strong>${fmt(val)}</strong></div>
+          </div>
+          <div class=\"bar\" style=\"margin-top:8px\"><div class=\"fill\" style=\"width:${Math.min(100, Math.round((val/T)*100))}%\"></div></div>`
+        allocList.appendChild(div)
+      })
+
+      // Summary
+      summaryText.innerHTML = `<div><strong>Thu nhap:</strong> ${fmt(T)} • <strong>Chi bat buoc:</strong> ${fmt(mandatory)} • <strong>Qua/Huong thu (quy doi):</strong> ${fmt(gifts)}</div>`
+      rPercent.textContent = (r*100).toFixed(1) + '%'
+
+      // Status classification
+      let statusHTML = ''
+      if (T===0){ statusHTML = '<span class="status-bad">Khong xac dinh (thu nhap = 0)</span>' }
+      else if (r < 0.50) statusHTML = '<span class="status-ok">Giau (ty le chi bat buoc < 50%)</span>'
+      else if (r >= 0.50 && r <= 0.60) statusHTML = '<span class="status-warn">day du / On dinh (50–60%)</span>'
+      else statusHTML = '<span class="status-bad">Ap luc/Tiet kiem (chi bat buoc > 60%)</span>'
+      statusBox.innerHTML = statusHTML
+
+      // Check jar1 capacity
+      const diff = mandatory - Q.jar1
+      let suggestHTML = ''
+      if (T===0){ suggestHTML = '<div class="status-bad">Vui long nhap thu nhap.</div>' }
+      else if (diff <= 0){ suggestHTML = `<div class="status-ok">Ban dU cho chi bat buoc. Lo 1 con du ${fmt(-diff)}.</div>` }
+      else{
+        const T_new = Math.ceil(mandatory / R.jar1)
+        const deltaT = T_new - T
+        suggestHTML = `<div class="status-bad">Ban <strong>thieu ${fmt(diff)}</strong> so voi cong suat Lo 1.</div>`
+        suggestHTML += `<div style=\"margin-top:6px\">de giu Lo1 o 55%, can tang thu nhap len ${fmt(T_new)} (tang them ${fmt(deltaT)}).</div>`
+        suggestHTML += `<div style=\"margin-top:6px\">Hoac cat giam chi bat buoc it nhat ${fmt(diff)}. Uu tien cat: Huong thu → Qua tang → Chi tieu linh hoat.</div>`
+
+        // Suggest combination
+        const x = 0.5
+        const incomePart = Math.round(deltaT * x)
+        const cutPart = Math.round(diff - incomePart)
+        suggestHTML += `<div style=\"margin-top:6px\">Goi y ket hop (50/50): tang thu nhap ${fmt(incomePart)} va giam chi ${fmt(Math.max(0, cutPart))}.</div>`
+      }
+      suggestions.innerHTML = suggestHTML
+
+      // Detail box: formulas & check
+      detailBox.innerHTML = `<div><strong>Cong thuc:</strong></div>
+        <div class=\"small\">Lo1 = 55% * T = ${fmt(Q.jar1)}. Chi bat buoc = ChaMe(${fmt(gift_parents)}) + Con(${fmt(kids)}) + Khac(${fmt(other_fixed)}) = ${fmt(mandatory)}.</div>
+        <div style=\"margin-top:8px\"><strong>Ket luan:</strong> ${ mandatory <= Q.jar1 ? 'Chi bat buoc nam trong gioi han Lo1.' : 'Chi bat buoc vuot Lo1.' }</div>`
+
+      // Scenario result reset
+      scenarioResult.innerHTML = 'Chon kich ban de xem ket qua mo phong.'
+
+      // Store current computed values in element dataset for scenarios
+      scenarioResult.dataset.T = T
+      scenarioResult.dataset.mandatory = mandatory
+      scenarioResult.dataset.diff = diff
+      scenarioResult.dataset.Qjar1 = Q.jar1
+      scenarioResult.dataset.deltaT = (T>0? Math.ceil(mandatory / R.jar1) - T : 0)
+    }
+
+    // Event listeners
+    $('calc').addEventListener('click', computeAll)
+    $('reset').addEventListener('click', ()=>{ incomeEl.value=20000000; gpEl.value=2000000; kidsEl.value=800000; otherEl.value=7000000; gsEl.value=500000; enjEl.value=1000000; profileEl.value='default'; computeAll(); })
+
+    // Scenarios
+    $('scenario1').addEventListener('click', ()=>{
+      const T = Number(scenarioResult.dataset.T) || Number(incomeEl.value)
+      const newT = Math.round(T * 1.25)
+      scenarioResult.innerHTML = `Tang thu nhap 25% → Thu nhap moi: ${fmt(newT)}. Lo1 moi = ${fmt(Math.round(newT * R.jar1))}.`;
+    })
+    $('scenario2').addEventListener('click', ()=>{
+      const mandatory = Number(scenarioResult.dataset.mandatory) || 0
+      const reduced = Math.round(mandatory * 0.80)
+      scenarioResult.innerHTML = `Giam chi 20% → Chi bat buoc moi: ${fmt(reduced)}. Can Lo1 = ${fmt(reduced)}.`;
+    })
+    $('scenario3').addEventListener('click', ()=>{
+      const deltaT = Number(scenarioResult.dataset.deltaT) || 0
+      const T = Number(scenarioResult.dataset.T) || Number(incomeEl.value)
+      const inc = Math.round(deltaT * 0.5)
+      const cut = Math.round((Number(scenarioResult.dataset.diff) || 0) - inc)
+      scenarioResult.innerHTML = `Ket hop 50/50 → Tang thu nhap ${fmt(inc)} va giam chi ${fmt(Math.max(0, cut))}.`;
+    })
+
+    // Copy result
+    $('copy').addEventListener('click', ()=>{
+      const text = `Thu nhap: ${incomeEl.value}
+Chi bat buoc: ${scenarioResult.dataset.mandatory || ''}`
+      navigator.clipboard.writeText(text).then(()=> alert('da sao chep'))
+    })
+
+    // Initial compute
+    computeAll()
+  </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

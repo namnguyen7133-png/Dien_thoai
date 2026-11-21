@@ -1,0 +1,1372 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Co Quan Su Viet Nam - Luc Quan Ky</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a192f 0%, #1a365d 50%, #0f3460 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        header {
+            text-align: center;
+            padding: 15px 0;
+            margin-bottom: 20px;
+            background: rgba(0, 30, 60, 0.8);
+            border-radius: 15px;
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a3d5ff;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        /* Khu vuc ban co */
+        .board-section {
+            flex: 1;
+            min-width: 800px;
+            max-width: 850px;
+            background: rgba(5, 25, 55, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            border: 3px solid #1e88e5;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .board-container {
+            position: relative;
+            margin: 0 auto;
+            width: 808px;
+            height: 564px;
+            background: #2c3e50;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(11, 1fr);
+            grid-template-rows: repeat(11, 1fr);
+            gap: 2px;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+        }
+
+        /* Khu vuc dieu khien */
+        .control-section {
+            flex: 0 0 350px;
+            background: rgba(5, 25, 55, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            border: 3px solid #1e88e5;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .control-btn {
+            padding: 18px 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .setup-btn {
+            background: linear-gradient(to right, #4CAF50, #2E7D32);
+            color: white;
+            box-shadow: 0 4px 0 #1B5E20;
+        }
+
+        .play-btn {
+            background: linear-gradient(to right, #2196F3, #0D47A1);
+            color: white;
+            box-shadow: 0 4px 0 #0D47A1;
+        }
+
+        .hide-btn {
+            background: linear-gradient(to right, #9C27B0, #6A1B9A);
+            color: white;
+            box-shadow: 0 4px 0 #4A148C;
+        }
+
+        .reveal-btn {
+            background: linear-gradient(to right, #FF9800, #EF6C00);
+            color: white;
+            box-shadow: 0 4px 0 #E65100;
+        }
+
+        .auto-btn {
+            background: linear-gradient(to right, #F44336, #C62828);
+            color: white;
+            box-shadow: 0 4px 0 #B71C1C;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* O ban co */
+        .cell {
+            background: #8B4513;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cell:hover {
+            transform: scale(1.05);
+            z-index: 10;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        .border-cell {
+            background: #555 !important;
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 5px,
+                rgba(255,255,255,0.1) 5px,
+                rgba(255,255,255,0.1) 10px
+            ) !important;
+        }
+
+        .blue {
+            background: linear-gradient(135deg, #1e88e5, #0d47a1);
+            color: white;
+        }
+
+        .red {
+            background: linear-gradient(135deg, #e53935, #b71c1c);
+            color: white;
+        }
+
+        .hidden {
+            background: linear-gradient(135deg, #424242, #212121);
+            color: transparent;
+        }
+
+        .hidden::after {
+            content: "?";
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        /* Thong tin */
+        .game-info {
+            background: rgba(0, 20, 40, 0.8);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 2px solid #ffd700;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .info-label {
+            color: #a3d5ff;
+            font-weight: bold;
+        }
+
+        .info-value {
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Hien thi quan */
+        .piece-info {
+            background: rgba(0, 30, 60, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+            border: 2px solid #1e88e5;
+            min-height: 180px;
+        }
+
+        .piece-info h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.4rem;
+        }
+
+        .piece-details {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .piece-symbol {
+            font-size: 3.5rem;
+            flex-shrink: 0;
+        }
+
+        .piece-text {
+            flex-grow: 1;
+        }
+
+        .piece-name {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .piece-description {
+            color: #a3d5ff;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        /* Thanh trang thai */
+        .status-bar {
+            background: rgba(0, 30, 60, 0.9);
+            border-radius: 10px;
+            padding: 15px 25px;
+            margin-bottom: 20px;
+            border: 2px solid #1e88e5;
+            text-align: center;
+            font-size: 1.2rem;
+            color: #ffd700;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Nhan hang va cot */
+        .row-label, .col-label {
+            position: absolute;
+            color: #ffd700;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 3px;
+        }
+
+        .row-label {
+            width: 30px;
+            height: 50px;
+            left: -35px;
+        }
+
+        .col-label {
+            width: 50px;
+            height: 25px;
+            top: -30px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1300px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .board-section, .control-section {
+                width: 100%;
+                max-width: 900px;
+            }
+            
+            .board-section {
+                min-width: auto;
+            }
+            
+            .board-container {
+                width: 100%;
+                height: 500px;
+                max-width: 808px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .board-container {
+                height: 400px;
+            }
+            
+            .cell {
+                font-size: 18px;
+            }
+            
+            .hidden::after {
+                font-size: 22px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .board-container {
+                height: 350px;
+            }
+            
+            .cell {
+                font-size: 14px;
+            }
+            
+            .control-btn {
+                padding: 12px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Animation */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Hieu ung chien thang */
+        .victory {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .victory h2 {
+            font-size: 4rem;
+            color: #ffd700;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        }
+
+        .victory p {
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .victory-btn {
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            background: linear-gradient(to right, #4CAF50, #2E7D32);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .victory-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Hieu ung an quan */
+        .capture-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+            z-index: 20;
+            animation: fadeOut 0.5s forwards;
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-chess-board"></i> CO QUAN SU VIET NAM</h1>
+            <p class="subtitle">Luc Quan Ky - Tro choi chien thuat quan su dinh cao</p>
+        </header>
+
+        <div class="status-bar" id="status">
+            Nhan "XEP QUAN" de bat dau tro choi
+        </div>
+
+        <div class="main-content">
+            <section class="board-section">
+                <div class="board-container">
+                    <!-- Nhan hang (1-11) -->
+                    <div class="row-labels">
+                        <div class="row-label" style="top: 25px;">1</div>
+                        <div class="row-label" style="top: 75px;">2</div>
+                        <div class="row-label" style="top: 125px;">3</div>
+                        <div class="row-label" style="top: 175px;">4</div>
+                        <div class="row-label" style="top: 225px;">5</div>
+                        <div class="row-label" style="top: 275px;">6</div>
+                        <div class="row-label" style="top: 325px;">7</div>
+                        <div class="row-label" style="top: 375px;">8</div>
+                        <div class="row-label" style="top: 425px;">9</div>
+                        <div class="row-label" style="top: 475px;">10</div>
+                        <div class="row-label" style="top: 525px;">11</div>
+                    </div>
+                    
+                    <!-- Nhan cot (A-K) -->
+                    <div class="col-labels">
+                        <div class="col-label" style="left: 25px;">A</div>
+                        <div class="col-label" style="left: 75px;">B</div>
+                        <div class="col-label" style="left: 125px;">C</div>
+                        <div class="col-label" style="left: 175px;">D</div>
+                        <div class="col-label" style="left: 225px;">E</div>
+                        <div class="col-label" style="left: 275px;">F</div>
+                        <div class="col-label" style="left: 325px;">G</div>
+                        <div class="col-label" style="left: 375px;">H</div>
+                        <div class="col-label" style="left: 425px;">I</div>
+                        <div class="col-label" style="left: 475px;">J</div>
+                        <div class="col-label" style="left: 525px;">K</div>
+                    </div>
+                    
+                    <div id="board"></div>
+                </div>
+            </section>
+
+            <section class="control-section">
+                <div class="buttons-grid">
+                    <button class="control-btn setup-btn" id="setupBtn">
+                        <i class="fas fa-random"></i> XEP QUAN
+                    </button>
+                    <button class="control-btn play-btn" id="playBtn">
+                        <i class="fas fa-play"></i> CHOI
+                    </button>
+                    <button class="control-btn hide-btn" id="hideBtn">
+                        <i class="fas fa-eye-slash"></i> UP QUAN
+                    </button>
+                    <button class="control-btn reveal-btn" id="revealBtn">
+                        <i class="fas fa-eye"></i> NGUA QUAN
+                    </button>
+                    <button class="control-btn auto-btn" id="autoBtn">
+                        <i class="fas fa-robot"></i> CHOI TU dONG
+                    </button>
+                </div>
+
+                <div class="game-info">
+                    <div class="info-row">
+                        <span class="info-label">XANH (Ban):</span>
+                        <span class="info-value" id="blueCount">25 quan</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">dO (dich):</span>
+                        <span class="info-value" id="redCount">25 quan</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">dA LOAI:</span>
+                        <span class="info-value" id="capturedCount">0 quan</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">THOI GIAN:</span>
+                        <span class="info-value" id="timeDisplay">00:00</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">LUOT CHOI:</span>
+                        <span class="info-value" id="turnDisplay">XANH</span>
+                    </div>
+                </div>
+
+                <div class="piece-info" id="pieceInfo">
+                    <h3><i class="fas fa-info-circle"></i> THONG TIN QUAN CO</h3>
+                    <div class="piece-details">
+                        <div class="piece-symbol" id="pieceSymbol">⭐</div>
+                        <div class="piece-text">
+                            <div class="piece-name" id="pieceName">Tu lenh</div>
+                            <div class="piece-description" id="pieceDescription">
+                                Cap bac cao nhat. Thua la mat toan bo. Chi dung o hang 1 (Xanh) hoac 11 (do).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Man hinh chien thang -->
+    <div class="victory" id="victoryScreen">
+        <h2 id="victoryTitle">CHIEN THANG!</h2>
+        <p id="victoryMessage">doi Xanh da gianh chien thang!</p>
+        <button class="victory-btn" id="playAgainBtn">CHOI LAI</button>
+    </div>
+
+    <script>
+        // Khai bao bien toan cuc
+        const board = Array(11).fill().map(() => Array(11).fill(null));
+        let isHidden = true;
+        let isManualMode = false;
+        let selectedCell = null;
+        let gameStarted = false;
+        let gameTime = 0;
+        let timerInterval = null;
+        let bluePieces = 25;
+        let redPieces = 25;
+        let capturedPieces = 0;
+        let currentTurn = 'blue';
+        let isAutoPlaying = false;
+
+        // Danh sach quan co voi thong tin chi tiet
+        const pieces = [
+            {symbol: "⭐", name: "Tu lenh", rank: 13, count: 1, description: "Cap bac cao nhat. Thua la mat toan bo. Chi dung o hang 1 (Xanh) hoac 11 (do)."},
+            {symbol: "🚩", name: "Quan ky", rank: 0, count: 1, description: "Khong duoc di chuyen. Bao ve la muc tieu chinh.", immovable: true},
+            {symbol: "💣", name: "Bom", rank: 12, count: 2, description: "No ca hai khi an hoac bi an. Cong binh co the pha bom.", bomb: true},
+            {symbol: "★★★★", name: "Su truong", rank: 11, count: 1, description: "Cao nhat sau Tu lenh."},
+            {symbol: "★★★", name: "Quan truong", rank: 10, count: 1, description: "Cap bac chi huy cao cap."},
+            {symbol: "★★", name: "Su doan truong", rank: 9, count: 2, description: "Chi huy cap su doan."},
+            {symbol: "★", name: "Lu doan truong", rank: 8, count: 2, description: "Chi huy cap lu doan."},
+            {symbol: "▌▌▌", name: "Trung doan truong", rank: 7, count: 2, description: "Chi huy cap trung doan."},
+            {symbol: "▌▌", name: "Tieu doan truong", rank: 6, count: 2, description: "Chi huy cap tieu doan."},
+            {symbol: "▌", name: "dai doi truong", rank: 5, count: 3, description: "Chi huy cap dai doi."},
+            {symbol: "⚙", name: "Cong binh", rank: 4, count: 3, description: "Chuyen pha bom va min. Co the an min."},
+            {symbol: "⛔", name: "Min", rank: 3, count: 3, description: "Khong di chuyen. Cong binh co the pha min.", immovable: true},
+            {symbol: "👁", name: "Trinh sat", rank: 2, count: 2, description: "Co the an Tu lenh neu tan cong truc dien."}
+        ];
+
+        // DOM Elements
+        const boardElement = document.getElementById('board');
+        const statusElement = document.getElementById('status');
+        const blueCountElement = document.getElementById('blueCount');
+        const redCountElement = document.getElementById('redCount');
+        const capturedCountElement = document.getElementById('capturedCount');
+        const timeDisplayElement = document.getElementById('timeDisplay');
+        const turnDisplayElement = document.getElementById('turnDisplay');
+        const pieceInfoElement = document.getElementById('pieceInfo');
+        const pieceSymbolElement = document.getElementById('pieceSymbol');
+        const pieceNameElement = document.getElementById('pieceName');
+        const pieceDescriptionElement = document.getElementById('pieceDescription');
+        const victoryScreen = document.getElementById('victoryScreen');
+        const victoryTitle = document.getElementById('victoryTitle');
+        const victoryMessage = document.getElementById('victoryMessage');
+
+        // Tao ban co
+        function createBoard() {
+            boardElement.innerHTML = '';
+            
+            for (let row = 0; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    
+                    // danh dau bien gioi (hang 6 - hang giua)
+                    if (row === 5) {
+                        cell.classList.add('border-cell');
+                    }
+                    
+                    // Gan su kien
+                    cell.addEventListener('click', () => handleCellClick(row, col));
+                    cell.addEventListener('mouseenter', () => showPieceInfo(row, col));
+                    
+                    boardElement.appendChild(cell);
+                }
+            }
+            
+            // dat vi tri ban co theo toa do yeu cau
+            const boardContainer = document.querySelector('.board-container');
+            boardContainer.style.position = 'absolute';
+            boardContainer.style.left = '381px';
+            boardContainer.style.top = '128px';
+            boardContainer.style.width = '808px'; // 1189 - 381 = 808
+            boardContainer.style.height = '564px'; // 692 - 128 = 564
+        }
+
+        // Xep quan ngau nhien
+        function setupRandomBoard() {
+            // Reset ban co
+            for (let row = 0; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    board[row][col] = null;
+                }
+            }
+            
+            // Reset so luong quan
+            bluePieces = 25;
+            redPieces = 25;
+            capturedPieces = 0;
+            currentTurn = 'blue';
+            isHidden = true;
+            selectedCell = null;
+            gameStarted = true;
+            
+            // Tao danh sach vi tri cho moi ben
+            const bluePositions = [];
+            const redPositions = [];
+            
+            // Xanh: hang 6-11 (khong bao gom hang bien gioi 6)
+            for (let row = 6; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    bluePositions.push({row, col});
+                }
+            }
+            
+            // do: hang 0-4 (khong bao gom hang bien gioi 6)
+            for (let row = 0; row < 5; row++) {
+                for (let col = 0; col < 11; col++) {
+                    redPositions.push({row, col});
+                }
+            }
+            
+            // Xao tron vi tri
+            shuffleArray(bluePositions);
+            shuffleArray(redPositions);
+            
+            // Xep quan Xanh
+            let blueIndex = 0;
+            for (const piece of pieces) {
+                for (let i = 0; i < piece.count; i++) {
+                    if (blueIndex >= bluePositions.length) break;
+                    
+                    const pos = bluePositions[blueIndex];
+                    board[pos.row][pos.col] = {
+                        symbol: piece.symbol,
+                        name: piece.name,
+                        rank: piece.rank,
+                        side: 'blue',
+                        revealed: false,
+                        bomb: piece.bomb || false,
+                        immovable: piece.immovable || false,
+                        description: piece.description
+                    };
+                    blueIndex++;
+                }
+            }
+            
+            // dam bao Tu lenh Xanh o hang 10 (hang 11 theo yeu cau)
+            placeCommander('blue', 10);
+            
+            // Xep quan do
+            let redIndex = 0;
+            for (const piece of pieces) {
+                for (let i = 0; i < piece.count; i++) {
+                    if (redIndex >= redPositions.length) break;
+                    
+                    const pos = redPositions[redIndex];
+                    board[pos.row][pos.col] = {
+                        symbol: piece.symbol,
+                        name: piece.name,
+                        rank: piece.rank,
+                        side: 'red',
+                        revealed: false,
+                        bomb: piece.bomb || false,
+                        immovable: piece.immovable || false,
+                        description: piece.description
+                    };
+                    redIndex++;
+                }
+            }
+            
+            // dam bao Tu lenh do o hang 0 (hang 1 theo yeu cau)
+            placeCommander('red', 0);
+            
+            // Bat dau dong ho
+            startTimer();
+            
+            // Cap nhat giao dien
+            updateDisplay();
+            renderBoard();
+            
+            statusElement.textContent = "da xep quan ngau nhien. Nhan 'CHOI' de bat dau!";
+            statusElement.style.color = "#4CAF50";
+        }
+
+        // dat Tu lenh vao hang cu the
+        function placeCommander(side, targetRow) {
+            // Tim Tu lenh hien tai
+            let commanderPos = null;
+            for (let row = 0; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    if (board[row][col] && 
+                        board[row][col].symbol === "⭐" && 
+                        board[row][col].side === side) {
+                        commanderPos = {row, col};
+                        break;
+                    }
+                }
+                if (commanderPos) break;
+            }
+            
+            if (!commanderPos) return;
+            
+            // Tim vi tri trong trong hang muc tieu
+            const emptyCells = [];
+            for (let col = 0; col < 11; col++) {
+                if (!board[targetRow][col]) {
+                    emptyCells.push(col);
+                }
+            }
+            
+            if (emptyCells.length === 0) return;
+            
+            // Chon ngau nhien mot cot trong
+            const randomCol = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+            
+            // Di chuyen Tu lenh
+            const commander = board[commanderPos.row][commanderPos.col];
+            board[commanderPos.row][commanderPos.col] = null;
+            board[targetRow][randomCol] = commander;
+        }
+
+        // Xao tron mang
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Render ban co
+        function renderBoard() {
+            for (let row = 0; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    const cellIndex = row * 11 + col;
+                    const cell = boardElement.children[cellIndex];
+                    const piece = board[row][col];
+                    
+                    // Reset lop CSS
+                    cell.className = 'cell';
+                    if (row === 5) cell.classList.add('border-cell');
+                    
+                    if (piece) {
+                        // Them lop mau
+                        if (piece.side === 'blue') {
+                            cell.classList.add('blue');
+                        } else {
+                            cell.classList.add('red');
+                        }
+                        
+                        // Hien thi quan
+                        if (isHidden && !piece.revealed) {
+                            cell.classList.add('hidden');
+                            cell.textContent = '';
+                        } else {
+                            cell.textContent = piece.symbol;
+                            cell.classList.remove('hidden');
+                        }
+                        
+                        // danh dau o duoc chon
+                        if (selectedCell && selectedCell.row === row && selectedCell.col === col) {
+                            cell.style.boxShadow = '0 0 20px #ffd700';
+                            cell.style.transform = 'scale(1.1)';
+                        }
+                    } else {
+                        cell.textContent = '';
+                        cell.classList.remove('blue', 'red', 'hidden');
+                    }
+                }
+            }
+        }
+
+        // Xu ly click o
+        function handleCellClick(row, col) {
+            if (!gameStarted || isAutoPlaying) return;
+            
+            const piece = board[row][col];
+            
+            if (!isManualMode) {
+                statusElement.textContent = "Vui long nhan 'CHOI' de bat dau che do thu cong!";
+                return;
+            }
+            
+            if (!piece) {
+                statusElement.textContent = "O trong! Vui long chon quan co.";
+                return;
+            }
+            
+            // Neu chua chon quan nao
+            if (!selectedCell) {
+                // Chi duoc chon quan cua luot hien tai
+                if (piece.side !== currentTurn) {
+                    statusElement.textContent = `Luot ${currentTurn === 'blue' ? 'XANH' : 'dO'}! Chon quan cua ban.`;
+                    return;
+                }
+                
+                selectedCell = {row, col};
+                piece.revealed = true;
+                statusElement.textContent = `da chon ${piece.name}. Chon quan dich cung cot de tan cong!`;
+                renderBoard();
+                showPieceInfo(row, col);
+            } 
+            // Neu da chon quan tan cong
+            else {
+                const selectedPiece = board[selectedCell.row][selectedCell.col];
+                
+                // Kiem tra hop le
+                if (!isValidMove(selectedCell, {row, col})) {
+                    statusElement.textContent = "Nuoc di khong hop le! Chi duoc di doc trong cung cot.";
+                    selectedCell = null;
+                    renderBoard();
+                    return;
+                }
+                
+                // Thuc hien tan cong
+                performAttack(selectedCell, {row, col});
+                selectedCell = null;
+            }
+        }
+
+        // Kiem tra nuoc di hop le
+        function isValidMove(from, to) {
+            // Khong cung cot
+            if (from.col !== to.col) return false;
+            
+            // Khong di chuyen ngang (luon dung vi da check cung cot)
+            
+            // Khong di chuyen ra ngoai ban co
+            if (to.row < 0 || to.row > 10 || to.col < 0 || to.col > 10) return false;
+            
+            // Khong di chuyen den o trong (phai co quan dich)
+            if (!board[to.row][to.col]) return false;
+            
+            // Quan dich phai la dich
+            const fromPiece = board[from.row][from.col];
+            const toPiece = board[to.row][to.col];
+            if (fromPiece.side === toPiece.side) return false;
+            
+            // Quan khong duoc di chuyen
+            if (fromPiece.immovable) return false;
+            
+            // Chi duoc di chuyen den o lien ke (tren/duoi)
+            return Math.abs(from.row - to.row) === 1;
+        }
+
+        // Thuc hien tan cong
+        function performAttack(from, to) {
+            const attacker = board[from.row][from.col];
+            const defender = board[to.row][to.col];
+            
+            // Ngua ca hai quan
+            attacker.revealed = true;
+            defender.revealed = true;
+            
+            // Hieu ung
+            const cell = boardElement.children[to.row * 11 + to.col];
+            const effect = document.createElement('div');
+            effect.className = 'capture-effect';
+            cell.appendChild(effect);
+            setTimeout(() => effect.remove(), 500);
+            
+            // Xac dinh ket qua
+            let resultMessage = "";
+            let winner = null;
+            
+            // Bom no
+            if (attacker.bomb || defender.bomb) {
+                board[from.row][from.col] = null;
+                board[to.row][to.col] = null;
+                bluePieces--;
+                redPieces--;
+                capturedPieces += 2;
+                resultMessage = "💥 BOM NO! Ca hai quan bi tieu diet!";
+            }
+            // Cong binh pha bom/min
+            else if (attacker.name === "Cong binh" && (defender.bomb || defender.name === "Min")) {
+                board[to.row][to.col] = attacker;
+                board[from.row][from.col] = null;
+                if (defender.side === 'blue') bluePieces--; else redPieces--;
+                capturedPieces++;
+                resultMessage = `⚙ Cong binh pha ${defender.bomb ? 'bom' : 'min'} thanh cong!`;
+                winner = attacker;
+            }
+            else if (defender.name === "Cong binh" && (attacker.bomb || attacker.name === "Min")) {
+                board[to.row][to.col] = defender;
+                board[from.row][from.col] = null;
+                if (attacker.side === 'blue') bluePieces--; else redPieces--;
+                capturedPieces++;
+                resultMessage = `⚙ Cong binh pha ${attacker.bomb ? 'bom' : 'min'} thanh cong!`;
+                winner = defender;
+            }
+            // So sanh cap bac
+            else if (attacker.rank > defender.rank) {
+                board[to.row][to.col] = attacker;
+                board[from.row][from.col] = null;
+                if (defender.side === 'blue') bluePieces--; else redPieces--;
+                capturedPieces++;
+                resultMessage = `${attacker.name} (${attacker.symbol}) an ${defender.name} (${defender.symbol})!`;
+                winner = attacker;
+            }
+            else if (attacker.rank < defender.rank) {
+                board[to.row][to.col] = defender;
+                board[from.row][from.col] = null;
+                if (attacker.side === 'blue') bluePieces--; else redPieces--;
+                capturedPieces++;
+                resultMessage = `${defender.name} (${defender.symbol}) an ${attacker.name} (${attacker.symbol})!`;
+                winner = defender;
+            }
+            // Cung cap bac
+            else {
+                board[from.row][from.col] = null;
+                board[to.row][to.col] = null;
+                bluePieces--;
+                redPieces--;
+                capturedPieces += 2;
+                resultMessage = "⚔ HAI QUAN CUNG CAP - CA HAI BI TIEU DIET!";
+            }
+            
+            // Cap nhat hien thi
+            updateDisplay();
+            renderBoard();
+            
+            // Hien thi thong bao
+            const colName = String.fromCharCode(65 + to.col); // A-K
+            statusElement.innerHTML = `${resultMessage}<br>Vi tri: Cot ${colName}, Hang ${to.row + 1}`;
+            
+            // Kiem tra dieu kien thang
+            checkWinCondition();
+            
+            // doi luot neu chua ket thuc
+            if (winner) {
+                currentTurn = winner.side;
+                updateTurnDisplay();
+            }
+            
+            // Tu dong up quan neu dang o che do up
+            if (isHidden && gameStarted && !isAutoPlaying) {
+                setTimeout(() => {
+                    for (let row = 0; row < 11; row++) {
+                        for (let col = 0; col < 11; col++) {
+                            const piece = board[row][col];
+                            if (piece) {
+                                piece.revealed = false;
+                            }
+                        }
+                    }
+                    renderBoard();
+                    statusElement.textContent = `Luot ${currentTurn === 'blue' ? 'XANH' : 'dO'}: Chon quan de tan cong!`;
+                }, 1500);
+            }
+        }
+
+        // Hien thi thong tin quan co
+        function showPieceInfo(row, col) {
+            const piece = board[row][col];
+            
+            if (piece) {
+                pieceSymbolElement.textContent = piece.symbol;
+                pieceNameElement.textContent = `${piece.name} (${piece.side === 'blue' ? 'XANH' : 'dO'})`;
+                pieceDescriptionElement.textContent = piece.description;
+                
+                // Them thong tin di chuyen
+                if (piece.immovable) {
+                    pieceDescriptionElement.textContent += " KHONG DI CHUYEN.";
+                } else {
+                    pieceDescriptionElement.textContent += " Di chuyen doc trong cot, tien sat doi thu.";
+                }
+            } else {
+                const colName = String.fromCharCode(65 + col);
+                pieceSymbolElement.textContent = "◻";
+                pieceNameElement.textContent = `O trong - Cot ${colName}, Hang ${row + 1}`;
+                pieceDescriptionElement.textContent = "O trong tren ban co.";
+            }
+        }
+
+        // Cap nhat hien thi thong tin
+        function updateDisplay() {
+            blueCountElement.textContent = `${bluePieces} quan`;
+            redCountElement.textContent = `${redPieces} quan`;
+            capturedCountElement.textContent = `${capturedPieces} quan`;
+            updateTurnDisplay();
+        }
+
+        // Cap nhat hien thi luot choi
+        function updateTurnDisplay() {
+            turnDisplayElement.textContent = currentTurn === 'blue' ? 'XANH' : 'dO';
+            turnDisplayElement.style.color = currentTurn === 'blue' ? '#1e88e5' : '#e53935';
+        }
+
+        // Bat dau dong ho
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            gameTime = 0;
+            
+            timerInterval = setInterval(() => {
+                gameTime++;
+                const minutes = Math.floor(gameTime / 60);
+                const seconds = gameTime % 60;
+                timeDisplayElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        // Kiem tra dieu kien thang
+        function checkWinCondition() {
+            // Kiem tra Tu lenh
+            let blueCommander = false;
+            let redCommander = false;
+            
+            for (let row = 0; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    const piece = board[row][col];
+                    if (piece && piece.symbol === "⭐") {
+                        if (piece.side === 'blue') blueCommander = true;
+                        if (piece.side === 'red') redCommander = true;
+                    }
+                }
+            }
+            
+            // Kiem tra het quan
+            if (bluePieces === 0 || !blueCommander) {
+                endGame('red', "dO chien thang!");
+                return;
+            }
+            
+            if (redPieces === 0 || !redCommander) {
+                endGame('blue', "XANH chien thang!");
+                return;
+            }
+        }
+
+        // Ket thuc game
+        function endGame(winner, message) {
+            gameStarted = false;
+            isManualMode = false;
+            isAutoPlaying = false;
+            
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            
+            // Hien thi man hinh chien thang
+            victoryTitle.textContent = winner === 'blue' ? "XANH CHIEN THANG!" : "dO CHIEN THANG!";
+            victoryTitle.style.color = winner === 'blue' ? '#1e88e5' : '#e53935';
+            victoryMessage.textContent = message;
+            victoryScreen.style.display = 'flex';
+            
+            // Ngua tat ca quan
+            isHidden = false;
+            for (let row = 0; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    const piece = board[row][col];
+                    if (piece) {
+                        piece.revealed = true;
+                    }
+                }
+            }
+            renderBoard();
+        }
+
+        // Choi tu dong
+        async function autoPlay() {
+            if (!gameStarted || isAutoPlaying) return;
+            
+            isAutoPlaying = true;
+            isManualMode = false;
+            isHidden = false;
+            
+            // Ngua tat ca quan
+            for (let row = 0; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    const piece = board[row][col];
+                    if (piece) {
+                        piece.revealed = true;
+                    }
+                }
+            }
+            
+            renderBoard();
+            statusElement.textContent = "dang choi tu dong...";
+            
+            // Lap cho den khi ket thuc game
+            while (gameStarted && isAutoPlaying) {
+                await autoPlayTurn();
+                
+                // Kiem tra dieu kien thang
+                checkWinCondition();
+                
+                // Cho mot chut giua cac luot
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
+            isAutoPlaying = false;
+        }
+
+        // Thuc hien mot luot choi tu dong
+        async function autoPlayTurn() {
+            // Tim tat ca cot co quan cua ca hai ben
+            const columnsWithBoth = [];
+            
+            for (let col = 0; col < 11; col++) {
+                let hasBlue = false;
+                let hasRed = false;
+                let bluePos = null;
+                let redPos = null;
+                
+                for (let row = 0; row < 11; row++) {
+                    const piece = board[row][col];
+                    if (piece) {
+                        if (piece.side === 'blue') {
+                            hasBlue = true;
+                            bluePos = {row, col};
+                        } else {
+                            hasRed = true;
+                            redPos = {row, col};
+                        }
+                    }
+                }
+                
+                if (hasBlue && hasRed && bluePos && redPos) {
+                    // Tim cap quan gan nhau nhat trong cot
+                    columnsWithBoth.push({
+                        col,
+                        bluePos,
+                        redPos,
+                        distance: Math.abs(bluePos.row - redPos.row)
+                    });
+                }
+            }
+            
+            if (columnsWithBoth.length === 0) {
+                // Khong con cot nao co ca hai ben
+                statusElement.textContent = "Khong con cot nao co quan cua ca hai ben!";
+                return;
+            }
+            
+            // Chon cot co khoang cach gan nhat
+            columnsWithBoth.sort((a, b) => a.distance - b.distance);
+            const selectedColumn = columnsWithBoth[0];
+            
+            // Xac dinh quan nao tan cong (quan gan bien gioi hon)
+            let attacker, defender;
+            
+            if (selectedColumn.bluePos.row < selectedColumn.redPos.row) {
+                // Xanh o tren, do o duoi
+                attacker = selectedColumn.bluePos;
+                defender = selectedColumn.redPos;
+            } else {
+                // do o tren, Xanh o duoi
+                attacker = selectedColumn.redPos;
+                defender = selectedColumn.bluePos;
+            }
+            
+            // Di chuyen quan tan cong den sat quan phong thu
+            const attackDirection = attacker.row < defender.row ? 1 : -1;
+            const targetRow = defender.row - attackDirection;
+            
+            // Kiem tra xem co the tan cong truc tiep khong
+            if (Math.abs(attacker.row - defender.row) === 1) {
+                // Tan cong truc tiep
+                performAttack(attacker, defender);
+            } else {
+                // Di chuyen den vi tri sat doi thu
+                const piece = board[attacker.row][attacker.col];
+                board[attacker.row][attacker.col] = null;
+                board[targetRow][attacker.col] = piece;
+                
+                // Cap nhat vi tri attacker
+                attacker.row = targetRow;
+                
+                // Render va cho
+                renderBoard();
+                statusElement.textContent = `Di chuyen quan den vi tri sat doi thu (Cot ${String.fromCharCode(65 + attacker.col)})`;
+                await new Promise(resolve => setTimeout(resolve, 800));
+                
+                // Tan cong
+                performAttack(attacker, defender);
+            }
+            
+            // Cho mot chut
+            await new Promise(resolve => setTimeout(resolve, 800));
+        }
+
+        // Su kien cho cac nut
+        document.getElementById('setupBtn').addEventListener('click', () => {
+            setupRandomBoard();
+            statusElement.textContent = "da xep quan ngau nhien! Nhan 'CHOI' de bat dau.";
+            statusElement.style.color = "#4CAF50";
+        });
+
+        document.getElementById('playBtn').addEventListener('click', () => {
+            if (!gameStarted) {
+                statusElement.textContent = "Vui long xep quan truoc!";
+                statusElement.style.color = "#FF9800";
+                return;
+            }
+            
+            isManualMode = true;
+            isAutoPlaying = false;
+            statusElement.textContent = "Che do thu cong: Luot XANH, chon quan xanh de tan cong!";
+            statusElement.style.color = "#2196F3";
+        });
+
+        document.getElementById('hideBtn').addEventListener('click', () => {
+            isHidden = true;
+            for (let row = 0; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    const piece = board[row][col];
+                    if (piece) {
+                        piece.revealed = false;
+                    }
+                }
+            }
+            renderBoard();
+            statusElement.textContent = "da up tat ca quan co!";
+            statusElement.style.color = "#9C27B0";
+        });
+
+        document.getElementById('revealBtn').addEventListener('click', () => {
+            isHidden = false;
+            for (let row = 0; row < 11; row++) {
+                for (let col = 0; col < 11; col++) {
+                    const piece = board[row][col];
+                    if (piece) {
+                        piece.revealed = true;
+                    }
+                }
+            }
+            renderBoard();
+            statusElement.textContent = "da ngua tat ca quan co!";
+            statusElement.style.color = "#FF9800";
+        });
+
+        document.getElementById('autoBtn').addEventListener('click', () => {
+            if (!gameStarted) {
+                statusElement.textContent = "Vui long xep quan truoc!";
+                return;
+            }
+            autoPlay();
+        });
+
+        document.getElementById('playAgainBtn').addEventListener('click', () => {
+            victoryScreen.style.display = 'none';
+            setupRandomBoard();
+        });
+
+        // Khoi tao
+        window.addEventListener('load', () => {
+            createBoard();
+            updateDisplay();
+            
+            // dat kich thuoc ban co chinh xac
+            const boardContainer = document.querySelector('.board-container');
+            boardContainer.style.width = '808px';
+            boardContainer.style.height = '564px';
+            
+            statusElement.textContent = "Chao mung den voi Co Quan Su Viet Nam! Nhan 'XEP QUAN' de bat dau.";
+        });
+
+        // Xu ly resize window
+        window.addEventListener('resize', () => {
+            // Giu ban co trong kich thuoc co dinh
+            const boardContainer = document.querySelector('.board-container');
+            boardContainer.style.width = '808px';
+            boardContainer.style.height = '564px';
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

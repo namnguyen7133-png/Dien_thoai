@@ -1,0 +1,609 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phan tich BPM – Hz – Hop am – 12 Con Giap & Gio Noi Tang</title>
+<style>
+    :root {
+        --primary: #4a6fa5;
+        --secondary: #166088;
+        --accent: #ff7e5f;
+        --light: #f8f9fa;
+        --dark: #343a40;
+        --success: #28a745;
+        --warning: #ffc107;
+        --danger: #dc3545;
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        color: var(--dark);
+        line-height: 1.6;
+        padding: 20px;
+        min-height: 100vh;
+    }
+    
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        padding: 25px;
+    }
+    
+    .header {
+        text-align: center;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 25px;
+    }
+    
+    h1 {
+        color: var(--primary);
+        font-size: 28px;
+        margin-bottom: 10px;
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    
+    .subtitle {
+        color: var(--secondary);
+        font-size: 16px;
+        font-weight: 500;
+    }
+    
+    .input-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+    
+    .input-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--secondary);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .icon {
+        font-size: 18px;
+    }
+    
+    input, select {
+        padding: 12px 15px;
+        border: 2px solid #e1e5eb;
+        border-radius: 10px;
+        font-size: 16px;
+        transition: all 0.3s;
+        background-color: var(--light);
+    }
+    
+    input:focus, select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
+    }
+    
+    .btn-analyze {
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        font-size: 18px;
+        font-weight: 600;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: block;
+        width: 100%;
+        margin: 20px 0;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-analyze:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+    
+    .btn-analyze:active {
+        transform: translateY(0);
+    }
+    
+    .results-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    @media (min-width: 768px) {
+        .results-container {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+    
+    .result-box {
+        background: var(--light);
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        border-left: 5px solid var(--primary);
+    }
+    
+    .result-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .result-content {
+        font-size: 16px;
+    }
+    
+    .result-item {
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed #ddd;
+    }
+    
+    .result-item:last-child {
+        border-bottom: none;
+    }
+    
+    .highlight {
+        color: var(--accent);
+        font-weight: 600;
+    }
+    
+    .organ-time {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #f0f8ff;
+        padding: 10px 15px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .organ-name {
+        font-weight: 600;
+        color: var(--secondary);
+    }
+    
+    .organ-hours {
+        background: var(--primary);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 14px;
+    }
+    
+    .zodiac-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .zodiac-emoji {
+        font-size: 40px;
+    }
+    
+    .zodiac-details {
+        flex: 1;
+    }
+    
+    .zodiac-name {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--secondary);
+    }
+    
+    .zodiac-traits {
+        font-size: 14px;
+        color: #666;
+    }
+    
+    .bpm-indicator {
+        height: 10px;
+        background: linear-gradient(to right, #4CAF50, #FFC107, #F44336);
+        border-radius: 5px;
+        margin: 10px 0;
+        position: relative;
+    }
+    
+    .bpm-marker {
+        position: absolute;
+        top: -5px;
+        width: 20px;
+        height: 20px;
+        background: var(--dark);
+        border-radius: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .footer {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+        color: #777;
+        font-size: 14px;
+    }
+</style>
+</head>
+
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🧠 Phan tich Cong viec theo BPM – Hz – Hop am</h1>
+        <div class="subtitle">12 Con Giap & Gio hoat dong cua co quan noi tang</div>
+    </div>
+    
+    <div class="input-section">
+        <div class="input-group">
+            <label><span class="icon">🐹</span> Chon Con Giap</label>
+            <select id="congiap">
+                <option value="">-- Chon Con Giap --</option>
+                <option value="ty">🐭 Ty</option>
+                <option value="suu">🐮 Suu</option>
+                <option value="dan">🐯 Dan</option>
+                <option value="mao">🐰 Mao</option>
+                <option value="thin">🐲 Thin</option>
+                <option value="ty2">🐍 Ty</option>
+                <option value="ngo">🐴 Ngo</option>
+                <option value="mui">🐐 Mui</option>
+                <option value="than">🐵 Than</option>
+                <option value="dau">🐔 Dau</option>
+                <option value="tuat">🐶 Tuat</option>
+                <option value="hoi">🐷 Hoi</option>
+            </select>
+        </div>
+        
+        <div class="input-group">
+            <label><span class="icon">❤</span> Nhip tim (BPM)</label>
+            <input type="number" id="bpm" placeholder="60 – 160" min="40" max="200">
+        </div>
+        
+        <div class="input-group">
+            <label><span class="icon">🔊</span> Tan so Hz</label>
+            <input type="number" id="hz" placeholder="100 – 500" min="50" max="1000" step="0.1">
+        </div>
+        
+        <div class="input-group">
+            <label><span class="icon">🎵</span> Hop am</label>
+            <select id="chord">
+                <option value="">-- Khong chon --</option>
+                <option value="C">C - do truong (Sang tao)</option>
+                <option value="D">D - Re truong (Nang dong)</option>
+                <option value="E">E - Mi truong (Manh me)</option>
+                <option value="F">F - Fa truong (Diu dang)</option>
+                <option value="G">G - Sol truong (Vui ve)</option>
+                <option value="A">A - La truong (Tuoi sang)</option>
+                <option value="B">B - Si truong (Phuc tap)</option>
+            </select>
+        </div>
+    </div>
+    
+    <button class="btn-analyze" onclick="phanTich()">📊 PHAN TICH & dOI CHIEU</button>
+    
+    <div class="results-container">
+        <div class="result-box">
+            <div class="result-title"><span class="icon">🎯</span> Thong tin Con Giap & Phan tich</div>
+            <div class="result-content" id="zodiacResult">
+                <div class="zodiac-info">
+                    <div class="zodiac-emoji">🐹</div>
+                    <div class="zodiac-details">
+                        <div class="zodiac-name">Chon Con Giap</div>
+                        <div class="zodiac-traits">Thong tin se hien thi tai day sau khi chon</div>
+                    </div>
+                </div>
+                <div id="analysisDetails">Vui long chon Con Giap va nhap thong tin de xem phan tich</div>
+            </div>
+        </div>
+        
+        <div class="result-box">
+            <div class="result-title"><span class="icon">🕐</span> Gio hoat dong Noi tang & Cong viec</div>
+            <div class="result-content" id="organResult">
+                <div class="organ-time">
+                    <div class="organ-name">Da day</div>
+                    <div class="organ-hours">7:00 - 9:00</div>
+                </div>
+                <div class="result-item"><span class="highlight">An sang,</span> hop buoi sang, len ke hoach</div>
+                
+                <div class="organ-time">
+                    <div class="organ-name">La lach</div>
+                    <div class="organ-hours">9:00 - 11:00</div>
+                </div>
+                <div class="result-item"><span class="highlight">Tap trung lam viec,</span> hoc tap, xu ly cong viec quan trong</div>
+                
+                <div class="organ-time">
+                    <div class="organ-name">Tim</div>
+                    <div class="organ-hours">11:00 - 13:00</div>
+                </div>
+                <div class="result-item"><span class="highlight">Nghi ngoi, an trua,</span> giao tiep nhe nhang</div>
+                
+                <div class="organ-time">
+                    <div class="organ-name">Ruot non</div>
+                    <div class="organ-hours">13:00 - 15:00</div>
+                </div>
+                <div class="result-item"><span class="highlight">Phan tich, tong hop,</span> lam viec chi tiet</div>
+                
+                <div class="organ-time">
+                    <div class="organ-name">Bang quang</div>
+                    <div class="organ-hours">15:00 - 17:00</div>
+                </div>
+                <div class="result-item"><span class="highlight">Hop chieu,</span> trao doi, luu tru thong tin</div>
+                
+                <div class="organ-time">
+                    <div class="organ-name">Than</div>
+                    <div class="organ-hours">17:00 - 19:00</div>
+                </div>
+                <div class="result-item"><span class="highlight">Hoan thanh cong viec,</span> len ke hoach ngay mai</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Ung dung ket hop y hoc co truyen, am nhac tri lieu va phan tich nhip sinh hoc</p>
+        <p>© 2023 - Danh cho muc dich tham khao va giai tri</p>
+    </div>
+</div>
+
+<script>
+function phanTich() {
+    const congiap = document.getElementById("congiap").value;
+    const bpm = parseInt(document.getElementById("bpm").value);
+    const hz = parseFloat(document.getElementById("hz").value);
+    const chord = document.getElementById("chord").value;
+    
+    const giapMap = {
+        ty: {
+            emoji: "🐭",
+            name: "Ty",
+            traits: "Tri tue, kinh doanh, cong nghe, giao tiep",
+            bpmRange: [80, 120],
+            hzRange: [220, 350],
+            chord: "E",
+            jobs: "Cong nghe thong tin, tu van, giao dich, nghien cuu"
+        },
+        suu: {
+            emoji: "🐮",
+            name: "Suu",
+            traits: "Lao dong, xay dung, quan ly, ben bi",
+            bpmRange: [70, 100],
+            hzRange: [150, 250],
+            chord: "D",
+            jobs: "Xay dung, nong nghiep, quan ly du an, logistics"
+        },
+        dan: {
+            emoji: "🐯",
+            name: "Dan",
+            traits: "Lanh dao, quan doi, the thao, mao hiem",
+            bpmRange: [110, 150],
+            hzRange: [300, 450],
+            chord: "A",
+            jobs: "Quan ly cap cao, huan luyen, the thao chuyen nghiep"
+        },
+        mao: {
+            emoji: "🐰",
+            name: "Mao",
+            traits: "Nghe thuat, ngoai giao, giao duc, sang tao",
+            bpmRange: [70, 100],
+            hzRange: [180, 280],
+            chord: "F",
+            jobs: "Giao duc, nghe thuat, thiet ke, tam ly hoc"
+        },
+        thin: {
+            emoji: "🐲",
+            name: "Thin",
+            traits: "Quan ly, chinh tri, to chuc lon, sang tao",
+            bpmRange: [100, 140],
+            hzRange: [280, 420],
+            chord: "G",
+            jobs: "Quan ly doanh nghiep, chinh tri, to chuc su kien"
+        },
+        ty2: {
+            emoji: "🐍",
+            name: "Ty",
+            traits: "Nghien cuu, chien luoc, tam linh, phan tich",
+            bpmRange: [80, 120],
+            hzRange: [250, 400],
+            chord: "B",
+            jobs: "Nghien cuu khoa hoc, chien luoc gia, phan tich du lieu"
+        },
+        ngo: {
+            emoji: "🐴",
+            name: "Ngo",
+            traits: "Du lich, van dong, ban hang, giao tiep",
+            bpmRange: [100, 140],
+            hzRange: [300, 450],
+            chord: "A",
+            jobs: "Sales, marketing, du lich, quan he cong chung"
+        },
+        mui: {
+            emoji: "🐐",
+            name: "Mui",
+            traits: "Cham soc, xa hoi, y te, nghe thuat",
+            bpmRange: [60, 90],
+            hzRange: [120, 220],
+            chord: "C",
+            jobs: "Y te, cham soc suc khoe, cong tac xa hoi, nghe thuat"
+        },
+        than: {
+            emoji: "🐵",
+            name: "Than",
+            traits: "Sang tao, ky thuat, truyen thong, giai tri",
+            bpmRange: [90, 130],
+            hzRange: [250, 400],
+            chord: "E",
+            jobs: "Ky thuat, truyen thong, giai tri, cong nghe"
+        },
+        dau: {
+            emoji: "🐔",
+            name: "Dau",
+            traits: "Ke toan, to chuc, ky luat, giang day",
+            bpmRange: [70, 100],
+            hzRange: [180, 260],
+            chord: "D",
+            jobs: "Ke toan, giao vien, hanh chinh, quan ly tai chinh"
+        },
+        tuat: {
+            emoji: "🐶",
+            name: "Tuat",
+            traits: "Bao ve, luat, quan su, cong dong",
+            bpmRange: [90, 130],
+            hzRange: [220, 350],
+            chord: "F",
+            jobs: "An ninh, luat su, quan doi, cong tac cong dong"
+        },
+        hoi: {
+            emoji: "🐷",
+            name: "Hoi",
+            traits: "Dich vu, am thuc, giai tri, huong thu",
+            bpmRange: [60, 100],
+            hzRange: [150, 250],
+            chord: "C",
+            jobs: "Am thuc, dich vu, giai tri, tu van tam ly"
+        }
+    };
+    
+    // Hien thi thong tin con giap
+    const zodiacResult = document.getElementById("zodiacResult");
+    const analysisDetails = document.getElementById("analysisDetails");
+    
+    if (congiap && giapMap[congiap]) {
+        const zodiac = giapMap[congiap];
+        
+        // Cap nhat thong tin con giap
+        zodiacResult.innerHTML = `
+            <div class="zodiac-info">
+                <div class="zodiac-emoji">${zodiac.emoji}</div>
+                <div class="zodiac-details">
+                    <div class="zodiac-name">${zodiac.name}</div>
+                    <div class="zodiac-traits">${zodiac.traits}</div>
+                </div>
+            </div>
+        `;
+        
+        let analysisText = `<div class="result-item"><span class="highlight">Cong viec phu hop:</span> ${zodiac.jobs}</div>`;
+        analysisText += `<div class="result-item"><span class="highlight">BPM ly tuong:</span> ${zodiac.bpmRange[0]}-${zodiac.bpmRange[1]}</div>`;
+        analysisText += `<div class="result-item"><span class="highlight">Hz ly tuong:</span> ${zodiac.hzRange[0]}-${zodiac.hzRange[1]}</div>`;
+        analysisText += `<div class="result-item"><span class="highlight">Hop am phu hop:</span> ${zodiac.chord}</div>`;
+        
+        // Phan tich BPM
+        if (!isNaN(bpm)) {
+            analysisText += `<div class="result-item"><span class="highlight">BPM hien tai (${bpm}):</span> `;
+            if (bpm >= zodiac.bpmRange[0] && bpm <= zodiac.bpmRange[1]) {
+                analysisText += `<span style="color:green;">✓ Phu hop voi ${zodiac.name}</span>`;
+            } else if (bpm < zodiac.bpmRange[0]) {
+                analysisText += `<span style="color:orange;">Hoi thap so voi ${zodiac.name}</span>`;
+            } else {
+                analysisText += `<span style="color:red;">Hoi cao so voi ${zodiac.name}</span>`;
+            }
+            
+            analysisText += "<br>";
+            if (bpm < 80) analysisText += "→ Nghi ngoi, hoc tap nhe, thien dinh";
+            else if (bpm <= 120) analysisText += "→ Lam viec tri oc, giao tiep, di chuyen nhe";
+            else analysisText += "→ Hoat dong manh, the thao, huan luyen";
+            analysisText += "</div>";
+        }
+        
+        // Phan tich Hz
+        if (!isNaN(hz)) {
+            analysisText += `<div class="result-item"><span class="highlight">Hz hien tai (${hz}):</span> `;
+            if (hz >= zodiac.hzRange[0] && hz <= zodiac.hzRange[1]) {
+                analysisText += `<span style="color:green;">✓ Phu hop voi ${zodiac.name}</span>`;
+            } else if (hz < zodiac.hzRange[0]) {
+                analysisText += `<span style="color:orange;">Hoi thap so voi ${zodiac.name}</span>`;
+            } else {
+                analysisText += `<span style="color:red;">Hoi cao so voi ${zodiac.name}</span>`;
+            }
+            
+            analysisText += "<br>";
+            if (hz < 150) analysisText += "→ Thu gian, cam xuc, cham soc, sang tao nhe";
+            else if (hz <= 300) analysisText += "→ Giao tiep, hoc tap, lam viec van phong";
+            else analysisText += "→ Bieu dien, lanh dao, van dong manh";
+            analysisText += "</div>";
+        }
+        
+        // Phan tich hop am
+        if (chord) {
+            analysisText += `<div class="result-item"><span class="highlight">Hop am hien tai (${chord}):</span> `;
+            if (chord === zodiac.chord) {
+                analysisText += `<span style="color:green;">✓ Phu hop tuyet doi voi ${zodiac.name}</span>`;
+            } else {
+                analysisText += `Hop am ly tuong cho ${zodiac.name} la ${zodiac.chord}`;
+            }
+            analysisText += "</div>";
+        }
+        
+        analysisDetails.innerHTML = analysisText;
+        
+    } else {
+        zodiacResult.innerHTML = `
+            <div class="zodiac-info">
+                <div class="zodiac-emoji">🐹</div>
+                <div class="zodiac-details">
+                    <div class="zodiac-name">Chon Con Giap</div>
+                    <div class="zodiac-traits">Thong tin se hien thi tai day sau khi chon</div>
+                </div>
+            </div>
+        `;
+        analysisDetails.innerHTML = "Vui long chon Con Giap de xem phan tich chi tiet";
+    }
+}
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<div style="max-width: 500px; border: 3px solid #e74c3c; padding: 20px; border-radius: 15px; background: #fff; font-family: sans-serif; margin: auto;">
+    <h2 style="color: #e74c3c; text-align: center;">KẾ HOẠCH ĐẠT 50 TỶ (OK4U)</h2>
+    
+    <div style="margin-bottom: 15px;">
+        <label><b>Số vốn bạn đang có (Tỷ VNĐ):</b></label>
+        <input type="number" id="current_cash" value="5" step="0.5" style="width:100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px;">
+    </div>
+
+    <button onclick="calcGoal()" style="width:100%; background:#e74c3c; color:white; padding:12px; border:none; border-radius:5px; font-weight:bold; cursor:pointer; font-size: 1.1em;">TÍNH TOÁN CẦN MUA & VAY</button>
+
+    <div id="goal_detail" style="margin-top:20px; padding:15px; display:none; border-radius:8px; line-height: 1.6;"></div>
+</div>
+
+<script>
+function calcGoal() {
+    const cash = parseFloat(document.getElementById('current_cash').value) * 1000000000; // Đổi sang VNĐ
+    const target = 50000000000; // 50 Tỷ
+    const buyPrice = 250000; // 10$ = 250k
+    const sellPrice = 750000; // 30$ = 750k
+
+    // 1. Tính số cổ phiếu cần để khi bán giá 30$ thu về 50 tỷ
+    const qtyNeed = Math.ceil(target / sellPrice);
+    
+    // 2. Tính tổng vốn cần để mua số lượng đó
+    const totalCapitalNeed = qtyNeed * buyPrice;
+    
+    // 3. Tính số tiền cần vay thêm
+    const loan = totalCapitalNeed - cash;
+    
+    const div = document.getElementById('goal_detail');
+    div.style.display = 'block';
+    div.style.background = '#fdf2f2';
+    
+    div.innerHTML = `
+        <h3 style="margin-top:0; color:#c0392b;">CHI TIẾT CHIẾN THUẬT:</h3>
+        1. <b>Cần mua:</b> ${qtyNeed.toLocaleString()} cổ phiếu OK4U.<br>
+        2. <b>Tổng vốn mua:</b> ${(totalCapitalNeed/1000000000).toFixed(2)} Tỷ VNĐ.<br>
+        3. <b>Vốn tự có:</b> ${(cash/1000000000).toFixed(2)} Tỷ VNĐ.<br>
+        <hr>
+        <span style="color:red; font-size: 1.2em;">👉 <b>CẦN VAY THÊM:</b> ${(loan/1000000000).toFixed(2)} Tỷ VNĐ.</span><br>
+        <hr>
+        <i>Lưu ý: Khi giá lên $30, bạn bán sạch sẽ thu về đúng <b>50 TỶ</b> (đã bao gồm tiền trả nợ vay gốc).</i>
+    `;
+}
+</script>

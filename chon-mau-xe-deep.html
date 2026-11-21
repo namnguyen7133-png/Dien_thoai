@@ -1,0 +1,1138 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tra Cuu Mau Xe Hop Menh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #1a237e;
+            --secondary: #d32f2f;
+            --accent: #ff9800;
+            --light: #f5f5f5;
+            --dark: #212121;
+            --success: #4caf50;
+            --warning: #ffeb3b;
+            --green-light: #32CD32;
+            --green-dark: #228B22;
+            --indigo: #4B0082;
+            --purple: #800080;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a237e, #283593, #5c6bc0);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 15px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            padding: 25px;
+            position: relative;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        h1 {
+            color: var(--primary);
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            word-wrap: break-word;
+        }
+        
+        .subtitle {
+            color: var(--secondary);
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        .input-section {
+            background: var(--light);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            font-size: 1.7rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .section-title i {
+            font-size: 2rem;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+        
+        @media (min-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .form-group {
+            margin-bottom: 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 18px;
+            border: 3px solid #ddd;
+            border-radius: 12px;
+            font-size: 1.3rem;
+            transition: all 0.3s;
+            background: white;
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(255, 152, 0, 0.2);
+        }
+        
+        .name-list-section {
+            margin-top: 30px;
+        }
+        
+        .name-list-container {
+            max-height: 350px;
+            overflow-y: auto;
+            border: 3px solid #ddd;
+            border-radius: 12px;
+            padding: 15px;
+            background-color: white;
+            margin-top: 15px;
+        }
+        
+        .name-item {
+            padding: 18px;
+            border-bottom: 2px solid #eee;
+            font-size: 1.3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 8px;
+            border-radius: 10px;
+        }
+        
+        .name-item:hover {
+            background-color: #e8f4ff;
+            transform: translateX(8px);
+        }
+        
+        .name-item.selected {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(26, 35, 126, 0.3);
+        }
+        
+        .name-item .number {
+            font-weight: bold;
+            color: var(--secondary);
+            font-size: 1.4rem;
+            min-width: 40px;
+        }
+        
+        .name-item.selected .number {
+            color: var(--warning);
+        }
+        
+        .name-item .name {
+            flex: 1;
+            margin: 0 15px;
+            font-weight: 600;
+            word-break: break-word;
+        }
+        
+        .name-item .dob {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.2rem;
+            min-width: 100px;
+            text-align: right;
+        }
+        
+        .name-item.selected .dob {
+            color: var(--warning);
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 35px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 22px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            letter-spacing: 1px;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(to right, var(--primary), #303f9f);
+            color: white;
+        }
+        
+        .reset-btn {
+            background: linear-gradient(to right, var(--secondary), #e53935);
+            color: white;
+        }
+        
+        button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .results-section {
+            background: var(--light);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result-item {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #ccc;
+        }
+        
+        .result-title {
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .result-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--secondary);
+            padding: 15px 20px;
+            background-color: white;
+            border-radius: 10px;
+            border-left: 8px solid var(--primary);
+            word-break: break-word;
+        }
+        
+        .price-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .price-option {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--primary);
+            border: 3px solid var(--accent);
+        }
+        
+        .calculation-details {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .calculation-details p {
+            margin-bottom: 10px;
+        }
+        
+        .calculation-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        @media (min-width: 768px) {
+            .calculation-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .calculation-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .calculation-box h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .colors-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .color-box {
+            width: 140px;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+        
+        .color-box:hover {
+            transform: translateY(-5px);
+        }
+        
+        .color-hex {
+            font-family: monospace;
+            font-size: 1.1rem;
+            margin-top: 8px;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 5px 8px;
+            border-radius: 6px;
+            word-break: break-all;
+        }
+        
+        .frequency {
+            font-size: 1rem;
+            margin-top: 8px;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+        
+        .highlight {
+            background-color: var(--warning);
+            color: var(--primary);
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 1.3rem;
+            display: inline-block;
+            margin: 5px 0;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 2px solid #ddd;
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
+        }
+        
+        .instruction {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 8px;
+            font-style: italic;
+        }
+        
+        .note {
+            background-color: #e8f4ff;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .section-title {
+                font-size: 1.4rem;
+                padding: 15px;
+            }
+            
+            input, select, button {
+                padding: 15px;
+                font-size: 1.2rem;
+            }
+            
+            .name-item {
+                padding: 15px;
+                font-size: 1.2rem;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .name-item .number, .name-item .dob {
+                margin-bottom: 5px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            .color-box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-car"></i> TRA CUU MAU XE HOP MENH</h1>
+            <p class="subtitle">Nhap thong tin - Xem mau xe phu hop voi ban</p>
+        </div>
+        
+        <div class="input-section">
+            <div class="section-title">
+                <i class="fas fa-edit"></i> THONG TIN dAU VAO
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="carName"><i class="fas fa-car"></i> TEN LOAI XE:</label>
+                    <input type="text" id="carName" placeholder="VD: Honda Vision, Toyota Vios">
+                    <p class="instruction">Nhap ten xe ban muon mua</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cylinder"><i class="fas fa-tachometer-alt"></i> DUNG TICH XI-LANH (CC):</label>
+                    <input type="number" id="cylinder" placeholder="VD: 110, 150, 2000">
+                    <p class="instruction">Nhap dung tich xi-lanh cua xe</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="battery"><i class="fas fa-battery-full"></i> ACQUY, MA SO:</label>
+                    <input type="text" id="battery" placeholder="VD: MF12-BS, YTX5L-BS">
+                    <p class="instruction">Nhap thong tin acquy cua xe</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="birthdate"><i class="fas fa-birthday-cake"></i> NGAY THANG NAM SINH:</label>
+                    <input type="date" id="birthdate">
+                    <p class="instruction">Chon ngay thang nam sinh cua ban</p>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="ownerName"><i class="fas fa-user"></i> TEN NGUOI CHU GIAY TO MUA XE:</label>
+                <input type="text" id="ownerName" placeholder="VD: NGUYEN VAN A">
+                <p class="instruction">Nhap ten hoac chon tu danh sach ben duoi</p>
+            </div>
+            
+            <div class="name-list-section">
+                <label><i class="fas fa-list"></i> DANH SACH TEN THAM KHAO (NHAN dE CHON):</label>
+                <div class="name-list-container" id="nameListContainer">
+                    <!-- Danh sach ten se duoc them bang JavaScript -->
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button class="calculate-btn" id="calculateBtn">
+                    <i class="fas fa-calculator"></i> TRA CUU MAU XE
+                </button>
+                <button class="reset-btn" id="resetBtn">
+                    <i class="fas fa-redo"></i> NHAP LAI
+                </button>
+            </div>
+        </div>
+        
+        <div class="results-section">
+            <div class="section-title">
+                <i class="fas fa-palette"></i> KET QUA TRA CUU
+            </div>
+            
+            <div id="results">
+                <div class="result-item">
+                    <p style="text-align: center; color: #666; font-style: italic; padding: 40px 20px; font-size: 1.3rem;">
+                        Nhap day du thong tin va nhan "TRA CUU MAU XE" de xem ket qua
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Phan mem tra cuu mau xe hop menh</strong> | Su dung thuat toan theo yeu cau</p>
+            <p>© 2023 - Thiet ke toi uu cho thiet bi di dong</p>
+        </div>
+    </div>
+
+    <script>
+        // Danh sach ten
+        const nameList = [
+            "1 NGUYENKHACNANG 04/06/1944",
+            "2 TOTHIHA 29/08/1948", 
+            "3 NGUYENMINHNAM 03/03/1971",
+            "4 THANTHIKIMANH 23/09/1981",
+            "5 NGUYENTONGANAN 28/09/2014",
+            "6 NGUYENTOMINHCHAU 25/07/2016",
+            "7 NGUYENTOBICHNGOC 05/02/2020",
+            "8 NGUYENTHIMINHHANG 07/01/1974",
+            "9 NGOQUYCUONG 23/05/1973",
+            "10 NGOGIABACH 12/10/2000",
+            "11 NGOGIALINH 05/04/2005",
+            "12 NGUYENTHIMINHPHUONG 06/11/1978",
+            "13 HOANGANHDUNG 21/09/1978",
+            "14 HOANGHAIVINH 03/06/2010",
+            "15 HOANGTHIENBACHANH 14/11/2015",
+            "16 TO KIM HUE 9/8/1960",
+            "17 NGUYEN TUAN ANH 23/10/1983",
+            "18 NGUYEN THE ANH 24/3/2001",
+            "19 NGO THI MAI 12/12/1948",
+            "20 TO VIET HUNG 17/6/1996",
+            "21 TO THI HONG 10/10/1964",
+            "22 VU VAN HIEP 24/4/1974",
+            "23 NGUYEN THI CHI 8/2/1946",
+            "24 NGUYEN TAN BAC 30/11/1957",
+            "25 NGUYEN THI TAM 8/8/1954"
+        ];
+        
+        // Bang mau theo yeu cau moi
+        const colorTables = [
+            // Bang 1
+            {1:"dO", 2:"VANG", 3:"KIM LOAI", 4:"XANH BIEN", 5:"XANH LA", 6:"do", 7:"VANG", 8:"CAM", 9:"XANH BIEN", 10:"XANH LA", 11:"dO", 12:"VANG", 13:"TRANG", 14:"XANH BIEN"},
+            // Bang 2
+            {1:"dEN", 2:"TRANG", 3:"DA TROI", 4:"XANH LA", 5:"XANH BIEN", 6:"TIM", 7:"dO", 8:"CAM", 9:"VANG", 10:"dEN", 11:"TRANG", 12:"XANH DA TROI", 13:"XANH LA", 14:"XANH BIEN"},
+            // Bang 3
+            {1:"VANG", 2:"dO", 3:"HONG", 4:"GHI", 5:"TRANG", 6:"dEN", 7:"XANH DA TROI", 8:"XANH LA", 9:"VANG", 10:"dO", 11:"HONG", 12:"GHI", 13:"TRANG", 14:"dEN"},
+            // Bang 4
+            {1:"dO", 2:"VANG", 3:"CAM", 4:"XANH BIEN", 5:"XANH LA", 6:"XANH LA MA", 7:"TIM", 8:"dO", 9:"VANG", 10:"DA CAM", 11:"XANH BIEN", 12:"XANH LA", 13:"XANH LA MA", 14:"TIM"},
+            // Bang 5
+            {1:"dO", 2:"VANG", 3:"XANH LA", 4:"dO", 5:"VANG", 6:"XANH LA", 7:"dO", 8:"VANG", 9:"XANH LA", 10:"dO", 11:"VANG", 12:"XANH LA", 13:"dO", 14:"VANG"},
+            // Bang 6
+            {1:"XANH LA", 2:"dO", 3:"VANG", 4:"dEN", 5:"XANH LA", 6:"dO", 7:"VANG", 8:"dEN", 9:"LAM", 10:"dO", 11:"VANG", 12:"dEN", 13:"XANH LA", 14:"dO"}
+        ];
+        
+        // Bang chu cai xuoi (12)
+        const forwardTable = {
+            'A':1, 'B':2, 'C':3, 'D':4, 'E':5, 'F':6, 'G':7, 'H':8, 'I':9, 'J':10, 'K':11, 'L':12, 'M':1,
+            'N':2, 'O':3, 'P':4, 'R':5, 'S':6, 'T':7, 'U':8, 'V':9, 'W':10, 'X':11, 'Y':12,
+            'A':1, 'A':1, 'A':1, 'A':1, 'A':1, 'A':1, 'A':1, 'A':1, 'A':1, 'A':1, 'A':1,
+            'A':1, 'A':1, 'A':1, 'A':1, 'A':1, 'A':1, 'E':5, 'E':5, 'E':5, 'E':5, 'E':5,
+            'E':5, 'E':5, 'E':5, 'E':5, 'E':5, 'E':5, 'I':9, 'I':9, 'I':9, 'I':9, 'I':9,
+            'O':3, 'O':3, 'O':3, 'O':3, 'O':3, 'O':3, 'O':3, 'O':3, 'O':3, 'O':3, 'O':3,
+            'O':3, 'O':3, 'O':3, 'O':3, 'O':3, 'O':3, 'U':8, 'U':8, 'U':8, 'U':8, 'U':8,
+            'U':8, 'U':8, 'U':8, 'U':8, 'U':8, 'U':8, 'Y':12, 'Y':12, 'Y':12, 'Y':12, 'Y':12,
+            'a':1, 'b':2, 'c':3, 'd':4, 'e':5, 'f':6, 'g':7, 'h':8, 'i':9, 'j':10, 'k':11, 'l':12, 'm':1,
+            'n':2, 'o':3, 'p':4, 'r':5, 's':6, 't':7, 'u':8, 'v':9, 'w':10, 'x':11, 'y':12,
+            'a':1, 'a':1, 'a':1, 'a':1, 'a':1, 'a':1, 'a':1, 'a':1, 'a':1, 'a':1, 'a':1,
+            'a':1, 'a':1, 'a':1, 'a':1, 'a':1, 'a':1, 'e':5, 'e':5, 'e':5, 'e':5, 'e':5,
+            'e':5, 'e':5, 'e':5, 'e':5, 'e':5, 'e':5, 'i':9, 'i':9, 'i':9, 'i':9, 'i':9,
+            'o':3, 'o':3, 'o':3, 'o':3, 'o':3, 'o':3, 'o':3, 'o':3, 'o':3, 'o':3, 'o':3,
+            'o':3, 'o':3, 'o':3, 'o':3, 'o':3, 'o':3, 'u':8, 'u':8, 'u':8, 'u':8, 'u':8,
+            'u':8, 'u':8, 'u':8, 'u':8, 'u':8, 'u':8, 'y':12, 'y':12, 'y':12, 'y':12, 'y':12
+        };
+        
+        // Bang chu cai nguoc (12)
+        const reverseTable = {
+            'A':12, 'B':11, 'C':10, 'D':9, 'E':8, 'F':7, 'G':6, 'H':5, 'I':4, 'J':3, 'K':2, 'L':1, 'M':12,
+            'N':11, 'O':10, 'P':9, 'R':8, 'S':7, 'T':6, 'U':5, 'V':4, 'W':3, 'X':2, 'Y':1,
+            'A':12, 'A':12, 'A':12, 'A':12, 'A':12, 'A':12, 'A':12, 'A':12, 'A':12, 'A':12, 'A':12,
+            'A':12, 'A':12, 'A':12, 'A':12, 'A':12, 'A':12, 'E':8, 'E':8, 'E':8, 'E':8, 'E':8,
+            'E':8, 'E':8, 'E':8, 'E':8, 'E':8, 'E':8, 'I':4, 'I':4, 'I':4, 'I':4, 'I':4,
+            'O':10, 'O':10, 'O':10, 'O':10, 'O':10, 'O':10, 'O':10, 'O':10, 'O':10, 'O':10, 'O':10,
+            'O':10, 'O':10, 'O':10, 'O':10, 'O':10, 'O':10, 'U':5, 'U':5, 'U':5, 'U':5, 'U':5,
+            'U':5, 'U':5, 'U':5, 'U':5, 'U':5, 'U':5, 'Y':1, 'Y':1, 'Y':1, 'Y':1, 'Y':1,
+            'a':12, 'b':11, 'c':10, 'd':9, 'e':8, 'f':7, 'g':6, 'h':5, 'i':4, 'j':3, 'k':2, 'l':1, 'm':12,
+            'n':11, 'o':10, 'p':9, 'r':8, 's':7, 't':6, 'u':5, 'v':4, 'w':3, 'x':2, 'y':1,
+            'a':12, 'a':12, 'a':12, 'a':12, 'a':12, 'a':12, 'a':12, 'a':12, 'a':12, 'a':12, 'a':12,
+            'a':12, 'a':12, 'a':12, 'a':12, 'a':12, 'a':12, 'e':8, 'e':8, 'e':8, 'e':8, 'e':8,
+            'e':8, 'e':8, 'e':8, 'e':8, 'e':8, 'e':8, 'i':4, 'i':4, 'i':4, 'i':4, 'i':4,
+            'o':10, 'o':10, 'o':10, 'o':10, 'o':10, 'o':10, 'o':10, 'o':10, 'o':10, 'o':10, 'o':10,
+            'o':10, 'o':10, 'o':10, 'o':10, 'o':10, 'o':10, 'u':5, 'u':5, 'u':5, 'u':5, 'u':5,
+            'u':5, 'u':5, 'u':5, 'u':5, 'u':5, 'u':5, 'y':1, 'y':1, 'y':1, 'y':1, 'y':1
+        };
+        
+        // Map mau sac sang ma HEX
+        const colorHexMap = {
+            "dO": "#FF0000", "do": "#FF0000",
+            "VANG": "#FFD700", "Vang": "#FFD700",
+            "KIM LOAI": "#C0C0C0", "KIM LOAI": "#C0C0C0",
+            "XANH BIEN": "#1E90FF", "XANH BIEN": "#1E90FF",
+            "XANH LA": "#32CD32", 
+            "XANH LA MA": "#228B22",
+            "CAM": "#FF8C00",
+            "TRANG": "#FFFFFF", "TRANG": "#FFFFFF",
+            "dEN": "#000000",
+            "DA TROI": "#87CEEB", "DA TROI": "#87CEEB",
+            "XANH DA TROI": "#87CEEB", "XANH DA TROI": "#87CEEB",
+            "TIM": "#800080", "TIM": "#800080",
+            "HONG": "#FF69B4", "HONG": "#FF69B4",
+            "GHI": "#808080",
+            "CHAM": "#4B0082", "CHAM": "#4B0082",
+            "LAM": "#0000FF",
+            "DA CAM": "#FF8C00"
+        };
+        
+        // Bien luu ten da chon
+        let selectedName = null;
+        let selectedBirthdate = null;
+        
+        // Ham de lay ten tu chuoi (loai bo so va ngay sinh)
+        function extractName(item) {
+            const parts = item.split(' ');
+            // Bo phan so dau tien va ngay sinh cuoi cung
+            return parts.slice(1, parts.length - 1).join(' ');
+        }
+        
+        // Ham de lay ngay sinh tu chuoi
+        function extractBirthdate(item) {
+            const parts = item.split(' ');
+            return parts[parts.length - 1];
+        }
+        
+        // Ham thuc hien phep chia va lay so du
+        function performDivision(num1, num2) {
+            if (num1 > num2 && num2 > 0) {
+                const divisionResult = Math.floor(num1 / num2);
+                const remainderResult = num1 % num2;
+                return {
+                    type: 'Lon chia Nho',
+                    result: divisionResult,
+                    remainder: remainderResult,
+                    lastDigit: remainderResult % 10
+                };
+            } else if (num2 > 0 && num1 > 0) {
+                const divisionResult = Math.floor(num2 / num1);
+                const remainderResult = num2 % num1;
+                return {
+                    type: 'Nho chia Lon',
+                    result: divisionResult,
+                    remainder: remainderResult,
+                    lastDigit: remainderResult % 10
+                };
+            }
+            return null;
+        }
+        
+        // Khoi tao danh sach ten
+        document.addEventListener('DOMContentLoaded', function() {
+            const nameListContainer = document.getElementById('nameListContainer');
+            
+            // Tao danh sach ten co the chon duoc
+            nameList.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'name-item';
+                div.dataset.index = index;
+                div.dataset.name = extractName(item);
+                div.dataset.birthdate = extractBirthdate(item);
+                
+                const parts = item.split(' ');
+                const number = parts[0];
+                const name = extractName(item);
+                const dob = extractBirthdate(item);
+                
+                div.innerHTML = `
+                    <span class="number">${number}</span>
+                    <span class="name">${name}</span>
+                    <span class="dob">${dob}</span>
+                `;
+                
+                // Them su kien click de chon ten
+                div.addEventListener('click', function() {
+                    // Xoa lop selected tu tat ca cac muc
+                    document.querySelectorAll('.name-item').forEach(item => {
+                        item.classList.remove('selected');
+                    });
+                    
+                    // Them lop selected cho muc duoc chon
+                    this.classList.add('selected');
+                    
+                    // Luu ten da chon
+                    selectedName = this.dataset.name;
+                    selectedBirthdate = this.dataset.birthdate;
+                    
+                    // dien ten vao o nhap (o so 5)
+                    document.getElementById('ownerName').value = selectedName;
+                    
+                    // Co gang phan tich va dat ngay sinh neu co the
+                    try {
+                        const dobParts = selectedBirthdate.split('/');
+                        if (dobParts.length === 3) {
+                            const day = parseInt(dobParts[0]);
+                            const month = parseInt(dobParts[1]);
+                            const year = parseInt(dobParts[2]);
+                            
+                            // Tao chuoi ngay thang nam dung dinh dang yyyy-mm-dd
+                            const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                            document.getElementById('birthdate').value = formattedDate;
+                        }
+                    } catch (e) {
+                        console.log("Khong the phan tich ngay sinh tu danh sach");
+                    }
+                });
+                
+                nameListContainer.appendChild(div);
+            });
+            
+            // dat ngay mac dinh la hom nay
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('birthdate').value = formattedDate;
+            
+            // Gan su kien cho cac nut
+            document.getElementById('calculateBtn').addEventListener('click', calculate);
+            document.getElementById('resetBtn').addEventListener('click', resetForm);
+        });
+        
+        // Ham tinh toan
+        function calculate() {
+            // Lay gia tri tu form
+            const carName = document.getElementById('carName').value.trim();
+            const cylinder = document.getElementById('cylinder').value.trim();
+            const battery = document.getElementById('battery').value.trim();
+            const birthdate = document.getElementById('birthdate').value;
+            let ownerName = document.getElementById('ownerName').value.trim().toUpperCase();
+            
+            // Neu khong co ten tu o nhap nhung co ten da chon tu danh sach
+            if (!ownerName && selectedName) {
+                ownerName = selectedName.toUpperCase();
+                document.getElementById('ownerName').value = selectedName;
+            }
+            
+            // Kiem tra du lieu dau vao
+            if (!carName || !cylinder || !battery || !birthdate || !ownerName) {
+                alert("VUI LONG NHAP dAY dU THONG TIN HOAC CHON TEN TU DANH SACH!");
+                return;
+            }
+            
+            // Tinh gia xe tu ngay sinh
+            const birthDate = new Date(birthdate);
+            const day = birthDate.getDate();
+            const month = birthDate.getMonth() + 1;
+            const year = birthDate.getFullYear();
+            
+            // Tao cac bien the gia xe
+            const price1 = `${day}${month} trieu`;
+            const price2 = `${day}${month}0 trieu`;
+            const price3 = `${day}.${month} ty`;
+            const price4 = `${day}${month} ty`;
+            const price5 = `${day}${month}00 trieu`;
+            
+            // Chuyen ten chu xe thanh so theo bang xuoi
+            let nameNumbersForward = [];
+            for (let char of ownerName) {
+                if (forwardTable[char]) {
+                    nameNumbersForward.push(forwardTable[char]);
+                }
+            }
+            
+            // Chuyen ten chu xe thanh so theo bang nguoc
+            let nameNumbersReverse = [];
+            for (let char of ownerName) {
+                if (reverseTable[char]) {
+                    nameNumbersReverse.push(reverseTable[char]);
+                }
+            }
+            
+            // Tao so tu ten (vi du: NAM = 2,1,1 = 211)
+            const nameNumberForward = parseInt(nameNumbersForward.join('')) || 0;
+            const nameNumberReverse = parseInt(nameNumbersReverse.join('')) || 0;
+            
+            // Tinh toan voi dung tich xi-lanh
+            const cylinderNum = parseInt(cylinder) || 0;
+            
+            // Tinh toan cho ten xuoi
+            const forwardDivision = performDivision(nameNumberForward, cylinderNum);
+            
+            // Tinh toan cho ten nguoc
+            const reverseDivision = performDivision(nameNumberReverse, cylinderNum);
+            
+            // Lay so cuoi tu cac ket qua
+            const lastDigitFromNameForward = nameNumberForward % 10;
+            const lastDigitFromNameReverse = nameNumberReverse % 10;
+            const lastDigitFromCylinder = cylinderNum % 10;
+            const lastDigitFromForwardDivision = forwardDivision ? forwardDivision.lastDigit : 0;
+            const lastDigitFromReverseDivision = reverseDivision ? reverseDivision.lastDigit : 0;
+            
+            // Tim mau sac tu cac bang mau
+            const colorsFound = [];
+            
+            // Tim mau tu tat ca cac so cuoi
+            const colorIndexes = [
+                lastDigitFromNameForward,
+                lastDigitFromNameReverse,
+                lastDigitFromCylinder,
+                lastDigitFromForwardDivision,
+                lastDigitFromReverseDivision,
+                nameNumbersForward.length > 0 ? nameNumbersForward[0] : 0,
+                nameNumbersForward.length > 0 ? nameNumbersForward[nameNumbersForward.length - 1] : 0,
+                nameNumbersReverse.length > 0 ? nameNumbersReverse[0] : 0,
+                nameNumbersReverse.length > 0 ? nameNumbersReverse[nameNumbersReverse.length - 1] : 0
+            ];
+            
+            // Tim mau tu tat ca cac bang
+            colorIndexes.forEach(index => {
+                if (index > 0 && index <= 14) {
+                    colorTables.forEach((table, tableIndex) => {
+                        const color = table[index];
+                        if (color) {
+                            colorsFound.push({
+                                color: color,
+                                hex: colorHexMap[color.toUpperCase()] || "#CCCCCC",
+                                table: tableIndex + 1,
+                                index: index,
+                                source: getSourceName(index, colorIndexes)
+                            });
+                        }
+                    });
+                }
+            });
+            
+            // dem tan suat xuat hien cua tung mau
+            const colorFrequency = {};
+            colorsFound.forEach(item => {
+                const colorName = item.color.toUpperCase();
+                if (!colorFrequency[colorName]) {
+                    colorFrequency[colorName] = {
+                        count: 0,
+                        hex: item.hex,
+                        tables: [],
+                        indices: [],
+                        sources: []
+                    };
+                }
+                colorFrequency[colorName].count++;
+                if (!colorFrequency[colorName].tables.includes(item.table)) {
+                    colorFrequency[colorName].tables.push(item.table);
+                }
+                if (!colorFrequency[colorName].indices.includes(item.index)) {
+                    colorFrequency[colorName].indices.push(item.index);
+                }
+                if (!colorFrequency[colorName].sources.includes(item.source)) {
+                    colorFrequency[colorName].sources.push(item.source);
+                }
+            });
+            
+            // Sap xep mau theo tan suat giam dan
+            const sortedColors = Object.keys(colorFrequency).sort((a, b) => {
+                return colorFrequency[b].count - colorFrequency[a].count;
+            });
+            
+            // Hien thi ket qua
+            displayResults(
+                carName, cylinder, battery, birthdate, ownerName,
+                [price1, price2, price3, price4, price5],
+                nameNumbersForward, nameNumbersReverse,
+                nameNumberForward, nameNumberReverse,
+                forwardDivision, reverseDivision,
+                colorsFound, colorFrequency, sortedColors
+            );
+        }
+        
+        // Ham xac dinh nguon goc cua chi so
+        function getSourceName(index, colorIndexes) {
+            const sources = [
+                "So cuoi ten xuoi",
+                "So cuoi ten nguoc", 
+                "So cuoi xi-lanh",
+                "So cuoi du ten xuoi/xi-lanh",
+                "So cuoi du ten nguoc/xi-lanh",
+                "Chu dau ten xuoi",
+                "Chu cuoi ten xuoi",
+                "Chu dau ten nguoc",
+                "Chu cuoi ten nguoc"
+            ];
+            
+            const position = colorIndexes.indexOf(index);
+            return position >= 0 && position < sources.length ? sources[position] : "Khong xac dinh";
+        }
+        
+        // Ham hien thi ket qua
+        function displayResults(
+            carName, cylinder, battery, birthdate, ownerName,
+            prices,
+            nameNumbersForward, nameNumbersReverse,
+            nameNumberForward, nameNumberReverse,
+            forwardDivision, reverseDivision,
+            colorsFound, colorFrequency, sortedColors
+        ) {
+            const resultsDiv = document.getElementById('results');
+            
+            let html = `
+                <div class="result-item">
+                    <div class="result-title"><i class="fas fa-car"></i> THONG TIN XE</div>
+                    <div class="result-value">${carName} | Xi-lanh: ${cylinder}cc | Acquy: ${battery}</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title"><i class="fas fa-user"></i> CHU XE</div>
+                    <div class="result-value">${ownerName} | Ngay sinh: ${new Date(birthdate).toLocaleDateString('vi-VN')}</div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title"><i class="fas fa-tags"></i> GIA XE PHU HOP</div>
+                    <div class="price-options">
+            `;
+            
+            // Hien thi cac gia xe
+            prices.forEach(price => {
+                html += `<div class="price-option">${price}</div>`;
+            });
+            
+            html += `
+                    </div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title"><i class="fas fa-calculator"></i> KET QUA TINH TOAN</div>
+                    <div class="calculation-details">
+                        <p><span class="highlight">Ten chu xe:</span> ${ownerName}</p>
+                        
+                        <div class="calculation-grid">
+                            <div class="calculation-box">
+                                <h4>TEN XUOI</h4>
+                                <p>So ten: <span class="highlight">${nameNumberForward}</span></p>
+                                <p>Chi tiet: ${nameNumbersForward.join('')} (${nameNumbersForward.join(',')})</p>
+                                <p>So cuoi: <span class="highlight">${nameNumberForward % 10}</span></p>
+                                ${forwardDivision ? `
+                                    <p>Phep chia: ${nameNumberForward} : ${cylinder} = ${forwardDivision.result} (du ${forwardDivision.remainder})</p>
+                                    <p>So cuoi du: <span class="highlight">${forwardDivision.lastDigit}</span></p>
+                                ` : ''}
+                            </div>
+                            
+                            <div class="calculation-box">
+                                <h4>TEN NGUOC</h4>
+                                <p>So ten: <span class="highlight">${nameNumberReverse}</span></p>
+                                <p>Chi tiet: ${nameNumbersReverse.join('')} (${nameNumbersReverse.join(',')})</p>
+                                <p>So cuoi: <span class="highlight">${nameNumberReverse % 10}</span></p>
+                                ${reverseDivision ? `
+                                    <p>Phep chia: ${nameNumberReverse} : ${cylinder} = ${reverseDivision.result} (du ${reverseDivision.remainder})</p>
+                                    <p>So cuoi du: <span class="highlight">${reverseDivision.lastDigit}</span></p>
+                                ` : ''}
+                            </div>
+                        </div>
+                        
+                        <div class="note">
+                            <p><strong>Luu y:</strong> Ten nguoc cung duoc lay so ra chia cho dung tich xi-lanh va lay so cuoi cua so du de chon mau, theo yeu cau.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title"><i class="fas fa-palette"></i> MAU XE PHU HOP</div>
+                    <p>Tim thay <span class="highlight">${colorsFound.length}</span> ket qua mau tu cac bang tinh toan</p>
+                    <div class="colors-container">
+            `;
+            
+            // Hien thi cac mau tim duoc
+            if (sortedColors.length > 0) {
+                sortedColors.forEach(colorName => {
+                    const freq = colorFrequency[colorName];
+                    const hexColor = freq.hex;
+                    // Xac dinh mau chu dua tren do sang cua mau nen
+                    const textColor = getContrastColor(hexColor);
+                    html += `
+                        <div class="color-box" style="background-color: ${hexColor}; color: ${textColor};">
+                            ${colorName}
+                            <div class="color-hex" style="color: ${textColor}; background-color: rgba(0,0,0,0.2);">${hexColor}</div>
+                            <div class="frequency" style="color: ${textColor};">Xuat hien: ${freq.count} lan</div>
+                            <div class="frequency" style="color: ${textColor};">Bang: ${freq.tables.join(', ')}</div>
+                        </div>
+                    `;
+                });
+            } else {
+                html += `<p style="text-align: center; width: 100%; padding: 20px;">Khong tim thay mau phu hop tu du lieu nhap vao</p>`;
+            }
+            
+            html += `
+                    </div>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-title"><i class="fas fa-star"></i> KET LUAN</div>
+            `;
+            
+            if (sortedColors.length > 0) {
+                const topColor = sortedColors[0];
+                const topColorFreq = colorFrequency[topColor];
+                const topHexColor = topColorFreq.hex;
+                
+                html += `
+                    <p>Mau <span class="highlight">${topColor}</span> xuat hien nhieu nhat (${topColorFreq.count} lan) trong ket qua tinh toan, chung to rat hop voi ban.</p>
+                    <p><span class="highlight">KHuyen nghi:</span> Nen chon xe mau <span class="highlight">${topColor}</span> (ma mau: ${topHexColor}) de co may man va phu hop voi menh cua ban.</p>
+                `;
+                
+                // Hien thi thong tin ve mau dac biet
+                if (topColor.includes("XANH LA MA")) {
+                    html += `<p><span class="highlight">Luu y:</span> Mau XANH LA MA (#228B22) dam hon mau XANH LA thong thuong (#32CD32).</p>`;
+                }
+            } else {
+                html += `<p>Khong tim thay mau nao phu hop tu du lieu nhap vao. Vui long kiem tra lai thong tin hoac thu ten khac.</p>`;
+            }
+            
+            html += `</div>`;
+            
+            resultsDiv.innerHTML = html;
+            
+            // Cuon den ket qua
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Ham xac dinh mau chu tuong phan dua tren mau nen
+        function getContrastColor(hexColor) {
+            // Chuyen hex sang RGB
+            const r = parseInt(hexColor.substr(1, 2), 16);
+            const g = parseInt(hexColor.substr(3, 2), 16);
+            const b = parseInt(hexColor.substr(5, 2), 16);
+            
+            // Tinh do sang
+            const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+            
+            // Neu do sang > 128 thi dung chu den, nguoc lai dung chu trang
+            return brightness > 128 ? "#000000" : "#FFFFFF";
+        }
+        
+        // Ham reset form
+        function resetForm() {
+            document.getElementById('carName').value = '';
+            document.getElementById('cylinder').value = '';
+            document.getElementById('battery').value = '';
+            document.getElementById('ownerName').value = '';
+            
+            // dat ngay mac dinh la hom nay
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('birthdate').value = formattedDate;
+            
+            // Xoa ten da chon
+            selectedName = null;
+            selectedBirthdate = null;
+            
+            // Xoa lop selected tu tat ca cac muc trong danh sach
+            document.querySelectorAll('.name-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            document.getElementById('results').innerHTML = `
+                <div class="result-item">
+                    <p style="text-align: center; color: #666; font-style: italic; padding: 40px 20px; font-size: 1.3rem;">
+                        Nhap day du thong tin va nhan "TRA CUU MAU XE" de xem ket qua
+                    </p>
+                </div>
+            `;
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

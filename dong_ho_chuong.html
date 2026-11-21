@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Pomodoro No-Fail</title>
+  <style>
+    body { background: #000; color: #666; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    .box { text-align: center; border: 1px solid #222; padding: 40px; border-radius: 20px; }
+    #time { font-size: 60px; color: #ff3333; margin: 10px 0; font-family: monospace; }
+    button { 
+      background: #222; color: #fff; border: 1px solid #444; 
+      padding: 15px 30px; cursor: pointer; border-radius: 10px; font-size: 16px;
+    }
+    button:hover { background: #333; }
+    /* Hiệu ứng nháy màn hình khi hết giờ nếu không nghe thấy tiếng */
+    .alarm-active { animation: blink 0.5s infinite; }
+    @keyframes blink { 
+      0% { background: #000; } 
+      50% { background: #400; } 
+      100% { background: #000; } 
+    }
+  </style>
+</head>
+<body id="bg">
+  <div class="box">
+    <div style="font-size: 12px; letter-spacing: 2px;">TIMER</div>
+    <div id="time">25:00</div>
+    <div id="msg" style="margin-bottom: 20px; font-size: 13px;">Nhấn để bắt đầu</div>
+    <button id="btn" onclick="toggle()">BẮT ĐẦU HỌC</button>
+  </div>
+
+  <script>
+    let timeLeft = 25 * 60;
+    let timer = null;
+    let audioCtx = null;
+    let isRunning = false;
+
+    function playSound() {
+      if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      let osc = audioCtx.createOscillator();
+      let gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = 880; 
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.5);
+    }
+
+    function toggle() {
+      if(!isRunning) {
+        // Kích hoạt Audio ngay khi click
+        if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        playSound(); 
+        
+        isRunning = true;
+        document.getElementById('btn').textContent = "TẠM DỪNG";
+        document.getElementById('msg').textContent = "Đang tập trung...";
+        document.getElementById('bg').classList.remove('alarm-active');
+        
+        timer = setInterval(() => {
+          timeLeft--;
+          updateDisplay();
+          if(timeLeft <= 0) {
+            clearInterval(timer);
+            done();
+          }
+        }, 1000);
+      } else {
+        clearInterval(timer);
+        isRunning = false;
+        document.getElementById('btn').textContent = "TIẾP TỤC";
+      }
+    }
+
+    function done() {
+      document.getElementById('bg').classList.add('alarm-active');
+      document.getElementById('msg').textContent = "HẾT GIỜ! NGHỈ THÔI";
+      document.getElementById('btn').textContent = "DỪNG CHUÔNG";
+      // Kêu 3 tiếng liên tục
+      let count = 0;
+      let beepLoop = setInterval(() => {
+        playSound();
+        count++;
+        if(count > 10 || !document.getElementById('bg').classList.contains('alarm-active')) 
+          clearInterval(beepLoop);
+      }, 1000);
+    }
+
+    function updateDisplay() {
+      let m = Math.floor(timeLeft / 60);
+      let s = timeLeft % 60;
+      document.getElementById('time').textContent = 
+        `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    }
+  </script>
+</body>
+</html>

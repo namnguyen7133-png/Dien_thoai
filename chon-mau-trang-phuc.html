@@ -1,0 +1,1500 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinh Toan Mau Sac Theo Ngu Hanh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-title {
+            font-size: 1.8rem;
+            color: #2575fc;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f2f5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: #6a11cb;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #444;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.3rem;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            border-color: #6a11cb;
+            outline: none;
+        }
+        
+        .calculate-btn {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            font-size: 1.3rem;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .calculate-btn:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+        
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #6a11cb;
+        }
+        
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2575fc;
+            margin-bottom: 10px;
+        }
+        
+        .color-result {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .color-box {
+            width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .color-name {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .color-hex {
+            font-size: 0.9rem;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 3px 8px;
+            border-radius: 5px;
+        }
+        
+        .color-stats {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #555;
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        
+        .calculation-steps {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .step {
+            margin-bottom: 8px;
+            padding-left: 10px;
+            border-left: 3px solid #6a11cb;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            
+            .color-box {
+                width: 100px;
+                height: 100px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .card-title {
+                font-size: 1.5rem;
+            }
+        }
+        
+        .color-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .color-table th, .color-table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        
+        .color-table th {
+            background-color: #6a11cb;
+            color: white;
+        }
+        
+        .color-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .warning {
+            color: #e74c3c;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .date-input-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .date-input-group input {
+            text-align: center;
+        }
+        
+        .person-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-top: 10px;
+            padding: 10px;
+        }
+        
+        .person-option {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .person-option:hover {
+            background-color: #f0f2f5;
+        }
+        
+        .person-option:last-child {
+            border-bottom: none;
+        }
+        
+        .person-name {
+            font-weight: 600;
+            color: #2575fc;
+        }
+        
+        .person-dob {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-palette"></i> Tinh Toan Mau Sac Theo Ngu Hanh</h1>
+        <p class="description">Cong cu tinh toan mau sac phu hop dua tren ngay thang, dia chi va ten nguoi</p>
+    </header>
+    
+    <div class="container">
+        <!-- The 1 -->
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-1"></i> The 1: Tinh toan tu ngay va dia chi</h2>
+            <div class="input-group">
+                <label for="date1">Ngay thang nam:</label>
+                <div class="date-input-group">
+                    <input type="number" id="day1" placeholder="Ngay" min="1" max="31" value="11">
+                    <input type="number" id="month1" placeholder="Thang" min="1" max="12" value="12">
+                    <input type="number" id="year1" placeholder="Nam" min="1900" max="2100" value="2025">
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="address1">dia chi noi den (nhap so):</label>
+                <input type="number" id="address1" placeholder="Vi du: 1, 2, 3..." value="1">
+            </div>
+            
+            <button class="calculate-btn" onclick="calculateCard1()">
+                <i class="fas fa-calculator"></i> Tinh toan mau sac
+            </button>
+            
+            <div id="result1" class="result" style="display: none;">
+                <div class="result-title">Ket qua tinh toan:</div>
+                <div class="calculation-steps" id="steps1"></div>
+                <div class="color-result" id="colors1"></div>
+                <div class="color-stats" id="stats1"></div>
+            </div>
+        </div>
+        
+        <!-- The 2 -->
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-2"></i> The 2: Tinh toan tu ngay va ten nguoi</h2>
+            <div class="input-group">
+                <label for="date2">Ngay thang nam:</label>
+                <div class="date-input-group">
+                    <input type="number" id="day2" placeholder="Ngay" min="1" max="31" value="11">
+                    <input type="number" id="month2" placeholder="Thang" min="1" max="12" value="12">
+                    <input type="number" id="year2" placeholder="Nam" min="1900" max="2100" value="2025">
+                </div>
+            </div>
+            
+            <div class="two-column">
+                <div class="input-group">
+                    <label for="person2a">Ten nguoi di:</label>
+                    <select id="person2a">
+                        <option value="">Chon nguoi tu danh sach</option>
+                    </select>
+                    <div class="person-list" id="personList2a"></div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="person2b">Ten nguoi den:</label>
+                    <select id="person2b">
+                        <option value="">Chon nguoi tu danh sach</option>
+                    </select>
+                    <div class="person-list" id="personList2b"></div>
+                </div>
+            </div>
+            
+            <button class="calculate-btn" onclick="calculateCard2()">
+                <i class="fas fa-calculator"></i> Tinh toan mau sac
+            </button>
+            
+            <div id="result2" class="result" style="display: none;">
+                <div class="result-title">Ket qua tinh toan:</div>
+                <div class="calculation-steps" id="steps2"></div>
+                <div class="color-result" id="colors2"></div>
+                <div class="color-stats" id="stats2"></div>
+            </div>
+        </div>
+        
+        <!-- The 3 -->
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-3"></i> The 3: Tinh toan tu ngay va gio</h2>
+            <div class="input-group">
+                <label for="date3">Ngay thang nam:</label>
+                <div class="date-input-group">
+                    <input type="number" id="day3" placeholder="Ngay" min="1" max="31" value="11">
+                    <input type="number" id="month3" placeholder="Thang" min="1" max="12" value="12">
+                    <input type="number" id="year3" placeholder="Nam" min="1900" max="2100" value="2025">
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="hour3">So gio (1-28):</label>
+                <input type="number" id="hour3" placeholder="Nhap so gio tu 1 den 28" min="1" max="28" value="1">
+                <div class="warning">Luu y: Gio tu 1 den 28 tuong ung voi 60 den 1500 phut</div>
+            </div>
+            
+            <button class="calculate-btn" onclick="calculateCard3()">
+                <i class="fas fa-calculator"></i> Tinh toan mau sac
+            </button>
+            
+            <div id="result3" class="result" style="display: none;">
+                <div class="result-title">Ket qua tinh toan:</div>
+                <div class="calculation-steps" id="steps3"></div>
+                <div class="color-result" id="colors3"></div>
+                <div class="color-stats" id="stats3"></div>
+            </div>
+        </div>
+        
+        <!-- The 4 -->
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-4"></i> The 4: Tinh toan tu ngay va ngay sinh</h2>
+            <div class="input-group">
+                <label for="date4">Ngay thang nam:</label>
+                <div class="date-input-group">
+                    <input type="number" id="day4" placeholder="Ngay" min="1" max="31" value="11">
+                    <input type="number" id="month4" placeholder="Thang" min="1" max="12" value="12">
+                    <input type="number" id="year4" placeholder="Nam" min="1900" max="2100" value="2025">
+                </div>
+            </div>
+            
+            <div class="two-column">
+                <div class="input-group">
+                    <label for="person4a">Ngay sinh nguoi di:</label>
+                    <select id="person4a">
+                        <option value="">Chon nguoi tu danh sach</option>
+                    </select>
+                    <div class="person-list" id="personList4a"></div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="person4b">Ngay sinh nguoi den:</label>
+                    <select id="person4b">
+                        <option value="">Chon nguoi tu danh sach</option>
+                    </select>
+                    <div class="person-list" id="personList4b"></div>
+                </div>
+            </div>
+            
+            <button class="calculate-btn" onclick="calculateCard4()">
+                <i class="fas fa-calculator"></i> Tinh toan mau sac
+            </button>
+            
+            <div id="result4" class="result" style="display: none;">
+                <div class="result-title">Ket qua tinh toan:</div>
+                <div class="calculation-steps" id="steps4"></div>
+                <div class="color-result" id="colors4"></div>
+                <div class="color-stats" id="stats4"></div>
+            </div>
+        </div>
+        
+        <!-- The 5 -->
+        <div class="card">
+            <h2 class="card-title"><i class="fas fa-5"></i> The 5: Chuan bi trang phuc theo mau</h2>
+            <div class="input-group">
+                <label for="date5a">Ngay di:</label>
+                <div class="date-input-group">
+                    <input type="number" id="day5a" placeholder="Ngay" min="1" max="31" value="11">
+                    <input type="number" id="month5a" placeholder="Thang" min="1" max="12" value="12">
+                    <input type="number" id="year5a" placeholder="Nam" min="1900" max="2100" value="2025">
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="date5b">Ngay ve:</label>
+                <div class="date-input-group">
+                    <input type="number" id="day5b" placeholder="Ngay" min="1" max="31" value="15">
+                    <input type="number" id="month5b" placeholder="Thang" min="1" max="12" value="12">
+                    <input type="number" id="year5b" placeholder="Nam" min="1900" max="2100" value="2025">
+                </div>
+            </div>
+            
+            <div class="two-column">
+                <div class="input-group">
+                    <label for="number5a">So lon:</label>
+                    <input type="number" id="number5a" placeholder="Nhap so lon" value="9">
+                </div>
+                
+                <div class="input-group">
+                    <label for="number5b">So nho:</label>
+                    <input type="number" id="number5b" placeholder="Nhap so nho" value="3">
+                </div>
+            </div>
+            
+            <button class="calculate-btn" onclick="calculateCard5()">
+                <i class="fas fa-suitcase"></i> Tinh toan trang phuc
+            </button>
+            
+            <div id="result5" class="result" style="display: none;">
+                <div class="result-title">Ket qua tinh toan trang phuc:</div>
+                <div class="calculation-steps" id="steps5"></div>
+                <div class="color-result" id="colors5"></div>
+                <div class="color-stats" id="stats5"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bang mau tham khao -->
+    <div class="card">
+        <h2 class="card-title"><i class="fas fa-table"></i> Bang tra mau sac</h2>
+        <table class="color-table">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Ten mau</th>
+                    <th>Ma HEX</th>
+                    <th>STT</th>
+                    <th>Ten mau</th>
+                    <th>Ma HEX</th>
+                </tr>
+            </thead>
+            <tbody id="colorTableBody">
+                <!-- Se duoc dien bang JavaScript -->
+            </tbody>
+        </table>
+    </div>
+    
+    <footer>
+        <p>Cong cu tinh toan mau sac theo ngu hanh - Su dung cho muc dich tham khao</p>
+        <p>© 2025 - Tat ca cac the hoat dong doc lap, khong lien quan den nhau</p>
+    </footer>
+
+    <script>
+        // Du lieu mau sac
+        const colorData = [
+            {id: 1, name: "dO", hex: "#FF0000"},
+            {id: 2, name: "VANG", hex: "#FFFF00"},
+            {id: 3, name: "KIM LOAI", hex: "#C0C0C0"},
+            {id: 4, name: "XANH BIEN", hex: "#0000FF"},
+            {id: 5, name: "XANH LA", hex: "#00FF00"},
+            {id: 6, name: "do", hex: "#FF4500"},
+            {id: 7, name: "VANG", hex: "#FFD700"},
+            {id: 8, name: "CAM", hex: "#FFA500"},
+            {id: 9, name: "XANH BIEN", hex: "#1E90FF"},
+            {id: 10, name: "XANH LA", hex: "#32CD32"},
+            {id: 11, name: "dO", hex: "#DC143C"},
+            {id: 12, name: "VANG", hex: "#F0E68C"},
+            {id: 13, name: "TRANG", hex: "#FFFFFF"},
+            {id: 14, name: "XANH BIEN", hex: "#4169E1"},
+            {id: 1, name: "dEN", hex: "#000000"},
+            {id: 2, name: "TRANG", hex: "#F8F8FF"},
+            {id: 3, name: "DA TROI", hex: "#87CEEB"},
+            {id: 4, name: "XANH LA", hex: "#90EE90"},
+            {id: 5, name: "XANH BIEN", hex: "#4682B4"},
+            {id: 6, name: "TIM", hex: "#800080"},
+            {id: 7, name: "dO", hex: "#B22222"},
+            {id: 8, name: "CAM", hex: "#FF8C00"},
+            {id: 9, name: "VANG", hex: "#FFE4B5"},
+            {id: 10, name: "dEN", hex: "#2F4F4F"},
+            {id: 11, name: "TRANG", hex: "#FFFAFA"},
+            {id: 12, name: "XANH DA TROI", hex: "#B0E0E6"},
+            {id: 13, name: "XANH LA", hex: "#98FB98"},
+            {id: 14, name: "XANH BIEN", hex: "#5F9EA0"},
+            {id: 1, name: "VANG", hex: "#FFFACD"},
+            {id: 2, name: "dO", hex: "#FF6347"},
+            {id: 3, name: "HONG", hex: "#FFC0CB"},
+            {id: 4, name: "GHI", hex: "#808080"},
+            {id: 5, name: "TRANG", hex: "#F5F5F5"},
+            {id: 6, name: "dEN", hex: "#696969"},
+            {id: 7, name: "XANH DA TROI", hex: "#ADD8E6"},
+            {id: 8, name: "XANH LA", hex: "#7CFC00"},
+            {id: 9, name: "VANG", hex: "#FAFAD2"},
+            {id: 10, name: "dO", hex: "#CD5C5C"},
+            {id: 11, name: "HONG", hex: "#DB7093"},
+            {id: 12, name: "GHI", hex: "#A9A9A9"},
+            {id: 13, name: "TRANG", hex: "#F0F8FF"},
+            {id: 14, name: "dEN", hex: "#191970"},
+            {id: 1, name: "dO", hex: "#8B0000"},
+            {id: 2, name: "VANG", hex: "#DAA520"},
+            {id: 3, name: "CAM", hex: "#FF7F50"},
+            {id: 4, name: "XANH BIEN", hex: "#000080"},
+            {id: 5, name: "XANH LA", hex: "#006400"},
+            {id: 6, name: "XANH LA MA", hex: "#9ACD32"},
+            {id: 7, name: "TIM", hex: "#9400D3"},
+            {id: 8, name: "dO", hex: "#FF1493"},
+            {id: 9, name: "VANG", hex: "#FFDAB9"},
+            {id: 10, name: "DA CAM", hex: "#FF7F24"},
+            {id: 11, name: "XANH BIEN", hex: "#00CED1"},
+            {id: 12, name: "XANH LA", hex: "#2E8B57"},
+            {id: 13, name: "XANH LA MA", hex: "#7FFF00"},
+            {id: 14, name: "TIM", hex: "#BA55D3"},
+            {id: 1, name: "dO", hex: "#FF0000"},
+            {id: 2, name: "VANG", hex: "#FFFF00"},
+            {id: 3, name: "XANH LA", hex: "#00FF00"},
+            {id: 4, name: "dO", hex: "#FF4500"},
+            {id: 5, name: "VANG", hex: "#FFD700"},
+            {id: 6, name: "XANH LA", hex: "#32CD32"},
+            {id: 7, name: "dO", hex: "#DC143C"},
+            {id: 8, name: "VANG", hex: "#F0E68C"},
+            {id: 9, name: "XANH LA", hex: "#90EE90"},
+            {id: 10, name: "dO", hex: "#B22222"},
+            {id: 11, name: "VANG", hex: "#FFE4B5"},
+            {id: 12, name: "XANH LA", hex: "#98FB98"},
+            {id: 13, name: "dO", hex: "#FF6347"},
+            {id: 14, name: "VANG", hex: "#FFFACD"},
+            {id: 1, name: "XANH LA", hex: "#7CFC00"},
+            {id: 2, name: "dO", hex: "#CD5C5C"},
+            {id: 3, name: "VANG", hex: "#FAFAD2"},
+            {id: 4, name: "dEN", hex: "#2F4F4F"},
+            {id: 5, name: "XANH LA", hex: "#006400"},
+            {id: 6, name: "dO", hex: "#8B0000"},
+            {id: 7, name: "VANG", hex: "#DAA520"},
+            {id: 8, name: "dEN", hex: "#000000"},
+            {id: 9, name: "LAM", hex: "#0000FF"},
+            {id: 10, name: "dO", hex: "#FF1493"},
+            {id: 11, name: "VANG", hex: "#FFDAB9"},
+            {id: 12, name: "dEN", hex: "#696969"},
+            {id: 13, name: "XANH LA", hex: "#2E8B57"},
+            {id: 14, name: "dO", hex: "#FF0000"}
+        ];
+        
+        // Du lieu nguoi
+        const peopleData = [
+            {name: "NGUYENKHACNANG", dob: "04/06/1944"},
+            {name: "TOTHIHA", dob: "29/08/1948"},
+            {name: "NGUYENMINHNAM", dob: "03/03/1971"},
+            {name: "THANTHIKIMANH", dob: "23/09/1981"},
+            {name: "NGUYENTONGANAN", dob: "28/09/2014"},
+            {name: "NGUYENTOMINHCHAU", dob: "25/07/2016"},
+            {name: "NGUYENTOBICHNGOC", dob: "05/02/2020"},
+            {name: "NGUYENTHIMINHHANG", dob: "07/01/1974"},
+            {name: "NGOQUYCUONG", dob: "23/05/1973"},
+            {name: "NGOGIABACH", dob: "12/10/2000"},
+            {name: "NGOGIALINH", dob: "05/04/2005"},
+            {name: "NGUYENTHIMINHPHUONG", dob: "06/11/1978"},
+            {name: "HOANGANHDUNG", dob: "21/09/1978"},
+            {name: "HOANGHAIVINH", dob: "03/06/2010"},
+            {name: "HOANGTHIENBACHANH", dob: "14/11/2015"},
+            {name: "TO KIM HUE", dob: "9/8/1960"},
+            {name: "NGUYEN TUAN ANH", dob: "23/10/1983"},
+            {name: "NGUYEN THE ANH", dob: "24/3/2001"},
+            {name: "NGO THI MAI", dob: "12/12/1948"},
+            {name: "TO VIET HUNG", dob: "17/6/1996"},
+            {name: "TO THI HONG", dob: "10/10/1964"},
+            {name: "VU VAN HIEP", dob: "24/4/1974"},
+            {name: "NGUYEN THI CHI", dob: "8/2/1946"},
+            {name: "NGUYEN TAN BAC", dob: "30/11/1957"},
+            {name: "NGUYEN THI TAM", dob: "8/8/1954"}
+        ];
+        
+        // Bang chu cai
+        const alphabetMap = {
+            // Xuoi
+            'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1, 'A': 1,
+            'B': 2,
+            'C': 3,
+            'D': 4,
+            'd': 5,
+            'E': 6, 'E': 6, 'E': 6, 'E': 6, 'E': 6, 'E': 6, 'E': 6, 'E': 6, 'E': 6, 'E': 6, 'E': 6, 'E': 6,
+            'G': 7,
+            'H': 8,
+            'I': 9, 'I': 9, 'I': 9, 'I': 9, 'I': 9, 'I': 9,
+            'K': 10,
+            'L': 11,
+            'M': 12,
+            'N': 1,
+            'O': 2, 'O': 2, 'O': 2, 'O': 2, 'O': 2, 'O': 2, 'O': 2, 'O': 2, 'O': 2, 'O': 2, 'O': 2, 'O': 2, 'O': 2, 'O': 2, 'O': 2, 'O': 2, 'O': 2, 'O': 2,
+            'P': 3,
+            'Q': 4,
+            'R': 5,
+            'S': 6,
+            'T': 7,
+            'U': 8, 'U': 8, 'U': 8, 'U': 8, 'U': 8, 'U': 8, 'U': 8, 'U': 8, 'U': 8, 'U': 8, 'U': 8, 'U': 8,
+            'V': 9,
+            'X': 10,
+            'Y': 11, 'Y': 11, 'Y': 11, 'Y': 11, 'Y': 11, 'Y': 11,
+            'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1, 'a': 1,
+            'b': 2,
+            'c': 3,
+            'd': 4,
+            'd': 5,
+            'e': 6, 'e': 6, 'e': 6, 'e': 6, 'e': 6, 'e': 6, 'e': 6, 'e': 6, 'e': 6, 'e': 6, 'e': 6, 'e': 6,
+            'g': 7,
+            'h': 8,
+            'i': 9, 'i': 9, 'i': 9, 'i': 9, 'i': 9, 'i': 9,
+            'k': 10,
+            'l': 11,
+            'm': 12,
+            'n': 1,
+            'o': 2, 'o': 2, 'o': 2, 'o': 2, 'o': 2, 'o': 2, 'o': 2, 'o': 2, 'o': 2, 'o': 2, 'o': 2, 'o': 2, 'o': 2, 'o': 2, 'o': 2, 'o': 2, 'o': 2, 'o': 2,
+            'p': 3,
+            'q': 4,
+            'r': 5,
+            's': 6,
+            't': 7,
+            'u': 8, 'u': 8, 'u': 8, 'u': 8, 'u': 8, 'u': 8, 'u': 8, 'u': 8, 'u': 8, 'u': 8, 'u': 8, 'u': 8,
+            'v': 9,
+            'x': 10,
+            'y': 11, 'y': 11, 'y': 11, 'y': 11, 'y': 11, 'y': 11,
+            // Nguoc
+            'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12, 'A': 12,
+            'B': 11,
+            'C': 10,
+            'D': 9,
+            'd': 8,
+            'E': 7, 'E': 7, 'E': 7, 'E': 7, 'E': 7, 'E': 7, 'E': 7, 'E': 7, 'E': 7, 'E': 7, 'E': 7, 'E': 7,
+            'G': 6,
+            'H': 5,
+            'I': 4, 'I': 4, 'I': 4, 'I': 4, 'I': 4, 'I': 4,
+            'K': 3,
+            'L': 2,
+            'M': 1,
+            'N': 11,
+            'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10, 'O': 10,
+            'P': 9,
+            'Q': 8,
+            'R': 7,
+            'S': 6,
+            'T': 5,
+            'U': 4, 'U': 4, 'U': 4, 'U': 4, 'U': 4, 'U': 4, 'U': 4, 'U': 4, 'U': 4, 'U': 4, 'U': 4, 'U': 4,
+            'V': 3,
+            'X': 2,
+            'Y': 1, 'Y': 1, 'Y': 1, 'Y': 1, 'Y': 1, 'Y': 1,
+            'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12, 'a': 12,
+            'b': 11,
+            'c': 10,
+            'd': 9,
+            'd': 8,
+            'e': 7, 'e': 7, 'e': 7, 'e': 7, 'e': 7, 'e': 7, 'e': 7, 'e': 7, 'e': 7, 'e': 7, 'e': 7, 'e': 7,
+            'g': 6,
+            'h': 5,
+            'i': 4, 'i': 4, 'i': 4, 'i': 4, 'i': 4, 'i': 4,
+            'k': 3,
+            'l': 2,
+            'm': 1,
+            'n': 11,
+            'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10, 'o': 10,
+            'p': 9,
+            'q': 8,
+            'r': 7,
+            's': 6,
+            't': 5,
+            'u': 4, 'u': 4, 'u': 4, 'u': 4, 'u': 4, 'u': 4, 'u': 4, 'u': 4, 'u': 4, 'u': 4, 'u': 4, 'u': 4,
+            'v': 3,
+            'x': 2,
+            'y': 1, 'y': 1, 'y': 1, 'y': 1, 'y': 1, 'y': 1
+        };
+        
+        // Bang gio
+        const hourTable = {
+            1: 60, 2: 120, 3: 180, 4: 240, 5: 300, 6: 360, 7: 420, 8: 480, 9: 540, 10: 600,
+            11: 660, 12: 720, 13: 780, 14: 840, 15: 900, 16: 960, 17: 1020, 18: 1080, 19: 1140, 20: 1200,
+            21: 1260, 22: 1320, 23: 1380, 24: 1440, 25: 1500, 26: 1560, 27: 1620, 28: 1680
+        };
+        
+        // Khoi tao
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tai du lieu nguoi vao cac select
+            loadPeopleData();
+            
+            // Tao bang mau
+            createColorTable();
+        });
+        
+        function loadPeopleData() {
+            const selectIds = ['person2a', 'person2b', 'person4a', 'person4b'];
+            const listIds = ['personList2a', 'personList2b', 'personList4a', 'personList4b'];
+            
+            selectIds.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                peopleData.forEach(person => {
+                    const option = document.createElement('option');
+                    option.value = person.name;
+                    option.textContent = `${person.name} (${person.dob})`;
+                    select.appendChild(option);
+                });
+            });
+            
+            listIds.forEach(listId => {
+                const list = document.getElementById(listId);
+                peopleData.forEach(person => {
+                    const div = document.createElement('div');
+                    div.className = 'person-option';
+                    div.innerHTML = `<div class="person-name">${person.name}</div><div class="person-dob">${person.dob}</div>`;
+                    div.addEventListener('click', function() {
+                        // Tim select tuong ung
+                        const selectId = listId.replace('List', '');
+                        document.getElementById(selectId).value = person.name;
+                    });
+                    list.appendChild(div);
+                });
+            });
+        }
+        
+        function createColorTable() {
+            const tableBody = document.getElementById('colorTableBody');
+            let rows = '';
+            
+            for (let i = 0; i < colorData.length; i += 2) {
+                const color1 = colorData[i];
+                const color2 = colorData[i+1] || {};
+                
+                rows += `
+                    <tr>
+                        <td>${color1.id || ''}</td>
+                        <td>${color1.name || ''}</td>
+                        <td>${color1.hex || ''}</td>
+                        <td>${color2.id || ''}</td>
+                        <td>${color2.name || ''}</td>
+                        <td>${color2.hex || ''}</td>
+                    </tr>
+                `;
+            }
+            
+            tableBody.innerHTML = rows;
+        }
+        
+        // Ham tinh toan chung - 4 phep tinh day du
+        function performCalculations(num1, num2) {
+            const results = [];
+            
+            // dam bao ca hai so deu hop le
+            if (isNaN(num1) || isNaN(num2)) {
+                return results;
+            }
+            
+            // Cong
+            results.push(num1 + num2);
+            
+            // Tru (lay so lon tru so nho)
+            results.push(Math.abs(num1 - num2));
+            
+            // Nhan
+            results.push(num1 * num2);
+            
+            // Chia (lay so lon chia so nho, lay so du)
+            if (num1 !== 0 && num2 !== 0) {
+                const larger = Math.max(Math.abs(num1), Math.abs(num2));
+                const smaller = Math.min(Math.abs(num1), Math.abs(num2));
+                if (smaller !== 0) {
+                    results.push(larger % smaller); // Lay so du
+                } else {
+                    results.push(0);
+                }
+            } else {
+                results.push(0);
+            }
+            
+            return results;
+        }
+        
+        function getColorByNumber(num) {
+            // Chuyen so ve khoang 1-14
+            let colorIndex = Math.abs(num) % 14;
+            if (colorIndex === 0) colorIndex = 14;
+            
+            // Tim mau co ID = colorIndex
+            const colors = colorData.filter(color => color.id === colorIndex);
+            if (colors.length > 0) {
+                // Tra ve mau dau tien tim thay
+                return colors[0];
+            }
+            
+            // Neu khong tim thay, tra ve mau mac dinh
+            return {id: colorIndex, name: "MAU " + colorIndex, hex: "#CCCCCC"};
+        }
+        
+        function calculateCard1() {
+            const day = parseInt(document.getElementById('day1').value) || 1;
+            const month = parseInt(document.getElementById('month1').value) || 1;
+            const year = parseInt(document.getElementById('year1').value) || 2025;
+            const address = parseInt(document.getElementById('address1').value) || 1;
+            
+            // Ghep ngay thang nam
+            const dateNumber = parseInt(day.toString() + month.toString() + year.toString());
+            
+            // Thuc hien cac phep tinh
+            const calcResults = performCalculations(dateNumber, address);
+            
+            // Lay tat ca mau tu cac ket qua
+            const colors = [];
+            calcResults.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            // dem so lan xuat hien cua moi mau
+            const colorCount = {};
+            colors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                colorCount[key] = (colorCount[key] || 0) + 1;
+            });
+            
+            // Tim mau xuat hien nhieu nhat
+            let maxCount = 0;
+            let topColors = [];
+            
+            for (const [key, count] of Object.entries(colorCount)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    topColors = [key];
+                } else if (count === maxCount) {
+                    topColors.push(key);
+                }
+            }
+            
+            // Hien thi ket qua
+            document.getElementById('result1').style.display = 'block';
+            
+            let stepsHtml = `<div class="step">Ngay nhap: ${day}/${month}/${year}</div>`;
+            stepsHtml += `<div class="step">So ghep tu ngay: ${dateNumber}</div>`;
+            stepsHtml += `<div class="step">dia chi: ${address}</div>`;
+            stepsHtml += `<div class="step">4 phep tinh thuc hien:</div>`;
+            stepsHtml += `<div class="step">1. ${dateNumber} + ${address} = ${calcResults[0]}</div>`;
+            stepsHtml += `<div class="step">2. |${dateNumber} - ${address}| = ${calcResults[1]}</div>`;
+            stepsHtml += `<div class="step">3. ${dateNumber} × ${address} = ${calcResults[2]}</div>`;
+            stepsHtml += `<div class="step">4. ${Math.max(dateNumber, address)} ÷ ${Math.min(dateNumber, address)} du ${calcResults[3]}</div>`;
+            
+            document.getElementById('steps1').innerHTML = stepsHtml;
+            
+            // Hien thi tat ca mau tim duoc
+            let colorsHtml = '';
+            const uniqueColors = [];
+            const seenColors = new Set();
+            
+            colors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                if (!seenColors.has(key)) {
+                    seenColors.add(key);
+                    uniqueColors.push(color);
+                }
+            });
+            
+            uniqueColors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                const count = colorCount[key];
+                const isTopColor = topColors.includes(key);
+                
+                colorsHtml += `
+                    <div class="color-box" style="background-color: ${color.hex}; border: ${isTopColor ? '3px solid #FF0000' : 'none'}">
+                        <div class="color-name">${color.name}</div>
+                        <div class="color-hex">${color.hex}</div>
+                        <div style="margin-top: 5px; font-size: 0.8rem;">Xuat hien: ${count} lan</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('colors1').innerHTML = colorsHtml;
+            
+            // Hien thi thong ke
+            let statsHtml = `Tong cong co <span class="highlight">${uniqueColors.length}</span> mau khac nhau duoc tim thay.<br>`;
+            statsHtml += `Mau xuat hien nhieu nhat (${maxCount} lan): `;
+            
+            topColors.forEach((key, index) => {
+                const [name, hex] = key.split('-');
+                statsHtml += `<span class="highlight">${name}</span>`;
+                if (index < topColors.length - 1) {
+                    statsHtml += ', ';
+                }
+            });
+            
+            document.getElementById('stats1').innerHTML = statsHtml;
+        }
+        
+        function calculateCard2() {
+            const day = parseInt(document.getElementById('day2').value) || 1;
+            const month = parseInt(document.getElementById('month2').value) || 1;
+            const year = parseInt(document.getElementById('year2').value) || 2025;
+            const personA = document.getElementById('person2a').value;
+            const personB = document.getElementById('person2b').value;
+            
+            if (!personA || !personB) {
+                alert("Vui long chon ca hai nguoi!");
+                return;
+            }
+            
+            // Ghep ngay thang nam
+            const dateNumber = parseInt(day.toString() + month.toString() + year.toString());
+            
+            // Tinh gia tri chu cai cho tung nguoi (xuoi va nguoc)
+            const personAValueForward = calculateNameValue(personA, 'forward');
+            const personAValueReverse = calculateNameValue(personA, 'reverse');
+            const personBValueForward = calculateNameValue(personB, 'forward');
+            const personBValueReverse = calculateNameValue(personB, 'reverse');
+            
+            // Thuc hien cac phep tinh
+            const colors = [];
+            
+            // Tinh voi gia tri xuoi
+            const calcResultsForward = performCalculations(dateNumber, personAValueForward);
+            calcResultsForward.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            const calcResultsForward2 = performCalculations(dateNumber, personBValueForward);
+            calcResultsForward2.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            // Tinh voi gia tri nguoc
+            const calcResultsReverse = performCalculations(dateNumber, personAValueReverse);
+            calcResultsReverse.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            const calcResultsReverse2 = performCalculations(dateNumber, personBValueReverse);
+            calcResultsReverse2.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            // Tinh giua hai nguoi
+            const calcBetweenForward = performCalculations(personAValueForward, personBValueForward);
+            calcBetweenForward.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            const calcBetweenReverse = performCalculations(personAValueReverse, personBValueReverse);
+            calcBetweenReverse.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            // dem so lan xuat hien cua moi mau
+            const colorCount = {};
+            colors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                colorCount[key] = (colorCount[key] || 0) + 1;
+            });
+            
+            // Tim mau xuat hien nhieu nhat
+            let maxCount = 0;
+            let topColors = [];
+            
+            for (const [key, count] of Object.entries(colorCount)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    topColors = [key];
+                } else if (count === maxCount) {
+                    topColors.push(key);
+                }
+            }
+            
+            // Hien thi ket qua
+            document.getElementById('result2').style.display = 'block';
+            
+            let stepsHtml = `<div class="step">Ngay nhap: ${day}/${month}/${year}</div>`;
+            stepsHtml += `<div class="step">So ghep tu ngay: ${dateNumber}</div>`;
+            stepsHtml += `<div class="step">Nguoi di: ${personA} (xuoi: ${personAValueForward}, nguoc: ${personAValueReverse})</div>`;
+            stepsHtml += `<div class="step">Nguoi den: ${personB} (xuoi: ${personBValueForward}, nguoc: ${personBValueReverse})</div>`;
+            stepsHtml += `<div class="step">da thuc hien tat ca cac phep tinh cong, tru, nhan, chia</div>`;
+            
+            document.getElementById('steps2').innerHTML = stepsHtml;
+            
+            // Hien thi tat ca mau tim duoc
+            let colorsHtml = '';
+            const uniqueColors = [];
+            const seenColors = new Set();
+            
+            colors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                if (!seenColors.has(key)) {
+                    seenColors.add(key);
+                    uniqueColors.push(color);
+                }
+            });
+            
+            uniqueColors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                const count = colorCount[key];
+                const isTopColor = topColors.includes(key);
+                
+                colorsHtml += `
+                    <div class="color-box" style="background-color: ${color.hex}; border: ${isTopColor ? '3px solid #FF0000' : 'none'}">
+                        <div class="color-name">${color.name}</div>
+                        <div class="color-hex">${color.hex}</div>
+                        <div style="margin-top: 5px; font-size: 0.8rem;">Xuat hien: ${count} lan</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('colors2').innerHTML = colorsHtml;
+            
+            // Hien thi thong ke
+            let statsHtml = `Tong cong co <span class="highlight">${uniqueColors.length}</span> mau khac nhau duoc tim thay.<br>`;
+            statsHtml += `Mau xuat hien nhieu nhat (${maxCount} lan): `;
+            
+            topColors.forEach((key, index) => {
+                const [name, hex] = key.split('-');
+                statsHtml += `<span class="highlight">${name}</span>`;
+                if (index < topColors.length - 1) {
+                    statsHtml += ', ';
+                }
+            });
+            
+            document.getElementById('stats2').innerHTML = statsHtml;
+        }
+        
+        function calculateNameValue(name, direction) {
+            let total = 0;
+            
+            for (let char of name) {
+                if (alphabetMap[char] !== undefined) {
+                    total += alphabetMap[char];
+                }
+            }
+            
+            return total;
+        }
+        
+        function calculateCard3() {
+            const day = parseInt(document.getElementById('day3').value) || 1;
+            const month = parseInt(document.getElementById('month3').value) || 1;
+            const year = parseInt(document.getElementById('year3').value) || 2025;
+            const hour = parseInt(document.getElementById('hour3').value) || 1;
+            
+            if (hour < 1 || hour > 28) {
+                alert("Vui long nhap gio tu 1 den 28!");
+                return;
+            }
+            
+            // Ghep ngay thang nam
+            const dateNumber = parseInt(day.toString() + month.toString() + year.toString());
+            
+            // Lay gia tri gio tu bang
+            const hourValue = hourTable[hour];
+            
+            // Thuc hien 4 phep tinh day du
+            const calcResults = performCalculations(dateNumber, hourValue);
+            
+            // Lay tat ca mau tu cac ket qua
+            const colors = [];
+            calcResults.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            // dem so lan xuat hien cua moi mau
+            const colorCount = {};
+            colors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                colorCount[key] = (colorCount[key] || 0) + 1;
+            });
+            
+            // Tim mau xuat hien nhieu nhat
+            let maxCount = 0;
+            let topColors = [];
+            
+            for (const [key, count] of Object.entries(colorCount)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    topColors = [key];
+                } else if (count === maxCount) {
+                    topColors.push(key);
+                }
+            }
+            
+            // Hien thi ket qua
+            document.getElementById('result3').style.display = 'block';
+            
+            let stepsHtml = `<div class="step">Ngay nhap: ${day}/${month}/${year}</div>`;
+            stepsHtml += `<div class="step">So ghep tu ngay: ${dateNumber}</div>`;
+            stepsHtml += `<div class="step">Gio nhap: ${hour} (tuong ung ${hourValue} phut)</div>`;
+            stepsHtml += `<div class="step">4 phep tinh thuc hien:</div>`;
+            stepsHtml += `<div class="step">1. ${dateNumber} + ${hourValue} = ${calcResults[0]}</div>`;
+            stepsHtml += `<div class="step">2. |${dateNumber} - ${hourValue}| = ${calcResults[1]}</div>`;
+            stepsHtml += `<div class="step">3. ${dateNumber} × ${hourValue} = ${calcResults[2]}</div>`;
+            stepsHtml += `<div class="step">4. ${Math.max(dateNumber, hourValue)} ÷ ${Math.min(dateNumber, hourValue)} du ${calcResults[3]}</div>`;
+            
+            document.getElementById('steps3').innerHTML = stepsHtml;
+            
+            // Hien thi tat ca mau tim duoc
+            let colorsHtml = '';
+            const uniqueColors = [];
+            const seenColors = new Set();
+            
+            colors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                if (!seenColors.has(key)) {
+                    seenColors.add(key);
+                    uniqueColors.push(color);
+                }
+            });
+            
+            uniqueColors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                const count = colorCount[key];
+                const isTopColor = topColors.includes(key);
+                
+                colorsHtml += `
+                    <div class="color-box" style="background-color: ${color.hex}; border: ${isTopColor ? '3px solid #FF0000' : 'none'}">
+                        <div class="color-name">${color.name}</div>
+                        <div class="color-hex">${color.hex}</div>
+                        <div style="margin-top: 5px; font-size: 0.8rem;">Xuat hien: ${count} lan</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('colors3').innerHTML = colorsHtml;
+            
+            // Hien thi thong ke
+            let statsHtml = `Tong cong co <span class="highlight">${uniqueColors.length}</span> mau khac nhau duoc tim thay.<br>`;
+            statsHtml += `Mau xuat hien nhieu nhat (${maxCount} lan): `;
+            
+            topColors.forEach((key, index) => {
+                const [name, hex] = key.split('-');
+                statsHtml += `<span class="highlight">${name}</span>`;
+                if (index < topColors.length - 1) {
+                    statsHtml += ', ';
+                }
+            });
+            
+            document.getElementById('stats3').innerHTML = statsHtml;
+        }
+        
+        function calculateCard4() {
+            const day = parseInt(document.getElementById('day4').value) || 1;
+            const month = parseInt(document.getElementById('month4').value) || 1;
+            const year = parseInt(document.getElementById('year4').value) || 2025;
+            const personA = document.getElementById('person4a').value;
+            const personB = document.getElementById('person4b').value;
+            
+            if (!personA || !personB) {
+                alert("Vui long chon ca hai nguoi!");
+                return;
+            }
+            
+            // Tim ngay sinh cua nguoi duoc chon
+            const personAData = peopleData.find(p => p.name === personA);
+            const personBData = peopleData.find(p => p.name === personB);
+            
+            if (!personAData || !personBData) {
+                alert("Khong tim thay thong tin nguoi!");
+                return;
+            }
+            
+            // Parse ngay sinh
+            const dobA = personAData.dob.split('/');
+            const dobB = personBData.dob.split('/');
+            
+            const dayA = parseInt(dobA[0]) || 1;
+            const monthA = parseInt(dobA[1]) || 1;
+            const yearA = parseInt(dobA[2]) || 1900;
+            
+            const dayB = parseInt(dobB[0]) || 1;
+            const monthB = parseInt(dobB[1]) || 1;
+            const yearB = parseInt(dobB[2]) || 1900;
+            
+            // Ghep ngay thang nam
+            const dateNumber = parseInt(day.toString() + month.toString() + year.toString());
+            const dobNumberA = parseInt(dayA.toString() + monthA.toString() + yearA.toString());
+            const dobNumberB = parseInt(dayB.toString() + monthB.toString() + yearB.toString());
+            
+            // Thuc hien cac phep tinh
+            const colors = [];
+            
+            // Tinh voi ngay sinh nguoi di
+            const calcResultsA = performCalculations(dateNumber, dobNumberA);
+            calcResultsA.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            // Tinh voi ngay sinh nguoi den
+            const calcResultsB = performCalculations(dateNumber, dobNumberB);
+            calcResultsB.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            // Tinh giua hai ngay sinh
+            const calcBetween = performCalculations(dobNumberA, dobNumberB);
+            calcBetween.forEach(result => {
+                colors.push(getColorByNumber(result));
+            });
+            
+            // dem so lan xuat hien cua moi mau
+            const colorCount = {};
+            colors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                colorCount[key] = (colorCount[key] || 0) + 1;
+            });
+            
+            // Tim mau xuat hien nhieu nhat
+            let maxCount = 0;
+            let topColors = [];
+            
+            for (const [key, count] of Object.entries(colorCount)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    topColors = [key];
+                } else if (count === maxCount) {
+                    topColors.push(key);
+                }
+            }
+            
+            // Hien thi ket qua
+            document.getElementById('result4').style.display = 'block';
+            
+            let stepsHtml = `<div class="step">Ngay nhap: ${day}/${month}/${year}</div>`;
+            stepsHtml += `<div class="step">So ghep tu ngay: ${dateNumber}</div>`;
+            stepsHtml += `<div class="step">Nguoi di: ${personA} (ngay sinh: ${personAData.dob}, so: ${dobNumberA})</div>`;
+            stepsHtml += `<div class="step">Nguoi den: ${personB} (ngay sinh: ${personBData.dob}, so: ${dobNumberB})</div>`;
+            stepsHtml += `<div class="step">da thuc hien tat ca cac phep tinh cong, tru, nhan, chia</div>`;
+            
+            document.getElementById('steps4').innerHTML = stepsHtml;
+            
+            // Hien thi tat ca mau tim duoc
+            let colorsHtml = '';
+            const uniqueColors = [];
+            const seenColors = new Set();
+            
+            colors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                if (!seenColors.has(key)) {
+                    seenColors.add(key);
+                    uniqueColors.push(color);
+                }
+            });
+            
+            uniqueColors.forEach(color => {
+                const key = color.name + "-" + color.hex;
+                const count = colorCount[key];
+                const isTopColor = topColors.includes(key);
+                
+                colorsHtml += `
+                    <div class="color-box" style="background-color: ${color.hex}; border: ${isTopColor ? '3px solid #FF0000' : 'none'}">
+                        <div class="color-name">${color.name}</div>
+                        <div class="color-hex">${color.hex}</div>
+                        <div style="margin-top: 5px; font-size: 0.8rem;">Xuat hien: ${count} lan</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('colors4').innerHTML = colorsHtml;
+            
+            // Hien thi thong ke
+            let statsHtml = `Tong cong co <span class="highlight">${uniqueColors.length}</span> mau khac nhau duoc tim thay.<br>`;
+            statsHtml += `Mau xuat hien nhieu nhat (${maxCount} lan): `;
+            
+            topColors.forEach((key, index) => {
+                const [name, hex] = key.split('-');
+                statsHtml += `<span class="highlight">${name}</span>`;
+                if (index < topColors.length - 1) {
+                    statsHtml += ', ';
+                }
+            });
+            
+            document.getElementById('stats4').innerHTML = statsHtml;
+        }
+        
+        function calculateCard5() {
+            // Lay ngay di
+            const dayA = parseInt(document.getElementById('day5a').value) || 1;
+            const monthA = parseInt(document.getElementById('month5a').value) || 1;
+            const yearA = parseInt(document.getElementById('year5a').value) || 2025;
+            
+            // Lay ngay ve
+            const dayB = parseInt(document.getElementById('day5b').value) || 1;
+            const monthB = parseInt(document.getElementById('month5b').value) || 1;
+            const yearB = parseInt(document.getElementById('year5b').value) || 2025;
+            
+            // Lay so lon va so nho
+            const largeNum = parseInt(document.getElementById('number5a').value) || 9;
+            const smallNum = parseInt(document.getElementById('number5b').value) || 3;
+            
+            // Tao doi tuong ngay
+            const startDate = new Date(yearA, monthA - 1, dayA);
+            const endDate = new Date(yearB, monthB - 1, dayB);
+            
+            // Kiem tra ngay hop le
+            if (startDate > endDate) {
+                alert("Ngay di phai truoc ngay ve!");
+                return;
+            }
+            
+            // Ngay moc 1/1/1900
+            const baseDate = new Date(1900, 0, 1);
+            
+            // Tinh so ngay
+            const timeDiff = endDate.getTime() - startDate.getTime();
+            const dayDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+            
+            // Mang luu ket qua tung ngay
+            const dailyResults = [];
+            const colorCount = {};
+            
+            // Tinh toan cho tung ngay
+            let currentDate = new Date(startDate);
+            for (let i = 0; i < dayDiff; i++) {
+                // Tinh so ngay tu 1/1/1900 den ngay hien tai
+                const currentTimeDiff = currentDate.getTime() - baseDate.getTime();
+                const daysFromBase = Math.floor(currentTimeDiff / (1000 * 3600 * 24));
+                
+                // Chia lay du cho 9
+                let remainder9 = daysFromBase % 9;
+                if (remainder9 === 0) remainder9 = 9;
+                
+                // Thuc hien 4 phep tinh voi so lon
+                const calcResultsLarge = performCalculations(remainder9, largeNum);
+                
+                // Thuc hien 4 phep tinh voi so nho
+                const calcResultsSmall = performCalculations(remainder9, smallNum);
+                
+                // Ket hop tat ca ket qua
+                const allResults = [...calcResultsLarge, ...calcResultsSmall];
+                
+                // Lay mau cho moi ket qua
+                allResults.forEach(result => {
+                    const color = getColorByNumber(result);
+                    dailyResults.push({
+                        date: new Date(currentDate),
+                        color: color
+                    });
+                    
+                    // dem mau
+                    const key = color.name + "-" + color.hex;
+                    colorCount[key] = (colorCount[key] || 0) + 1;
+                });
+                
+                // Tang ngay
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            
+            // Tim mau xuat hien nhieu nhat
+            let maxCount = 0;
+            let topColors = [];
+            
+            for (const [key, count] of Object.entries(colorCount)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    topColors = [key];
+                } else if (count === maxCount) {
+                    topColors.push(key);
+                }
+            }
+            
+            // Hien thi ket qua
+            document.getElementById('result5').style.display = 'block';
+            
+            let stepsHtml = `<div class="step">Ngay di: ${dayA}/${monthA}/${yearA}</div>`;
+            stepsHtml += `<div class="step">Ngay ve: ${dayB}/${monthB}/${yearB}</div>`;
+            stepsHtml += `<div class="step">So ngay di: ${dayDiff} ngay</div>`;
+            stepsHtml += `<div class="step">So lon: ${largeNum}, So nho: ${smallNum}</div>`;
+            stepsHtml += `<div class="step">da tinh toan 4 phep tinh (cong, tru, nhan, chia) cho tung ngay</div>`;
+            stepsHtml += `<div class="step">Tong cong co ${dailyResults.length} ket qua mau duoc tao ra</div>`;
+            
+            document.getElementById('steps5').innerHTML = stepsHtml;
+            
+            // Hien thi cac mau duoc chon nhieu nhat
+            let colorsHtml = '';
+            
+            topColors.forEach(key => {
+                const [name, hex] = key.split('-');
+                colorsHtml += `
+                    <div class="color-box" style="background-color: ${hex};">
+                        <div class="color-name">${name}</div>
+                        <div class="color-hex">${hex}</div>
+                        <div style="margin-top: 5px; font-size: 0.8rem;">Xuat hien: ${maxCount} lan</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('colors5').innerHTML = colorsHtml;
+            
+            // Hien thi thong ke
+            let statsHtml = `Chuyen di keo dai <span class="highlight">${dayDiff}</span> ngay.<br>`;
+            statsHtml += `Nen chuan bi khoang <span class="highlight">${Math.min(Math.max(3, dayDiff), 15)}</span> bo trang phuc.<br>`;
+            statsHtml += `Mau nen chon (xuat hien ${maxCount} lan): `;
+            
+            topColors.forEach((key, index) => {
+                const [name, hex] = key.split('-');
+                statsHtml += `<span class="highlight">${name}</span>`;
+                if (index < topColors.length - 1) {
+                    statsHtml += ', ';
+                }
+            });
+            
+            statsHtml += `<br>Goi y: Su dung luan phien cac mau nay trong suot chuyen di.`;
+            
+            document.getElementById('stats5').innerHTML = statsHtml;
+        }
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

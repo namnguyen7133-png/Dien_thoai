@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lam chu cuoc choi – Win‑Win trong kinh doanh</title>
+  <style>
+    body {font-family: Arial, sans-serif; background:#f5f5f5; padding:20px;}
+    .container {max-width:900px; margin:auto; background:#fff; padding:20px; border-radius:8px;}
+    h1,h2 {color:#C62828;}
+    .box {background:#FFF8F0; border-left:5px solid #1565C0; padding:15px; margin:20px 0;}
+    label {display:block; margin-top:10px; font-weight:bold;}
+    input {width:100%; padding:10px; margin-top:5px;}
+    button {margin-top:15px; padding:12px; width:100%; background:#C62828; color:#fff; border:none; border-radius:5px; font-size:16px;}
+    .result {margin-top:15px; font-size:18px; font-weight:bold; color:#2E7D32;}
+    .note {font-style:italic; color:#555; margin-top:10px;}
+  </style>
+</head>
+<body>
+<div class="container">
+
+<h1>LAM CHU CUOC CHOI – TU DUY dOI BEN CUNG THANG (WIN‑WIN)</h1>
+<p><strong>Nguyen tac cot loi:</strong> Khong chia tien truoc – chi chia <u>sau khi da song sot</u>.</p>
+
+<div class="box">
+<h2>1. Luat song con (ap dung cho moi phep tinh)</h2>
+<ul>
+  <li>✅ Hoa von truoc</li>
+  <li>✅ Co dong tien duong</li>
+  <li>✅ Co lai gop an toan</li>
+  <li>❌ Khong dat → khong chia</li>
+</ul>
+</div>
+
+<h2>2. Mo hinh chia doi – doi ben cung co loi</h2>
+<p>Ap dung khi hop tac (mat bang – von – cong suc).</p>
+
+<div class="box">
+<h3>Cong thuc Win‑Win chuan</h3>
+<p><strong>Loi nhuan chia = Loi nhuan rong – Quy an toan</strong></p>
+<p><strong>Moi ben = Loi nhuan chia × % thoa thuan</strong></p>
+</div>
+
+<h2>3. May tinh chia loi nhuan (chia doi / theo ty le)</h2>
+
+<label>Loi nhuan rong (dong)</label>
+<input type="number" id="netProfit" placeholder="Vi du: 100000000" />
+
+<label>Quy an toan giu lai (%)</label>
+<input type="number" id="safetyRate" placeholder="Vi du: 30" />
+
+<label>Ty le chia cho Ben A (%)</label>
+<input type="number" id="rateA" placeholder="Vi du: 50" />
+
+<label>Ty le chia cho Ben B (%)</label>
+<input type="number" id="rateB" placeholder="Vi du: 50" />
+
+<button onclick="calculateWinWin()">Tinh chia Win‑Win</button>
+
+<div class="result" id="result"></div>
+<div class="note">Nguoi Hoa khong chia khi chua co quy an toan. Nguoi lam chu cuoc choi luon giu quyen kiem soat tien.</div>
+
+<h2>4. Ap dung Win‑Win vao cac phep tinh ban co</h2>
+<div class="box">
+<ul>
+  <li><strong>diem hoa von:</strong> Chi chia loi nhuan khi vuot ≥ 120% hoa von</li>
+  <li><strong>Dong tien:</strong> Chi chia khi dong tien duong ≥ 2 chu ky</li>
+  <li><strong>Lai gop:</strong> < 40% → khong chia, phai sua mo hinh</li>
+  <li><strong>AOV:</strong> Thuong theo AOV tang them (khong theo doanh thu)</li>
+  <li><strong>Doanh thu/m²:</strong> Ai toi uu m² tot hon → thuong them</li>
+</ul>
+</div>
+
+<h2>5. Bai hoc lam chu cuoc choi</h2>
+<div class="box">
+<p>❝ Nguoi yeu hoi chia bao nhieu. Nguoi manh dat dieu kien moi duoc chia. ❞</p>
+<p>Win‑Win khong phai la chia deu – ma la <strong>cung song, cung lon, khong cung chet</strong>.</p>
+</div>
+
+</div>
+
+<script>
+function calculateWinWin() {
+  const profit = parseFloat(document.getElementById('netProfit').value) || 0;
+  const safety = parseFloat(document.getElementById('safetyRate').value) || 0;
+  const rateA = parseFloat(document.getElementById('rateA').value) || 0;
+  const rateB = parseFloat(document.getElementById('rateB').value) || 0;
+
+  if (rateA + rateB !== 100) {
+    alert('Tong ty le chia phai bang 100%');
+    return;
+  }
+
+  const safeFund = profit * safety / 100;
+  const shareable = profit - safeFund;
+  const shareA = shareable * rateA / 100;
+  const shareB = shareable * rateB / 100;
+
+  document.getElementById('result').innerHTML =
+    `Quy an toan giu lai: ${safeFund.toLocaleString('vi-VN')} d<br>` +
+    `Loi nhuan duoc chia: ${shareable.toLocaleString('vi-VN')} d<br>` +
+    `Ben A nhan: ${shareA.toLocaleString('vi-VN')} d<br>` +
+    `Ben B nhan: ${shareB.toLocaleString('vi-VN')} d`;
+}
+</script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

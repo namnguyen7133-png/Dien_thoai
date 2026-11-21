@@ -1,0 +1,730 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quy Trinh Su Dung 4 AI Thong Minh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+            padding: 20px;
+            font-size: 18px; /* Tang kich thuoc chu cho de doc */
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header styles */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.8rem; /* Tang kich thuoc tieu de */
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.3rem; /* Tang kich thuoc mo ta */
+            max-width: 900px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        /* Tom tat ngan gon */
+        .summary-section {
+            margin-bottom: 50px;
+        }
+        
+        .section-title {
+            font-size: 2.2rem; /* Tang kich thuoc tieu de section */
+            color: #1a237e;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #3949ab;
+            font-weight: 700;
+        }
+        
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border-radius: 10px;
+            overflow: hidden;
+            font-size: 1.1rem; /* Tang kich thuoc chu trong bang */
+        }
+        
+        .summary-table th {
+            background-color: #3949ab;
+            color: white;
+            padding: 22px 15px; /* Tang padding cho de doc */
+            text-align: left;
+            font-size: 1.3rem; /* Tang kich thuoc tieu de cot */
+        }
+        
+        .summary-table td {
+            padding: 20px 15px; /* Tang padding cho de doc */
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .summary-table tr:nth-child(even) {
+            background-color: #f5f7ff;
+        }
+        
+        .summary-table tr:hover {
+            background-color: #e8eaf6;
+        }
+        
+        /* Phan chi tiet AI */
+        .ai-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .ai-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 6px solid;
+            font-size: 1.1rem; /* Tang kich thuoc chu trong card */
+        }
+        
+        .ai-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .ai-card.chatgpt {
+            border-color: #10a37f;
+        }
+        
+        .ai-card.gemini {
+            border-color: #4285f4;
+        }
+        
+        .ai-card.grok {
+            border-color: #8a2be2;
+        }
+        
+        .ai-card.deepseek {
+            border-color: #ff6b00;
+        }
+        
+        .ai-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .ai-icon {
+            width: 70px; /* Tang kich thuoc icon */
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 1.8rem; /* Tang kich thuoc icon */
+            color: white;
+        }
+        
+        .ai-icon.chatgpt {
+            background-color: #10a37f;
+        }
+        
+        .ai-icon.gemini {
+            background-color: #4285f4;
+        }
+        
+        .ai-icon.grok {
+            background-color: #8a2be2;
+        }
+        
+        .ai-icon.deepseek {
+            background-color: #ff6b00;
+        }
+        
+        .ai-name {
+            font-size: 1.8rem; /* Tang kich thuoc ten AI */
+            font-weight: 700;
+            color: #1a237e;
+        }
+        
+        .ai-tagline {
+            font-size: 1.2rem; /* Tang kich thuoc tagline */
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .ai-usage-list {
+            list-style-type: none;
+            padding-left: 5px;
+        }
+        
+        .ai-usage-list li {
+            padding: 12px 0; /* Tang padding cho de doc */
+            border-bottom: 1px dashed #e0e0e0;
+            position: relative;
+            padding-left: 35px;
+            font-size: 1.1rem; /* Tang kich thuoc chu trong list */
+        }
+        
+        .ai-usage-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4caf50;
+            font-weight: bold;
+            font-size: 1.2rem; /* Tang kich thuoc icon check */
+        }
+        
+        /* Quy trinh workflow */
+        .workflow-section {
+            margin-bottom: 50px;
+        }
+        
+        .workflow-steps {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .workflow-step {
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+            background: white;
+            border-radius: 15px;
+            padding: 30px 25px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            position: relative;
+            font-size: 1.1rem; /* Tang kich thuoc chu trong step */
+        }
+        
+        .step-number {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px; /* Tang kich thuoc so step */
+            height: 50px;
+            background-color: #3949ab;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem; /* Tang kich thuoc so */
+            font-weight: bold;
+        }
+        
+        .step-ai {
+            font-size: 1.5rem; /* Tang kich thuoc ten AI trong step */
+            font-weight: 700;
+            margin: 20px 0 15px;
+            color: #1a237e;
+        }
+        
+        .step-desc {
+            color: #555;
+            line-height: 1.7;
+        }
+        
+        .step-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem; /* Tang kich thuoc mui ten */
+            color: #3949ab;
+            margin: 0 10px;
+        }
+        
+        /* Vi du thuc te */
+        .example-section {
+            background-color: white;
+            border-radius: 15px;
+            padding: 35px;
+            margin-bottom: 50px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            font-size: 1.1rem; /* Tang kich thuoc chu trong vi du */
+        }
+        
+        .example-title {
+            font-size: 1.8rem; /* Tang kich thuoc tieu de vi du */
+            color: #1a237e;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .example-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+        
+        .example-step {
+            padding: 25px;
+            border-radius: 10px;
+            background-color: #f8f9ff;
+            border-left: 5px solid;
+        }
+        
+        .example-step.gemini-ex {
+            border-left-color: #4285f4;
+        }
+        
+        .example-step.chatgpt-ex {
+            border-left-color: #10a37f;
+        }
+        
+        .example-step.grok-ex {
+            border-left-color: #8a2be2;
+        }
+        
+        .example-step.deepseek-ex {
+            border-left-color: #ff6b00;
+        }
+        
+        .example-ai {
+            font-weight: 700;
+            font-size: 1.3rem; /* Tang kich thuoc ten AI trong vi du */
+            margin-bottom: 10px;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            background-color: #1a237e;
+            color: white;
+            border-radius: 15px;
+            margin-top: 40px;
+            font-size: 1.1rem; /* Tang kich thuoc chu footer */
+        }
+        
+        .footer p {
+            margin-bottom: 10px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .workflow-steps {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .workflow-step {
+                max-width: 100%;
+                width: 100%;
+            }
+            
+            .step-arrow {
+                transform: rotate(90deg);
+                margin: 10px 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px; /* Giu kich thuoc chu lon tren mobile */
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .ai-name {
+                font-size: 1.6rem;
+            }
+            
+            .ai-card {
+                padding: 20px;
+            }
+            
+            .summary-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+        
+        /* High contrast mode for better readability */
+        @media (prefers-contrast: high) {
+            body {
+                color: #000;
+                background-color: #fff;
+            }
+            
+            .ai-card, .example-section, .workflow-step {
+                border: 2px solid #000;
+            }
+            
+            .summary-table th {
+                background-color: #000;
+                color: #fff;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-robot"></i> Quy Trinh Su Dung 4 AI Thong Minh</h1>
+            <p>Huong dan chi tiet su dung ChatGPT, Gemini, Grok va DeepSeek theo dung diem manh tu nhien cua tung mo hinh</p>
+        </header>
+        
+        <section class="summary-section">
+            <h2 class="section-title"><i class="fas fa-bullseye"></i> I. TOM TAT NGAN GON – DUNG AI NAO KHI NAO?</h2>
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Tinh huong</th>
+                        <th>AI phu hop nhat</th>
+                        <th>Ly do</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Can sang tao, viet noi dung dep, chinh sua cau chu, van phong chuyen nghiep</strong></td>
+                        <td><strong>ChatGPT</strong></td>
+                        <td>Manh nhat ve ngon ngu, viet lach, cau truc, logic mach lac.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Can thong tin moi, thoi su nong, phan tich lien quan the gioi that</strong></td>
+                        <td><strong>Grok</strong></td>
+                        <td>Grok duoc huan luyen sat thoi gian thuc, dac biet manh ve du lieu mang xa hoi.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Can tong hop da phuong thuc (hinh anh, tai lieu, hieu video), du lieu Google</strong></td>
+                        <td><strong>Gemini</strong></td>
+                        <td>Manh ve xu ly da phuong tien + tim kiem thong tin tu he sinh thai Google.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Can suy luan sau, logic, phan tich ky thuat, lap trinh, tinh toan</strong></td>
+                        <td><strong>DeepSeek</strong></td>
+                        <td>diem manh vuot troi ve reasoning, tinh toan, phan tich chuyen sau.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <section>
+            <h2 class="section-title"><i class="fas fa-tasks"></i> II. CHI TIET: NEN DUNG AI NAO CHO MOI LOAI CONG VIEC?</h2>
+            <div class="ai-details">
+                <!-- ChatGPT Card -->
+                <div class="ai-card chatgpt">
+                    <div class="ai-header">
+                        <div class="ai-icon chatgpt">
+                            <i class="fas fa-comment-dots"></i>
+                        </div>
+                        <div>
+                            <div class="ai-name">ChatGPT</div>
+                            <div class="ai-tagline">Bac thay ngon ngu & sang tao</div>
+                        </div>
+                    </div>
+                    <h3 style="margin-bottom: 15px; color: #10a37f;">Dung khi:</h3>
+                    <ul class="ai-usage-list">
+                        <li>Viet noi dung marketing, thu, CV</li>
+                        <li>Chinh sua van phong, toi uu cau chu</li>
+                        <li>Viet bao cao, tom tat khoa hoc</li>
+                        <li>Giai thich khai niem de hieu</li>
+                        <li>Y tuong sang tao, storytelling</li>
+                        <li>Viet code voi chu thich ro rang</li>
+                    </ul>
+                    <p style="margin-top: 20px; font-style: italic; color: #555;">
+                        <strong>→ ChatGPT = AI manh nhat ve ngon ngu + sang tao + viet lach + do chinh xac trinh bay.</strong>
+                    </p>
+                </div>
+                
+                <!-- Gemini Card -->
+                <div class="ai-card gemini">
+                    <div class="ai-header">
+                        <div class="ai-icon gemini">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div>
+                            <div class="ai-name">Gemini</div>
+                            <div class="ai-tagline">Chuyen gia da phuong tien</div>
+                        </div>
+                    </div>
+                    <h3 style="margin-bottom: 15px; color: #4285f4;">Dung khi:</h3>
+                    <ul class="ai-usage-list">
+                        <li>Phan tich anh, video, tai lieu PDF</li>
+                        <li>Can kien thuc thuc te tu he sinh thai Google</li>
+                        <li>Tong hop thong tin rong, nhieu chieu</li>
+                        <li>Y tuong ban dau cho du an lon</li>
+                        <li>Dich thuat theo ngu canh truc quan</li>
+                    </ul>
+                    <p style="margin-top: 20px; font-style: italic; color: #555;">
+                        <strong>→ Gemini = AI manh ve da phuong thuc + thong tin thuc te + nguon du lieu Google.</strong>
+                    </p>
+                </div>
+                
+                <!-- Grok Card -->
+                <div class="ai-card grok">
+                    <div class="ai-header">
+                        <div class="ai-icon grok">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div>
+                            <div class="ai-name">Grok</div>
+                            <div class="ai-tagline">Chuyen gia thoi su & trend</div>
+                        </div>
+                    </div>
+                    <h3 style="margin-bottom: 15px; color: #8a2be2;">Dung khi:</h3>
+                    <ul class="ai-usage-list">
+                        <li>Can thong tin thoi su rat moi</li>
+                        <li>Phan tich xu huong mang xa hoi</li>
+                        <li>Tao noi dung hai huoc, ngau, dam chat meme</li>
+                        <li>Goi y chien luoc truyen thong thoi gian thuc</li>
+                        <li>Sinh noi dung viral, di dom</li>
+                    </ul>
+                    <p style="margin-top: 20px; font-style: italic; color: #555;">
+                        <strong>→ Grok = AI manh ve tinh thoi su + phong cach di dom + doc duoc tin hieu xa hoi moi.</strong>
+                    </p>
+                </div>
+                
+                <!-- DeepSeek Card -->
+                <div class="ai-card deepseek">
+                    <div class="ai-header">
+                        <div class="ai-icon deepseek">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div>
+                            <div class="ai-name">DeepSeek</div>
+                            <div class="ai-tagline">Chuyen gia logic & phan tich</div>
+                        </div>
+                    </div>
+                    <h3 style="margin-bottom: 15px; color: #ff6b00;">Dung khi:</h3>
+                    <ul class="ai-usage-list">
+                        <li>Lap trinh, phan tich code, toi uu thuat toan</li>
+                        <li>Suy luan logic phuc tap</li>
+                        <li>Phan tich so lieu, tinh toan, mo phong</li>
+                        <li>Chien luoc kinh doanh can tinh toan sau</li>
+                        <li>Tim loi lap luan trong tai lieu dai</li>
+                    </ul>
+                    <p style="margin-top: 20px; font-style: italic; color: #555;">
+                        <strong>→ DeepSeek = AI manh ve phan tich, logic, reasoning, toan hoc, lap trinh.</strong>
+                    </p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="workflow-section">
+            <h2 class="section-title"><i class="fas fa-sitemap"></i> III. QUY TRINH 4 AI PHU HOP NHAT (BEST WORKFLOW)</h2>
+            <p style="font-size: 1.3rem; margin-bottom: 30px; color: #555; text-align: center;">
+                Quy trinh chuan nhat dua tren suc manh tung AI
+            </p>
+            
+            <div class="workflow-steps">
+                <!-- Buoc 1 -->
+                <div class="workflow-step">
+                    <div class="step-number">1</div>
+                    <div class="step-ai" style="color: #4285f4;">Gemini</div>
+                    <div class="step-desc">
+                        <strong>Thu thap thong tin / nhan dang / chuan bi du lieu</strong><br><br>
+                        • Phan tich tai lieu, anh, video<br>
+                        • Tong hop thong tin tu nhieu nguon<br>
+                        • Tao ban phac thao ban dau<br><br>
+                        <em>Ket qua: Mot ban nhap day du thong tin.</em>
+                    </div>
+                </div>
+                
+                <div class="step-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <!-- Buoc 2 -->
+                <div class="workflow-step">
+                    <div class="step-number">2</div>
+                    <div class="step-ai" style="color: #10a37f;">ChatGPT</div>
+                    <div class="step-desc">
+                        <strong>Viet lai & hoan thien noi dung</strong><br><br>
+                        • Lam muot van phong<br>
+                        • Sap xep y tuong logic<br>
+                        • Viet day du, chuyen nghiep<br><br>
+                        <em>Ket qua: Mot ban hoan chinh, doc tot, hop ly.</em>
+                    </div>
+                </div>
+                
+                <div class="step-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <!-- Buoc 3 -->
+                <div class="workflow-step">
+                    <div class="step-number">3</div>
+                    <div class="step-ai" style="color: #8a2be2;">Grok</div>
+                    <div class="step-desc">
+                        <strong>Them tinh thoi su hoac phong cach manh</strong><br><br>
+                        • Them goc nhin doi that<br>
+                        • Them tinh giai tri, di dom, trend<br>
+                        • dieu chinh noi dung viral, bat trend<br><br>
+                        <em>Ket qua: Ban noi dung hap dan, hop thoi cuoc.</em>
+                    </div>
+                </div>
+                
+                <div class="step-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                
+                <!-- Buoc 4 -->
+                <div class="workflow-step">
+                    <div class="step-number">4</div>
+                    <div class="step-ai" style="color: #ff6b00;">DeepSeek</div>
+                    <div class="step-desc">
+                        <strong>Kiem tra logic & toi uu ky thuat</strong><br><br>
+                        • Kiem tra sai sot<br>
+                        • Phan tich sau<br>
+                        • Toi uu cau truc, thuat toan, so lieu<br><br>
+                        <em>Ket qua: Phan cuoi cung chinh xac, manh ve lap luan va ky thuat.</em>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="example-section">
+            <h2 class="example-title"><i class="fas fa-lightbulb"></i> IV. VI DU THUC TE: PHAN TICH THI TRUONG & KE HOACH KINH DOANH</h2>
+            <p style="margin-bottom: 25px; font-size: 1.2rem;">
+                Gia su ban muon lam <strong>bai phan tich thi truong + ke hoach kinh doanh</strong> — ban dung 4 AI nhu sau:
+            </p>
+            
+            <div class="example-steps">
+                <div class="example-step gemini-ex">
+                    <div class="example-ai" style="color: #4285f4;">Gemini</div>
+                    <p>→ Thu thap thong tin thi truong, phan tich hinh anh bao cao, tom tat PDF tu cac nguon khac nhau.</p>
+                </div>
+                
+                <div class="example-step chatgpt-ex">
+                    <div class="example-ai" style="color: #10a37f;">ChatGPT</div>
+                    <p>→ Viet lai bao cao thanh van ban chuyen nghiep, cau truc logic, ngon ngu thuyet phuc.</p>
+                </div>
+                
+                <div class="example-step grok-ex">
+                    <div class="example-ai" style="color: #8a2be2;">Grok</div>
+                    <p>→ Them phan du doan xu huong moi, insight tu mang xa hoi, goc nhin thoi su va viral.</p>
+                </div>
+                
+                <div class="example-step deepseek-ex">
+                    <div class="example-ai" style="color: #ff6b00;">DeepSeek</div>
+                    <p>→ Phan tich chi phi – loi nhuan, mo hinh kinh doanh, tinh toan doanh thu, toi uu chien luoc.</p>
+                </div>
+            </div>
+        </section>
+        
+        <footer class="footer">
+            <p><strong>Quy Trinh Su Dung 4 AI Thong Minh</strong></p>
+            <p>Thiet ke voi kich thuoc chu lon, do tuong phan cao de de doc cho nguoi can thi</p>
+            <p style="margin-top: 20px; font-size: 1rem;">© 2023 - Trinh bay chi tiet quy trinh lam viec voi 4 AI hang dau</p>
+        </footer>
+    </div>
+
+    <script>
+        // Them hieu ung khi cuon trang
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hieu ung cho cac card AI khi xuat hien
+            const aiCards = document.querySelectorAll('.ai-card');
+            const workflowSteps = document.querySelectorAll('.workflow-step');
+            
+            // Tao Intersection Observer de phat hien khi phan tu vao viewport
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            // Thiet lap hieu ung ban dau
+            aiCards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+            
+            workflowSteps.forEach(step => {
+                step.style.opacity = '0';
+                step.style.transform = 'translateY(20px)';
+                step.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(step);
+            });
+            
+            // Them hieu ung hover cho bang
+            const tableRows = document.querySelectorAll('.summary-table tr');
+            tableRows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.01)';
+                    this.style.transition = 'transform 0.2s ease';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

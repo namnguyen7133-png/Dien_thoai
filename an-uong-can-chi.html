@@ -1,0 +1,682 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cong Cu Tra Cuu Mon An Theo Ngay Can Chi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2d5016;
+            --secondary: #5a8c29;
+            --light: #f5f9f0;
+            --border: #c2d6a3;
+            --text: #333;
+            --text-light: #666;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #f0f7e9 0%, #e4f0d7 100%);
+            color: var(--text); line-height: 1.6;
+            padding: 20px; min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px; margin: 20px auto;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px; box-shadow: 0 15px 35px rgba(45, 80, 22, 0.15);
+            padding: 30px; border: 2px solid var(--border);
+        }
+        header { 
+            text-align: center; 
+            margin-bottom: 40px; 
+            padding: 20px 0;
+            background: linear-gradient(to right, #f5f9f0, #eaf4e1);
+            border-radius: 15px;
+            border: 2px solid var(--border);
+        }
+        h1 { 
+            color: var(--primary); 
+            font-size: 2.5rem; 
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        .subtitle { 
+            color: var(--secondary); 
+            font-size: 1.1rem; 
+            margin: 0 auto 20px; 
+            max-width: 800px;
+        }
+        .note-box {
+            background: linear-gradient(to right, #f0f7e9, #e4f0d7);
+            border: 2px solid var(--secondary); 
+            border-left: 6px solid var(--primary);
+            padding: 15px; margin: 20px auto; 
+            border-radius: 12px;
+            font-size: 0.95rem; 
+            color: #2d5016; 
+            max-width: 800px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        @media (max-width: 900px) {
+            .main-content { grid-template-columns: 1fr; }
+        }
+        
+        .card {
+            background: white; 
+            border-radius: 18px; 
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            border: 2px solid var(--border);
+            height: fit-content;
+        }
+        .card-title {
+            color: var(--primary); 
+            font-size: 1.5rem;
+            margin-bottom: 20px; 
+            padding-bottom: 12px;
+            border-bottom: 3px solid var(--border);
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+        }
+        
+        .input-row { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 15px; 
+            margin-bottom: 20px; 
+        }
+        .input-group { 
+            flex: 1; 
+            min-width: 150px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600; 
+            color: var(--primary); 
+        }
+        input, button {
+            padding: 14px 18px; 
+            border: 2px solid var(--border); 
+            border-radius: 10px;
+            font-size: 16px; 
+            width: 100%; 
+            transition: all 0.3s;
+            background-color: var(--light);
+        }
+        input:focus { 
+            outline: none; 
+            border-color: var(--secondary); 
+            box-shadow: 0 0 0 3px rgba(90, 140, 41, 0.2); 
+        }
+        button {
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+            color: white; 
+            border: none; 
+            font-weight: bold; 
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        button:hover { 
+            background: linear-gradient(to right, var(--primary), #3a641f);
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 15px rgba(90, 140, 41, 0.3);
+        }
+        
+        .day-result {
+            background: linear-gradient(135deg, #f5f9f0 0%, #eaf4e1 100%);
+            padding: 25px; 
+            border-radius: 15px; 
+            margin-top: 20px;
+            border: 3px solid var(--secondary);
+            text-align: center;
+        }
+        .day-canchi {
+            font-size: 2.5rem; 
+            font-weight: bold; 
+            color: var(--primary);
+            margin: 15px 0;
+        }
+        .day-animal {
+            font-size: 2rem; 
+            margin: 10px 0;
+        }
+        .day-desc {
+            color: var(--text-light);
+            font-style: italic;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--border);
+        }
+        
+        .food-card {
+            background: white; 
+            border-radius: 15px; 
+            padding: 0; 
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 2px solid var(--border);
+            border-left: 6px solid var(--secondary);
+            transition: transform 0.3s;
+        }
+        .food-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(90, 140, 41, 0.15);
+        }
+        .food-header {
+            background: linear-gradient(to right, var(--secondary), #6ba832);
+            color: white; 
+            padding: 18px 25px;
+            display: flex; 
+            align-items: center; 
+            gap: 15px;
+        }
+        .food-icon { font-size: 1.8rem; }
+        .food-name { 
+            font-size: 1.4rem; 
+            font-weight: bold; 
+            flex-grow: 1;
+        }
+        .food-body { padding: 25px; }
+        .food-detail {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .detail-item {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid var(--secondary);
+        }
+        .detail-label {
+            font-size: 0.9rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border);
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        .highlight {
+            background: linear-gradient(to right, #fff9e6, #fff0cc);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ffcc00;
+            margin: 10px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .container { padding: 20px; }
+            h1 { font-size: 2rem; flex-direction: column; }
+            .input-row { flex-direction: column; }
+            .food-detail { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calendar-day"></i> Cong Cu Tra Mon An Theo Ngay Can Chi</h1>
+            <p class="subtitle">Nhap ngay duong lich de xem Can Chi cua ngay do va mon an tuong ung voi con giap cua ngay</p>
+            <div class="note-box">
+                <i class="fas fa-info-circle"></i> <strong>Luu y:</strong> Cong cu nay tra cuu mon an theo <strong>Can Chi cua NGAY</strong> (vi du: ngay Tan Suu -> mon cua Suu/Trau), khong phai theo nam Can Chi.
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Phan nhap lieu -->
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-calendar-alt"></i> Nhap Ngay Can Tra</h2>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label for="inputDay">Ngay</label>
+                        <input type="number" id="inputDay" min="1" max="31" value="18" placeholder="Ngay">
+                    </div>
+                    <div class="input-group">
+                        <label for="inputMonth">Thang</label>
+                        <input type="number" id="inputMonth" min="1" max="12" value="12" placeholder="Thang">
+                    </div>
+                    <div class="input-group">
+                        <label for="inputYear">Nam</label>
+                        <input type="number" id="inputYear" min="1900" max="2100" value="2025" placeholder="Nam">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="input-group">
+                        <button id="btnToday"><i class="fas fa-bolt"></i> Hom Nay</button>
+                    </div>
+                    <div class="input-group">
+                        <button id="btnCalculate"><i class="fas fa-search"></i> Tra Cuu Mon An</button>
+                    </div>
+                </div>
+                
+                <!-- Ket qua Can Chi ngay -->
+                <div class="day-result" id="dayResult">
+                    <h3><i class="fas fa-star"></i> Can Chi Cua Ngay</h3>
+                    <div class="day-canchi" id="resultDayCanchi">--</div>
+                    <div class="day-animal" id="resultDayAnimal">--</div>
+                    <div class="day-desc" id="dayAnimalDesc">Mo ta con giap se hien thi o day</div>
+                </div>
+            </div>
+            
+            <!-- Phan mon an -->
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-utensils"></i> Mon An Theo Ngay Can Chi</h2>
+                <div id="foodResultContainer">
+                    <p style="text-align:center; padding:30px; color:#999;">
+                        Nhap ngay va nhan "Tra Cuu Mon An" de xem cac mon an phu hop voi con giap cua ngay do.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p><i class="fas fa-lightbulb"></i> Cong cu tra cuu am thuc theo van hoa Can Chi - Ket noi am thuc voi thien nhien</p>
+            <p>© 2024 - Phien ban tra cuu theo ngay Can Chi</p>
+        </footer>
+    </div>
+
+    <script>
+        // ========== DU LIEU CO BAN ==========
+        const thienCan = ['Giap', 'At', 'Binh', 'dinh', 'Mau', 'Ky', 'Canh', 'Tan', 'Nham', 'Quy'];
+        const diaChi = [
+            { chi: 'Ty', animal: 'Chuot', icon: '🐀', element: 'Thuy' },
+            { chi: 'Suu', animal: 'Trau', icon: '🐂', element: 'Tho' },
+            { chi: 'Dan', animal: 'Ho', icon: '🐅', element: 'Moc' },
+            { chi: 'Mao', animal: 'Meo', icon: '🐇', element: 'Moc' },
+            { chi: 'Thin', animal: 'Rong', icon: '🐉', element: 'Tho' },
+            { chi: 'Ty', animal: 'Ran', icon: '🐍', element: 'Hoa' },
+            { chi: 'Ngo', animal: 'Ngua', icon: '🐎', element: 'Hoa' },
+            { chi: 'Mui', animal: 'De', icon: '🐐', element: 'Tho' },
+            { chi: 'Than', animal: 'Khi', icon: '🐒', element: 'Kim' },
+            { chi: 'Dau', animal: 'Ga', icon: '🐓', element: 'Kim' },
+            { chi: 'Tuat', animal: 'Cho', icon: '🐕', element: 'Tho' },
+            { chi: 'Hoi', animal: 'Lon', icon: '🐖', element: 'Thuy' }
+        ];
+        
+        // Mo ta con giap theo ngay
+        const dayAnimalDesc = {
+            'Ty': 'Ngay Chuot: Thong minh, nhanh nhen, thich tich tru. Giong soc, chon, kangaroo, capibara...',
+            'Suu': 'Ngay Trau: Cham chi, kien dinh, ben bi. dong vat nhai lai, cho sua.',
+            'Dan': 'Ngay Ho: Manh me, dung cam, doc lap. Chua son lam, thich an noi tang.',
+            'Mao': 'Ngay Meo: Nhanh nhen, than trong, hoa dong. Thich ca, tom, mam.',
+            'Thin': 'Ngay Rong: Quyen luc, may man, nhiet huyet. Rong Komodo an thit, vi nhu long ruot dong vat.',
+            'Ty': 'Ngay Ran: Khon ngoan, tham sau, quyen ru. Dai nhu tau hoa, an trung, ech nhai.',
+            'Ngo': 'Ngay Ngua: Nang dong, tu do, than thien. Chay nhanh nhu o to, an co, ngo, lua.',
+            'Mui': 'Ngay De: Hien lanh, sang tao, dong cam. Co Ngoc Duong quy, an co, rau mui.',
+            'Than': 'Ngay Khi: Thong minh, to mo, thich ung tot. Mat tinh doc bao, an chuoi, dao, hoa qua.',
+            'Dau': 'Ngay Ga: Cham chi, qua quyet, dung gio. Hot hay nhu hat, bay nhu may bay, an tom ca.',
+            'Tuat': 'Ngay Cho: Trung thanh, chan thanh, bao ve. Giong sang sang, mat tinh tai thinh, an xuong thit.',
+            'Hoi': 'Ngay Lon: Hao phong, chan that, yeu hoa binh. An tap, thich rau cu, chao, cam.'
+        };
+
+        // ========== DU LIEU MON AN THEO CON GIAP CUA NGAY ==========
+        const dayFoods = {
+            'Ty': [
+                {
+                    name: 'Hat Rang Ngu Coc Cao Cap',
+                    icon: '🥜',
+                    desc: 'Hon hop hat de, hat oc cho, hat dieu, hanh nhan rang thom. Giong tap tinh tich tru hat cua chuot, soc, chon, capibara.',
+                    portion: '1 bat nho (~100g)',
+                    price: '45.000 - 65.000 VNd',
+                    nutrients: 'Giau Omega-3, vitamin E, chat xo',
+                    note: 'Capibara la loai gam nham lon nhat, cung thich an thuc vat tuong tu'
+                },
+                {
+                    name: 'Chao Ngo Non Hat Thong',
+                    icon: '🌽',
+                    desc: 'Chao trang nau voi ngo non ngot, diem them hat thong beo ngay.',
+                    portion: '1 to lon (~300g)',
+                    price: '25.000 - 35.000 VNd',
+                    nutrients: 'Tinh bot, protein thuc vat',
+                    note: 'Kangaroo (co tui) khac ho voi gam nham nhung cung an thuc vat'
+                }
+            ],
+            'Suu': [
+                {
+                    name: 'Chao Bo Thap Cam dac Biet',
+                    icon: '🍲',
+                    desc: 'Chao trang ninh nhu voi thit bo bam, tim bo thai lat, nam huong, an kem quay gion va rau thom.',
+                    portion: '1 to day du (~400g)',
+                    price: '55.000 - 75.000 VNd',
+                    nutrients: 'dam dong vat, sat, kem tu thit bo va noi tang',
+                    note: 'Tim bo, pin bo (la lach), bap bo deu la nhung phan ngon cua bo'
+                },
+                {
+                    name: 'Sua Bo Tuoi & Sua Chua Hy Lap',
+                    icon: '🥛',
+                    desc: 'Sua bo tuoi thanh trung va sua chua Hy Lap nguyen chat, co the them mat ong hoac trai cay.',
+                    portion: '1 ly sua 200ml + 1 hu sua chua 150g',
+                    price: '35.000 - 50.000 VNd',
+                    nutrients: 'Canxi, protein, probiotic',
+                    note: 'Sua bo la thuc pham quan trong tu dong vat nhai lai'
+                },
+                {
+                    name: 'Rau Chan Vit & Chum Ngay Xao Toi',
+                    icon: '🥬',
+                    desc: 'Rau chan vit (spinach) va rau chum ngay non xao voi toi phi thom, nem nem nhe.',
+                    portion: '1 dia rau vua (~200g rau song)',
+                    price: '20.000 - 30.000 VNd',
+                    nutrients: 'dam thuc vat cao, sat, vitamin A, C, canxi',
+                    note: 'Rau chan vit co luong dam cao hon mot so loai thit, chum ngay la "sieu thuc pham"'
+                },
+                {
+                    name: 'Lau Bo Nhung Dam',
+                    icon: '🥘',
+                    desc: 'Lau nuoc dung chua ngot nhung cac loai thit bo: than bo, bap bo, tim bo, pin bo, an kem rau song.',
+                    portion: 'Phan cho 2-3 nguoi',
+                    price: '180.000 - 250.000 VNd',
+                    nutrients: 'da dang protein, vitamin tu rau',
+                    note: 'Mon tong hop cac phan ngon nhat cua bo theo yeu cau'
+                }
+            ],
+            'Dan': [
+                {
+                    name: 'Lau Thap Cam "Chua Son Lam"',
+                    icon: '🍖',
+                    desc: 'Lau nuoc dung dam da voi tim, gan, thit than, nam huong, rau nhung.',
+                    portion: 'Phan cho 2-3 nguoi',
+                    price: '200.000 - 300.000 VNd',
+                    nutrients: 'Sat, dam, vitamin tu noi tang',
+                    note: 'Ho thich an noi tang con moi truoc'
+                }
+            ],
+            'Mao': [
+                {
+                    name: 'Ca Thu Sot Mam Tom',
+                    icon: '🐟',
+                    desc: 'Ca thu tuoi sot mam tom dac biet pha chanh ot, an voi bun va rau song.',
+                    portion: '1 phan 150g ca',
+                    price: '65.000 - 85.000 VNd',
+                    nutrients: 'Omega-3, dam, vitamin D',
+                    note: 'Meo rat thich mui ca va mam tom'
+                }
+            ],
+            'Thin': [
+                {
+                    name: 'Bo Luc Lac "Rong Komodo"',
+                    icon: '🥩',
+                    desc: 'Thit bo than vien luc lac sot tieu den, an kem khoai tay chien.',
+                    portion: '1 phan 180g thit bo',
+                    price: '85.000 - 110.000 VNd',
+                    nutrients: 'dam, sat, nang luong',
+                    note: 'Rong Komodo co noc doc va an ca xac thoi'
+                }
+            ],
+            'Ty': [
+                {
+                    name: 'Ech Chien Bo & Trung Cut Lon',
+                    icon: '🍳',
+                    desc: 'dui ech chien gion sot bo toi va trung cut lon xao me.',
+                    portion: '1 phan hon hop (~200g ech + 3 trung)',
+                    price: '70.000 - 90.000 VNd',
+                    nutrients: 'dam, canxi tu trung',
+                    note: 'Ran co the nuot chung con moi lon'
+                }
+            ],
+            'Ngo': [
+                {
+                    name: 'Com Gao Lut Rang Ngo Nam',
+                    icon: '🍚',
+                    desc: 'Com gao lut rang voi ngo hat, nam rom, dau Ha Lan.',
+                    portion: '1 dia day (~250g)',
+                    price: '30.000 - 45.000 VNd',
+                    nutrients: 'Chat xo, vitamin B',
+                    note: 'Ngua chay nhanh nhu o to, can nhieu nang luong'
+                }
+            ],
+            'Mui': [
+                {
+                    name: 'De Nui Nuong & Rau Mui',
+                    icon: '🍖',
+                    desc: 'Thit de nui uop ngu vi huong nuong than, an kem rau mui tay.',
+                    portion: '1 phan 200g thit',
+                    price: '95.000 - 130.000 VNd',
+                    nutrients: 'dam, kem',
+                    note: 'Ngoc Duong la mon quy tu de duc'
+                }
+            ],
+            'Than': [
+                {
+                    name: 'Salad Trai Cay Nhiet doi',
+                    icon: '🥗',
+                    desc: 'Chuoi, dao, dua, xoai tron sua chua, rac hat chia.',
+                    portion: '1 bat lon (~300g)',
+                    price: '35.000 - 50.000 VNd',
+                    nutrients: 'Vitamin C, chat xo',
+                    note: 'Khi co doi mat tinh nhanh'
+                }
+            ],
+            'Dau': [
+                {
+                    name: 'Com Ga Hai Nam & Canh Tom',
+                    icon: '🍗',
+                    desc: 'Com ga truyen thong an kem canh tom kho nau cu cai.',
+                    portion: '1 suat day du',
+                    price: '55.000 - 70.000 VNd',
+                    nutrients: 'dam, tinh bot',
+                    note: 'Ga bay nhu may bay nho'
+                }
+            ],
+            'Tuat': [
+                {
+                    name: 'Suon Heo Nuong Mat Ong',
+                    icon: '🦴',
+                    desc: 'Suon heo non uop mat ong nuong chay canh.',
+                    portion: '1 suon nguyen mieng (~300g)',
+                    price: '75.000 - 95.000 VNd',
+                    nutrients: 'Canxi tu xuong, protein',
+                    note: 'Cho co thinh giac va khuu giac nhay'
+                }
+            ],
+            'Hoi': [
+                {
+                    name: 'Chao Long Heo Thap Cam',
+                    icon: '🥣',
+                    desc: 'Chao trang voi day du long, tim, gan, doi heo.',
+                    portion: '1 to lon (~400g)',
+                    price: '45.000 - 60.000 VNd',
+                    nutrients: 'da dang protein',
+                    note: 'Heo la loai an tap'
+                }
+            ]
+        };
+
+        // ========== HAM TINH CAN CHI NGAY ==========
+        function calculateDayCanChi(year, month, day) {
+            // Ngay moc: 1/1/1900 la ngay Giap Ty
+            const baseDate = new Date(1900, 0, 1); // 1/1/1900
+            
+            // Ngay can tinh
+            const targetDate = new Date(year, month - 1, day);
+            
+            // Tinh so ngay chenh lech
+            const diffTime = targetDate.getTime() - baseDate.getTime();
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            // Tinh chi so Can Chi (chu ky 60 ngay)
+            const canChiIndex = diffDays % 60;
+            
+            // Tinh Can (10 can) va Chi (12 chi)
+            const canIndex = canChiIndex % 10;
+            const chiIndex = canChiIndex % 12;
+            
+            return {
+                can: thienCan[canIndex],
+                chi: diaChi[chiIndex].chi,
+                animal: diaChi[chiIndex].animal,
+                icon: diaChi[chiIndex].icon,
+                full: thienCan[canIndex] + ' ' + diaChi[chiIndex].chi
+            };
+        }
+
+        // ========== HAM HIEN THI KET QUA ==========
+        function displayResults() {
+            const day = parseInt(document.getElementById('inputDay').value) || 18;
+            const month = parseInt(document.getElementById('inputMonth').value) || 12;
+            const year = parseInt(document.getElementById('inputYear').value) || 2025;
+
+            // Tinh Can Chi cua ngay
+            const dayCanChi = calculateDayCanChi(year, month, day);
+            
+            // Hien thi Can Chi ngay
+            document.getElementById('resultDayCanchi').textContent = dayCanChi.full;
+            document.getElementById('resultDayAnimal').innerHTML = `
+                ${dayCanChi.icon} ${dayCanChi.animal} (${dayCanChi.chi})
+            `;
+            document.getElementById('dayAnimalDesc').textContent = dayAnimalDesc[dayCanChi.chi] || 'Mo ta con giap';
+
+            // HIEN THI MON AN THEO CON GIAP CUA NGAY
+            const foodContainer = document.getElementById('foodResultContainer');
+            foodContainer.innerHTML = '';
+            
+            if (dayFoods[dayCanChi.chi]) {
+                // Them ghi chu dac biet cho ngay Suu
+                if (dayCanChi.chi === 'Suu') {
+                    const specialNote = document.createElement('div');
+                    specialNote.className = 'highlight';
+                    specialNote.innerHTML = `
+                        <strong><i class="fas fa-star"></i> dac biet cho ngay ${dayCanChi.full}:</strong> 
+                        Ngay ${dayCanChi.animal} nen an cac mon tu bo, sua bo, va cac loai rau giau dam nhu rau chan vit, chum ngay.
+                    `;
+                    foodContainer.appendChild(specialNote);
+                }
+                
+                // Hien thi cac mon an
+                dayFoods[dayCanChi.chi].forEach(food => {
+                    const foodCard = document.createElement('div');
+                    foodCard.className = 'food-card';
+                    foodCard.innerHTML = `
+                        <div class="food-header">
+                            <span class="food-icon">${food.icon}</span>
+                            <span class="food-name">${food.name}</span>
+                        </div>
+                        <div class="food-body">
+                            <p>${food.desc}</p>
+                            <div class="food-detail">
+                                <div class="detail-item">
+                                    <span class="detail-label"><i class="fas fa-weight"></i> dinh luong</span>
+                                    <span>${food.portion}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label"><i class="fas fa-tag"></i> Gia uoc tinh</span>
+                                    <span>${food.price}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label"><i class="fas fa-apple-alt"></i> Dinh duong</span>
+                                    <span>${food.nutrients}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label"><i class="fas fa-lightbulb"></i> Ghi chu</span>
+                                    <span>${food.note}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    foodContainer.appendChild(foodCard);
+                });
+                
+                // Them tong ket
+                const summary = document.createElement('div');
+                summary.style.marginTop = '20px';
+                summary.style.padding = '15px';
+                summary.style.background = 'linear-gradient(to right, #f0f7e9, #e4f0d7)';
+                summary.style.borderRadius = '10px';
+                summary.style.border = '1px solid var(--border)';
+                summary.innerHTML = `
+                    <p><strong><i class="fas fa-shopping-cart"></i> Uoc tinh mua sam cho 3-4 lan di cho:</strong></p>
+                    <p>• Lan 1 (thit, sua): 80.000 - 120.000 VNd</p>
+                    <p>• Lan 2 (rau cu, gia vi): 50.000 - 80.000 VNd</p>
+                    <p>• Lan 3 (ngu coc, do kho): 40.000 - 60.000 VNd</p>
+                    <p><strong>Tong: 170.000 - 260.000 VNd</strong> (cho 2-3 nguoi an)</p>
+                `;
+                foodContainer.appendChild(summary);
+                
+            } else {
+                foodContainer.innerHTML = `
+                    <div class="food-card">
+                        <div class="food-body">
+                            <p style="text-align:center; padding:40px; color:#999;">
+                                dang cap nhat du lieu mon an cho ngay ${dayCanChi.full}...
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // ========== KHOI TAO ==========
+        function setCurrentDate() {
+            const now = new Date();
+            document.getElementById('inputDay').value = now.getDate();
+            document.getElementById('inputMonth').value = now.getMonth() + 1;
+            document.getElementById('inputYear').value = now.getFullYear();
+            displayResults();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hien thi ket qua mac dinh (ngay 18/12/2025)
+            displayResults();
+            
+            // Gan su kien
+            document.getElementById('btnToday').addEventListener('click', setCurrentDate);
+            document.getElementById('btnCalculate').addEventListener('click', displayResults);
+            
+            // Tu dong cap nhat khi thay doi
+            document.getElementById('inputDay').addEventListener('change', displayResults);
+            document.getElementById('inputMonth').addEventListener('change', displayResults);
+            document.getElementById('inputYear').addEventListener('change', displayResults);
+        });
+    </script>
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>

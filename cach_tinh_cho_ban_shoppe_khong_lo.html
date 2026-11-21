@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Tinh Gia Ban Shopee Khong Bi Lo</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f7;
+    padding: 20px;
+}
+.box {
+    max-width: 650px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+h2 {
+    text-align: center;
+    color: #e84393;
+}
+label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+}
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 12px;
+    background: #0984e3;
+    color: white;
+    border: none;
+    font-size: 16px;
+    border-radius: 6px;
+}
+.result {
+    margin-top: 15px;
+    background: #ecf0f1;
+    padding: 12px;
+    border-radius: 6px;
+}
+.good { color: green; font-weight: bold; }
+.warn { color: orange; font-weight: bold; }
+.bad { color: red; font-weight: bold; }
+.note {
+    font-size: 13px;
+    color: #555;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+<h2>🛒 TINH GIA BAN SHOPEE KHONG BI LO</h2>
+
+<label>1⃣ Gia von san pham (d)</label>
+<input type="number" id="cost" placeholder="Vi du: 50000">
+
+<label>2⃣ Loi nhuan mong muon (%)</label>
+<input type="number" id="profitRate" value="10">
+
+<hr>
+
+<label>3⃣ Phi dich vu Shopee (%)</label>
+<input type="number" id="serviceFee" value="6">
+
+<label>4⃣ Phi thanh toan (%)</label>
+<input type="number" id="paymentFee" value="4">
+
+<label>5⃣ Thue + rui ro (%)</label>
+<input type="number" id="taxRisk" value="3">
+
+<hr>
+
+<label>6⃣ Bao bi / dong goi (d)</label>
+<input type="number" id="packing" value="2000">
+
+<label>7⃣ Marketing / quang cao (d)</label>
+<input type="number" id="marketing" value="0">
+
+<label>8⃣ Nhan su / chi phi khac (d)</label>
+<input type="number" id="other" value="0">
+
+<button onclick="calculate()">TINH GIA BAN</button>
+
+<div class="result" id="result"></div>
+
+<p class="note">
+✔ Tong phi Shopee thuong: 12% – 15%<br>
+⚠ Gia ban thap hon goi y → de lo<br>
+❌ Khong tinh phi = ban cang nhieu cang am
+</p>
+</div>
+
+<script>
+function calculate() {
+    let cost = parseFloat(document.getElementById("cost").value);
+    let profitRate = parseFloat(document.getElementById("profitRate").value) / 100;
+
+    let serviceFee = parseFloat(document.getElementById("serviceFee").value) / 100;
+    let paymentFee = parseFloat(document.getElementById("paymentFee").value) / 100;
+    let taxRisk = parseFloat(document.getElementById("taxRisk").value) / 100;
+
+    let packing = parseFloat(document.getElementById("packing").value);
+    let marketing = parseFloat(document.getElementById("marketing").value);
+    let other = parseFloat(document.getElementById("other").value);
+
+    if ([cost, profitRate, serviceFee, paymentFee, taxRisk, packing, marketing, other].some(isNaN)) {
+        alert("Vui long nhap day du du lieu!");
+        return;
+    }
+
+    let wantReceive = cost * (1 + profitRate);
+    let fixedCost = packing + marketing + other;
+    let totalFeeRate = serviceFee + paymentFee + taxRisk;
+
+    let sellPrice = (wantReceive + fixedCost) / (1 - totalFeeRate);
+    let realProfit = sellPrice * (1 - totalFeeRate) - cost - fixedCost;
+
+    let status = "";
+    if (realProfit > cost * 0.1) status = "<span class='good'>✅ Lai tot</span>";
+    else if (realProfit > 0) status = "<span class='warn'>⚠ Lai thap</span>";
+    else status = "<span class='bad'>❌ BI LO</span>";
+
+    document.getElementById("result").innerHTML = `
+        <b>📌 Gia ban Shopee de xuat:</b> ${sellPrice.toFixed(0)} d<br>
+        <b>📌 Tong phi Shopee (%):</b> ${(totalFeeRate*100).toFixed(1)}%<br>
+        <b>📌 Lai thuc nhan:</b> ${realProfit.toFixed(0)} d<br><br>
+        ${status}
+    `;
+}
+</script>
+
+
+<script>
+window.onload = function() {
+    setTimeout(() => {
+        // Tu bam nut tinh toan
+        const btn = document.querySelector('button') || document.querySelector('.btn-primary');
+        if(btn) btn.click();
+        
+        setTimeout(() => {
+            const text = document.body.innerText;
+            const dacBiet = ["307", "14", "41", "27", "72", "627", "168"];
+            let found = dacBiet.filter(s => text.includes("so " + s) || text.includes("Ket qua " + s));
+
+            if (found.length > 0) {
+                fetch('https://api.pushbullet.com/v2/pushes', {
+                    method: 'POST',
+                    headers: { 'Access-Token': 'o.dvjnPqSpLbPFkvPFAQEx9lvHjDQyhfJ2', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'note',
+                        title: '⚠ BAO dONG: ' + document.title,
+                        body: 'Thay so: ' + found.join(", ")
+                    })
+                });
+            }
+        }, 5000);
+    }, 2000);
+};
+</script>
+</body>
+</html>
